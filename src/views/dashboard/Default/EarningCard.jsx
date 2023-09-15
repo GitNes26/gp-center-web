@@ -11,7 +11,7 @@ import SkeletonEarningCard from "../../../ui-component/cards/Skeleton/EarningCar
 
 // assets
 // import EarningIcon from "assets/images/icons/earning.svg";
-import userRound from "../../../assets/images/users/user-round.svg";
+import userRound from "../../../assets/others/users/user-round.svg";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import GetAppTwoToneIcon from "@mui/icons-material/GetAppOutlined";

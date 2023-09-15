@@ -34,7 +34,7 @@ import AnimateButton from "../../../ui-component/extended/AnimateButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import Google from "../../../assets/images/icons/social-google.svg";
+import Google from "../../../assets/others/icons/social-google.svg";
 import { LoadingButton } from "@mui/lab";
 // import { useUserContext } from "../../../../context/UserContextFirebase";
 // import { login } from "../../../../config/firebase";

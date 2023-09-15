@@ -24,7 +24,7 @@ import {
    IconMailbox,
    IconPhoto
 } from "@tabler/icons";
-import User1 from "../../../../assets/images/users/user-round.svg";
+import User1 from "../../../../assets/others/users/user-round.svg";
 
 // styles
 const ListItemWrapper = styled("div")(({ theme }) => ({

@@ -1,0 +1,15 @@
+Colores:
+Gris Oscuro fondo menú: #202226
+Azul: #1958cc
+Gris Botones menú: #2f3040
+Verde: #20c736
+Color subtítulos de secciones de llenado como "N° Unidad, folio, etc": #dadbdd
+Opacidad Fondo Blanco secciones de llenado: 80%
+Cuadros de llenado: #f4f4f5
+
+Tipografía:
+Menú: Objective medium
+Detalles de la unidad pantalla inicio: Montserrat Regular
+Búsqueda: Montserrat Medium
+Títulos de secciones: Objective bold
+Secciones de llenado (registro, catálogo, etc..): Objective medium
