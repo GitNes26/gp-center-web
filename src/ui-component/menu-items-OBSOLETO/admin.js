@@ -13,27 +13,20 @@ const admin = {
    type: "group",
    children: [
       {
-         id: "admin-school",
+         id: "admin-users",
          title: "Escuelas",
          type: "item",
-         url: "/admin/escuelas",
+         url: "/admin/usuarios",
          icon: icons.IconBuildingSkyscraper,
          breadcrumbs: false
       },
       {
-         id: "admin-levels",
-         title: "Niveles",
+         id: "admin-roles",
+         title: "Roles",
          type: "item",
-         url: "/admin/niveles",
+         url: "/admin/roles",
          icon: icons.IconNumber
       },
-      {
-         id: "admin-perimeters",
-         title: "Perímetros",
-         type: "item",
-         url: "/admin/perimetros",
-         icon: icons.IconNumber
-      }
    ]
 };
 

@@ -2,15 +2,15 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
 import MainCard from "../../ui-component/cards/MainCard";
-import SchoolTable from "../../components/schools/SchoolTable";
-import SchoolForm from "../../components/schools/SchoolForm";
+import UserTable from "../../components/users/Table";
+import UserForm from "../../components/users/Form";
 
 import { CorrectRes, ErrorRes } from "../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../context/UserContext";
+import { Axios } from "../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useSchoolContext } from "../../context/SchoolContext";
+import { useUserContext } from "../../context/UserContext";
 import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../utils/sAlert";
@@ -25,17 +25,17 @@ const Item = styled(Paper)(({ theme }) => ({
    color: theme.palette.text.secondary
 }));
 
-const SchoolView = () => {
+const UserView = () => {
    const { result } = useLoaderData();
-   const { setLoading } = useGlobalContext();
-   const { schools, getSchools, setOpenDialog, resetFormData, setTextBtnSumbit, setFormTitle } = useSchoolContext();
+   const { setLoading, setOpenDialog } = useGlobalContext();
+   const { singularName, users, getUsers, resetFormData, setTextBtnSumbit, setFormTitle } = useUserContext();
 
    const handleClickAdd = () => {
       try {
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
-         setFormTitle("REGISTRAR ESCUELA");
+         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -45,7 +45,7 @@ const SchoolView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getSchools();
+         getUsers();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -63,27 +63,27 @@ const SchoolView = () => {
             <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button>
-            <SchoolTable />
+            <UserTable />
          </MainCard>
 
-         <SchoolForm dataCities={result.cities} dataColonies={result.colonies} dataLevels={result.levels} />
+         <UserForm dataRoles={result.roles} dataDepartments={result.departments} />
       </>
    );
 };
 
-export const loaderIndexSchoolsView = async () => {
+export const loaderIndexUsersView = async () => {
    try {
       const res = CorrectRes;
-      // const axiosData = await Axios.get("/schools");
-      // res.result.schools = axiosData.data.data.result;
+      // const axiosData = await Axios.get("/users");
+      // res.result.users = axiosData.data.data.result;
 
-      const axiosLevels = await Axios.get("/levels/selectIndex");
-      res.result.levels = axiosLevels.data.data.result;
-      const axiosCities = await Axios.get("/cities/selectIndex");
-      res.result.cities = axiosCities.data.data.result;
-      const axiosColonies = await Axios.get("/colonies/selectIndex");
-      res.result.colonies = axiosColonies.data.data.result;
-      // console.log(res);
+      const axiosRoles = await Axios.get("/roles/selectIndex");
+      res.result.roles = axiosRoles.data.data.result;
+      const axiosDepartments = await Axios.get("/departments/selectIndex");
+      res.result.departments = axiosDepartments.data.data.result;
+      // const axiosColonies = await Axios.get("/colonies/selectIndex");
+      // res.result.colonies = axiosColonies.data.data.result;
+      // // console.log(res);
 
       return res;
    } catch (error) {
@@ -96,4 +96,4 @@ export const loaderIndexSchoolsView = async () => {
    }
 };
 
-export default SchoolView;
+export default UserView;

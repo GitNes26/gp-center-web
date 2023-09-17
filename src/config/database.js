@@ -1,4 +1,5 @@
-import { useUserContext } from "../context/UserContext";
+import { useAuthContext } from "../context/AuthContext";
+import Toast from "../utils/Toast";
 
 const firebaseConfig = {
    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,7 +13,7 @@ const firebaseConfig = {
 // const app = initializeApp(firebaseConfig);
 
 // export const auth = getAuth(app);
-// const { user, setUser } = useUserContext();
+// const { auth, setAuth } = useAuthContext();
 
 export const login = async ({ email, password }) => {
    try {
@@ -22,9 +23,9 @@ export const login = async ({ email, password }) => {
       });
       console.log("AxiosRes", res);
 
-      if (res.data.data.status_code != 200 && !res.data.data.result.token) return alert("algo paso");
+      if (res.data.data.status_code != 200 && !res.data.data.result.token) return Toast.Error("algo paso");
       localStorage.setItem("token", res.token);
-      setUser(res.data.data.result.user_id);
+      setAuth(res.data.data.result.user_id);
       return res.data.data;
    } catch (error) {
       console.log(error);
@@ -44,13 +45,13 @@ export const register = async ({ username, email, password, role }) => {
    } catch (error) {
       setWait(false);
       console.log(error);
-      return alert("trono");
+      return Toast.Error("trono");
    }
 };
 
 export const logout = () => {
    localStorage.removeItem("token");
-   setUser(null);
+   setAuth(null);
 };
 
 const loggedInCheck = async () => {
@@ -59,8 +60,8 @@ const loggedInCheck = async () => {
    console.log("token", token);
    if (token == null || token == undefined) {
       const res = await Axios.get(`users/${user}`); //es el id
-      if (res.data.data.status_code != 200) return setUser(null);
-      setUser(res.data.data.result);
+      if (res.data.data.status_code != 200) return setAuth(null);
+      setAuth(res.data.data.result);
    }
 };
 

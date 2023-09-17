@@ -3,9 +3,9 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "../layout/MainLayout";
 import Loadable from "../ui-component/Loadable";
-import SchoolView, { loaderIndexSchoolsView } from "../views/admin/SchoolsView";
+import UserView, { loaderIndexUsersView } from "../views/admin/UsersView";
 import LevelsView from "../views/admin/LevelsView";
-import SchoolContextProvider from "../context/SchoolContext";
+import UserContextProvider from "../context/UserContext";
 import LevelContextProvider from "../context/LevelContext";
 import RequestBecaView, { loaderIndexRequestBecasView } from "../views/admin/RequestBecaView";
 import { element } from "prop-types";
@@ -44,16 +44,16 @@ const MainRoutes = {
          path: "catalogos",
          children: [
             {
-               path: "escuelas",
+               path: "usuarios",
                element: (
-                  <SchoolContextProvider>
-                     <SchoolView />
-                  </SchoolContextProvider>
+                  <UserContextProvider>
+                     <UserView />
+                  </UserContextProvider>
                ),
-               loader: loaderIndexSchoolsView
+               loader: loaderIndexUsersView
             },
             {
-               path: "niveles",
+               path: "roles",
                element: (
                   <LevelContextProvider>
                      <LevelsView />

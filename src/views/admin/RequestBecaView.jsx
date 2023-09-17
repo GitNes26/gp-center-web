@@ -31,7 +31,7 @@ import { IconInfoCircle } from "@tabler/icons";
 import Toast from "../../utils/Toast";
 import { useLoaderData } from "react-router-dom";
 import { CorrectRes, ErrorRes } from "../../utils/Response";
-import { Axios } from "../../context/UserContext";
+import { Axios } from "../../context/AuthContext";
 import sAlert from "../../utils/sAlert";
 import IconSended from "../../components/icons/IconSended";
 import axios from "axios";

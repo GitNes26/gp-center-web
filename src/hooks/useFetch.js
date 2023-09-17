@@ -1,6 +1,6 @@
 import { Backdrop } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { Axios } from "../context/UserContext";
+import { Axios } from "../context/AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 
 // export const useFetch = (method, url, data) => {

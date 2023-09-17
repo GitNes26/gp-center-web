@@ -35,11 +35,11 @@ import { strengthColor, strengthIndicator } from "../../../utils/password-streng
 // assets
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-// import { useUserContext } from "../../../context/UserContextFirebase";
+// import { useAuthContext } from "../../../context/AuthContextFirebase";
 import { useRedirectTo } from "../../../hooks/useRedirectTo";
 // import { register } from "../../../config/firebase";
 import { LoadingButton } from "@mui/lab";
-import { useUserContext } from "../../../context/UserContext";
+import { useAuthContext } from "../../../context/AuthContext";
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
@@ -76,7 +76,7 @@ const AuthRegister = ({ ...others }) => {
       changePassword("123456");
    }, []);
 
-   const { register,login, loggetInCheck } = useUserContext();
+   const { register, login, loggetInCheck } = useAuthContext();
 
    const onSubmit = async ({ username, email, password }, { setSubmitting, setErrors, resetForm, setStatus }) => {
       try {
@@ -177,7 +177,7 @@ const AuthRegister = ({ ...others }) => {
 
          <Formik
             initialValues={{
-               username:"",
+               username: "",
                email: "",
                password: "",
                submit: null
@@ -210,6 +210,7 @@ const AuthRegister = ({ ...others }) => {
                            sx={{ ...theme.typography.customInput }}
                         />
                      </Grid> */}
+                     {/* Nombre de Usuario */}
                      <Grid item xs={12} sm={12}>
                         <TextField
                            id="username"

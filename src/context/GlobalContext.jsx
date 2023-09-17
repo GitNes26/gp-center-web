@@ -31,12 +31,39 @@ export const GlobalContextProvider = ({ children }) => {
 
    const [loading, setLoading] = useState(true);
    const [loadingAction, setLoadingAction] = useState(false);
+   const [openDialog, setOpenDialog] = useState(false);
+
+   const toggleDrawer = (open) => (event) => {
+      try {
+         if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+            return;
+         }
+         setOpenDialog(open);
+      } catch (error) {
+         console.log("Error en toggleDrawer:", error);
+         Toast.Error(error);
+      }
+   };
 
    const [formTitle, setFormTitle] = useState("REGISTRAR OBJETO | EDITAR OBJETO");
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR | GUARDAR");
 
    return (
-      <GlobalContext.Provider value={{ loading, setLoading, loadingAction, setLoadingAction, formTitle, setFormTitle, textBtnSubmit, setTextBtnSumbit }}>
+      <GlobalContext.Provider
+         value={{
+            loading,
+            setLoading,
+            loadingAction,
+            setLoadingAction,
+            openDialog,
+            setOpenDialog,
+            toggleDrawer,
+            formTitle,
+            setFormTitle,
+            textBtnSubmit,
+            setTextBtnSumbit
+         }}
+      >
          {children}
       </GlobalContext.Provider>
    );

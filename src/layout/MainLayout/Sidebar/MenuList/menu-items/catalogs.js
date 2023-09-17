@@ -1,8 +1,8 @@
 // assets
-import { IconBrandChrome, IconHelp, IconBuildingSkyscraper, IconNumber, IconAspectRatio, IconWheelchair } from "@tabler/icons";
+import { IconBrandChrome, IconHelp, IconBuildingSkyscraper, IconNumber, IconAspectRatio, IconWheelchair, IconUsers, IconPaperBag } from "@tabler/icons";
 
 // constant
-const icons = { IconBrandChrome, IconHelp, IconBuildingSkyscraper, IconNumber, IconAspectRatio, IconWheelchair };
+const icons = { IconBrandChrome, IconHelp, IconBuildingSkyscraper, IconNumber, IconAspectRatio, IconWheelchair, IconUsers, IconPaperBag };
 
 // ==============================|| PAGINAS DISPONIBLES PARA UN ADMIN ||============================== //
 
@@ -13,19 +13,19 @@ const catalogs = {
    type: "group",
    children: [
       {
-         id: "admin-school",
-         title: "Escuelas",
+         id: "admin-users",
+         title: "Usuarios",
          type: "item",
-         url: "/admin/catalogos/escuelas",
-         icon: icons.IconBuildingSkyscraper,
+         url: "/admin/catalogos/usuarios",
+         icon: icons.IconUsers,
          breadcrumbs: false
       },
       {
-         id: "admin-levels",
-         title: "Niveles",
+         id: "admin-roles",
+         title: "Roles",
          type: "item",
-         url: "/admin/catalogos/niveles",
-         icon: icons.IconNumber
+         url: "/admin/catalogos/roles",
+         icon: icons.IconPaperBag
       }
    ]
 };

@@ -1,5 +1,5 @@
 import MUIDataTable from "mui-datatables";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 
@@ -9,20 +9,21 @@ import { Button, ButtonGroup, Tooltip } from "@mui/material";
 import IconEdit from "../icons/IconEdit";
 import IconDelete from "../icons/IconDelete";
 
-import { useSchoolContext } from "../../context/SchoolContext";
+import { useUserContext } from "../../context/UserContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../utils/sAlert";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
-import { formatPhone } from "../../utils/Formats";
+import { formatDatetime, formatPhone } from "../../utils/Formats";
+import { Typography } from "@mui/material";
 
 const muiCache = createCache({
    key: "mui-datatables",
    prepend: true
 });
 
-const SchoolTable = () => {
+const UserTable = () => {
    const [responsive, setResponsive] = useState("vertical");
    const [tableBodyHeight, setTableBodyHeight] = useState("61vh");
    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("58vh");
@@ -32,8 +33,8 @@ const SchoolTable = () => {
    const [viewColumnBtn, setViewColumnBtn] = useState(true);
    const [filterBtn, setFilterBtn] = useState(true);
 
-   const { setLoading, setLoadingAction } = useGlobalContext();
-   const { schools, showSchool, deleteSchool, setTextBtnSumbit, setFormTitle } = useSchoolContext();
+   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { singularName, pluralName, users, showUser, deleteUser, setTextBtnSumbit, setFormTitle } = useUserContext();
 
    const mySwal = withReactContent(Swal);
 
@@ -41,8 +42,9 @@ const SchoolTable = () => {
       try {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
-         setFormTitle("EDITAR ESCUELA");
-         await showSchool(id);
+         setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
+         await showUser(id);
+         setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -52,10 +54,10 @@ const SchoolTable = () => {
 
    const handleClickDelete = async (id, name) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a "${name}"`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteSchool(id);
+               const axiosResponse = await deleteUser(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -71,6 +73,7 @@ const SchoolTable = () => {
       download: downloadBtn,
       print: printBtn,
       viewColumns: viewColumnBtn,
+      // header: {textAlign: "center"},
       filter: filterBtn,
       filterType: "dropdown",
       responsive,
@@ -82,18 +85,15 @@ const SchoolTable = () => {
       }
    };
 
-   // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Clave", "Nivel", "Escuela", "Dirección", "Director", "Tel", "Local", "Zona", "Acciones"];
-
    const ButtonsAction = ({ id, name }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={"Editar Escuela"} placement="top">
+            <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
             </Tooltip>
-            <Tooltip title={"Eliminar Escuela"} placement="top">
+            <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
                </Button>
@@ -102,22 +102,40 @@ const SchoolTable = () => {
       );
    };
 
+   // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
+   const columns = ["Usuario", "Role", "Información personal", "Dirección", "Otra Info", "Acciones"];
    const data = [];
    const chargerData = async () => {
       try {
-         // console.log("cargar listado", schools);
-         await schools.map((obj) => {
+         // console.log("cargar listado", users);
+         await users.map((obj) => {
             // console.log(obj);
             const register = [];
-            register.push(obj.code);
-            register.push(obj.level);
-            register.push(obj.school);
-            register.push(obj.address);
-            register.push(obj.director);
-            register.push(formatPhone(obj.phone));
-            register.push(obj.loc_for == "1" ? "LOCAL" : "FORANEA");
-            register.push(obj.zone == "U" ? "URBANA" : "RURAL");
-            register.push(<ButtonsAction id={obj.id} name={obj.school} />);
+            register.push(
+               <Typography textAlign={"center"}>
+                  {obj.username} <br /> {obj.email}
+               </Typography>
+            );
+            register.push(<Typography textAlign={"center"}>{obj.role}</Typography>);
+            register.push(
+               <Typography textAlign={"center"}>
+                  {obj.paternal_last_name == "No Aplica"
+                     ? "No Aplica"
+                     : `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name} <br /> ${formatPhone(obj.phone)}`}
+               </Typography>
+            );
+            register.push(
+               <Typography>{obj.street == "No Aplica" ? "No Aplica" : `${obj.street} ${obj.num_ext == "S/N" ? obj.num_ext : `#${obj.num_ext}`}`}</Typography>
+            );
+            register.push(
+               <Typography>
+                  {obj.license_number == "No Aplica"
+                     ? "No Aplica"
+                     : `${obj.license_number} <br> 
+					vence: <b>${formatDatetime(obj.license_due_date, false)}</b>`}
+               </Typography>
+            );
+            register.push(<ButtonsAction id={obj.id} name={obj.username} />);
             data.push(register);
          });
          setLoading(false);
@@ -128,16 +146,16 @@ const SchoolTable = () => {
    };
    // useEffect(() => {
    chargerData();
-   // }, [schools]);
+   // }, [users]);
 
    return (
       <>
          <CacheProvider value={muiCache}>
             <ThemeProvider theme={createTheme()}>
-               <MUIDataTable title={"Listado de Escuelas"} data={data} columns={columns} options={options} />
+               <MUIDataTable title={`Listado de ${pluralName}`} data={data} columns={columns} options={options} />
             </ThemeProvider>
          </CacheProvider>
       </>
    );
 };
-export default SchoolTable;
+export default UserTable;

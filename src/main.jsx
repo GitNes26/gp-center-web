@@ -15,16 +15,16 @@ import { Provider } from "react-redux";
 import { store } from "./config/store/index.js";
 import { SnackbarProvider } from "notistack";
 import { GlobalContextProvider } from "./context/GlobalContext.jsx";
-import UserContextProvider from "./context/UserContext.jsx";
+import AuthContextProvider from "./context/AuthContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
    <React.StrictMode>
       <Provider store={store}>
          <SnackbarProvider maxSnack={5} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
             <GlobalContextProvider>
-               <UserContextProvider>
+               <AuthContextProvider>
                   <App />
-               </UserContextProvider>
+               </AuthContextProvider>
             </GlobalContextProvider>
          </SnackbarProvider>
       </Provider>
