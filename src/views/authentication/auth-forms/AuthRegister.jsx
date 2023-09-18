@@ -80,23 +80,19 @@ const AuthRegister = ({ ...others }) => {
 
    const onSubmit = async ({ username, email, password }, { setSubmitting, setErrors, resetForm, setStatus }) => {
       try {
-         await register({ username, email, password });
+         const axiosRegister = await register({ username, email, password });
          setStatus({ success: true });
+         if (axiosRegister.status_code != 200) return;
          await login({ email, password });
          await loggetInCheck;
 
          setSubmitting(false);
          resetForm();
-         // }
       } catch (error) {
          console.error(error);
-         // if (scriptedRef.current) {
          setStatus({ success: false });
          setErrors({ submit: error.message });
          setSubmitting(false);
-         // }
-         // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
-         // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
       } finally {
          setSubmitting(false);
       }

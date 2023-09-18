@@ -31,6 +31,7 @@ export default function AuthContextProvider({ children }) {
          console.log(error);
          sAlert.Error("Parece que hay un error 🤔, intenta más tarde");
       }
+      return data.data;
    };
 
    const login = async ({ email, password }) => {

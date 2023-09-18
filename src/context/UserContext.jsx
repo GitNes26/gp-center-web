@@ -25,9 +25,9 @@ const formDataInitialState = {
    num_int: "",
 
    zip: "",
-   state: "",
-   city: "",
-   colony: ""
+   state: 0,
+   city: 0,
+   colony: 0
 };
 
 export default function UserContextProvider({ children }) {

@@ -38,6 +38,7 @@ import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import { Fragment } from "react";
+import axios from "axios";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -70,6 +71,14 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isAdmin, setIsAdmin] = useState(false);
 
+   const [disabledState, setDisabledState] = useState(true);
+   const [disabledCity, setDisabledCity] = useState(true);
+   const [disabledColony, setDisabledColony] = useState(false);
+   const [showLoading, setShowLoading] = useState(false);
+   const [dataStates, setDataStates] = useState([]);
+   const [dataCities, setDataCities] = useState([]);
+   const [dataColonies, setDataColonies] = useState([]);
+
    const handleChangeRole = (value) => {
       try {
          setIsAdmin(false);
@@ -94,10 +103,13 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
-   const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
+   const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // console.log(values);
+         console.log(values);
+         values.community_id = values.colony;
+
          setLoadingAction(true);
+         console.log(values);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createUser(values);
          else axiosResponse = await updateUser(values);
@@ -202,15 +214,65 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    }, [formData]);
 
-   const handleInput = async (e, setFieldValue, input, toLower) => {
+   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
       try {
-         const newText = toLower ? await formatToLowerCase(e) : await formatToUpperCase(e);
+         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
          console.log(newText);
          setFieldValue(input, newText);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
+   };
+
+   const getCommunityByZip = async (zip, setFieldValue, community_id = true) => {
+      setShowLoading(true);
+      setDisabledState(true);
+      setDisabledCity(true);
+      setDisabledColony(true);
+      let states = [];
+      let cities = [];
+      let colonies = [];
+      let state, city;
+      setDataStates(states);
+      setDataCities(cities);
+      setDataColonies(colonies);
+      setFieldValue("state", 0);
+      setFieldValue("city", 0);
+      setFieldValue("colony", 0);
+      const axiosCommunity = axios;
+      const axiosRes = await axiosCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);
+      if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
+      axiosRes.data.data.result.map((d) => {
+         states.push(d.Estado);
+         cities.push(d.Municipio);
+         colonies.push({ id: d.id, Colonia: d.Colonia });
+      });
+      states = [...new Set(states)];
+      cities = [...new Set(cities)];
+      colonies = [...new Set(colonies)];
+
+      if (community_id) {
+         const axiosRes = await axiosCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
+         if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
+      }
+
+      if (states.length == 0) {
+         setShowLoading(false);
+         return Toast.Info("No hay comunidades registradas con este C.P.");
+      }
+      if (states.length > 1) setDisabledState(false);
+      if (cities.length > 1) setDisabledCity(false);
+      if (colonies.length > 1) setDisabledColony(false);
+      setDataStates(states);
+      setDataCities(cities);
+      setDataColonies(colonies);
+      console.log("states[0]", states[0]);
+      console.log("states[3]", states[3]);
+      setFieldValue("state", community_id ? state : states[0]);
+      setFieldValue("city", community_id ? city : cities[0]);
+      setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
+      setShowLoading(false);
    };
 
    // const selectedValues = useMemo(() => dataRoles.filter((v) => v.selected), [
@@ -263,11 +325,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            name="email"
                            label="Correo Electrónico *"
                            type="email"
-                           value={values.email.toLowerCase()}
+                           value={values.email}
                            placeholder="mi@correo.com"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "email", true)}
+                           onInput={(e) => handleInput(e, setFieldValue, "email", false)}
                            // inputProps={{ maxLength: 2 }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -477,6 +539,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
 
+                           {/* Divisor */}
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
@@ -529,6 +592,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               </FormControl>
                            </Grid>
 
+                           {/* Divisor */}
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
@@ -540,10 +604,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  name="name"
                                  label="Nombre(s) *"
                                  type="text"
-                                 value={values.name.toUpperCase()}
+                                 value={values.name}
                                  placeholder="Ingrese tu(s) nombre(s)"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
+                                 onInput={(e) => handleInput(e, setFieldValue, "name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -558,10 +623,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  name="paternal_last_name"
                                  label="Apellido Paterno *"
                                  type="text"
-                                 value={values.paternal_last_name.toUpperCase()}
+                                 value={values.paternal_last_name}
                                  placeholder="Ingrese tu primer apellido"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
+                                 onInput={(e) => handleInput(e, setFieldValue, "paternal_last_name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -576,10 +642,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  name="maternal_last_name"
                                  label="Apellido Materno *"
                                  type="text"
-                                 value={values.maternal_last_name.toUpperCase()}
+                                 value={values.maternal_last_name}
                                  placeholder="Ingrese tu segundo apellido"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
+                                 onInput={(e) => handleInput(e, setFieldValue, "maternal_last_name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -588,6 +655,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
 
+                           {/* Divisor */}
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
@@ -596,115 +664,118 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            <Field id="community_id" name="community_id" type="hidden" value={values.community_id} onChange={handleChange} onBlur={handleBlur} />
 
                            {/* C.P. */}
-                           <Grid xs={12} md={12} sx={{}}>
-                              <Grid xs={12} md={3} sx={{ mb: 1 }}>
+                           <Grid container spacing={2} sx={{ p: 1 }}>
+                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
                                  <TextField
                                     id="zip"
                                     name="zip"
                                     label="Código Postal *"
                                     type="number"
                                     value={values.zip}
-                                    placeholder="10 digitos"
+                                    placeholder="35000"
                                     inputProps={{ maxLength: 5 }}
                                     onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    // onBlurCapture={(e) => handleBlurCaptureByZip(e.target.value)}
-                                    // fullWidth
+                                    onBlur={(e) => {
+                                       handleBlur(e);
+                                       getCommunityByZip(e.target.value, setFieldValue);
+                                    }}
+                                    fullWidth
                                     // disabled={values.id == 0 ? false : true}
                                     error={errors.zip && touched.zip}
                                     helperText={errors.zip && touched.zip && errors.zip}
                                  />
                               </Grid>
-                           </Grid>
-                           {/* Estado */}
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
-                              <FormControl fullWidth>
-                                 <InputLabel id="state-label">Estado</InputLabel>
-                                 <Select
-                                    id="state"
-                                    name="state"
-                                    label="Estado"
-                                    labelId="state-label"
-                                    value={values.state}
-                                    placeholder="Estado"
-                                    // readOnly={true}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={errors.state && touched.state}
-                                 >
-                                    <MenuItem value={null} disabled>
-                                       Seleccione una opción...
-                                    </MenuItem>
-                                    <MenuItem value={1}>Coahuila</MenuItem>
-                                    {/* {dataCities &&
-                                       dataCities.map((d) => (
-                                          <MenuItem key={d.value} value={d.value}>
-                                             {d.code} - {d.text}
-                                          </MenuItem>
-                                       ))} */}
-                                 </Select>
-                                 {touched.state && errors.state && errors.state}
-                              </FormControl>
-                           </Grid>
-                           {/* Ciduad */}
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
-                              <FormControl fullWidth>
-                                 <InputLabel id="city-label">Ciudad</InputLabel>
-                                 <Select
-                                    id="city"
-                                    name="city"
-                                    label="Ciudad"
-                                    labelId="city-label"
-                                    value={values.city}
-                                    placeholder="Ciudad"
-                                    // readOnly={true}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={errors.city && touched.city}
-                                 >
-                                    <MenuItem value={null} disabled>
-                                       Seleccione una opción...
-                                    </MenuItem>
-                                    <MenuItem value={1}>Torreón</MenuItem>
-                                    {/* {dataCities &&
-                                       dataCities.map((d) => (
-                                          <MenuItem key={d.value} value={d.value}>
-                                             {d.code} - {d.text}
-                                          </MenuItem>
-                                       ))} */}
-                                 </Select>
-                                 {touched.city && errors.city && errors.city}
-                              </FormControl>
-                           </Grid>
-                           {/* Colonia */}
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
-                              <FormControl fullWidth>
-                                 <InputLabel id="colony-label">Colonia</InputLabel>
-                                 <Select
-                                    id="colony"
-                                    name="colony"
-                                    label="Colonia"
-                                    labelId="colony-label"
-                                    value={values.colony}
-                                    placeholder="Colonia"
-                                    // readOnly={true}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={errors.colony && touched.colony}
-                                 >
-                                    <MenuItem value={null} disabled>
-                                       Seleccione una opción...
-                                    </MenuItem>
-                                    <MenuItem value={1}>Alamedas INFONAVIT</MenuItem>
-                                    {/* {dataCities &&
-                                       dataCities.map((d) => (
-                                          <MenuItem key={d.value} value={d.value}>
-                                             {d.code} - {d.colony}
-                                          </MenuItem>
-                                       ))} */}
-                                 </Select>
-                                 {touched.colony && errors.colony && errors.colony}
-                              </FormControl>
+                              {/* Estado */}
+                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                                 <FormControl fullWidth>
+                                    <InputLabel id="state-label">Estado</InputLabel>
+                                    <Select
+                                       id="state"
+                                       name="state"
+                                       label="Estado"
+                                       labelId="state-label"
+                                       value={values.state}
+                                       placeholder="Estado"
+                                       // readOnly={true}
+                                       disabled={disabledState}
+                                       onChange={handleChange}
+                                       onBlur={handleBlur}
+                                       error={errors.state && touched.state}
+                                    >
+                                       <MenuItem value={0} disabled>
+                                          Seleccione una opción...
+                                       </MenuItem>
+                                       {dataStates &&
+                                          dataStates.map((d, i) => (
+                                             <MenuItem key={i} value={d}>
+                                                {d}
+                                             </MenuItem>
+                                          ))}
+                                    </Select>
+                                    {touched.state && errors.state && errors.state}
+                                 </FormControl>
+                              </Grid>
+                              {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "47%", mt: 7 }} />}
+                              {/* Ciduad */}
+                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                                 <FormControl fullWidth>
+                                    <InputLabel id="city-label">Ciudad</InputLabel>
+                                    <Select
+                                       id="city"
+                                       name="city"
+                                       label="Ciudad"
+                                       labelId="city-label"
+                                       value={values.city}
+                                       placeholder="Ciudad"
+                                       // readOnly={true}
+                                       disabled={disabledCity}
+                                       onChange={handleChange}
+                                       onBlur={handleBlur}
+                                       error={errors.city && touched.city}
+                                    >
+                                       <MenuItem value={0} disabled>
+                                          Seleccione una opción...
+                                       </MenuItem>
+                                       {dataCities &&
+                                          dataCities.map((d, i) => (
+                                             <MenuItem key={i} value={d}>
+                                                {d}
+                                             </MenuItem>
+                                          ))}
+                                    </Select>
+                                    {touched.city && errors.city && errors.city}
+                                 </FormControl>
+                              </Grid>
+                              {/* Colonia */}
+                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                                 <FormControl fullWidth>
+                                    <InputLabel id="colony-label">Colonia</InputLabel>
+                                    <Select
+                                       id="colony"
+                                       name="colony"
+                                       label="Colonia"
+                                       labelId="colony-label"
+                                       value={values.colony}
+                                       placeholder="Colonia"
+                                       // readOnly={true}
+                                       disabled={disabledColony}
+                                       onChange={handleChange}
+                                       onBlur={handleBlur}
+                                       error={errors.colony && touched.colony}
+                                    >
+                                       <MenuItem value={0} disabled>
+                                          Seleccione una opción...
+                                       </MenuItem>
+                                       {dataColonies &&
+                                          dataColonies.map((d, i) => (
+                                             <MenuItem key={i} value={d.id}>
+                                                {d.Colonia}
+                                             </MenuItem>
+                                          ))}
+                                    </Select>
+                                    {touched.colony && errors.colony && errors.colony}
+                                 </FormControl>
+                              </Grid>
                            </Grid>
                            {/* Calle */}
                            <Grid xs={12} md={8} sx={{ mb: 2 }}>
@@ -713,12 +784,13 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  name="street"
                                  label="Calle *"
                                  type="text"
-                                 value={values.street.toUpperCase()}
+                                 value={values.street}
                                  placeholder="Calle de las Garzas"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
+                                 onInput={(e) => handleInput(e, setFieldValue, "street", true)}
                                  error={errors.street && touched.street}
                                  helperText={errors.street && touched.street && errors.street}
                               />
@@ -730,11 +802,12 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  name="num_ext"
                                  label="No. Ext. *"
                                  type="text"
-                                 value={values.num_ext.toUpperCase()}
+                                 value={values.num_ext}
                                  placeholder="S/N"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  fullWidth
+                                 onInput={(e) => handleInput(e, setFieldValue, "num_ext", true)}
                                  // disabled={values.id == 0 ? false : true}
                                  error={errors.num_ext && touched.num_ext}
                                  helperText={errors.num_ext && touched.num_ext && errors.num_ext}
@@ -747,11 +820,12 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  name="num_int"
                                  label="No. Int."
                                  type="text"
-                                 value={values.num_int != null ? values.num_int.toUpperCase() : values.num_int}
+                                 value={values.num_int}
                                  placeholder="S/N"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  fullWidth
+                                 onInput={(e) => handleInput(e, setFieldValue, "num_int", true)}
                                  // disabled={values.id == 0 ? false : true}
                                  error={errors.num_int && touched.num_int}
                                  helperText={errors.num_int && touched.num_int && errors.num_int}
