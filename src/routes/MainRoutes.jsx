@@ -41,10 +41,28 @@ const MainRoutes = {
          loader: loaderIndexRequestBecasView
       },
       {
+         path: "usuarios",
+         element: (
+            <UserContextProvider>
+               <UserView />
+            </UserContextProvider>
+         ),
+         loader: loaderIndexUsersView
+      },
+      {
+         path: "roles",
+         element: (
+            <LevelContextProvider>
+               <LevelsView />
+            </LevelContextProvider>
+         )
+         // loader: loaderIndex
+      },
+      {
          path: "catalogos",
          children: [
             {
-               path: "usuarios",
+               path: "modelos",
                element: (
                   <UserContextProvider>
                      <UserView />

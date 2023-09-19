@@ -2,15 +2,15 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
 import MainCard from "../../ui-component/cards/MainCard";
-import UserTable from "../../components/users/Table";
-import UserForm from "../../components/users/Form";
+import RoleTable from "../../components/roles/Table";
+import RoleForm from "../../components/roles/Form";
 
 import { CorrectRes, ErrorRes } from "../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useUserContext } from "../../context/UserContext";
+import { useRoleContext } from "../../context/RoleContext";
 import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../utils/sAlert";
@@ -25,10 +25,10 @@ const Item = styled(Paper)(({ theme }) => ({
    color: theme.palette.text.secondary
 }));
 
-const UserView = () => {
+const RoleView = () => {
    const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, users, getUsers, resetFormData, setTextBtnSumbit, setFormTitle } = useUserContext();
+   const { singularName, roles, getRoles, resetFormData, setTextBtnSumbit, setFormTitle } = useRoleContext();
 
    const handleClickAdd = () => {
       try {
@@ -45,7 +45,7 @@ const UserView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getUsers();
+         getRoles();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -63,19 +63,19 @@ const UserView = () => {
             <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button>
-            <UserTable />
+            <RoleTable />
          </MainCard>
 
-         <UserForm dataRoles={result.roles} dataDepartments={result.departments} />
+         <RoleForm dataRoles={result.roles} dataDepartments={result.departments} />
       </>
    );
 };
 
-export const loaderIndexUsersView = async () => {
+export const loaderIndexRolesView = async () => {
    try {
       const res = CorrectRes;
-      // const axiosData = await Axios.get("/users");
-      // res.result.users = axiosData.data.data.result;
+      // const axiosData = await Axios.get("/roles");
+      // res.result.roles = axiosData.data.data.result;
 
       const axiosRoles = await Axios.get("/roles/selectIndex");
       res.result.roles = axiosRoles.data.data.result;
@@ -98,4 +98,4 @@ export const loaderIndexUsersView = async () => {
    }
 };
 
-export default UserView;
+export default RoleView;
