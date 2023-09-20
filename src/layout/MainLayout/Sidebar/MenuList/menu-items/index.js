@@ -20,14 +20,6 @@ const menuItems = {
                url: "/admin/",
                icon: tablerIcons["IconDashboard"],
                breadcrumbs: false
-            },
-            {
-               id: "request",
-               title: "Solicitud de Beca",
-               type: "item",
-               url: "/admin/solicitud-beca",
-               icon: tablerIcons["IconFileDollar"],
-               breadcrumbs: false
             }
          ]
       },

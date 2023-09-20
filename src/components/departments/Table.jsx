@@ -9,7 +9,7 @@ import { Button, ButtonGroup, Tooltip } from "@mui/material";
 import IconEdit from "../icons/IconEdit";
 import IconDelete from "../icons/IconDelete";
 
-import { useUserContext } from "../../context/UserContext";
+import { useDepartmentContext } from "../../context/DepartmentContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../utils/sAlert";
@@ -24,7 +24,7 @@ const muiCache = createCache({
    prepend: true
 });
 
-const UserTable = () => {
+const DepartmentTable = () => {
    const [responsive, setResponsive] = useState("vertical");
    const [tableBodyHeight, setTableBodyHeight] = useState("61vh");
    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("58vh");
@@ -35,7 +35,7 @@ const UserTable = () => {
    const [filterBtn, setFilterBtn] = useState(true);
 
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, pluralName, users, showUser, deleteUser, setTextBtnSumbit, setFormTitle } = useUserContext();
+   const { singularName, pluralName, departments, showDepartment, deleteDepartment, setTextBtnSumbit, setFormTitle } = useDepartmentContext();
 
    const mySwal = withReactContent(Swal);
 
@@ -44,7 +44,7 @@ const UserTable = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showUser(id);
+         await showDepartment(id);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -58,7 +58,7 @@ const UserTable = () => {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a "${name}"`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteUser(id);
+               const axiosResponse = await deleteDepartment(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -104,55 +104,17 @@ const UserTable = () => {
    };
 
    // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Usuario", "Role", "Información personal", "Dirección", "Otra Info", "Acciones"];
+   const columns = ["Departamento", "Descripción", "Acciones"];
    const data = [];
    const chargerData = async () => {
       try {
-         // console.log("cargar listado", users);
-         await users.map((obj) => {
+         // console.log("cargar listado", departments);
+         await departments.map((obj) => {
             // console.log(obj);
             const register = [];
-            register.push(
-               <Typography textAlign={"center"}>
-                  {obj.username} <br /> {obj.email}
-               </Typography>
-            );
-            register.push(<Typography textAlign={"center"}>{obj.role}</Typography>);
-            register.push(
-               <Fragment>
-                  {obj["paternal_last_name"] == "No Aplica" ? (
-                     <Typography textAlign={"center"}>No Aplica</Typography>
-                  ) : (
-                     <Typography textAlign={"center"}>
-                        {obj.name} {obj.paternal_last_name} {obj.maternal_last_name} <br /> {formatPhone(obj.phone)}
-                     </Typography>
-                  )}
-               </Fragment>
-            );
-            register.push(
-               <Fragment>
-                  {obj.street == "No Aplica" ? (
-                     <Typography textAlign={"center"}>No Aplica</Typography>
-                  ) : (
-                     <Fragment textAlign={"center"}>
-                        {obj.street} {obj.num_ext == "S/N" ? obj.num_ext : `# ${obj.num_ext}`}
-                     </Fragment>
-                  )}
-               </Fragment>
-            );
-            register.push(
-               <Fragment>
-                  {obj.license_number == "No Aplica" ? (
-                     <Typography>No Aplica</Typography>
-                  ) : (
-                     <Typography>
-                        No. Licencia: <b>{obj.license_number}</b> <br />
-                        vence: <b>{formatDatetime(obj.license_due_date, false)}</b>
-                     </Typography>
-                  )}
-               </Fragment>
-            );
-            register.push(<ButtonsAction id={obj.id} name={obj.username} />);
+            register.push(<Typography textAlign={"center"}>{obj.department}</Typography>);
+            register.push(<Typography textAlign={"center"}>{obj.description}</Typography>);
+            register.push(<ButtonsAction id={obj.id} name={obj.department} />);
             data.push(register);
          });
          setLoading(false);
@@ -163,7 +125,7 @@ const UserTable = () => {
    };
    // useEffect(() => {
    chargerData();
-   // }, [users]);
+   // }, [departments]);
 
    return (
       <>
@@ -175,4 +137,4 @@ const UserTable = () => {
       </>
    );
 };
-export default UserTable;
+export default DepartmentTable;

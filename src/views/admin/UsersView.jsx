@@ -25,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
    color: theme.palette.text.secondary
 }));
 
-const UserView = () => {
+const UsersView = () => {
    const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
    const { singularName, users, getUsers, resetFormData, setTextBtnSumbit, setFormTitle } = useUserContext();
@@ -98,4 +98,4 @@ export const loaderIndexUsersView = async () => {
    }
 };
 
-export default UserView;
+export default UsersView;

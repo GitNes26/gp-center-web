@@ -3,14 +3,11 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "../layout/MainLayout";
 import Loadable from "../ui-component/Loadable";
-import UserView, { loaderIndexUsersView } from "../views/admin/UsersView";
-import LevelsView from "../views/admin/LevelsView";
+import UsersView, { loaderIndexUsersView } from "../views/admin/UsersView";
 import UserContextProvider from "../context/UserContext";
-import LevelContextProvider from "../context/LevelContext";
-import RequestBecaView, { loaderIndexRequestBecasView } from "../views/admin/RequestBecaView";
 import { element } from "prop-types";
-import RequestBecaContextProvider from "../context/RequestBecaContext";
-import StudentContextProvider from "../context/StudentContext";
+import DepartmentContextProvider from "../context/DepartmentContext";
+import DepartmentsView from "../views/admin/DepartmentsView";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -30,31 +27,20 @@ const MainRoutes = {
          element: <DashboardDefault />
       },
       {
-         path: "solicitud-beca",
-         element: (
-            <RequestBecaContextProvider>
-               <StudentContextProvider>
-                  <RequestBecaView />
-               </StudentContextProvider>
-            </RequestBecaContextProvider>
-         ),
-         loader: loaderIndexRequestBecasView
-      },
-      {
          path: "usuarios",
          element: (
             <UserContextProvider>
-               <UserView />
+               <UsersView />
             </UserContextProvider>
          ),
          loader: loaderIndexUsersView
       },
       {
-         path: "roles",
+         path: "departamentos",
          element: (
-            <LevelContextProvider>
-               <LevelsView />
-            </LevelContextProvider>
+            <DepartmentContextProvider>
+               <DepartmentsView />
+            </DepartmentContextProvider>
          )
          // loader: loaderIndex
       },
@@ -62,22 +48,22 @@ const MainRoutes = {
          path: "catalogos",
          children: [
             {
-               path: "modelos",
+               path: "marcas",
                element: (
                   <UserContextProvider>
-                     <UserView />
+                     <UsersView />
                   </UserContextProvider>
                ),
                loader: loaderIndexUsersView
             },
             {
-               path: "roles",
+               path: "modelos",
                element: (
-                  <LevelContextProvider>
-                     <LevelsView />
-                  </LevelContextProvider>
-               )
-               // loader: loaderIndex
+                  <UserContextProvider>
+                     <UsersView />
+                  </UserContextProvider>
+               ),
+               loader: loaderIndexUsersView
             }
          ]
       }
