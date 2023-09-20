@@ -79,10 +79,10 @@ const menuItems = {
                icon: tablerIcons["IconHelp"]
             },
             {
-               id: "admin-models",
-               title: "Modelos",
+               id: "admin-otro",
+               title: "Otro",
                type: "item",
-               url: "/admin/catalogos/modelos",
+               url: "/admin/catalogos/otro",
                icon: tablerIcons["IconHelp"]
             }
          ]
