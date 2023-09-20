@@ -4,9 +4,6 @@ import catalogs from "./catalogs";
 // assets
 import * as tablerIcons from "@tabler/icons";
 
-// constant
-// const icons = { IconDashboard, IconFileDollar };
-
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
@@ -54,36 +51,108 @@ const menuItems = {
                type: "item",
                url: "/admin/roles",
                icon: tablerIcons["IconPaperBag"]
+            },
+            {
+               id: "admin-departments",
+               title: "Departamentos",
+               type: "item",
+               url: "/admin/departamentos",
+               icon: tablerIcons["IconBuildingSkyscraper"],
+               breadcrumbs: false
             }
          ]
       },
       {
-         id: "catalogs",
-         title: "Catálogos",
-         caption: "Gestion de catálogos",
+         id: "cove",
+         title: "CoVe",
+         caption: "Catálogos de Control Vehicular",
          type: "group",
          children: [
             {
-               id: "admin-brands",
+               id: "cove-brands",
                title: "Marcas",
                type: "item",
-               url: "/admin/catalogos/brands",
+               url: "/admin/cove/marcas",
                icon: tablerIcons["IconHelp"],
                breadcrumbs: false
             },
             {
-               id: "admin-models",
+               id: "cove-models",
                title: "Modelos",
                type: "item",
-               url: "/admin/catalogos/modelos",
+               url: "/admin/cove/modelos",
                icon: tablerIcons["IconHelp"]
             },
             {
-               id: "admin-otro",
-               title: "Otro",
+               id: "cove-vehicle-status",
+               title: "Estatus de Vehículos",
                type: "item",
-               url: "/admin/catalogos/otro",
-               icon: tablerIcons["IconHelp"]
+               url: "/admin/cove/estatus-vehiculos",
+               icon: tablerIcons["IconInfo"]
+            },
+            {
+               id: "cove-vehicles",
+               title: "Vehículos",
+               type: "item",
+               url: "/admin/cove/vehiculos",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "cove-vehicle-plates",
+               title: "Placas Vehiculares - QUIZA UNIRLO CON VEHICULOS",
+               type: "item",
+               url: "/admin/cove/placas-vehiculos",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "cove-assigned-vehicle",
+               title: "Vehículos Asignados",
+               type: "item",
+               url: "/admin/cove/vehiculos-asignados",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "cove-delivered-vehicle",
+               title: "Vehículos Entregados",
+               type: "item",
+               url: "/admin/cove/vehiculos-entregados",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "cove-loaned-vehicle",
+               title: "Vehículos Prestados",
+               type: "item",
+               url: "/admin/cove/vehiculos-entregados",
+               icon: tablerIcons["IconCar"]
+            }
+         ]
+      },
+      {
+         id: "garage",
+         title: "Taller",
+         caption: "Catálogos del Taller",
+         type: "group",
+         children: [
+            {
+               id: "garage-store",
+               title: "Almacen (Stock)",
+               type: "item",
+               url: "/admin/taller/alamcen",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "garage-services",
+               title: "Servicios",
+               type: "item",
+               url: "/admin/taller/servicios",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "garage-request",
+               title: "Requisiones - PENDIENTE",
+               type: "item",
+               url: "/admin/taller/requisiciones",
+               icon: tablerIcons["IconCar"]
             }
          ]
       }
