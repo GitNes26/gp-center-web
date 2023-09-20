@@ -908,7 +908,7 @@ const RequestBecaView = () => {
                                           min: 1,
                                           max: 6
                                        }}
-                                       disabled={values.id == 0 ? false : true}
+                                       // disabled={values.id == 0 ? false : true}
                                        error={errors.grade && touched.grade}
                                        helperText={errors.grade && touched.grade && showErrorInput(3, errors.grade)}
                                     />
@@ -930,7 +930,7 @@ const RequestBecaView = () => {
                                           min: 0,
                                           max: 100
                                        }}
-                                       disabled={values.id == 0 ? false : true}
+                                       // disabled={values.id == 0 ? false : true}
                                        error={errors.average && touched.average}
                                        helperText={errors.average && touched.average && showErrorInput(3, errors.average)}
                                     />
@@ -950,7 +950,7 @@ const RequestBecaView = () => {
                                        multiline
                                        rows={5}
                                        inputProps={{}}
-                                       disabled={values.id == 0 ? false : true}
+                                       // disabled={values.id == 0 ? false : true}
                                        error={errors.comments && touched.comments}
                                        helperText={errors.comments && touched.comments && showErrorInput(3, errors.comments)}
                                     />

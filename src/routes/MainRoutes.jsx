@@ -8,6 +8,10 @@ import UserContextProvider from "../context/UserContext";
 import { element } from "prop-types";
 import DepartmentContextProvider from "../context/DepartmentContext";
 import DepartmentsView from "../views/admin/DepartmentsView";
+import BrandContextProvider from "../context/BrandContext";
+import BrandsView from "../views/cove/BrandsView";
+import ModelContextProvider from "../context/ModelContext";
+import ModelsView, { loaderIndexModelsView } from "../views/cove/ModelsView";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -45,25 +49,25 @@ const MainRoutes = {
          // loader: loaderIndex
       },
       {
-         path: "catalogos",
+         path: "cove",
          children: [
             {
                path: "marcas",
                element: (
-                  <UserContextProvider>
-                     <UsersView />
-                  </UserContextProvider>
-               ),
-               loader: loaderIndexUsersView
+                  <BrandContextProvider>
+                     <BrandsView />
+                  </BrandContextProvider>
+               )
+               // loader: loaderIndexUsersView
             },
             {
                path: "modelos",
                element: (
-                  <UserContextProvider>
-                     <UsersView />
-                  </UserContextProvider>
+                  <ModelContextProvider>
+                     <ModelsView />
+                  </ModelContextProvider>
                ),
-               loader: loaderIndexUsersView
+               loader: loaderIndexModelsView
             }
          ]
       }

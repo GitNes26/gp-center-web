@@ -2,15 +2,15 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
 import MainCard from "../../ui-component/cards/MainCard";
-import BrandTable from "../../components/departments/Table";
-import BrandForm from "../../components/departments/Form";
+import GenericTable from "../../components/generics/Table";
+import GenericForm from "../../components/generics/Form";
 
 import { CorrectRes, ErrorRes } from "../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useBrandContext } from "../../context/BrandContext";
+import { useGenericContext } from "../../context/GenericContext";
 import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../utils/sAlert";
@@ -25,10 +25,10 @@ const Item = styled(Paper)(({ theme }) => ({
    color: theme.palette.text.secondary
 }));
 
-const BrandsView = () => {
+const GenericsView = () => {
    // const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, departments, getBrands, resetFormData, setTextBtnSumbit, setFormTitle } = useBrandContext();
+   const { singularName, generics, getGenerics, resetFormData, setTextBtnSumbit, setFormTitle } = useGenericContext();
 
    const handleClickAdd = () => {
       try {
@@ -45,7 +45,7 @@ const BrandsView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getBrands();
+         getGenerics();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -63,15 +63,15 @@ const BrandsView = () => {
             <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button>
-            <BrandTable />
+            <GenericTable />
          </MainCard>
 
-         <BrandForm />
+         <GenericForm />
       </>
    );
 };
 
-export const loaderIndexBrandsView = async () => {
+export const loaderIndexGenericsView = async () => {
    try {
       const res = CorrectRes;
 
@@ -90,4 +90,4 @@ export const loaderIndexBrandsView = async () => {
    }
 };
 
-export default BrandsView;
+export default GenericsView;

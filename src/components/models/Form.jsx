@@ -24,7 +24,7 @@ import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useMemo, useRef, useState } from "react";
-import { useDepartmentContext } from "../../context/DepartmentContext";
+import { useModelContext } from "../../context/ModelContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
@@ -42,16 +42,11 @@ import axios from "axios";
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const DepartmentForm = () => {
+const ModelForm = ({ dataBrands }) => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { singularName, createDepartment, updateDepartment, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useDepartmentContext();
+   const { singularName, createModel, updateModel, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useModelContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   // const inputsRef = useRef([]);
-   // const [doFocus, setdoFocus] = useState(false);
-   // const inputRefDepartment = useRef(null);
-   // const inputRefDescription = useRef(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -71,8 +66,8 @@ const DepartmentForm = () => {
          // console.log(values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDepartment(values);
-         else axiosResponse = await updateDepartment(values);
+         if (values.id == 0) axiosResponse = await createModel(values);
+         else axiosResponse = await updateModel(values);
          if (axiosResponse.status_code == 200) {
             resetForm();
             setTextBtnSumbit("AGREGAR");
@@ -124,7 +119,7 @@ const DepartmentForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      department: Yup.string().trim().required("Nombre del departamento requerido")
+      model: Yup.string().trim().required("Nombre del modelo requerido")
    });
 
    useEffect(() => {
@@ -148,25 +143,6 @@ const DepartmentForm = () => {
    };
 
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
-      // Toast.Error(`Error en Sección ${section}: ${msg}`);
-      // console.log(indexInputRef);
-      // setFocusIn(indexInputRef);
-      // console.log(focusIn);
-      // setDoFocus(true);
-      // if (doFocus) {
-      //    if (inputsRef.current[focusIn]) {
-      //       console.log("hay focusssss", inputsRef.current[focusIn]);
-      //       inputsRef.current[focusIn].focus();
-      //       setDoFocus(false);
-      //    }
-      // }
-      // setdoFocus(true);
-      // setTimeout(() => {
-      //    if (doFocus) {
-      //       inputsRef.current[indexInputRef].focus();
-      //       setdoFocus(false);
-      //    }
-      // }, 500);
       if (formHelperText) {
          return (
             <FormHelperText error id="ht-disability_id">
@@ -192,47 +168,101 @@ const DepartmentForm = () => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Departamento */}
+                     {/* Marca */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <FormControl fullWidth>
+                           {/* <Autocomplete
+                              disablePortal
+                              openOnFocus
+                              id="brand_id"
+                              name="brand_id"
+                              label="Marca"
+                              // labelId="brand_id-label"
+                              placeholder="Marca"
+                              options={dataBrands}
+                              // getOptionLabel={(option) => option.text}
+                              // isOptionEqualToValue={customIsOptionEqualToValue}
+                              renderInput={(params) => <TextField {...params} label="Marca *" />}
+                              value={values.brand_id}
+                              // componentName="brand_id"
+                              onChange={(e, newValue) => {
+                                 handleChange(e);
+                                 handleChangeR("brand_id", newValue, setValues);
+                              }}
+                              onBlur={handleBlur}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.brand_id && touched.brand_id}
+                              // value={"PRIMARIA"}
+                           /> */}
+                           {/* <Select2
+                              id="brand_id"
+                              name="brand_id"
+                              label="Marca"
+                              components={<Select />}
+                              labelId="brand_id-label"
+                              value={values.brand_id}
+                              placeholder="Marca"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={errors.brand_id && touched.brand_id}
+                              // className="basic-single"
+                              // classNamePrefix="select"
+                              // defaultValue={dataBrands[0]}
+                              isDisabled={isDisabled}
+                              isLoading={isLoading}
+                              isClearable={isClearable}
+                              isRtl={isRtl}
+                              isSearchable={isSearchable}
+                              getOptionLabel={(option) => option.text}
+                              options={dataBrands}
+                           /> */}
+                           <InputLabel id="brand_id-label">Marca *</InputLabel>
+                           <Select
+                              id="brand_id"
+                              name="brand_id"
+                              label="Marca"
+                              labelId="brand_id-label"
+                              value={values.brand_id}
+                              placeholder="Marca"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={errors.brand_id && touched.brand_id}
+                           >
+                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              {dataBrands &&
+                                 dataBrands.map((d) => (
+                                    <MenuItem key={d.value} value={d.value}>
+                                       {d.text}
+                                    </MenuItem>
+                                 ))}
+                           </Select>
+                           {touched.brand_id && errors.brand_id && (
+                              <FormHelperText error id="ht-brand_id">
+                                 {errors.brand_id}
+                              </FormHelperText>
+                           )}
+                        </FormControl>
+                     </Grid>
+                     {/* Modelo */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
-                           id="department"
-                           name="department"
-                           label="Nombre del Departamento *"
+                           id="model"
+                           name="model"
+                           label="Modelo *"
                            type="text"
-                           value={values.department}
-                           placeholder="Ingrese el nombre del departamento"
+                           value={values.model}
+                           placeholder="Ingrese el nombre del modelo"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "department", true)}
+                           onInput={(e) => handleInput(e, setFieldValue, "model", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
                            // inputRef={(el) => (inputsRef.current[0] = el)}
-                           // inputRef={inputRefDepartment}
-                           error={errors.department && touched.department}
-                           helperText={errors.department && touched.department && showErrorAndFocusInput(0, errors.department, false)}
-                        />
-                     </Grid>
-                     {/* Descripcion */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="description"
-                           name="description"
-                           label="Descripción"
-                           type="description"
-                           value={values.description}
-                           placeholder="Inserte una breve descripción del departamento"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
-                           inputProps={{ maxLength: 1500 }}
-                           fullWidth
-                           multiline
-                           rows={3}
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.description && touched.description}
-                           helperText={errors.description && touched.description && showErrorAndFocusInput(1, errors.description, false)}
+                           // inputRef={inputRefModel}
+                           error={errors.model && touched.model}
+                           helperText={errors.model && touched.model && errors.model}
                         />
                      </Grid>
 
@@ -280,4 +310,4 @@ const DepartmentForm = () => {
       </SwipeableDrawer>
    );
 };
-export default DepartmentForm;
+export default ModelForm;

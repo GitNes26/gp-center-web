@@ -23,20 +23,28 @@ import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useState } from "react";
-import { useLevelContext } from "../../context/LevelContext";
+import { useMemo, useRef, useState } from "react";
+import { useBrandContext } from "../../context/BrandContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
+import Select2 from "react-select";
+import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
+import { OutlinedInput } from "@mui/material";
+import { InputAdornment } from "@mui/material";
+import { IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { strengthColor, strengthIndicator } from "../../utils/password-strength";
+import axios from "axios";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const LevelForm = () => {
-   const { setLoadingAction } = useGlobalContext();
-   const { createLevel, updateLevel, openDialog, setOpenDialog, toggleDrawer, formData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useLevelContext();
+const BrandForm = () => {
+   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
+   const { singularName, createBrand, updateBrand, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useBrandContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -53,26 +61,27 @@ const LevelForm = () => {
       }
    };
 
-   const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
+   const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // return console.log(values);
+         // console.log(values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createLevel(values);
-         else axiosResponse = await updateLevel(values);
-         resetForm();
-         setTextBtnSumbit("AGREGAR");
-         setFormTitle("REGISTRAR NIVEL");
+         if (values.id == 0) axiosResponse = await createBrand(values);
+         else axiosResponse = await updateBrand(values);
+         if (axiosResponse.status_code == 200) {
+            resetForm();
+            setTextBtnSumbit("AGREGAR");
+            setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+         }
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         if (!checkAdd) setOpenDialog(false);
+         if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
          setSubmitting(false);
-         // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
-         // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
+         Toast.Error(error);
       } finally {
          setSubmitting(false);
       }
@@ -88,9 +97,11 @@ const LevelForm = () => {
       }
    };
 
-   const handleModify = (setValues) => {
+   const handleModify = async (setValues, setFieldValue) => {
       try {
+         setLoadingAction(true);
          setValues(formData);
+         setLoadingAction(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -108,7 +119,7 @@ const LevelForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      level: Yup.string().trim().required("Nivel requerido")
+      brand: Yup.string().trim().required("Nombre de la marca requerido")
    });
 
    useEffect(() => {
@@ -121,6 +132,27 @@ const LevelForm = () => {
       }
    }, [formData]);
 
+   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
+      try {
+         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
+         setFieldValue(input, newText);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
+      if (formHelperText) {
+         return (
+            <FormHelperText error id="ht-disability_id">
+               {msg}
+            </FormHelperText>
+         );
+      }
+      return msg;
+   };
+
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
@@ -131,26 +163,52 @@ const LevelForm = () => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>
+            </Typography>{" "}
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-
-                     {/* Nivel */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                     {/* Marca */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
-                           id="level"
-                           name="level"
-                           label="Nivel *"
+                           id="brand"
+                           name="brand"
+                           label="Marca *"
                            type="text"
-                           value={values.level}
-                           placeholder="PRIMARIA"
+                           value={values.brand}
+                           placeholder="Ingrese el nombre de la marca"
                            onChange={handleChange}
                            onBlur={handleBlur}
+                           onInput={(e) => handleInput(e, setFieldValue, "brand", true)}
+                           // InputProps={{ }}
                            fullWidth
-                           error={errors.level && touched.level}
-                           helperText={errors.level && touched.level && errors.level}
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[0] = el)}
+                           // inputRef={inputRefBrand}
+                           error={errors.brand && touched.brand}
+                           helperText={errors.brand && touched.brand && errors.brand}
+                        />
+                     </Grid>
+                     {/* Descripcion */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <TextField
+                           id="description"
+                           name="description"
+                           label="Descripción"
+                           type="description"
+                           value={values.description}
+                           placeholder="Inserte una breve descripción de la marca"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
+                           inputProps={{ maxLength: 1500 }}
+                           fullWidth
+                           multiline
+                           rows={3}
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[1] = el)}
+                           error={errors.description && touched.description}
+                           helperText={errors.description && touched.description && errors.description}
                         />
                      </Grid>
 
@@ -181,7 +239,14 @@ const LevelForm = () => {
                            CANCELAR
                         </Button>
                      </ButtonGroup>
-                     <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
+                     <Button
+                        type="button"
+                        color="info"
+                        fullWidth
+                        id="btnModify"
+                        sx={{ mt: 1, display: "none" }}
+                        onClick={() => handleModify(setValues, setFieldValue)}
+                     >
                         setValues
                      </Button>
                   </Grid>
@@ -191,4 +256,4 @@ const LevelForm = () => {
       </SwipeableDrawer>
    );
 };
-export default LevelForm;
+export default BrandForm;

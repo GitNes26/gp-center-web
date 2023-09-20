@@ -24,7 +24,7 @@ import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useMemo, useRef, useState } from "react";
-import { useDepartmentContext } from "../../context/DepartmentContext";
+import { useGenericContext } from "../../context/GenericContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
@@ -42,16 +42,11 @@ import axios from "axios";
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const DepartmentForm = () => {
+const GenericForm = () => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { singularName, createDepartment, updateDepartment, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useDepartmentContext();
+   const { singularName, createGeneric, updateGeneric, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useGenericContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   // const inputsRef = useRef([]);
-   // const [doFocus, setdoFocus] = useState(false);
-   // const inputRefDepartment = useRef(null);
-   // const inputRefDescription = useRef(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -71,8 +66,8 @@ const DepartmentForm = () => {
          // console.log(values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDepartment(values);
-         else axiosResponse = await updateDepartment(values);
+         if (values.id == 0) axiosResponse = await createGeneric(values);
+         else axiosResponse = await updateGeneric(values);
          if (axiosResponse.status_code == 200) {
             resetForm();
             setTextBtnSumbit("AGREGAR");
@@ -124,7 +119,7 @@ const DepartmentForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      department: Yup.string().trim().required("Nombre del departamento requerido")
+      generic: Yup.string().trim().required("Nombre de la marca requerido")
    });
 
    useEffect(() => {
@@ -148,25 +143,6 @@ const DepartmentForm = () => {
    };
 
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
-      // Toast.Error(`Error en Sección ${section}: ${msg}`);
-      // console.log(indexInputRef);
-      // setFocusIn(indexInputRef);
-      // console.log(focusIn);
-      // setDoFocus(true);
-      // if (doFocus) {
-      //    if (inputsRef.current[focusIn]) {
-      //       console.log("hay focusssss", inputsRef.current[focusIn]);
-      //       inputsRef.current[focusIn].focus();
-      //       setDoFocus(false);
-      //    }
-      // }
-      // setdoFocus(true);
-      // setTimeout(() => {
-      //    if (doFocus) {
-      //       inputsRef.current[indexInputRef].focus();
-      //       setdoFocus(false);
-      //    }
-      // }, 500);
       if (formHelperText) {
          return (
             <FormHelperText error id="ht-disability_id">
@@ -192,25 +168,25 @@ const DepartmentForm = () => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Departamento */}
+                     {/* Marca */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
-                           id="department"
-                           name="department"
-                           label="Nombre del Departamento *"
+                           id="generic"
+                           name="generic"
+                           label="Marca *"
                            type="text"
-                           value={values.department}
-                           placeholder="Ingrese el nombre del departamento"
+                           value={values.generic}
+                           placeholder="Ingrese el nombre de la marca"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "department", true)}
+                           onInput={(e) => handleInput(e, setFieldValue, "generic", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
                            // inputRef={(el) => (inputsRef.current[0] = el)}
-                           // inputRef={inputRefDepartment}
-                           error={errors.department && touched.department}
-                           helperText={errors.department && touched.department && showErrorAndFocusInput(0, errors.department, false)}
+                           // inputRef={inputRefGeneric}
+                           error={errors.generic && touched.generic}
+                           helperText={errors.generic && touched.generic && errors.generic}
                         />
                      </Grid>
                      {/* Descripcion */}
@@ -221,7 +197,7 @@ const DepartmentForm = () => {
                            label="Descripción"
                            type="description"
                            value={values.description}
-                           placeholder="Inserte una breve descripción del departamento"
+                           placeholder="Inserte una breve descripción de la marca"
                            onChange={handleChange}
                            onBlur={handleBlur}
                            // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
@@ -232,7 +208,7 @@ const DepartmentForm = () => {
                            // disabled={values.id == 0 ? false : true}
                            // inputRef={(el) => (inputsRef.current[1] = el)}
                            error={errors.description && touched.description}
-                           helperText={errors.description && touched.description && showErrorAndFocusInput(1, errors.description, false)}
+                           helperText={errors.description && touched.description && errors.description}
                         />
                      </Grid>
 
@@ -280,4 +256,4 @@ const DepartmentForm = () => {
       </SwipeableDrawer>
    );
 };
-export default DepartmentForm;
+export default GenericForm;

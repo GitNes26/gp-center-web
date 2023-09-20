@@ -65,7 +65,7 @@ const menuItems = {
                title: "Marcas",
                type: "item",
                url: "/admin/cove/marcas",
-               icon: tablerIcons["IconHelp"],
+               icon: tablerIcons["IconBadgeTm"],
                breadcrumbs: false
             },
             {
@@ -73,14 +73,14 @@ const menuItems = {
                title: "Modelos",
                type: "item",
                url: "/admin/cove/modelos",
-               icon: tablerIcons["IconHelp"]
+               icon: tablerIcons["IconBoxModel2"]
             },
             {
                id: "cove-vehicle-status",
                title: "Estatus de Vehículos",
                type: "item",
                url: "/admin/cove/estatus-vehiculos",
-               icon: tablerIcons["IconInfo"]
+               icon: tablerIcons["IconStatusChange"]
             },
             {
                id: "cove-vehicles",
