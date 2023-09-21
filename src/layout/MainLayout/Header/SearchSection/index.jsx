@@ -3,16 +3,7 @@ import { useState } from "react";
 
 // material-ui
 import { useTheme, styled } from "@mui/material/styles";
-import {
-   Avatar,
-   Box,
-   ButtonBase,
-   Card,
-   Grid,
-   InputAdornment,
-   OutlinedInput,
-   Popper
-} from "@mui/material";
+import { Avatar, Box, ButtonBase, Card, Grid, InputAdornment, OutlinedInput, Popper } from "@mui/material";
 
 // third-party
 import PopupState, { bindPopper, bindToggle } from "material-ui-popup-state";
@@ -22,7 +13,8 @@ import Transitions from "../../../../ui-component/extended/Transitions";
 
 // assets
 import { IconAdjustmentsHorizontal, IconSearch, IconX } from "@tabler/icons";
-import { shouldForwardProp } from "@mui/system";
+import { display, shouldForwardProp } from "@mui/system";
+import logoDark from "../../../../assets/images/logo-dark.png";
 
 // styles
 const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({
@@ -35,39 +27,35 @@ const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({
    }
 }));
 
-const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(
-   ({ theme }) => ({
-      width: 434,
-      marginLeft: 16,
-      paddingLeft: 16,
-      paddingRight: 16,
-      "& input": {
-         background: "transparent !important",
-         paddingLeft: "4px !important"
-      },
-      [theme.breakpoints.down("lg")]: {
-         width: 250
-      },
-      [theme.breakpoints.down("md")]: {
-         width: "100%",
-         marginLeft: 4,
-         background: "#fff"
-      }
-   })
-);
+const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
+   width: 434,
+   marginLeft: 16,
+   paddingLeft: 16,
+   paddingRight: 16,
+   "& input": {
+      background: "transparent !important",
+      paddingLeft: "4px !important"
+   },
+   [theme.breakpoints.down("lg")]: {
+      width: 250
+   },
+   [theme.breakpoints.down("md")]: {
+      width: "100%",
+      marginLeft: 4,
+      background: "#fff"
+   }
+}));
 
-const HeaderAvatarStyle = styled(Avatar, { shouldForwardProp })(
-   ({ theme }) => ({
-      ...theme.typography.commonAvatar,
-      ...theme.typography.mediumAvatar,
-      background: theme.palette.secondary.light,
-      color: theme.palette.secondary.dark,
-      "&:hover": {
-         background: theme.palette.secondary.dark,
-         color: theme.palette.secondary.light
-      }
-   })
-);
+const HeaderAvatarStyle = styled(Avatar, { shouldForwardProp })(({ theme }) => ({
+   ...theme.typography.commonAvatar,
+   ...theme.typography.mediumAvatar,
+   background: theme.palette.secondary.light,
+   color: theme.palette.secondary.dark,
+   "&:hover": {
+      background: theme.palette.secondary.dark,
+      color: theme.palette.secondary.light
+   }
+}));
 
 // ==============================|| SEARCH INPUT - MOBILE||============================== //
 
@@ -82,11 +70,7 @@ const MobileSearch = ({ value, setValue, popupState }) => {
          placeholder="Search"
          startAdornment={
             <InputAdornment position="start">
-               <IconSearch
-                  stroke={1.5}
-                  size="1rem"
-                  color={theme.palette.grey[500]}
-               />
+               <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
             </InputAdornment>
          }
          endAdornment={
@@ -138,16 +122,13 @@ const SearchSection = () => {
 
    return (
       <>
-         <Box sx={{ display: { xs: "block", md: "none" } }}>
+         {/* <Box sx={{ display: { xs: "block", md: "none" } }}>
             <PopupState variant="popper" popupId="demo-popup-popper">
                {(popupState) => (
                   <>
                      <Box sx={{ ml: 2 }}>
                         <ButtonBase sx={{ borderRadius: "12px" }}>
-                           <HeaderAvatarStyle
-                              variant="rounded"
-                              {...bindToggle(popupState)}
-                           >
+                           <HeaderAvatarStyle variant="rounded" {...bindToggle(popupState)}>
                               <IconSearch stroke={1.5} size="1.2rem" />
                            </HeaderAvatarStyle>
                         </ButtonBase>
@@ -155,11 +136,7 @@ const SearchSection = () => {
                      <PopperStyle {...bindPopper(popupState)} transition>
                         {({ TransitionProps }) => (
                            <>
-                              <Transitions
-                                 type="zoom"
-                                 {...TransitionProps}
-                                 sx={{ transformOrigin: "center left" }}
-                              >
+                              <Transitions type="zoom" {...TransitionProps} sx={{ transformOrigin: "center left" }}>
                                  <Card
                                     sx={{
                                        background: "#fff",
@@ -170,17 +147,9 @@ const SearchSection = () => {
                                     }}
                                  >
                                     <Box sx={{ p: 2 }}>
-                                       <Grid
-                                          container
-                                          alignItems="center"
-                                          justifyContent="space-between"
-                                       >
+                                       <Grid container alignItems="center" justifyContent="space-between">
                                           <Grid item xs>
-                                             <MobileSearch
-                                                value={value}
-                                                setValue={setValue}
-                                                popupState={popupState}
-                                             />
+                                             <MobileSearch value={value} setValue={setValue} popupState={popupState} />
                                           </Grid>
                                        </Grid>
                                     </Box>
@@ -192,8 +161,8 @@ const SearchSection = () => {
                   </>
                )}
             </PopupState>
-         </Box>
-         <Box sx={{ display: { xs: "none", md: "block" } }}>
+         </Box> */}
+         {/* <Box sx={{ display: { xs: "none", md: "block" } }}>
             <OutlineInputStyle
                id="input-search-header"
                value={value}
@@ -201,21 +170,14 @@ const SearchSection = () => {
                placeholder="Search"
                startAdornment={
                   <InputAdornment position="start">
-                     <IconSearch
-                        stroke={1.5}
-                        size="1rem"
-                        color={theme.palette.grey[500]}
-                     />
+                     <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
                   </InputAdornment>
                }
                endAdornment={
                   <InputAdornment position="end">
                      <ButtonBase sx={{ borderRadius: "12px" }}>
                         <HeaderAvatarStyle variant="rounded">
-                           <IconAdjustmentsHorizontal
-                              stroke={1.5}
-                              size="1.3rem"
-                           />
+                           <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
                         </HeaderAvatarStyle>
                      </ButtonBase>
                   </InputAdornment>
@@ -223,7 +185,12 @@ const SearchSection = () => {
                aria-describedby="search-helper-text"
                inputProps={{ "aria-label": "weight" }}
             />
+         </Box> */}
+         {/* <Box sx={{ display: "flex"}}> */}
+         <Box sx={{ display: { xs: "contents" }, mx: "auto", textAlign: "center" }}>
+            <img src={logoDark} alt="LogoGPCenter" width={"250vw"} style={{ position: "absolute", left: "50%", transform: "translateX(-50%)" }} />
          </Box>
+         {/* </Box> */}
       </>
    );
 };

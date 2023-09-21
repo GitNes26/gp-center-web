@@ -12,6 +12,8 @@ import BrandContextProvider from "../context/BrandContext";
 import BrandsView from "../views/cove/BrandsView";
 import ModelContextProvider from "../context/ModelContext";
 import ModelsView, { loaderIndexModelsView } from "../views/cove/ModelsView";
+import VehicleStatusContextProvider from "../context/VehicleStatusContext";
+import VehicleStatussView from "../views/cove/VehicleStatusView";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -68,6 +70,15 @@ const MainRoutes = {
                   </ModelContextProvider>
                ),
                loader: loaderIndexModelsView
+            },
+            {
+               path: "estatus-vehiculo",
+               element: (
+                  <VehicleStatusContextProvider>
+                     <VehicleStatussView />
+                  </VehicleStatusContextProvider>
+               )
+               // loader: loaderIndexModelsView
             }
          ]
       }

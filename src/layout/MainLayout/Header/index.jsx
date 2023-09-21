@@ -12,6 +12,7 @@ import NotificationSection from "./NotificationSection";
 
 // assets
 import { IconMenu2 } from "@tabler/icons";
+import logoDark from "../../../assets/images/logo-dark.png";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -63,9 +64,10 @@ const Header = ({ handleLeftDrawerToggle }) => {
          </Box>
 
          {/* header search */}
-         <SearchSection />
-         <Box sx={{ flexGrow: 1 }} />
-         <Box sx={{ flexGrow: 1 }} />
+         {/* <SearchSection /> */}
+         <Box sx={{ mx: "auto", py: 0, m: 0, textAlign: "center", flexGrow: 1 }}>
+            <img src={logoDark} alt="LogoGPCenter" style={{ maxHeight: "50px", minWidth: "150px", margin: 0, padding: 0 }} />
+         </Box>
 
          {/* notification & profile */}
          <NotificationSection />

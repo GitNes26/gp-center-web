@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import {
    Avatar,
+   Badge,
    Box,
    Button,
    ButtonBase,
@@ -99,29 +100,31 @@ const NotificationSection = () => {
                }
             }}
          >
-            <ButtonBase sx={{ borderRadius: "12px" }}>
-               <Avatar
-                  variant="rounded"
-                  sx={{
-                     ...theme.typography.commonAvatar,
-                     ...theme.typography.mediumAvatar,
-                     transition: "all .2s ease-in-out",
-                     background: theme.palette.secondary.light,
-                     color: theme.palette.secondary.dark,
-                     '&[aria-controls="menu-list-grow"],&:hover': {
-                        background: theme.palette.secondary.dark,
-                        color: theme.palette.secondary.light
-                     }
-                  }}
-                  ref={anchorRef}
-                  aria-controls={open ? "menu-list-grow" : undefined}
-                  aria-haspopup="true"
-                  onClick={handleToggle}
-                  color="inherit"
-               >
-                  <IconBell stroke={1.5} size="1.3rem" />
-               </Avatar>
-            </ButtonBase>
+            <Badge color="secondary" badgeContent={5} max={999}>
+               <ButtonBase sx={{ borderRadius: "12px" }}>
+                  <Avatar
+                     variant="rounded"
+                     sx={{
+                        ...theme.typography.commonAvatar,
+                        ...theme.typography.mediumAvatar,
+                        transition: "all .2s ease-in-out",
+                        background: theme.palette.secondary.light,
+                        color: theme.palette.secondary.dark,
+                        '&[aria-controls="menu-list-grow"],&:hover': {
+                           background: theme.palette.secondary.dark,
+                           color: theme.palette.secondary.light
+                        }
+                     }}
+                     ref={anchorRef}
+                     aria-controls={open ? "menu-list-grow" : undefined}
+                     aria-haspopup="true"
+                     onClick={handleToggle}
+                     color="inherit"
+                  >
+                     <IconBell stroke={1.5} size="1.3rem" />
+                  </Avatar>
+               </ButtonBase>
+            </Badge>
          </Box>
          <Popper
             placement={matchesXs ? "bottom" : "bottom-end"}
@@ -142,52 +145,28 @@ const NotificationSection = () => {
             }}
          >
             {({ TransitionProps }) => (
-               <Transitions
-                  position={matchesXs ? "top" : "top-right"}
-                  in={open}
-                  {...TransitionProps}
-               >
+               <Transitions position={matchesXs ? "top" : "top-right"} in={open} {...TransitionProps}>
                   <Paper>
                      <ClickAwayListener onClickAway={handleClose}>
-                        <MainCard
-                           border={false}
-                           elevation={16}
-                           content={false}
-                           boxShadow
-                           shadow={theme.shadows[16]}
-                        >
+                        <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                            <Grid container direction="column" spacing={2}>
                               <Grid item xs={12}>
-                                 <Grid
-                                    container
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    sx={{ pt: 2, px: 2 }}
-                                 >
+                                 <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2, px: 2 }}>
                                     <Grid item>
                                        <Stack direction="row" spacing={2}>
-                                          <Typography variant="subtitle1">
-                                             All Notification
-                                          </Typography>
+                                          <Typography variant="subtitle1">All Notification</Typography>
                                           <Chip
                                              size="small"
                                              label="01"
                                              sx={{
-                                                color: theme.palette.background
-                                                   .default,
-                                                bgcolor:
-                                                   theme.palette.warning.dark
+                                                color: theme.palette.background.default,
+                                                bgcolor: theme.palette.warning.dark
                                              }}
                                           />
                                        </Stack>
                                     </Grid>
                                     <Grid item>
-                                       <Typography
-                                          component={Link}
-                                          to="#"
-                                          variant="subtitle2"
-                                          color="primary"
-                                       >
+                                       <Typography component={Link} to="#" variant="subtitle2" color="primary">
                                           Mark as all read
                                        </Typography>
                                     </Grid>
@@ -201,11 +180,7 @@ const NotificationSection = () => {
                                        overflowX: "hidden"
                                     }}
                                  >
-                                    <Grid
-                                       container
-                                       direction="column"
-                                       spacing={2}
-                                    >
+                                    <Grid container direction="column" spacing={2}>
                                        <Grid item xs={12}>
                                           <Box sx={{ px: 2, pt: 0.25 }}>
                                              <TextField
@@ -219,10 +194,7 @@ const NotificationSection = () => {
                                                 }}
                                              >
                                                 {status.map((option) => (
-                                                   <option
-                                                      key={option.value}
-                                                      value={option.value}
-                                                   >
+                                                   <option key={option.value} value={option.value}>
                                                       {option.label}
                                                    </option>
                                                 ))}
@@ -238,9 +210,7 @@ const NotificationSection = () => {
                               </Grid>
                            </Grid>
                            <Divider />
-                           <CardActions
-                              sx={{ p: 1.25, justifyContent: "center" }}
-                           >
+                           <CardActions sx={{ p: 1.25, justifyContent: "center" }}>
                               <Button size="small" disableElevation>
                                  View All
                               </Button>

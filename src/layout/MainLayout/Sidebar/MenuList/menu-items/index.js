@@ -77,9 +77,9 @@ const menuItems = {
             },
             {
                id: "cove-vehicle-status",
-               title: "Estatus de Vehículos",
+               title: "Estatus de Vehículo",
                type: "item",
-               url: "/admin/cove/estatus-vehiculos",
+               url: "/admin/cove/estatus-vehiculo",
                icon: tablerIcons["IconStatusChange"]
             },
             {
