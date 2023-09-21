@@ -104,7 +104,7 @@ const VehicleTable = () => {
    };
 
    // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Vehiculo", "Descripción", "Acciones"];
+   const columns = ["No. Inventario", "Descripción", "Acciones"];
    const data = [];
    const chargerData = async () => {
       try {
@@ -112,7 +112,11 @@ const VehicleTable = () => {
          await vehicles.map((obj) => {
             // console.log(obj);
             const register = [];
-            register.push(<Typography textAlign={"center"}>{obj.vehicle}</Typography>);
+            register.push(
+               <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+                  {obj.stock_number}
+               </Typography>
+            );
             register.push(<Typography textAlign={"center"}>{obj.description}</Typography>);
             register.push(<ButtonsAction id={obj.id} name={obj.vehicle} />);
             data.push(register);

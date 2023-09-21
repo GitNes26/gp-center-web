@@ -105,6 +105,7 @@ const DepartmentForm = () => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
+         if (!formData.description) formData.description = "";
          setValues(formData);
          setLoadingAction(false);
       } catch (error) {
@@ -219,7 +220,7 @@ const DepartmentForm = () => {
                            id="description"
                            name="description"
                            label="Descripción"
-                           type="description"
+                           type="text"
                            value={values.description}
                            placeholder="Inserte una breve descripción del departamento"
                            onChange={handleChange}

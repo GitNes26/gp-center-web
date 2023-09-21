@@ -101,6 +101,7 @@ const VehicleStatusForm = () => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
+         if (!formData.description) formData.description = "";
          setValues(formData);
          setLoadingAction(false);
       } catch (error) {
@@ -203,7 +204,7 @@ const VehicleStatusForm = () => {
                            placeholder="Elija su color"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "bg_color", true)}
+                           onInput={(e) => handleInput(e, setFieldValue, "bg_color", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -242,7 +243,7 @@ const VehicleStatusForm = () => {
                            id="description"
                            name="description"
                            label="Descripción"
-                           type="description"
+                           type="text"
                            value={values.description}
                            placeholder="Inserte una breve descripción del estatus"
                            onChange={handleChange}

@@ -26,7 +26,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const VehiclesView = () => {
-   // const { result } = useLoaderData();
+   const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
    const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
 
@@ -66,7 +66,7 @@ const VehiclesView = () => {
             <VehicleTable />
          </MainCard>
 
-         <VehicleForm />
+         <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} />
       </>
    );
 };
@@ -75,9 +75,11 @@ export const loaderIndexVehiclesView = async () => {
    try {
       const res = CorrectRes;
 
-      // const axiosRoles = await Axios.get("/roles/selectIndex");
-      // res.result.roles = axiosRoles.data.data.result;
-      // res.result.roles.unshift({ id: 0, label: "Seleccione una opción..." });
+      const axiosBrands = await Axios.get("/brands/selectIndex");
+      res.result.brands = axiosBrands.data.data.result;
+      // res.result.brands.unshift({ id: 0, label: "Seleccione una opción..." });
+      const axiosStatus = await Axios.get("/vehicleStatus/selectIndex");
+      res.result.vehicleStatus = axiosStatus.data.data.result;
 
       return res;
    } catch (error) {

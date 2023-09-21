@@ -100,6 +100,7 @@ const GenericForm = () => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
+         if (!formData.description) formData.description = "";
          setValues(formData);
          setLoadingAction(false);
       } catch (error) {
@@ -195,7 +196,7 @@ const GenericForm = () => {
                            id="description"
                            name="description"
                            label="Descripción"
-                           type="description"
+                           type="text"
                            value={values.description}
                            placeholder="Inserte una breve descripción de la marca"
                            onChange={handleChange}

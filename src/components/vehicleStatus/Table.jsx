@@ -5,7 +5,7 @@ import { createTheme } from "@mui/material/styles";
 
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import { Button, ButtonGroup, Chip, Tooltip } from "@mui/material";
+import { Box, Button, ButtonGroup, Chip, Tooltip } from "@mui/material";
 import IconEdit from "../icons/IconEdit";
 import IconDelete from "../icons/IconDelete";
 
@@ -104,7 +104,7 @@ const VehicleStatusTable = () => {
    };
 
    // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Estatus del Vehiculo", "Descripción", "Acciones"];
+   const columns = ["Estatus del Vehículo", "Descripción", "Acciones"];
    const data = [];
    const chargerData = async () => {
       try {
@@ -113,7 +113,7 @@ const VehicleStatusTable = () => {
             // console.log(obj);
             const register = [];
             register.push(
-               <Typography textAlign={"center"}>
+               <Box textAlign={"center"}>
                   <Chip
                      sx={{
                         height: "auto",
@@ -121,13 +121,14 @@ const VehicleStatusTable = () => {
                            display: "block",
                            whiteSpace: "normal"
                         },
+                        fontSize: "16px",
                         fontWeight: "bolder",
                         color: obj.letter_black ? "#3E3E3E" : "#F3F3F3",
                         backgroundColor: obj.bg_color
                      }}
                      label={obj.vehicle_status}
                   />
-               </Typography>
+               </Box>
             );
             register.push(<Typography textAlign={"center"}>{obj.description}</Typography>);
             register.push(<ButtonsAction id={obj.id} name={obj.vehicle_status} />);

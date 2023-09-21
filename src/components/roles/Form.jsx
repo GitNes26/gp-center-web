@@ -154,6 +154,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       try {
          setLoadingAction(true);
          if (formData.community_id > 0) await getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
+         if (!formData.description) formData.description = "";
          setValues(formData);
          handleChangeRole(formData.role_id);
          setLoadingAction(false);

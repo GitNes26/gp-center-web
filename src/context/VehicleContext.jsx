@@ -12,8 +12,8 @@ const formDataInitialState = {
    model_id: 0,
    year: "",
    registration_date: "",
-   description: "",
    vehicle_status_id: 0,
+   description: "",
    img_path: ""
 };
 

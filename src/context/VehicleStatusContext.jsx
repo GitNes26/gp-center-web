@@ -8,8 +8,8 @@ const VehicleStatusContext = createContext();
 const formDataInitialState = {
    id: 0,
    vehicle_status: "",
-   bd_color: "",
-   letter_black: true,
+   bd_color: "#d9d9d9",
+   letter_black: 0,
    description: ""
 };
 
