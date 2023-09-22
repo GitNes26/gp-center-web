@@ -14,6 +14,10 @@ const formDataInitialState = {
    registration_date: "",
    vehicle_status_id: 0,
    description: "",
+
+   plates: "",
+   initial_date: "",
+   due_date: "",
    img_path: ""
 };
 
@@ -48,6 +52,10 @@ export default function VehicleContextProvider({ children }) {
          newData.registration_date = values.registration_date;
          newData.description = values.description;
          newData.vehicle_status_id = values.vehicle_status_id;
+
+         newData.plates = values.plates;
+         newData.initial_date = values.initial_date;
+         newData.due_date = values.due_date;
          setFormData(newData);
       } catch (error) {
          console.log("Error en fillFormData:", error);

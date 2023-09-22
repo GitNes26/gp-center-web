@@ -195,7 +195,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>{" "}
+            </Typography>
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
@@ -525,6 +525,32 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            // inputRef={(el) => (inputsRef.current[1] = el)}
                            error={errors.description && touched.description}
                            helperText={errors.description && touched.description && errors.description}
+                        />
+                     </Grid>
+
+                     {/* Separador */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
+
+                     {/* Placas */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <TextField
+                           id="vehicle_plates"
+                           name="vehicle_plates"
+                           label="Placas"
+                           type="text"
+                           value={values.vehicle_plates}
+                           placeholder="Inserte las placas del vehículo"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInput(e, setFieldValue, "vehicle_plates", true)}
+                           // inputProps={{ maxLength: 1500 }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[1] = el)}
+                           error={errors.vehicle_plates && touched.vehicle_plates}
+                           helperText={errors.vehicle_plates && touched.vehicle_plates && errors.vehicle_plates}
                         />
                      </Grid>
 
