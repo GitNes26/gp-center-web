@@ -152,8 +152,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
    const handleModify = async (setValues, setFieldValue) => {
       try {
-         setLoadingAction(true);
-         if (formData.community_id > 0) await getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
+         // setLoadingAction(true);
+         if (formData.community_id > 0) getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
          if (!formData.description) formData.description = "";
          setValues(formData);
          handleChangeRole(formData.role_id);

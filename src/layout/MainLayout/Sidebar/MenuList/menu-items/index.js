@@ -65,8 +65,7 @@ const menuItems = {
                title: "Marcas",
                type: "item",
                url: "/admin/cove/marcas",
-               icon: tablerIcons["IconBadgeTm"],
-               breadcrumbs: false
+               icon: tablerIcons["IconBadgeTm"]
             },
             {
                id: "cove-models",
@@ -85,9 +84,25 @@ const menuItems = {
             {
                id: "cove-vehicles",
                title: "Vehículos",
-               type: "item",
-               url: "/admin/cove/vehiculos",
-               icon: tablerIcons["IconCar"]
+               type: "collapse",
+               icon: tablerIcons["IconCar"],
+               children: [
+                  {
+                     id: "cove-vehicles-list",
+                     title: "Lista",
+                     type: "item",
+                     url: "/admin/cove/vehiculos",
+                     icon: tablerIcons["IconCar"]
+                  },
+                  {
+                     id: "cove-vehicles-register",
+                     title: "Registrar",
+                     type: "item",
+                     url: "/admin/cove/vehiculos/registrar",
+                     icon: tablerIcons["IconCar"],
+                     bgGarage: true
+                  }
+               ]
             },
             {
                id: "cove-vehicle-plates",

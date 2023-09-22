@@ -32,6 +32,7 @@ export const GlobalContextProvider = ({ children }) => {
    const [loading, setLoading] = useState(true);
    const [loadingAction, setLoadingAction] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
+   const [bgImage, setBgImage] = useState("none");
 
    const toggleDrawer = (open) => (event) => {
       try {
@@ -61,7 +62,9 @@ export const GlobalContextProvider = ({ children }) => {
             formTitle,
             setFormTitle,
             textBtnSubmit,
-            setTextBtnSumbit
+            setTextBtnSumbit,
+            bgImage,
+            setBgImage
          }}
       >
          {children}
