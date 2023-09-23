@@ -135,7 +135,14 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          .max(new Date().getFullYear() + 1, "El año esta fuera del rango permitido")
          .required("Año del modelo requerido"),
       registration_date: Yup.date("Fecha invalida").required("Fecha de registro requerida"),
-      vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido")
+      vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido"),
+
+      plates: Yup.string()
+         .trim()
+         .matches(/^[A-Z]{3}-[0-9]{2}-[0-9]{2}$/, "Formato invalido: XXX-00-00")
+         .required("Placas requeridas"),
+      initial_date: Yup.date().required("Fecha de Alta de Placas requerida"),
+      due_date: Yup.date().required("Fecha de Vencimiento de Placas requerida")
    });
 
    useEffect(() => {
@@ -534,23 +541,63 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
 
                      {/* Placas */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
-                           id="vehicle_plates"
-                           name="vehicle_plates"
+                           id="plates"
+                           name="plates"
                            label="Placas"
                            type="text"
-                           value={values.vehicle_plates}
+                           value={values.plates}
                            placeholder="Inserte las placas del vehículo"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "vehicle_plates", true)}
+                           onInput={(e) => handleInput(e, setFieldValue, "plates", true)}
+                           inputProps={{ maxLength: 9 }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[1] = el)}
+                           error={errors.plates && touched.plates}
+                           helperText={errors.plates && touched.plates && errors.plates}
+                        />
+                     </Grid>
+                     {/* Fecha de Plaqueo */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <TextField
+                           id="initial_date"
+                           name="initial_date"
+                           label="Fecha de Plaqueo"
+                           type="date"
+                           value={values.initial_date}
+                           placeholder=""
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           // onInput={(e) => handleInput(e, setFieldValue, "initial_date", false)}
                            // inputProps={{ maxLength: 1500 }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
                            // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.vehicle_plates && touched.vehicle_plates}
-                           helperText={errors.vehicle_plates && touched.vehicle_plates && errors.vehicle_plates}
+                           error={errors.initial_date && touched.initial_date}
+                           helperText={errors.initial_date && touched.initial_date && errors.initial_date}
+                        />
+                     </Grid>
+                     {/* Fecha Expiracion de Placas */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <TextField
+                           id="due_date"
+                           name="due_date"
+                           label="Fecha Expiración de Placas"
+                           type="date"
+                           value={values.due_date}
+                           placeholder=""
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           // onInput={(e) => handleInput(e, setFieldValue, "due_date", false)}
+                           // inputProps={{ maxLength: 1500 }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[1] = el)}
+                           error={errors.due_date && touched.due_date}
+                           helperText={errors.due_date && touched.due_date && errors.due_date}
                         />
                      </Grid>
 

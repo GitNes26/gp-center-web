@@ -18,7 +18,9 @@ const formDataInitialState = {
    plates: "",
    initial_date: "",
    due_date: "",
-   img_path: ""
+   img_path: "",
+
+   status: ""
 };
 
 export default function VehicleContextProvider({ children }) {
@@ -56,6 +58,8 @@ export default function VehicleContextProvider({ children }) {
          newData.plates = values.plates;
          newData.initial_date = values.initial_date;
          newData.due_date = values.due_date;
+
+         newData.status = values.status;
          setFormData(newData);
       } catch (error) {
          console.log("Error en fillFormData:", error);
@@ -87,6 +91,28 @@ export default function VehicleContextProvider({ children }) {
          res = axiosData.data.data;
          // await setVehicle(res.result);
          // setFormData(res.result);
+         setVehicle(res.result);
+         fillFormData(res.result);
+         // console.log(res);
+
+         return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
+   const showVehicleBy = async (searchBy, value) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/vehicles/${searchBy}/${value}`);
+         // console.log("axiosData", axiosData);
+         res = axiosData.data.data;
+         // await setVehicle(res.result);
+         // setFormData(res.result);
+         setVehicle(res.result);
          fillFormData(res.result);
          // console.log(res);
 
@@ -166,6 +192,7 @@ export default function VehicleContextProvider({ children }) {
             resetFormData,
             getVehicles,
             showVehicle,
+            showVehicleBy,
             createVehicle,
             updateVehicle,
             deleteVehicle,

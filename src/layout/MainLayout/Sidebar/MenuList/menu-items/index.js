@@ -95,10 +95,10 @@ const menuItems = {
                      icon: tablerIcons["IconCar"]
                   },
                   {
-                     id: "cove-vehicles-register",
-                     title: "Registrar",
+                     id: "cove-vehicles-searching",
+                     title: "Busqueda",
                      type: "item",
-                     url: "/admin/cove/vehiculos/registrar",
+                     url: "/admin/cove/vehiculos/busqueda",
                      icon: tablerIcons["IconCar"],
                      bgGarage: true
                   }

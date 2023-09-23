@@ -33,6 +33,7 @@ import {
    Radio,
    RadioGroup,
    TextField,
+   Tooltip,
    Typography
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -46,7 +47,7 @@ import bgPlatform from "../../assets/images/bg-auto.jpg";
 import { Box, fontSize } from "@mui/system";
 import ImgCar from "../../assets/images/auto.png";
 import { drawerWidth } from "../../config/store/constant";
-import { Icon123, IconAdjustmentsHorizontal, IconBadgeTm, IconBoxModel2, IconCalendarStats, IconSearch } from "@tabler/icons";
+import { Icon123, IconAdjustmentsHorizontal, IconBadgeTm, IconBoxModel2, IconCalendarStats, IconCandle, IconSearch } from "@tabler/icons";
 import { display, shouldForwardProp } from "@mui/system";
 import { useTheme } from "@emotion/react";
 import { formatDatetime } from "../../utils/Formats";
@@ -88,13 +89,13 @@ const HeaderAvatarStyle = styled(Avatar, { shouldForwardProp })(({ theme }) => (
    }
 }));
 
-const VehiclesRegisterView = () => {
-   const { result } = useLoaderData();
+const ShowVehicleView = () => {
+   // const { result } = useLoaderData();
    const { setLoading, setOpenDialog, setBgImage } = useGlobalContext();
-   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
+   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicleBy, vehicle } = useVehicleContext();
    const theme = useTheme();
    const [search, setSearch] = useState("");
-   const [searchBy, setSearchBy] = useState("number");
+   const [searchType, setSearchType] = useState("number");
 
    const handleClickAdd = () => {
       try {
@@ -114,9 +115,19 @@ const VehiclesRegisterView = () => {
 
    const handleChangeSearchBy = (value) => {
       console.log("handleChangeSearchBy", value);
-      setSearchBy(value);
+      setSearchType(value);
       setSearch("");
-      setTypeInputSearch(value);
+      // setTypeInputSearch(value);
+   };
+   const handleKeyUpSearch = async (e) => {
+      if (e.key === "Enter" || e.keyCode === 13) {
+         setLoading(true);
+         const searchBy = searchType == "number" ? "stock_number" : "plates";
+         const res = await showVehicleBy(searchBy, search);
+         console.log(res);
+         if (res.result.length == 0) Toast.Info(res.alert_title);
+         setLoading(false);
+      }
    };
 
    useEffect(() => {
@@ -124,20 +135,13 @@ const VehiclesRegisterView = () => {
          setLoading(true);
          setBgImage("bgGarage");
          getVehicles();
+         console.log(vehicle);
          setLoading(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, []);
-
-   function generate(element) {
-      return [0, 1, 2].map((value) =>
-         cloneElement(element, {
-            key: value
-         })
-      );
-   }
+   }, [vehicle]);
 
    const Demo = styled("div")(({ theme }) => ({
       backgroundColor: theme.palette.background.paper
@@ -147,7 +151,9 @@ const VehiclesRegisterView = () => {
       return (
          <ListItem>
             <ListItemIcon sx={{ mr: 2 }}>
-               <Avatar sx={{ backgroundColor: "#1F2227" }}>{icon}</Avatar>
+               <Tooltip title={title} placement="left">
+                  <Avatar sx={{ backgroundColor: "#1F2227" }}>{icon}</Avatar>
+               </Tooltip>
             </ListItemIcon>
             <Typography sx={{ fontSize: 20, fontWeight: "bolder" }}>{text}</Typography>
          </ListItem>
@@ -175,9 +181,9 @@ const VehiclesRegisterView = () => {
                position: "relative"
             }}
          >
-            <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            {/* <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-            </Button>
+            </Button> */}
             <Grid container spacing={2}>
                {/* PRIMER COLUMNA */}
                <Grid xs={12} md={3} sx={{ mb: 2 }}>
@@ -186,33 +192,37 @@ const VehiclesRegisterView = () => {
                         {/* <InputLabel id="search-label" sx={{ marginBottom: 2 }}>
                         Buscar Vehículo
                      </InputLabel> */}
-                        <OutlineInputStyle
-                           id="search"
-                           name="search"
-                           type={searchBy}
-                           fullWidth
-                           value={search}
-                           onChange={(e) => handleChangeSearch(e.target.value)}
-                           placeholder="Buscar vehículo"
-                           startAdornment={
-                              <InputAdornment position="start">
-                                 <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} />
-                              </InputAdornment>
-                           }
-                           aria-describedby="search-helper-text"
-                           inputProps={{ "aria-label": "weight" }}
-                           sx={{}}
-                        />
+                        <Tooltip title={"Presiona ENTER para comenzar la busqueda"} placement="top">
+                           <OutlineInputStyle
+                              id="search"
+                              name="search"
+                              type={searchType}
+                              fullWidth
+                              value={search}
+                              onChange={(e) => handleChangeSearch(e.target.value)}
+                              onKeyUp={(e) => handleKeyUpSearch(e)}
+                              placeholder="Buscar vehículo"
+                              startAdornment={
+                                 <InputAdornment position="start">
+                                    <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} />
+                                 </InputAdornment>
+                              }
+                              aria-describedby="search-helper-text"
+                              inputProps={{ "aria-label": "weight" }}
+                              sx={{}}
+                           />
+                        </Tooltip>
+
                         <FormControl fullWidth sx={{ color: "whitesmoke", alignItems: "center" }}>
-                           {/* <FormLabel id="searchBy-label" sx={{ color: "whitesmoke" }}>
+                           {/* <FormLabel id="searchType-label" sx={{ color: "whitesmoke" }}>
                            Buscar por
                         </FormLabel> */}
                            <RadioGroup
                               row
-                              aria-labelledby="searchBy-label"
-                              id="searchBy"
-                              name="searchBy"
-                              value={searchBy}
+                              aria-labelledby="searchType-label"
+                              id="searchType"
+                              name="searchType"
+                              value={searchType}
                               onChange={(e) => handleChangeSearchBy(e.target.value)}
                            >
                               <FormControlLabel value={"number"} control={<Radio />} label="No. de Unidad" />
@@ -229,39 +239,42 @@ const VehiclesRegisterView = () => {
                      <CardContent sx={{ color: "whitesmoke", textAlign: "center" }}>
                         <Typography variant={"h1"} sx={{ color: "whitesmoke" }}>
                            PLACAS
-                           <Paper
-                              elevation={6}
-                              sx={{
-                                 background: "rgb(33,91,132)",
-                                 background: "radial-gradient(circle, rgba(33,91,132,1) 0%, rgba(33,77,116,1) 100%)",
-                                 paddingBlock: 1,
-                                 fontWeight: "bolder",
-                                 fontSize: 40,
-                                 color: "whitesmoke"
-                              }}
-                           >
-                              AAA-000-AAA
-                           </Paper>
+                           {vehicle && (
+                              <Paper
+                                 elevation={6}
+                                 sx={{
+                                    background: "rgb(33,91,132)",
+                                    background: "radial-gradient(circle, rgba(33,91,132,1) 0%, rgba(33,77,116,1) 100%)",
+                                    paddingBlock: 1,
+                                    fontWeight: "bolder",
+                                    fontSize: 40,
+                                    color: "whitesmoke"
+                                 }}
+                              >
+                                 {vehicle && vehicle.plates}
+                              </Paper>
+                           )}
                         </Typography>
                         <Box textAlign={"center"} mt={2}>
-                           <Chip
-                              sx={{
-                                 height: "auto",
-                                 "& .MuiChip-label": {
-                                    display: "block",
-                                    whiteSpace: "normal"
-                                 },
-                                 fontSize: "25px",
-                                 fontWeight: "bolder",
-                                 color: "#F3F3F3",
-                                 p: 1,
-                                 // color: obj.letter_black ? "#3E3E3E" : "#F3F3F3",
-                                 // backgroundColor: obj.bg_color
-                                 backgroundColor: "#3E3E3E"
-                              }}
-                              // label={obj.vehicle_status}
-                              label={"estatus"}
-                           />
+                           {vehicle && (
+                              <Chip
+                                 sx={{
+                                    height: "auto",
+                                    "& .MuiChip-label": {
+                                       display: "block",
+                                       whiteSpace: "normal"
+                                    },
+                                    fontSize: "18px",
+                                    fontWeight: "bolder",
+                                    p: 1,
+                                    // color: "#F3F3F3",
+                                    color: vehicle.letter_black ? "#3E3E3E" : "#F3F3F3",
+                                    backgroundColor: vehicle.bg_color
+                                    // backgroundColor: "#3E3E3E"
+                                 }}
+                                 label={vehicle.vehicle_status}
+                              />
+                           )}
                         </Box>
                      </CardContent>
                   </Card>
@@ -269,14 +282,27 @@ const VehiclesRegisterView = () => {
 
                {/* TERCER COLUMNA */}
                <Grid xs={12} md={3} sx={{ mb: 2 }}>
-                  <Card>
-                     <List>
-                        <ComponentItem title="Marca" icon={<IconBadgeTm />} text={"Marca"} />
-                        <ComponentItem title="Modelo" icon={<IconBoxModel2 />} text={"Modelo"} />
-                        <ComponentItem title="Año" icon={<Icon123 />} text={"2022"} />
-                        <ComponentItem title="Fecha de registro" icon={<IconCalendarStats />} text={formatDatetime("2020-01-01")} />
-                     </List>
-                  </Card>
+                  <Grid xs={12} md={2} sx={{ mb: 2 }}>
+                     <Card>
+                        {vehicle ? (
+                           <List>
+                              <ComponentItem title="No. Unidad" icon={<Icon123 />} text={vehicle.stock_number} />
+                              <ComponentItem title="Marca" icon={<IconBadgeTm />} text={vehicle.brand} />
+                              <ComponentItem title="Modelo" icon={<IconBoxModel2 />} text={vehicle.model} />
+                              <ComponentItem title="Año" icon={<IconCandle />} text={vehicle.year} />
+                              <ComponentItem title="Fecha de registro" icon={<IconCalendarStats />} text={formatDatetime(vehicle.registration_date)} />
+                           </List>
+                        ) : (
+                           <List>
+                              <ComponentItem title="No. Unidad" icon={<Icon123 />} text={"000"} />
+                              <ComponentItem title="Marca" icon={<IconBadgeTm />} text={"Marca"} />
+                              <ComponentItem title="Modelo" icon={<IconBoxModel2 />} text={"Modelo"} />
+                              <ComponentItem title="Año" icon={<IconCandle />} text={"0000"} />
+                              <ComponentItem title="Fecha" icon={<IconCalendarStats />} text={formatDatetime("2023-01-01")} />
+                           </List>
+                        )}
+                     </Card>
+                  </Grid>
                </Grid>
             </Grid>
 
@@ -284,18 +310,24 @@ const VehiclesRegisterView = () => {
             <Box sx={{}}>
                <img
                   src={ImgCar}
-                  style={{ maxHeight: "550px", position: "absolute", left: `calc(38% - ${drawerWidth + 10}px)`, bottom: `calc(40% - ${drawerWidth + 20}px)` }}
+                  style={{
+                     maxHeight: "550px",
+                     position: "absolute",
+                     left: `calc(38% - ${drawerWidth + 10}px)`,
+                     bottom: `calc(40% - ${drawerWidth + 20}px)`,
+                     zIndex: 0
+                  }}
                />
             </Box>
             {/* <VehicleTable /> */}
          </MainCard>
 
-         <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} />
+         {/* <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} /> */}
       </>
    );
 };
 
-export const loaderIndexVehiclesRegisterView = async () => {
+export const loaderIndexShowVehicleView = async () => {
    try {
       const res = CorrectRes;
 
@@ -316,4 +348,4 @@ export const loaderIndexVehiclesRegisterView = async () => {
    }
 };
 
-export default VehiclesRegisterView;
+export default ShowVehicleView;
