@@ -9,18 +9,47 @@ import { CorrectRes, ErrorRes } from "../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../context/AuthContext";
 
-import { useEffect } from "react";
+import { cloneElement, useEffect, useState } from "react";
 import { useVehicleContext } from "../../context/VehicleContext";
-import { Button, Card, TextField, Typography } from "@mui/material";
+import {
+   Avatar,
+   Button,
+   ButtonBase,
+   Card,
+   CardContent,
+   CardHeader,
+   Chip,
+   FormControl,
+   FormControlLabel,
+   FormLabel,
+   InputAdornment,
+   InputLabel,
+   List,
+   ListItem,
+   ListItemIcon,
+   ListItemText,
+   OutlinedInput,
+   Popover,
+   Radio,
+   RadioGroup,
+   TextField,
+   Typography
+} from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../utils/sAlert";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import bgGarage from "../../assets/images/bg-primary.jpg";
 import bgPlatform from "../../assets/images/bg-auto.jpg";
-import { Box } from "@mui/system";
+import { Box, fontSize } from "@mui/system";
 import ImgCar from "../../assets/images/auto.png";
 import { drawerWidth } from "../../config/store/constant";
+import { Icon123, IconAdjustmentsHorizontal, IconBadgeTm, IconBoxModel2, IconCalendarStats, IconSearch } from "@tabler/icons";
+import { display, shouldForwardProp } from "@mui/system";
+import { useTheme } from "@emotion/react";
+import { formatDatetime } from "../../utils/Formats";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -30,10 +59,42 @@ const Item = styled(Paper)(({ theme }) => ({
    color: theme.palette.text.secondary
 }));
 
+const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
+   // width: 434,
+   // marginLeft: 16,
+   // paddingLeft: 16,
+   // paddingRight: 16,
+   "& input": {
+      background: "transparent !important",
+      paddingLeft: "4px !important"
+   },
+   [theme.breakpoints.down("lg")]: {
+      width: 250
+   },
+   [theme.breakpoints.down("md")]: {
+      width: "100%",
+      marginLeft: 4,
+      background: "#fff"
+   }
+}));
+const HeaderAvatarStyle = styled(Avatar, { shouldForwardProp })(({ theme }) => ({
+   ...theme.typography.commonAvatar,
+   ...theme.typography.mediumAvatar,
+   background: theme.palette.secondary.light,
+   color: theme.palette.secondary.dark,
+   "&:hover": {
+      background: theme.palette.secondary.dark,
+      color: theme.palette.secondary.light
+   }
+}));
+
 const VehiclesRegisterView = () => {
    const { result } = useLoaderData();
    const { setLoading, setOpenDialog, setBgImage } = useGlobalContext();
    const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
+   const theme = useTheme();
+   const [search, setSearch] = useState("");
+   const [searchBy, setSearchBy] = useState("number");
 
    const handleClickAdd = () => {
       try {
@@ -47,11 +108,21 @@ const VehiclesRegisterView = () => {
       }
    };
 
+   const handleChangeSearch = (value) => {
+      setSearch(value);
+   };
+
+   const handleChangeSearchBy = (value) => {
+      console.log("handleChangeSearchBy", value);
+      setSearchBy(value);
+      setSearch("");
+      setTypeInputSearch(value);
+   };
+
    useEffect(() => {
       try {
-         console.log("registrarr");
-         setBgImage("bgGarage");
          setLoading(true);
+         setBgImage("bgGarage");
          getVehicles();
          setLoading(false);
       } catch (error) {
@@ -59,6 +130,29 @@ const VehiclesRegisterView = () => {
          Toast.Error(error);
       }
    }, []);
+
+   function generate(element) {
+      return [0, 1, 2].map((value) =>
+         cloneElement(element, {
+            key: value
+         })
+      );
+   }
+
+   const Demo = styled("div")(({ theme }) => ({
+      backgroundColor: theme.palette.background.paper
+   }));
+
+   const ComponentItem = ({ title, icon, text }) => {
+      return (
+         <ListItem>
+            <ListItemIcon sx={{ mr: 2 }}>
+               <Avatar sx={{ backgroundColor: "#1F2227" }}>{icon}</Avatar>
+            </ListItemIcon>
+            <Typography sx={{ fontSize: 20, fontWeight: "bolder" }}>{text}</Typography>
+         </ListItem>
+      );
+   };
 
    return (
       <>
@@ -84,14 +178,109 @@ const VehiclesRegisterView = () => {
             <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button>
+            <Grid container spacing={2}>
+               {/* PRIMER COLUMNA */}
+               <Grid xs={12} md={3} sx={{ mb: 2 }}>
+                  <Card sx={{ backgroundColor: "transparent" }}>
+                     <CardContent>
+                        {/* <InputLabel id="search-label" sx={{ marginBottom: 2 }}>
+                        Buscar Vehículo
+                     </InputLabel> */}
+                        <OutlineInputStyle
+                           id="search"
+                           name="search"
+                           type={searchBy}
+                           fullWidth
+                           value={search}
+                           onChange={(e) => handleChangeSearch(e.target.value)}
+                           placeholder="Buscar vehículo"
+                           startAdornment={
+                              <InputAdornment position="start">
+                                 <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} />
+                              </InputAdornment>
+                           }
+                           aria-describedby="search-helper-text"
+                           inputProps={{ "aria-label": "weight" }}
+                           sx={{}}
+                        />
+                        <FormControl fullWidth sx={{ color: "whitesmoke", alignItems: "center" }}>
+                           {/* <FormLabel id="searchBy-label" sx={{ color: "whitesmoke" }}>
+                           Buscar por
+                        </FormLabel> */}
+                           <RadioGroup
+                              row
+                              aria-labelledby="searchBy-label"
+                              id="searchBy"
+                              name="searchBy"
+                              value={searchBy}
+                              onChange={(e) => handleChangeSearchBy(e.target.value)}
+                           >
+                              <FormControlLabel value={"number"} control={<Radio />} label="No. de Unidad" />
+                              <FormControlLabel value={"text"} control={<Radio />} label="Placas" />
+                           </RadioGroup>
+                        </FormControl>
+                     </CardContent>
+                  </Card>
+               </Grid>
 
-            <Box>
-               <Typography color={"lightcyan"} fontSize={75}>
-                  PLACAS
-               </Typography>
-               <TextField id="plates" />
-            </Box>
+               {/* COLUMNA CENTRAL */}
+               <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                  <Card sx={{ backgroundColor: "transparent" }}>
+                     <CardContent sx={{ color: "whitesmoke", textAlign: "center" }}>
+                        <Typography variant={"h1"} sx={{ color: "whitesmoke" }}>
+                           PLACAS
+                           <Paper
+                              elevation={6}
+                              sx={{
+                                 background: "rgb(33,91,132)",
+                                 background: "radial-gradient(circle, rgba(33,91,132,1) 0%, rgba(33,77,116,1) 100%)",
+                                 paddingBlock: 1,
+                                 fontWeight: "bolder",
+                                 fontSize: 40,
+                                 color: "whitesmoke"
+                              }}
+                           >
+                              AAA-000-AAA
+                           </Paper>
+                        </Typography>
+                        <Box textAlign={"center"} mt={2}>
+                           <Chip
+                              sx={{
+                                 height: "auto",
+                                 "& .MuiChip-label": {
+                                    display: "block",
+                                    whiteSpace: "normal"
+                                 },
+                                 fontSize: "25px",
+                                 fontWeight: "bolder",
+                                 color: "#F3F3F3",
+                                 p: 1,
+                                 // color: obj.letter_black ? "#3E3E3E" : "#F3F3F3",
+                                 // backgroundColor: obj.bg_color
+                                 backgroundColor: "#3E3E3E"
+                              }}
+                              // label={obj.vehicle_status}
+                              label={"estatus"}
+                           />
+                        </Box>
+                     </CardContent>
+                  </Card>
+               </Grid>
 
+               {/* TERCER COLUMNA */}
+               <Grid xs={12} md={3} sx={{ mb: 2 }}>
+                  <Card>
+                     <List>
+                        <ComponentItem title="Marca" icon={<IconBadgeTm />} text={"Marca"} />
+                        <ComponentItem title="Modelo" icon={<IconBoxModel2 />} text={"Modelo"} />
+                        <ComponentItem title="Año" icon={<Icon123 />} text={"2022"} />
+                        <ComponentItem title="Fecha de registro" icon={<IconCalendarStats />} text={formatDatetime("2020-01-01")} />
+                     </List>
+                  </Card>
+               </Grid>
+            </Grid>
+
+            {/* IMAGEN DEL VEHICULO */}
             <Box sx={{}}>
                <img
                   src={ImgCar}

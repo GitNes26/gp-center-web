@@ -3,20 +3,44 @@
 }
 
 .swal2-backdrop-show {
-   z-index:10000;
+   z-index: 10000;
 }
 
-@media (max-width:1500px){
+/* LOADER */
+.loader {
+   /* width: 48px;
+   height: 48px; */
+   display: inline-block;
+   position: relative;
+   animation: animloader 2s ease-in-out infinite;
+}
+
+@keyframes animloader {
+   0% {
+      transform: scale(1);
+      opacity: 0.5;
+   }
+   50% {
+      transform: scale(1.5);
+      opacity: 1;
+   }
+   100% {
+      transform: scale(1);
+      opacity: 0.5;
+   }
+}
+
+@media (max-width: 1500px) {
    .form {
       max-width: 50vw;
    }
 }
-@media (max-width:1040px){
+@media (max-width: 1040px) {
    .form {
       max-width: 80vw;
    }
 }
-@media (max-width:420px){
+@media (max-width: 420px) {
    .form {
       max-width: 95vw;
    }
