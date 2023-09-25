@@ -99,7 +99,7 @@ const menuItems = {
                      title: "Busqueda",
                      type: "item",
                      url: "/admin/cove/vehiculos/busqueda",
-                     icon: tablerIcons["IconCar"],
+                     icon: tablerIcons["IconSearch"],
                      bgGarage: true
                   }
                ]

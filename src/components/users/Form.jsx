@@ -69,6 +69,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isAdmin, setIsAdmin] = useState(false);
+   const [newPasswordChecked, setNewPasswordChecked] = useState(false);
 
    const [disabledState, setDisabledState] = useState(true);
    const [disabledCity, setDisabledCity] = useState(true);
@@ -191,13 +192,13 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const validationAdminSchema = Yup.object().shape({
       username: Yup.string().trim().required("Nombre de usario requerido"),
       email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-      password: Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+      password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
       role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
    });
    const validationSchema = Yup.object().shape({
       username: Yup.string().trim().required("Nombre de usario requerido"),
       email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-      password: Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+      password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
       role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
       phone: Yup.string()
          .trim()
@@ -347,7 +348,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         />
                      </Grid>
                      {/* Correo Electronico */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
                         <TextField
                            id="email"
                            name="email"
@@ -363,6 +364,15 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            // disabled={values.id == 0 ? false : true}
                            error={errors.email && touched.email}
                            helperText={errors.email && touched.email && errors.email}
+                        />
+                     </Grid>
+
+                     <Grid xs={12} md={12} sx={{mb:-2}}>
+                        <FormControlLabel
+                           control={<Switch defaultChecked />}
+                           label="Cambiar Contraseña"
+                           checked={newPasswordChecked}
+                           onChange={() => setNewPasswordChecked(!newPasswordChecked)}
                         />
                      </Grid>
                      {/* Contraseña */}
@@ -396,7 +406,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               }
                               inputProps={{}}
                               fullWidth
-                              // disabled={values.id == 0 ? false : true} DESHABILITAR CON UN CHECK
+                              disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
                               // disabled={values.id == 0 ? false : true}
                               error={errors.password && touched.password}
                            />
