@@ -30,6 +30,42 @@
    }
 }
 
+.brand-container {
+   position: absolute;
+   left: 50%;
+   transform: translateX(-50%);
+   top: 200px;
+   z-index: 0;
+   display: flex;
+   align-items: center;
+}
+
+.zoom-in {
+   animation: forwards animZoomIn 0.8s cubic-bezier(0.72, 0.01, 0.71, 1.65);
+}
+
+.zoom-out {
+   animation: forwards animZoomOut 0.8s cubic-bezier(0.63, -0.14, 0.05, 0.99);
+}
+
+@keyframes animZoomIn {
+   from {
+      transform: scale(0);
+   }
+   to {
+      transform: scale(1);
+   }
+}
+
+@keyframes animZoomOut {
+   from {
+      transform: scale(1);
+   }
+   to {
+      transform: scale(0);
+   }
+}
+
 @media (max-width: 1500px) {
    .form {
       max-width: 50vw;

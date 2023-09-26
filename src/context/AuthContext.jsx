@@ -5,8 +5,7 @@ import sAlert from "../utils/sAlert";
 export const AuthContext = createContext();
 
 export const Axios = axios;
-// Axios.defaults.baseURL = import.meta.env.VITE_API;
-Axios.defaults.baseURL = "http://127.0.0.1:8000/api/gpCenter";
+Axios.defaults.baseURL = import.meta.env.VITE_API;
 Axios.defaults.headers.common = {
    Accept: "application/json", //*/*
    "Content-Type": "application/json",

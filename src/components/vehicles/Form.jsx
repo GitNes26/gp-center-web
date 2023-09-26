@@ -50,6 +50,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
    const [dataModels, setDataModels] = useState([]);
+   const [imageFile, setImageFile] = useState(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -66,7 +67,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // console.log(values);
+         console.log("el imageFile", imageFile);
+         values.imgFile = imageFile;
+         console.log(values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createVehicle(values);
@@ -190,6 +193,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
       if (inputValue.length > 4) inputValue = inputValue.slice(0, 4);
       setFieldValue("year", inputValue);
+   };
+
+   const handleChangeImg = (e, setFieldValue) => {
+      const file = e.target.files[0]; // Obtenemos el primer archivo del campo de entrada
+      setImageFile(file);
    };
 
    return (
@@ -532,6 +540,31 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            // inputRef={(el) => (inputsRef.current[1] = el)}
                            error={errors.description && touched.description}
                            helperText={errors.description && touched.description && errors.description}
+                        />
+                     </Grid>
+
+                     {/* Imagen */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <TextField
+                           id="img_path"
+                           name="img_path"
+                           label="Foto del Vehículo *"
+                           type="file"
+                           value={values.img_path}
+                           placeholder="Ingrese el número de inventario"
+                           onChange={(e) => {
+                              handleChange(e);
+                              handleChangeImg(e, setFieldValue);
+                           }}
+                           onBlur={handleBlur}
+                           // onInput={(e) => handleInput(e, setFieldValue, "img_path", true)}
+                           // InputProps={{ }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[0] = el)}
+                           // inputRef={inputRefVehicle}
+                           error={errors.img_path && touched.img_path}
+                           helperText={errors.img_path && touched.img_path && errors.img_path}
                         />
                      </Grid>
 

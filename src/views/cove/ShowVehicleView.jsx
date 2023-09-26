@@ -96,6 +96,7 @@ const ShowVehicleView = () => {
    const theme = useTheme();
    const [search, setSearch] = useState("");
    const [searchType, setSearchType] = useState("number");
+   const [classesImgVehicle, setClassesImgVehicle] = useState(null);
 
    const handleClickAdd = () => {
       try {
@@ -114,19 +115,23 @@ const ShowVehicleView = () => {
    };
 
    const handleChangeSearchBy = (value) => {
-      console.log("handleChangeSearchBy", value);
       setSearchType(value);
       setSearch("");
       // setTypeInputSearch(value);
    };
    const handleKeyUpSearch = async (e) => {
+      if (e.target.value.length == 0) return Toast.Info("Buscador vacio.");
       if (e.key === "Enter" || e.keyCode === 13) {
+         setClassesImgVehicle("zoom-out");
          setLoading(true);
          const searchBy = searchType == "number" ? "stock_number" : "plates";
          const res = await showVehicleBy(searchBy, search);
-         console.log(res);
          if (res.result.length == 0) Toast.Info(res.alert_title);
+         setSearch("");
          setLoading(false);
+         setTimeout(() => {
+            setClassesImgVehicle("zoom-in");
+         }, 800);
       }
    };
 
@@ -135,7 +140,6 @@ const ShowVehicleView = () => {
          setLoading(true);
          setBgImage("bgGarage");
          getVehicles();
-         console.log(vehicle);
          setLoading(false);
       } catch (error) {
          console.log(error);
@@ -243,8 +247,8 @@ const ShowVehicleView = () => {
                               <Paper
                                  elevation={6}
                                  sx={{
-                                    background: "rgb(33,91,132)",
-                                    background: "radial-gradient(circle, rgba(33,91,132,1) 0%, rgba(33,77,116,1) 100%)",
+                                    // background: "rgb(33,91,132)",
+                                    background: "radial-gradient(circle, rgba(33,91,132,1) 0%, rgba(33,77,116,1) 100%)" || "rgb(33,91,132)",
                                     paddingBlock: 1,
                                     fontWeight: "bolder",
                                     fontSize: 40,
@@ -303,18 +307,32 @@ const ShowVehicleView = () => {
                         )}
                      </Card>
                   </Grid>
+                  <Grid xs={12} md={2} sx={{ mb: 2 }}></Grid>
                </Grid>
             </Grid>
 
+            {/* IMAGEN INSIGNIA MARCA */}
+            <Box className={"brand-container"}>
+               <img
+                  // src={ImgCar}
+                  src={vehicle && `${import.meta.env.VITE_HOST}/${"GPCenter/brands/Ford-Logo.png"}`}
+                  style={{ maxHeight: "200px" }}
+               />
+               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "60px" }}>
+                  {vehicle && vehicle.model}
+               </Typography>
+            </Box>
             {/* IMAGEN DEL VEHICULO */}
             <Box sx={{}}>
                <img
-                  src={ImgCar}
+                  // src={ImgCar}
+                  src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_path}`}
+                  className={classesImgVehicle}
                   style={{
                      maxHeight: "550px",
                      position: "absolute",
                      left: `calc(38% - ${drawerWidth + 10}px)`,
-                     bottom: `calc(40% - ${drawerWidth + 20}px)`,
+                     bottom: `calc(40% - ${drawerWidth + 55}px)`,
                      zIndex: 0
                   }}
                />

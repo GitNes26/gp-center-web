@@ -128,7 +128,11 @@ export default function VehicleContextProvider({ children }) {
    const createVehicle = async (vehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/vehicles", vehicle);
+         const axiosData = await Axios.post("/vehicles", vehicle, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          res = axiosData.data.data;
          getVehicles();
       } catch (error) {
@@ -144,7 +148,11 @@ export default function VehicleContextProvider({ children }) {
    const updateVehicle = async (vehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/vehicles", vehicle);
+         const axiosData = await Axios.put("/vehicles", vehicle, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          res = axiosData.data.data;
          getVehicles();
       } catch (error) {
