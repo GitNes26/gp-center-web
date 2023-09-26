@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const UsersView = () => {
    const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, users, getUsers, resetFormData, setTextBtnSumbit, setFormTitle } = useUserContext();
+   const { singularName, user, users, getUsers, resetFormData, setTextBtnSumbit, setFormTitle } = useUserContext();
 
    const handleClickAdd = () => {
       try {
@@ -79,7 +79,7 @@ export const loaderIndexUsersView = async () => {
 
       const axiosRoles = await Axios.get("/roles/selectIndex");
       res.result.roles = axiosRoles.data.data.result;
-      // res.result.roles.unshift({ id: 0, label: "Seleccione una opción..." });
+      res.result.roles.unshift({ id: 0, label: "Seleccione una opción..." });
       const axiosDepartments = await Axios.get("/departments/selectIndex");
       res.result.departments = axiosDepartments.data.data.result;
       // res.result.departments.unshift({ id: 0, label: "Seleccione una opción..." });

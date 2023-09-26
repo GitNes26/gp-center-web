@@ -104,9 +104,9 @@ export default function UserContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/users/${id}`);
          res = axiosData.data.data;
-         // await setUser(res.result);
-         // setFormData(res.result);
-         fillFormData(res.result);
+         setUser(res.result);
+         setFormData(res.result);
+         // fillFormData(res.result);
          // console.log(res);
 
          return res;

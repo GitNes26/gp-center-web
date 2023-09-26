@@ -45,7 +45,7 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 const UserForm = ({ dataRoles, dataDepartments }) => {
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
-   const [checked, setChecked] = useState(true);
+   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
 
    const [strength, setStrength] = useState(0);
    const [level, setLevel] = useState();
@@ -65,11 +65,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    // #endregion Boton de Contraseña
 
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
+   const { user, singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isAdmin, setIsAdmin] = useState(false);
-   const [newPasswordChecked, setNewPasswordChecked] = useState(false);
+   const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
    const [disabledState, setDisabledState] = useState(true);
    const [disabledCity, setDisabledCity] = useState(true);
@@ -79,18 +79,14 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [dataCities, setDataCities] = useState([]);
    const [dataColonies, setDataColonies] = useState([]);
 
-   // Función personalizada para comparar opciones y valores
-   const customIsOptionEqualToValue = (option, value) => {
-      // Personaliza la comparación según tus necesidades
-      console.log("holaa ress: option->", option.value);
-      console.log("holaa ress: value->", value);
-      return option.value === value; // Por ejemplo, compara por el campo 'id'
-   };
-
-   const handleChangeRole = (value) => {
+   const handleChangeRole = (value, input, setFieldValue) => {
       try {
+         if (!value) return;
+         formData[input] = value ? value.id : 0;
+         setFieldValue(input, value ? value.id : 0);
+
          setIsAdmin(false);
-         const role_id = Number(value);
+         const role_id = Number(value.id);
          setIsAdmin(role_id <= 2 ? true : false);
       } catch (error) {
          console.log(error);
@@ -113,7 +109,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // console.log(values);
+         // return console.log(values);
          values.community_id = values.colony;
 
          setLoadingAction(true);
@@ -154,10 +150,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          // setLoadingAction(true);
+         // console.log(user);
          if (formData.community_id > 0) getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
          if (!formData.description) formData.description = "";
          setValues(formData);
-         handleChangeRole(formData.role_id);
+         setIsAdmin(formData.role_id <= 2 ? true : false);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -175,19 +172,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          Toast.Error(error);
       }
    };
-
-   // const options = [
-   // 	{ label: "The Godfather", id: 1 },
-   // 	{ label: "Pulp Fiction", id: 2 },
-   // ];
-   // const handleChangeR = (input, value, setValues) => {
-   //    console.log(formData);
-   //    console.log("el input->", input);
-   //    console.log("el value->", value);
-   //    formData[input] = value.id;
-   //    console.log(formData);
-   //    setValues(formData);
-   // };
 
    const validationAdminSchema = Yup.object().shape({
       username: Yup.string().trim().required("Nombre de usario requerido"),
@@ -227,11 +211,18 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       try {
          const btnModify = document.getElementById("btnModify");
          if (btnModify != null) btnModify.click();
+         if (textBtnSubmit == "GUARDAR") {
+            setNewPasswordChecked(false);
+            setCheckedShowSwitchPassword(true);
+         } else {
+            setNewPasswordChecked(true);
+            setCheckedShowSwitchPassword(false);
+         }
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData]);
+   }, [formData, user]);
 
    const handleInput = async (e, setFieldValue, input, toUpper = true) => {
       try {
@@ -304,15 +295,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
-   // const selectedValues = useMemo(() => dataRoles.filter((v) => v.selected), [
-   // 	dataRoles,
-   // ]);
-   // const [isClearable, setIsClearable] = useState(true);
-   // const [isSearchable, setIsSearchable] = useState(true);
-   // const [isDisabled, setIsDisabled] = useState(false);
-   // const [isLoading, setIsLoading] = useState(false);
-   // const [isRtl, setIsRtl] = useState(false);
-
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
@@ -323,7 +305,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>{" "}
+            </Typography>
+
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
             <Formik initialValues={formData} validationSchema={isAdmin ? validationAdminSchema : validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
@@ -367,14 +350,17 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         />
                      </Grid>
 
-                     <Grid xs={12} md={12} sx={{mb:-2}}>
-                        <FormControlLabel
-                           control={<Switch defaultChecked />}
-                           label="Cambiar Contraseña"
-                           checked={newPasswordChecked}
-                           onChange={() => setNewPasswordChecked(!newPasswordChecked)}
-                        />
-                     </Grid>
+                     {/* Switch para mostrar el cambiar contraseña */}
+                     {checkedShowSwitchPassword && (
+                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                           <FormControlLabel
+                              control={<Switch />}
+                              label="Cambiar Contraseña"
+                              checked={newPasswordChecked}
+                              onChange={() => setNewPasswordChecked(!newPasswordChecked)}
+                           />
+                        </Grid>
+                     )}
                      {/* Contraseña */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
@@ -444,7 +430,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                      {/* Rol */}
                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth>
-                           {/* <Autocomplete
+                           <Autocomplete
                               disablePortal
                               openOnFocus
                               id="role_id"
@@ -453,44 +439,24 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               // labelId="role_id-label"
                               placeholder="Rol"
                               options={dataRoles}
-                              // getOptionLabel={(option) => option.text}
-                              // isOptionEqualToValue={customIsOptionEqualToValue}
+                              // getOptionLabel={(option) => option}
+                              // isOptionEqualToValue={(option, value) => option === value}
                               renderInput={(params) => <TextField {...params} label="Rol *" />}
-                              value={values.role_id}
-                              // componentName="role_id"
+                              // value={values.role_id}
                               onChange={(e, newValue) => {
                                  handleChange(e);
-                                 handleChangeR("role_id", newValue, setValues);
+                                 handleChangeRole(newValue, "role_id", setFieldValue);
+                                 // handleChangeSelectValue("role_id", newValue, setValues);
                               }}
                               onBlur={handleBlur}
                               fullWidth
-                              // disabled={values.id == 0 ? false : true}
+                              disabled={values.id == 0 ? false : true}
                               error={errors.role_id && touched.role_id}
-                              // value={"PRIMARIA"}
-                           /> */}
-                           {/* <Select2
-                              id="role_id"
-                              name="role_id"
-                              label="Rol"
-                              components={<Select />}
-                              labelId="role_id-label"
-                              value={values.role_id}
-                              placeholder="Rol"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.role_id && touched.role_id}
-                              // className="basic-single"
-                              // classNamePrefix="select"
-                              // defaultValue={dataRoles[0]}
-                              isDisabled={isDisabled}
-                              isLoading={isLoading}
-                              isClearable={isClearable}
-                              isRtl={isRtl}
-                              isSearchable={isSearchable}
-                              getOptionLabel={(option) => option.text}
-                              options={dataRoles}
-                           /> */}
-                           <InputLabel id="role_id-label">Rol *</InputLabel>
+                              // defaultValue={user ? user.role : "Seleccione una opción..."}
+                              // value={user ? user.role : "Seleccione una opción..."}
+                           />
+
+                           {/* <InputLabel id="role_id-label">Rol *</InputLabel>
                            <Select
                               id="role_id"
                               name="role_id"
@@ -512,7 +478,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                        {d.text}
                                     </MenuItem>
                                  ))}
-                           </Select>
+                           </Select> */}
                            {touched.role_id && errors.role_id && (
                               <FormHelperText error id="ht-role_id">
                                  {errors.role_id}
@@ -701,7 +667,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            <Field id="community_id" name="community_id" type="hidden" value={values.community_id} onChange={handleChange} onBlur={handleBlur} />
 
                            {/* Comunidad */}
-                           <Grid container spacing={2} sx={{ p: 1 }}>
+                           <Grid container spacing={2} xs={12} sx={{ p: 1 }}>
                               {/* C.P. */}
                               <Grid xs={12} md={6} sx={{ mb: 2 }}>
                                  <TextField
@@ -869,30 +835,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  helperText={errors.num_int && touched.num_int && errors.num_int}
                               />
                            </Grid>
-
-                           {/* Local o Foraneo */}
-                           {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <FormControl fullWidth sx={{ alignItems: "center" }}>
-                           <FormLabel id="loc_for-label">Ubicacion de escuela</FormLabel>
-                           <RadioGroup
-                              row
-                              aria-labelledby="loc_for-label"
-                              id="loc_for"
-                              name="loc_for"
-                              value={values.loc_for}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                           >
-                              <FormControlLabel value="1" control={<Radio />} label="Local" />
-                              <FormControlLabel value="0" control={<Radio />} label="Foranea" />
-                           </RadioGroup>
-                           {touched.loc_for && errors.loc_for && (
-                              <FormHelperText error id="ht-loc_for">
-                                 {errors.loc_for}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                           </Grid> */}
                         </>
                      )}
 

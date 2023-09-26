@@ -134,7 +134,7 @@ const UserTable = () => {
                   {obj.street == "No Aplica" ? (
                      <Typography textAlign={"center"}>No Aplica</Typography>
                   ) : (
-                     <Fragment textAlign={"center"}>
+                     <Fragment>
                         {obj.street} {obj.num_ext == "S/N" ? obj.num_ext : `# ${obj.num_ext}`}
                      </Fragment>
                   )}

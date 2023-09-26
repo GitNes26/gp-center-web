@@ -44,9 +44,21 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const GenericForm = () => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { singularName, createGeneric, updateGeneric, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useGenericContext();
+   const { generic, singularName, createGeneric, updateGeneric, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
+      useGenericContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
+
+   const handleChangeSelect = (value, input, setFieldValue) => {
+      try {
+         if (!value) return;
+         formData[input] = value ? value.id : 0;
+         setFieldValue(input, value ? value.id : 0);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -131,7 +143,7 @@ const GenericForm = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData]);
+   }, [formData, generic]);
 
    const handleInput = async (e, setFieldValue, input, toUpper = true) => {
       try {
@@ -141,6 +153,19 @@ const GenericForm = () => {
          console.log(error);
          Toast.Error(error);
       }
+   };
+
+   // const options = [
+   // 	{ label: "The Godfather", id: 1 },
+   // 	{ label: "Pulp Fiction", id: 2 },
+   // ];
+   const handleChangeSelectValue = (input, value, setValues) => {
+      console.log(formData);
+      console.log("el input->", input);
+      console.log("el value->", value);
+      formData[input] = value ? value.id : 0;
+      console.log(formData);
+      setValues(formData);
    };
 
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
@@ -211,6 +236,83 @@ const GenericForm = () => {
                            error={errors.description && touched.description}
                            helperText={errors.description && touched.description && errors.description}
                         />
+                     </Grid>
+
+                     {/* Divisor */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
+
+                     {/* Genero */}
+                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        <FormControl fullWidth sx={{ alignItems: "center" }}>
+                           <FormLabel id="gender-label">Género</FormLabel>
+                           <RadioGroup row aria-labelledby="gender-label" id="gender" name="gender" value={values.gender} onChange={handleChange} onBlur={handleBlur}>
+                              <FormControlLabel value="MASCULINO" control={<Radio />} label="Masculino" />
+                              <FormControlLabel value="FEMENINO" control={<Radio />} label="Femenino" />
+                           </RadioGroup>
+                           {touched.gender && errors.gender && showErrorInput(2, errors.gender, true)}
+                        </FormControl>
+                     </Grid>
+
+                     {/* Rol */}
+                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <FormControl fullWidth>
+                           <Autocomplete
+                              disablePortal
+                              openOnFocus
+                              id="role_id"
+                              name="role_id"
+                              label="Rol"
+                              // labelId="role_id-label"
+                              placeholder="Rol"
+                              options={dataRoles}
+                              getOptionLabel={(option) => option}
+                              isOptionEqualToValue={(option, value) => option === value}
+                              renderInput={(params) => <TextField {...params} label="Rol *" />}
+                              // value={values.role_id}
+                              onChange={(e, newValue) => {
+                                 handleChange(e);
+                                 handleChangeSelect(newValue, "role_id", setFieldValue);
+                                 // handleChangeSelectValue("role_id", newValue, setValues);
+                              }}
+                              onBlur={handleBlur}
+                              fullWidth
+                              disabled={values.id == 0 ? false : true}
+                              error={errors.role_id && touched.role_id}
+                              defaultValue={generic ? generic.role : "Seleccione una opción..."}
+                              value={generic ? generic.role : "Seleccione una opción..."}
+                           />
+
+                           {/* <InputLabel id="role_id-label">Rol *</InputLabel>
+                           <Select
+                              id="role_id"
+                              name="role_id"
+                              label="Rol"
+                              labelId="role_id-label"
+                              value={values.role_id}
+                              placeholder="Rol"
+                              onChange={(e) => {
+                                 handleChange(e);
+                                 handleChangeSelect(e.target.value);
+                              }}
+                              onBlur={handleBlur}
+                              error={errors.role_id && touched.role_id}
+                           >
+                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              {dataRoles &&
+                                 dataRoles.map((d) => (
+                                    <MenuItem key={d.value} value={d.value}>
+                                       {d.text}
+                                    </MenuItem>
+                                 ))}
+                           </Select> */}
+                           {touched.role_id && errors.role_id && (
+                              <FormHelperText error id="ht-role_id">
+                                 {errors.role_id}
+                              </FormHelperText>
+                           )}
+                        </FormControl>
                      </Grid>
 
                      <LoadingButton
