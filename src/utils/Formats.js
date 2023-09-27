@@ -1,6 +1,5 @@
-import moment from 'moment';
-moment.locale('es');
-
+import moment from "moment";
+moment.locale("es");
 
 //#region /** FECHAS - FORMATEADO */
 function validateRangeDates(action, input_initial_date, input_final_date) {
@@ -102,3 +101,22 @@ export function formatToUpperCase(event) {
    const newText = event.target.value.toUpperCase();
    return newText;
 }
+
+export const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
+   try {
+      const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
+      setFieldValue(input, newText);
+   } catch (error) {
+      console.log(error);
+      Toast.Error(error);
+   }
+};
+export const handleInputStringCase = async (e, setState, toUpper = true) => {
+   try {
+      const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
+      setState(newText);
+   } catch (error) {
+      console.log(error);
+      Toast.Error(error);
+   }
+};
