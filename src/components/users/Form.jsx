@@ -294,6 +294,9 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          setShowLoading(false);
       }
    };
+   const isOptionEqualToValue = (option, value) => {
+      return option.label === value;
+   };
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
@@ -436,24 +439,20 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               id="role_id"
                               name="role_id"
                               label="Rol"
-                              // labelId="role_id-label"
                               placeholder="Rol"
                               options={dataRoles}
-                              // getOptionLabel={(option) => option}
-                              // isOptionEqualToValue={(option, value) => option === value}
+                              isOptionEqualToValue={isOptionEqualToValue}
                               renderInput={(params) => <TextField {...params} label="Rol *" />}
-                              // value={values.role_id}
                               onChange={(e, newValue) => {
                                  handleChange(e);
                                  handleChangeRole(newValue, "role_id", setFieldValue);
-                                 // handleChangeSelectValue("role_id", newValue, setValues);
                               }}
                               onBlur={handleBlur}
                               fullWidth
                               disabled={values.id == 0 ? false : true}
                               error={errors.role_id && touched.role_id}
-                              // defaultValue={user ? user.role : "Seleccione una opción..."}
-                              // value={user ? user.role : "Seleccione una opción..."}
+                              defaultValue={"Seleccione una opción..."}
+                              value={user ? user.role : "Seleccione una opción..."}
                            />
 
                            {/* <InputLabel id="role_id-label">Rol *</InputLabel>

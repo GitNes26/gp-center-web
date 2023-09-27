@@ -99,7 +99,10 @@ const SearchInput = ({
             </Tooltip>
 
             {showOptions && (
-               <FormControl fullWidth sx={{ color: "#1F2227", alignItems: "center", backgroundColor: "whitesmoke", borderRadius: "10px", mt: 0.5, p: 0.5 }}>
+               <FormControl
+                  fullWidth
+                  sx={{ color:  "#1F2227", alignItems: "center", backgroundColor: "whitesmoke", borderRadius: "10px", mt: 0.5, p: 0.5 }}
+               >
                   <RadioGroup
                      row
                      aria-labelledby="searchType-label"

@@ -179,6 +179,7 @@ export default function UserContextProvider({ children }) {
             singularName,
             pluralName,
             users,
+            setUser,
             user,
             formData,
             setFormData,

@@ -28,10 +28,11 @@ const Item = styled(Paper)(({ theme }) => ({
 const UsersView = () => {
    const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, user, users, getUsers, resetFormData, setTextBtnSumbit, setFormTitle } = useUserContext();
+   const { singularName, user, setUser, users, getUsers, resetFormData, setTextBtnSumbit, setFormTitle } = useUserContext();
 
    const handleClickAdd = () => {
       try {
+         setUser(null);
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
