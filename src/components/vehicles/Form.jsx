@@ -50,7 +50,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
    const [dataModels, setDataModels] = useState([]);
-   const [imageFile, setImageFile] = useState(null);
+   const [imgFile, setImgFile] = useState(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -67,8 +67,8 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         console.log("el imageFile", imageFile);
-         values.imgFile = imageFile;
+         console.log("el imgFile", imgFile);
+         values.imgFile = imgFile;
          console.log(values);
          setLoadingAction(true);
          let axiosResponse;
@@ -197,7 +197,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const handleChangeImg = (e, setFieldValue) => {
       const file = e.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-      setImageFile(file);
+      setImgFile(file);
    };
 
    return (

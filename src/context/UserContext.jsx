@@ -29,6 +29,32 @@ const formDataInitialState = {
    city: 0,
    colony: 0
 };
+const userInitialState = {
+   id: 0,
+   username: "",
+   email: "",
+   password: "",
+   role_id: 0,
+   role: "Seleccione una opción...",
+   phone: "",
+   license_number: "",
+   license_due_date: "",
+   payroll_number: "",
+   department_id: "",
+   department: "Sin Asignar",
+   name: "",
+   paternal_last_name: "",
+   maternal_last_name: "",
+   community_id: 0,
+   street: "",
+   num_ext: "",
+   num_int: "",
+
+   zip: "",
+   state: 0,
+   city: 0,
+   colony: 0
+};
 
 export default function UserContextProvider({ children }) {
    const singularName = "Usuario"; //Escribirlo siempre letra Capital
@@ -37,15 +63,23 @@ export default function UserContextProvider({ children }) {
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
+   const [user, setUser] = useState(userInitialState);
    const [users, setUsers] = useState([]);
-   const [user, setUser] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetFormData:", error);
+         Toast.Error(error);
+      }
+   };
+   const resetUser = () => {
+      try {
+         setUser(userInitialState);
+      } catch (error) {
+         console.log("Error en resetUser:", error);
          Toast.Error(error);
       }
    };
@@ -179,8 +213,9 @@ export default function UserContextProvider({ children }) {
             singularName,
             pluralName,
             users,
-            setUser,
             user,
+            setUser,
+            resetUser,
             formData,
             setFormData,
             resetFormData,

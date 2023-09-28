@@ -65,15 +65,16 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    // #endregion Boton de Contraseña
 
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { user, singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
+   const { user, resetUser, singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isAdmin, setIsAdmin] = useState(false);
+   const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
    const [disabledState, setDisabledState] = useState(true);
    const [disabledCity, setDisabledCity] = useState(true);
-   const [disabledColony, setDisabledColony] = useState(false);
+   const [disabledColony, setDisabledColony] = useState(true);
    const [showLoading, setShowLoading] = useState(false);
    const [dataStates, setDataStates] = useState([]);
    const [dataCities, setDataCities] = useState([]);
@@ -81,13 +82,16 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
    const handleChangeRole = (value, input, setFieldValue) => {
       try {
-         if (!value) return;
+         if (!value) return (user.role = "Seleccione una opción...");
          formData[input] = value ? value.id : 0;
          setFieldValue(input, value ? value.id : 0);
+         user.role = value.label;
 
          setIsAdmin(false);
+         setIsGarage(false);
          const role_id = Number(value.id);
          setIsAdmin(role_id <= 2 ? true : false);
+         setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -139,6 +143,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
+         resetUser();
+         user.role = "Seleccione una opción...";
          setStrength(0);
          setFieldValue("id", id);
       } catch (error) {
@@ -155,6 +161,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          if (!formData.description) formData.description = "";
          setValues(formData);
          setIsAdmin(formData.role_id <= 2 ? true : false);
+         setIsGarage(formData.role_id == 4 ? true : false);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -165,6 +172,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const handleCancel = (resetForm) => {
       try {
          resetForm();
+         resetUser();
+         user.role = "Seleccione una opción...";
          setStrength(0);
          setOpenDialog(false);
       } catch (error) {
@@ -173,39 +182,57 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
-   const validationAdminSchema = Yup.object().shape({
-      username: Yup.string().trim().required("Nombre de usario requerido"),
-      email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-      password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-      role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
-   });
-   const validationSchema = Yup.object().shape({
-      username: Yup.string().trim().required("Nombre de usario requerido"),
-      email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-      password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-      role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
-      phone: Yup.string()
-         .trim()
-         .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
-         .required("Número telefónico requerido"),
-      license_number: Yup.string().trim().required("Número de licencia requerido"),
-      license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
-      payroll_number: Yup.number("Solo números"),
-      department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
+   const validationSchemas = () => {
+      let validationSchema = Yup.object().shape({
+         username: Yup.string().trim().required("Nombre de usario requerido"),
+         email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
+         password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
+         phone: Yup.string()
+            .trim()
+            .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
+            .required("Número telefónico requerido"),
+         license_number: Yup.string().trim().required("Número de licencia requerido"),
+         license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
+         payroll_number: Yup.number("Solo números"),
+         department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
 
-      name: Yup.string().trim().required("Nombre(s) requerido"),
-      paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-      maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
-      // community_id:  Yup.number().trim().required("Comunidad requerida"),
-      street: Yup.string().trim().required("Calle/Av. requerida"),
-      num_ext: Yup.string().trim().required("Número exterior requerido"),
-      // num_int: Yup.string().trim().required("Número interior requerido"),
+         name: Yup.string().trim().required("Nombre(s) requerido"),
+         paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
+         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
+         // community_id:  Yup.number().trim().required("Comunidad requerida"),
+         street: Yup.string().trim().required("Calle/Av. requerida"),
+         num_ext: Yup.string().trim().required("Número exterior requerido"),
+         // num_int: Yup.string().trim().required("Número interior requerido"),
 
-      zip: Yup.number("Solo numeros").required("Código Postal requerido"),
-      state: Yup.string().trim().required("Estado requerido"),
-      city: Yup.string().trim().required("Ciudad requerido"),
-      colony: Yup.string().trim().required("Colonia requerido")
-   });
+         zip: Yup.number("Solo numeros").required("Código Postal requerido"),
+         state: Yup.string().trim().required("Estado requerido"),
+         city: Yup.string().trim().required("Ciudad requerido"),
+         colony: Yup.string().trim().required("Colonia requerido")
+      });
+      if (isAdmin)
+         validationSchema = Yup.object().shape({
+            username: Yup.string().trim().required("Nombre de usario requerido"),
+            email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
+            password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+            role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
+         });
+      else if (isGarage)
+         validationSchema = Yup.object().shape({
+            username: Yup.string().trim().required("Nombre de usario requerido"),
+            email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
+            password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+            role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
+            phone: Yup.string()
+               .trim()
+               .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
+               .required("Número telefónico requerido"),
+            name: Yup.string().trim().required("Nombre(s) requerido"),
+            paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
+            maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
+         });
+      return validationSchema;
+   };
 
    useEffect(() => {
       try {
@@ -311,7 +338,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
             </Typography>
 
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
-            <Formik initialValues={formData} validationSchema={isAdmin ? validationAdminSchema : validationSchema} onSubmit={onSubmit}>
+            <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
@@ -451,7 +478,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               fullWidth
                               disabled={values.id == 0 ? false : true}
                               error={errors.role_id && touched.role_id}
-                              defaultValue={"Seleccione una opción..."}
+                              defaultValue={user ? user.role : "Seleccione una opción..."}
                               value={user ? user.role : "Seleccione una opción..."}
                            />
 
@@ -505,6 +532,10 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  helperText={errors.phone && touched.phone && errors.phone}
                               />
                            </Grid>
+                        </>
+                     )}
+                     {!isAdmin && !isGarage && (
+                        <>
                            {/* Numero de Licencia */}
                            <Grid xs={12} md={4} sx={{ mb: 1 }}>
                               <TextField
@@ -540,12 +571,10 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  helperText={errors.license_due_date && touched.license_due_date && errors.license_due_date}
                               />
                            </Grid>
-
                            {/* Divisor */}
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
-
                            {/* Número de Nómina */}
                            <Grid xs={12} md={4} sx={{ mb: 1 }}>
                               <TextField
@@ -593,12 +622,15 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  )}
                               </FormControl>
                            </Grid>
-
                            {/* Divisor */}
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
+                        </>
+                     )}
 
+                     {!isAdmin && (
+                        <>
                            {/* Nombre */}
                            <Grid xs={12} md={12} sx={{ mb: 2 }}>
                               <TextField
@@ -656,15 +688,17 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
                               />
                            </Grid>
+                        </>
+                     )}
 
+                     {!isAdmin && !isGarage && (
+                        <>
                            {/* Divisor */}
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
-
                            {/* community_id */}
                            <Field id="community_id" name="community_id" type="hidden" value={values.community_id} onChange={handleChange} onBlur={handleBlur} />
-
                            {/* Comunidad */}
                            <Grid container spacing={2} xs={12} sx={{ p: 1 }}>
                               {/* C.P. */}

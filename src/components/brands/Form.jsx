@@ -4,12 +4,14 @@ import * as Yup from "yup";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
    Autocomplete,
+   Avatar,
    Backdrop,
    Button,
    CircularProgress,
    Divider,
    FormControlLabel,
    FormLabel,
+   Input,
    InputLabel,
    MenuItem,
    Radio,
@@ -38,6 +40,7 @@ import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import axios from "axios";
+import InputFileComponent from "../Form/InputFileComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -47,6 +50,8 @@ const BrandForm = () => {
    const { singularName, createBrand, updateBrand, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useBrandContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
+   const [imgFile, setImgFile] = useState(null);
+   const [imagePreview, setImagePreview] = useState(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -64,6 +69,8 @@ const BrandForm = () => {
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
          // console.log(values);
+         console.log("el imgFile", imgFile);
+         values.imgFile = imgFile;
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createBrand(values);
@@ -143,6 +150,21 @@ const BrandForm = () => {
       }
    };
 
+   // const handleChangeImg = (event) => {
+   //    const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
+   //    setImgFile(file);
+
+   //    if (file) {
+   //       const reader = new FileReader();
+
+   //       reader.onload = (e) => {
+   //          setImagePreview(e.target.result);
+   //       };
+
+   //       reader.readAsDataURL(file);
+   //    }
+   // };
+
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       if (formHelperText) {
          return (
@@ -211,6 +233,45 @@ const BrandForm = () => {
                            error={errors.description && touched.description}
                            helperText={errors.description && touched.description && errors.description}
                         />
+                     </Grid>
+                     {/* Imagen */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_path"
+                           label="Foto de la marca *"
+                           value={values.img_path}
+                           placeholder=""
+                           handleChange={handleChange}
+                           setImgFile={setImgFile}
+                           error={errors.img_path}
+                           touched={touched.img_path}
+                        />
+                        {/* <Input type="file" onChange={handleImageUpload} accept="image/*" /> */}
+                        {/* <TextField
+                           id="img_path"
+                           name="img_path"
+                           label="Foto del Vehículo *"
+                           type="file"
+                           value={values.img_path}
+                           placeholder="Ingrese el número de inventario"
+                           onChange={(e) => {
+                              handleChange(e);
+                              handleChangeImg(e, setFieldValue);
+                           }}
+                           onBlur={handleBlur}
+                           variant="standard"
+                           // onInput={(e) => handleInput(e, setFieldValue, "img_path", true)}
+                           // InputProps={{ }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[0] = el)}
+                           // inputRef={inputRefVehicle}
+                           error={errors.img_path && touched.img_path}
+                           helperText={errors.img_path && touched.img_path && errors.img_path}
+                        /> */}
+
+                        {/* Vista previa de la imagen */}
+                        {/* {imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />} */}
                      </Grid>
 
                      <LoadingButton
