@@ -8,7 +8,7 @@ const BrandContext = createContext();
 const formDataInitialState = {
    id: 0,
    brand: "",
-   description: ""
+   img_path: ""
 };
 
 export default function BrandContextProvider({ children }) {
@@ -26,7 +26,7 @@ export default function BrandContextProvider({ children }) {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetFormData:", error);
          Toast.Error(error);
       }
    };
@@ -36,7 +36,7 @@ export default function BrandContextProvider({ children }) {
          const newData = { ...formData };
          newData.id = values.id;
          newData.brand = values.brand;
-         newData.description = values.description;
+         newData.img_path = values.img_path;
          setFormData(newData);
       } catch (error) {
          console.log("Error en fillFormData:", error);
@@ -67,6 +67,7 @@ export default function BrandContextProvider({ children }) {
          const axiosData = await Axios.get(`/brands/${id}`);
          res = axiosData.data.data;
          // await setBrand(res.result);
+         setBrand(res.result);
          // setFormData(res.result);
          fillFormData(res.result);
          // console.log(res);
@@ -83,7 +84,11 @@ export default function BrandContextProvider({ children }) {
    const createBrand = async (brand) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/brands", brand);
+         const axiosData = await Axios.post("/brands", brand, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          res = axiosData.data.data;
          getBrands();
       } catch (error) {
@@ -99,7 +104,13 @@ export default function BrandContextProvider({ children }) {
    const updateBrand = async (brand) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/brands", brand);
+         console.log(brand);
+         // const axiosData = await Axios.put("/brands", brand, {
+         const axiosData = await Axios.post(`/brands/${id}`, brand, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          res = axiosData.data.data;
          getBrands();
       } catch (error) {

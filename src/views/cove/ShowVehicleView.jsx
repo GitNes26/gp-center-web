@@ -268,7 +268,7 @@ const ShowVehicleView = () => {
 
             {/* IMAGEN INSIGNIA MARCA */}
             <Box className={`brand-container ${classesImgVehicle}`}>
-               <img src={vehicle && `${import.meta.env.VITE_HOST}/${"GPCenter/brands/Ford-Logo.png"}`} style={{ maxHeight: "200px" }} />
+               <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "200px" }} />
                <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "60px" }}>
                   {vehicle && vehicle.model}
                </Typography>

@@ -4,8 +4,8 @@ import { display, shouldForwardProp } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
-import { useGlobalContext } from "../../context/GlobalContext";
-import { handleInputStringCase } from "../../utils/Formats";
+import { useGlobalContext } from "../context/GlobalContext";
+import { handleInputStringCase } from "../utils/Formats";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,

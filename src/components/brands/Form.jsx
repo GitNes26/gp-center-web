@@ -33,7 +33,7 @@ import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -68,10 +68,9 @@ const BrandForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // console.log(values);
-         console.log("el imgFile", imgFile);
-         values.imgFile = imgFile;
          setLoadingAction(true);
+         values.imgFile = imgFile;
+         // console.log(values);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createBrand(values);
          else axiosResponse = await updateBrand(values);
@@ -82,6 +81,8 @@ const BrandForm = () => {
          }
          setSubmitting(false);
          setLoadingAction(false);
+         setImagePreview(null);
+         setImgFile(null);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
       } catch (error) {
@@ -97,6 +98,8 @@ const BrandForm = () => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
+         setImagePreview(null);
+         setImgFile(null);
          setFieldValue("id", id);
       } catch (error) {
          console.log(error);
@@ -107,8 +110,9 @@ const BrandForm = () => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
-         if (!formData.description) formData.description = "";
          setValues(formData);
+         setImgFile(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
+         setImagePreview(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -119,6 +123,8 @@ const BrandForm = () => {
    const handleCancel = (resetForm) => {
       try {
          resetForm();
+         setImagePreview(null);
+         setImgFile(null);
          setOpenDialog(false);
       } catch (error) {
          console.log(error);
@@ -140,30 +146,31 @@ const BrandForm = () => {
       }
    }, [formData]);
 
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
-   // const handleChangeImg = (event) => {
-   //    const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-   //    setImgFile(file);
-
-   //    if (file) {
-   //       const reader = new FileReader();
-
-   //       reader.onload = (e) => {
-   //          setImagePreview(e.target.result);
-   //       };
-
-   //       reader.readAsDataURL(file);
+   // const handleInput = async (e, setFieldValue, input, toUpper = true) => {
+   //    try {
+   //       const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
+   //       setFieldValue(input, newText);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
    //    }
    // };
+
+   const handleChangeImg = (event) => {
+      // if (event.target.files)
+      const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
+      setImgFile(file);
+
+      if (file) {
+         const reader = new FileReader();
+
+         reader.onload = (e) => {
+            setImagePreview(e.target.result);
+         };
+
+         reader.readAsDataURL(file);
+      }
+   };
 
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       if (formHelperText) {
@@ -202,7 +209,7 @@ const BrandForm = () => {
                            placeholder="Ingrese el nombre de la marca"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "brand", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "brand", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -212,47 +219,28 @@ const BrandForm = () => {
                            helperText={errors.brand && touched.brand && errors.brand}
                         />
                      </Grid>
-                     {/* Descripcion */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="description"
-                           name="description"
-                           label="Descripción"
-                           type="text"
-                           value={values.description}
-                           placeholder="Inserte una breve descripción de la marca"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
-                           inputProps={{ maxLength: 1500 }}
-                           fullWidth
-                           multiline
-                           rows={3}
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.description && touched.description}
-                           helperText={errors.description && touched.description && errors.description}
-                        />
-                     </Grid>
                      {/* Imagen */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_path"
                            label="Foto de la marca *"
-                           value={values.img_path}
+                           // value={values.img_path}
                            placeholder=""
-                           handleChange={handleChange}
                            setImgFile={setImgFile}
+                           imagePreview={imagePreview}
+                           setImagePreview={setImagePreview}
+                           handleChange={handleChange}
+                           handleBlur={handleBlur}
+                           setFieldValue={setFieldValue}
                            error={errors.img_path}
                            touched={touched.img_path}
                         />
-                        {/* <Input type="file" onChange={handleImageUpload} accept="image/*" /> */}
                         {/* <TextField
                            id="img_path"
                            name="img_path"
                            label="Foto del Vehículo *"
                            type="file"
-                           value={values.img_path}
+                           // value={values.img_path}
                            placeholder="Ingrese el número de inventario"
                            onChange={(e) => {
                               handleChange(e);
@@ -269,9 +257,12 @@ const BrandForm = () => {
                            error={errors.img_path && touched.img_path}
                            helperText={errors.img_path && touched.img_path && errors.img_path}
                         /> */}
-
                         {/* Vista previa de la imagen */}
-                        {/* {imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />} */}
+                        {/* {imagePreview && (
+                           <Box textAlign={"center"}>
+                              <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />
+                           </Box>
+                        )} */}
                      </Grid>
 
                      <LoadingButton

@@ -18,6 +18,7 @@ import { useGlobalContext } from "../../context/GlobalContext";
 import { formatDatetime, formatPhone } from "../../utils/Formats";
 import { Typography } from "@mui/material";
 import { Fragment } from "react";
+import { Box } from "@mui/system";
 
 const muiCache = createCache({
    key: "mui-datatables",
@@ -104,7 +105,7 @@ const BrandTable = () => {
    };
 
    // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Marca", "Descripción", "Acciones"];
+   const columns = ["Emblema", "Marca", "Acciones"];
    const data = [];
    const chargerData = async () => {
       try {
@@ -112,8 +113,12 @@ const BrandTable = () => {
          await brands.map((obj) => {
             // console.log(obj);
             const register = [];
+            register.push(
+               <Box textAlign={"center"}>
+                  {<img alt="Vista previa de la mara" src={`${import.meta.env.VITE_HOST}/${obj.img_path}`} style={{ maxWidth: 100, maxHeight: 100 }} />}
+               </Box>
+            );
             register.push(<Typography textAlign={"center"}>{obj.brand}</Typography>);
-            register.push(<Typography textAlign={"center"}>{obj.description}</Typography>);
             register.push(<ButtonsAction id={obj.id} name={obj.brand} />);
             data.push(register);
          });

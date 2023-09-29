@@ -1,10 +1,24 @@
 import { TextField } from "@mui/material";
-import { useState } from "react";
+import { Box } from "@mui/system";
 
-const InputFileComponent = ({ idName, label, value, placeholder, handleChange, setImgFile, error, touched }) => {
-   const [imagePreview, setImagePreview] = useState(null);
+const InputFileComponent = ({
+   idName,
+   label,
+   value,
+   placeholder,
+   handleChange,
+   handleBlur,
+   setFieldValue,
+   setImgFile,
+   imagePreview,
+   setImagePreview,
+   error,
+   touched
+}) => {
+   // const [imagePreview, setImagePreview] = useState(null);
 
    const handleChangeImg = (event) => {
+      // if (event.target.files)
       const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
       setImgFile(file);
 
@@ -25,7 +39,7 @@ const InputFileComponent = ({ idName, label, value, placeholder, handleChange, s
             name={idName}
             label={label}
             type="file"
-            value={value}
+            // value={value}
             placeholder={placeholder}
             onChange={(e) => {
                handleChange(e);
@@ -43,7 +57,7 @@ const InputFileComponent = ({ idName, label, value, placeholder, handleChange, s
          />
 
          {/* Vista previa de la imagen */}
-         {imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />}
+         <Box textAlign={"center"}>{imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />}</Box>
       </>
    );
 };
