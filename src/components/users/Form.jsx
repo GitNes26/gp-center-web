@@ -31,13 +31,14 @@ import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import axios from "axios";
+import Select2Component from "../Form/Select2Component";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -80,16 +81,18 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [dataCities, setDataCities] = useState([]);
    const [dataColonies, setDataColonies] = useState([]);
 
-   const handleChangeRole = (value, input, setFieldValue) => {
+   const handleChangeRole = (value2 /* value, input, setFieldValue */) => {
       try {
-         if (!value) return (user.role = "Seleccione una opción...");
-         formData[input] = value ? value.id : 0;
-         setFieldValue(input, value ? value.id : 0);
-         user.role = value.label;
+         // if (!value) return (user.role = "Seleccione una opción...");
+         // formData[input] = value ? value.id : 0;
+         // setFieldValue(input, value ? value.id : 0);
+         // user.role = value.label;
+         // console.log("value2", value2);
+         user.role = value2.label;
 
          setIsAdmin(false);
          setIsGarage(false);
-         const role_id = Number(value.id);
+         const role_id = Number(value2.id);
          setIsAdmin(role_id <= 2 ? true : false);
          setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
@@ -251,16 +254,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    }, [formData, user]);
 
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
       try {
          setShowLoading(true);
@@ -321,9 +314,9 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          setShowLoading(false);
       }
    };
-   const isOptionEqualToValue = (option, value) => {
-      return option.label === value;
-   };
+   // const isOptionEqualToValue = (option, value) => {
+   //    return option.label === value;
+   // };
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
@@ -371,7 +364,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            placeholder="mi@correo.com"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "email", false)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
                            // inputProps={{ maxLength: 2 }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -459,7 +452,23 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
                      {/* Rol */}
                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <FormControl fullWidth>
+                        <Select2Component
+                           idName={"role_id"}
+                           label={"Rol *"}
+                           valueLabel={user.role}
+                           formDataProp={formData.role_id}
+                           objProp={user.role_id}
+                           placeholder={"Selecciona un role..."}
+                           options={dataRoles}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           handleChangeValueSuccess={handleChangeRole}
+                           setFieldValue={setFieldValue}
+                           handleBlur={handleBlur}
+                           error={errors.role_id}
+                           touched={touched.role_id}
+                        />
+                        {/* <FormControl fullWidth>
                            <Autocomplete
                               disablePortal
                               openOnFocus
@@ -480,9 +489,9 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               error={errors.role_id && touched.role_id}
                               defaultValue={user ? user.role : "Seleccione una opción..."}
                               value={user ? user.role : "Seleccione una opción..."}
-                           />
+                           /> */}
 
-                           {/* <InputLabel id="role_id-label">Rol *</InputLabel>
+                        {/* <InputLabel id="role_id-label">Rol *</InputLabel>
                            <Select
                               id="role_id"
                               name="role_id"
@@ -505,12 +514,12 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                     </MenuItem>
                                  ))}
                            </Select> */}
-                           {touched.role_id && errors.role_id && (
+                        {/* {touched.role_id && errors.role_id && (
                               <FormHelperText error id="ht-role_id">
                                  {errors.role_id}
                               </FormHelperText>
                            )}
-                        </FormControl>
+                        </FormControl> */}
                      </Grid>
 
                      {!isAdmin && (
@@ -642,7 +651,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  placeholder="Ingrese tu(s) nombre(s)"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 onInput={(e) => handleInput(e, setFieldValue, "name", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -661,7 +670,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  placeholder="Ingrese tu primer apellido"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 onInput={(e) => handleInput(e, setFieldValue, "paternal_last_name", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -680,7 +689,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  placeholder="Ingrese tu segundo apellido"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 onInput={(e) => handleInput(e, setFieldValue, "maternal_last_name", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -827,7 +836,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  onBlur={handleBlur}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
-                                 onInput={(e) => handleInput(e, setFieldValue, "street", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "street", true)}
                                  error={errors.street && touched.street}
                                  helperText={errors.street && touched.street && errors.street}
                               />
@@ -844,7 +853,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  fullWidth
-                                 onInput={(e) => handleInput(e, setFieldValue, "num_ext", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "num_ext", true)}
                                  // disabled={values.id == 0 ? false : true}
                                  error={errors.num_ext && touched.num_ext}
                                  helperText={errors.num_ext && touched.num_ext && errors.num_ext}
@@ -862,7 +871,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  fullWidth
-                                 onInput={(e) => handleInput(e, setFieldValue, "num_int", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "num_int", true)}
                                  // disabled={values.id == 0 ? false : true}
                                  error={errors.num_int && touched.num_int}
                                  helperText={errors.num_int && touched.num_int && errors.num_int}

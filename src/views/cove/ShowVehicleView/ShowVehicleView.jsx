@@ -160,7 +160,7 @@ const ShowVehicleView = () => {
       return (
          <ListItem>
             <ListItemIcon sx={{ mr: 2 }}>
-               <Tooltip title={title} placement="left">
+               <Tooltip title={title} placement="left" arrow>
                   <Avatar sx={{ backgroundColor: "#1F2227" }}>{icon}</Avatar>
                </Tooltip>
             </ListItemIcon>
