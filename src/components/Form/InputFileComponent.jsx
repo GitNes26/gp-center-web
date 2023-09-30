@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, bgcolor } from "@mui/system";
 
 const InputFileComponent = ({
    idName,
@@ -32,6 +32,7 @@ const InputFileComponent = ({
          reader.readAsDataURL(file);
       }
    };
+
    return (
       <>
          <TextField
@@ -57,7 +58,9 @@ const InputFileComponent = ({
          />
 
          {/* Vista previa de la imagen */}
-         <Box textAlign={"center"}>{imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />}</Box>
+         <Box textAlign={"center"} sx={{ bgcolor: "#E9ECEF", borderRadius: "0  0 12px 12px" }}>
+            {imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />}
+         </Box>
       </>
    );
 };

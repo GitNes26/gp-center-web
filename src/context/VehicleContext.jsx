@@ -33,10 +33,14 @@ export default function VehicleContextProvider({ children }) {
    const [vehicles, setVehicles] = useState([]);
    const [vehicle, setVehicle] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const [imgFile, setImgFile] = useState(null);
+   const [imagePreview, setImagePreview] = useState(null);
 
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
+         setImgFile(null);
+         setImagePreview(null);
       } catch (error) {
          console.log("Error en fillFormData:", error);
          Toast.Error(error);
@@ -90,7 +94,7 @@ export default function VehicleContextProvider({ children }) {
          const axiosData = await Axios.get(`/vehicles/${id}`);
          res = axiosData.data.data;
          // await setVehicle(res.result);
-         // setFormData(res.result);
+         setFormData(res.result);
          setVehicle(res.result);
          // fillFormData(res.result);
          // console.log(res);
@@ -148,7 +152,7 @@ export default function VehicleContextProvider({ children }) {
    const updateVehicle = async (vehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/vehicles", vehicle, {
+         const axiosData = await Axios.post(`/vehicles/${vehicle.id}`, vehicle, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -207,7 +211,11 @@ export default function VehicleContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            imgFile,
+            setImgFile,
+            imagePreview,
+            setImagePreview
          }}
       >
          {children}

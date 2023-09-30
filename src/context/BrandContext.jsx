@@ -21,10 +21,14 @@ export default function BrandContextProvider({ children }) {
    const [brands, setBrands] = useState([]);
    const [brand, setBrand] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const [imgFile, setImgFile] = useState(null);
+   const [imagePreview, setImagePreview] = useState(null);
 
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
+         setImgFile(null);
+         setImagePreview(null);
       } catch (error) {
          console.log("Error en resetFormData:", error);
          Toast.Error(error);
@@ -106,7 +110,7 @@ export default function BrandContextProvider({ children }) {
       try {
          console.log(brand);
          // const axiosData = await Axios.put("/brands", brand, {
-         const axiosData = await Axios.post(`/brands/${id}`, brand, {
+         const axiosData = await Axios.post(`/brands/${brand.id}`, brand, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -164,7 +168,11 @@ export default function BrandContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            imgFile,
+            setImgFile,
+            imagePreview,
+            setImagePreview
          }}
       >
          {children}

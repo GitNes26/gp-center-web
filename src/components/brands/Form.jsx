@@ -47,11 +47,26 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const BrandForm = () => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { singularName, createBrand, updateBrand, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useBrandContext();
+   const {
+      singularName,
+      createBrand,
+      updateBrand,
+      formData,
+      resetFormData,
+      setFormData,
+      textBtnSubmit,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle,
+      imgFile,
+      setImgFile,
+      imagePreview,
+      setImagePreview
+   } = useBrandContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   const [imgFile, setImgFile] = useState(null);
-   const [imagePreview, setImagePreview] = useState(null);
+   // const [imgFile, setImgFile] = useState(null);
+   // const [imagePreview, setImagePreview] = useState(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -76,6 +91,7 @@ const BrandForm = () => {
          else axiosResponse = await updateBrand(values);
          if (axiosResponse.status_code == 200) {
             resetForm();
+            resetFormData();
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
@@ -98,6 +114,7 @@ const BrandForm = () => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
+         resetFormData();
          setImagePreview(null);
          setImgFile(null);
          setFieldValue("id", id);
@@ -123,6 +140,7 @@ const BrandForm = () => {
    const handleCancel = (resetForm) => {
       try {
          resetForm();
+         resetFormData();
          setImagePreview(null);
          setImgFile(null);
          setOpenDialog(false);
@@ -145,32 +163,6 @@ const BrandForm = () => {
          Toast.Error(error);
       }
    }, [formData]);
-
-   // const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-   //    try {
-   //       const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-   //       setFieldValue(input, newText);
-   //    } catch (error) {
-   //       console.log(error);
-   //       Toast.Error(error);
-   //    }
-   // };
-
-   const handleChangeImg = (event) => {
-      // if (event.target.files)
-      const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-      setImgFile(file);
-
-      if (file) {
-         const reader = new FileReader();
-
-         reader.onload = (e) => {
-            setImagePreview(e.target.result);
-         };
-
-         reader.readAsDataURL(file);
-      }
-   };
 
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       if (formHelperText) {
@@ -223,7 +215,7 @@ const BrandForm = () => {
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_path"
-                           label="Foto de la marca *"
+                           label="Foto de la marca"
                            // value={values.img_path}
                            placeholder=""
                            setImgFile={setImgFile}

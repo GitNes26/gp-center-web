@@ -16,7 +16,7 @@ import VehicleStatusContextProvider from "../context/VehicleStatusContext";
 import VehicleStatussView from "../views/cove/VehicleStatusView";
 import VehicleContextProvider from "../context/VehicleContext";
 import VehiclesView, { loaderIndexVehiclesView } from "../views/cove/VehiclesView";
-import ShowVehicleView, { loaderIndexShowVehicleView } from "../views/cove/ShowVehicleView";
+import ShowVehicleView from "../views/cove/ShowVehicleView/ShowVehicleView";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));

@@ -1,16 +1,16 @@
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
-import MainCard from "../../ui-component/cards/MainCard";
-import VehicleTable from "../../components/vehicles/Table";
-import VehicleForm from "../../components/vehicles/Form";
+import MainCard from "../../../ui-component/cards/MainCard";
+import VehicleTable from "../../../components/vehicles/Table";
+import VehicleForm from "../../../components/vehicles/Form";
 
-import { CorrectRes, ErrorRes } from "../../utils/Response";
+import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../context/AuthContext";
+import { Axios } from "../../../context/AuthContext";
 
 import { cloneElement, useEffect, useState } from "react";
-import { useVehicleContext } from "../../context/VehicleContext";
+import { useVehicleContext } from "../../../context/VehicleContext";
 import {
    Avatar,
    Button,
@@ -41,22 +41,22 @@ import {
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
-import sAlert from "../../utils/sAlert";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import bgGarage from "../../assets/images/bg-primary.jpg";
-import bgPlatform from "../../assets/images/bg-auto.jpg";
-import bgPrimary from "../../assets/images/fondo menú.jpg";
+import sAlert from "../../../utils/sAlert";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+// import bgGarage from "../../assets/images/bg-primary.jpg";
+import bgPlatform from "../../../assets/images/bg-auto.jpg";
+// import bgPrimary from "../../assets/images/fondo menú.jpg";
 import { Box, fontSize } from "@mui/system";
-import ImgCar from "../../assets/images/auto.png";
-import { drawerWidth } from "../../config/store/constant";
-import { Icon123, IconCalendarStats, IconCandle, IconSearch } from "@tabler/icons";
+import ImgCar from "../../../assets/images/auto.png";
+import { drawerWidth } from "../../../config/store/constant";
+import { Icon123, IconCalendarStats, IconCandle, IconNotebook, IconSearch } from "@tabler/icons";
 import { display, shouldForwardProp } from "@mui/system";
 import { useTheme } from "@emotion/react";
-import { formatDatetime } from "../../utils/Formats";
-import SearchInput from "../../components/SearchInput";
-import PlatesRegisters from "../../components/vehicles/PlatesRegisters";
-import TimeLineComponent from "../../components/TimeLineComponent";
+import { formatDatetime } from "../../../utils/Formats";
+import SearchInput from "../../../components/SearchInput";
+import PlatesRegisters from "./PlatesRegisters";
+import HistoryRegister from "./HIstoryRegister";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -94,11 +94,25 @@ const ShowVehicleView = () => {
    const [searchType, setSearchType] = useState("number");
    const [classesImgVehicle, setClassesImgVehicle] = useState(null);
    const [growOn, setGrowOn] = useState(false);
+   const [openDialogPlates, setOpenDialogPlates] = useState(false);
+   const [openDialogHistory, setOpenDialogHistory] = useState(false);
 
-   const handleClickAdd = () => {
+   const handleClickViewPlates = () => {
       try {
-         resetFormData();
-         setOpenDialog(true);
+         // resetFormData();
+         setOpenDialogPlates(true);
+         // setTextBtnSumbit("AGREGAR");
+         // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickViewHistory = () => {
+      try {
+         // resetFormData();
+         setOpenDialogHistory(true);
          // setTextBtnSumbit("AGREGAR");
          // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
@@ -176,7 +190,7 @@ const ShowVehicleView = () => {
                position: "relative"
             }}
          >
-            {/* <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            {/* <Button variant="contained" fullWidth onClick={() => handleClickViewPlates()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button> */}
             <Grid container spacing={2}>
@@ -193,61 +207,61 @@ const ShowVehicleView = () => {
                </Grid>
 
                {/* COLUMNA CENTRAL */}
-               <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                  {vehicle && (
-                     <Grow in={growOn} style={{ transformOrigin: "0 0 0" }} {...(growOn ? { timeout: 1200 } : {})}>
+               {vehicle && (
+                  <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <Card sx={{ backgroundColor: "transparent" }}>
                            <CardContent sx={{ color: "whitesmoke", textAlign: "center" }}>
                               <Typography variant={"h1"} sx={{ color: "whitesmoke" }}>
                                  PLACAS
-                                 {vehicle && (
-                                    <Paper
-                                       elevation={6}
-                                       sx={{
-                                          // background: "rgb(33,91,132)",
-                                          background: "radial-gradient(circle, rgba(33,91,132,1) 0%, rgba(33,77,116,1) 100%)" || "rgb(33,91,132)",
-                                          paddingBlock: 1,
-                                          fontWeight: "bolder",
-                                          fontSize: 40,
-                                          color: "whitesmoke"
-                                       }}
-                                    >
-                                       {vehicle && vehicle.plates}
-                                    </Paper>
-                                 )}
+                                 {/* {vehicle && ( */}
+                                 <Paper
+                                    elevation={6}
+                                    sx={{
+                                       // background: "rgb(33,91,132)",
+                                       background: "radial-gradient(circle, rgba(33,91,132,1) 0%, rgba(33,77,116,1) 100%)" || "rgb(33,91,132)",
+                                       paddingBlock: 1,
+                                       fontWeight: "bolder",
+                                       fontSize: 40,
+                                       color: "whitesmoke"
+                                    }}
+                                 >
+                                    {vehicle.plates}
+                                 </Paper>
+                                 {/* )} */}
                               </Typography>
                               <Box textAlign={"center"} mt={2}>
-                                 {vehicle && (
-                                    <Chip
-                                       sx={{
-                                          height: "auto",
-                                          "& .MuiChip-label": {
-                                             display: "block",
-                                             whiteSpace: "normal"
-                                          },
-                                          fontSize: "18px",
-                                          fontWeight: "bolder",
-                                          p: 1,
-                                          // color: "#F3F3F3",
-                                          color: vehicle.letter_black ? "#3E3E3E" : "#F3F3F3",
-                                          backgroundColor: vehicle.bg_color
-                                          // backgroundColor: "#3E3E3E"
-                                       }}
-                                       label={vehicle.vehicle_status}
-                                    />
-                                 )}
+                                 {/* {vehicle && ( */}
+                                 <Chip
+                                    sx={{
+                                       height: "auto",
+                                       "& .MuiChip-label": {
+                                          display: "block",
+                                          whiteSpace: "normal"
+                                       },
+                                       fontSize: "18px",
+                                       fontWeight: "bolder",
+                                       p: 1,
+                                       // color: "#F3F3F3",
+                                       color: vehicle.letter_black ? "#3E3E3E" : "#F3F3F3",
+                                       backgroundColor: vehicle.bg_color
+                                       // backgroundColor: "#3E3E3E"
+                                    }}
+                                    label={vehicle.vehicle_status}
+                                 />
+                                 {/* )} */}
                               </Box>
                            </CardContent>
                         </Card>
-                     </Grow>
-                  )}
-               </Grid>
+                     </Grid>
+                  </Grow>
+               )}
 
                {/* TERCER COLUMNA */}
-               <Grid xs={12} md={3} sx={{ mb: 2 }}>
-                  <Grid xs={12} md={2} sx={{ mb: 2 }}>
-                     {vehicle && (
-                        <Grow in={growOn} style={{ transformOrigin: "0 0 0" }} {...(growOn ? { timeout: 1500 } : {})}>
+               {vehicle && (
+                  <Grow in={growOn} style={{ transformOrigin: "0 0 0" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
+                     <Grid xs={12} md={3} sx={{ mb: 2 }}>
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
                            <Card>
                               <List>
                                  <ComponentItem title="No. Unidad" icon={<Icon123 />} text={vehicle.stock_number} />
@@ -255,21 +269,26 @@ const ShowVehicleView = () => {
                                  <ComponentItem title="Fecha de registro" icon={<IconCalendarStats />} text={formatDatetime(vehicle.registration_date)} />
                               </List>
                            </Card>
-                        </Grow>
-                     )}
-                  </Grid>
-                  <Grid xs={12} md={2} sx={{ mb: 2 }}>
-                     <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-                        <Icon123 sx={{ mr: 1 }} /> VER PLAQUEOS
-                     </Button>
-                  </Grid>
-               </Grid>
+                        </Grid>
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <Button variant="contained" fullWidth onClick={() => handleClickViewPlates()} sx={{ mb: 1 }}>
+                              <Icon123 sx={{ mr: 1 }} /> VER PLAQUEOS
+                           </Button>
+                        </Grid>
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <Button variant="contained" fullWidth onClick={() => handleClickViewHistory()} sx={{ mb: 1 }}>
+                              <IconNotebook sx={{ mr: 1 }} /> VER HISTORIAL
+                           </Button>
+                        </Grid>
+                     </Grid>
+                  </Grow>
+               )}
             </Grid>
 
             {/* IMAGEN INSIGNIA MARCA */}
             <Box className={`brand-container ${classesImgVehicle}`}>
-               <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "200px" }} />
-               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "60px" }}>
+               <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "100px" }} />
+               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "40px" }}>
                   {vehicle && vehicle.model}
                </Typography>
             </Box>
@@ -290,26 +309,9 @@ const ShowVehicleView = () => {
             </Box>
             {/* <VehicleTable /> */}
          </MainCard>
-         <MainCard
-            sx={{
-               // backgroundImage: `url(${bgPlatform})`,
-               // backgroundPosition: "center",
-               // backgroundSize: "cover",
-               // backgroundRepeat: "no-repeat",
-               // background: "rgb(7,14,24)";
-               background: "linear-gradient(0deg, rgba(7,14,24,1) 0%, rgba(8,31,52,1) 100%)",
-               // height: "103.5%",
-               maxHeight: "103.5%",
-               width: "103%",
-               margin: "-12px",
-               borderRadius: "12px",
-               position: "relative"
-            }}
-         >
-            <TimeLineComponent />
-         </MainCard>
 
-         <PlatesRegisters />
+         <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
+         <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />
          {/* <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} /> */}
       </>
    );

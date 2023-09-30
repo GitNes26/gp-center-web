@@ -70,17 +70,29 @@ function createData(plates, initial_date, due_date) {
 }
 
 const rows = [
-   createData("AAA-00-00", "2020-01-01","2025-01-01"),
-   createData("AAA-00-01", "2020-01-01","2025-01-01"),
-   createData("AAA-00-02", "2020-01-01","2025-01-01"),
-   createData("AAA-00-03", "2020-01-01","2025-01-01"),
+   createData("AAA-00-00", "2020-01-01", "2025-01-01"),
+   createData("AAA-00-01", "2020-01-01", "2025-01-01"),
+   createData("AAA-00-02", "2020-01-01", "2025-01-01"),
+   createData("AAA-00-03", "2020-01-01", "2025-01-01")
 ];
 
-const PlatesRegisters = () => {
-   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
+const PlatesRegisters = ({ title, openDialog, setOpenDialog }) => {
+   const { setLoadingAction } = useGlobalContext();
    const { singularName, formData, setFormData } = useVehicleContext();
    const [page, setPage] = useState(0);
    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+   const toggleDrawer = (open) => (event) => {
+      try {
+         if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+            return;
+         }
+         setOpenDialog(open);
+      } catch (error) {
+         console.log("Error en toggleDrawer:", error);
+         Toast.Error(error);
+      }
+   };
 
    const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -140,7 +152,7 @@ const PlatesRegisters = () => {
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
             <Typography variant="h2" mb={3}>
-               {"REGISTRO DE PLAQUEO"}
+               {title}
             </Typography>
             <Paper sx={{ width: "100%", overflow: "hidden" }}>
                <TableContainer sx={{ maxHeight: "50%" }}>
@@ -155,6 +167,7 @@ const PlatesRegisters = () => {
                         </TableRow>
                      </TableHead>
                      <TableBody>
+                        {console.log(rows)}
                         {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                            return (
                               <TableRow hover role="checkbox" tabIndex={-1} key={row.plates}>

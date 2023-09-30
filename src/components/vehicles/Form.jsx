@@ -31,7 +31,7 @@ import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -39,18 +39,33 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import axios from "axios";
 import { Axios } from "../../context/AuthContext";
+import InputFileComponent from "../Form/InputFileComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { singularName, createVehicle, updateVehicle, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useVehicleContext();
+   const {
+      singularName,
+      createVehicle,
+      updateVehicle,
+      formData,
+      setFormData,
+      resetFormData,
+      textBtnSubmit,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle,
+      imgFile,
+      setImgFile,
+      imagePreview,
+      setImagePreview
+   } = useVehicleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
    const [dataModels, setDataModels] = useState([]);
-   const [imgFile, setImgFile] = useState(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -76,6 +91,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          else axiosResponse = await updateVehicle(values);
          if (axiosResponse.status_code == 200) {
             resetForm();
+            resetFormData();
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
@@ -97,6 +113,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
+         resetFormData();
          setDataModels([]);
          setFieldValue("id", id);
       } catch (error) {
@@ -108,8 +125,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
+         console.log(formData);
          if (!formData.description) formData.description = "";
          setValues(formData);
+         setImgFile(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
+         setImagePreview(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
          await handleChangeBrands(formData.brand_id, setFieldValue);
          setFieldValue("model_id", formData.model_id);
          setLoadingAction(false);
@@ -122,6 +142,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const handleCancel = (resetForm) => {
       try {
          resetForm();
+         resetFormData();
          setOpenDialog(false);
       } catch (error) {
          console.log(error);
@@ -157,16 +178,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          Toast.Error(error);
       }
    }, [formData]);
-
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
 
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       if (formHelperText) {
@@ -544,8 +555,22 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
 
                      {/* Imagen */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_path"
+                           label="Foto del vehículo"
+                           // value={values.img_path}
+                           placeholder=""
+                           setImgFile={setImgFile}
+                           imagePreview={imagePreview}
+                           setImagePreview={setImagePreview}
+                           handleChange={handleChange}
+                           handleBlur={handleBlur}
+                           setFieldValue={setFieldValue}
+                           error={errors.img_path}
+                           touched={touched.img_path}
+                        />
+                        {/* <TextField
                            id="img_path"
                            name="img_path"
                            label="Foto del Vehículo *"
@@ -565,7 +590,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            // inputRef={inputRefVehicle}
                            error={errors.img_path && touched.img_path}
                            helperText={errors.img_path && touched.img_path && errors.img_path}
-                        />
+                        /> */}
                      </Grid>
 
                      {/* Separador */}
@@ -584,7 +609,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            placeholder="Inserte las placas del vehículo"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "plates", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "plates", true)}
                            inputProps={{ maxLength: 9 }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
