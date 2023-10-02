@@ -39,6 +39,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import axios from "axios";
 import Select2Component from "../Form/Select2Component";
+import InputsCommunityComponent from "../Form/InputsCommunityComponent";
+import { useGetCommunityByZip } from "../../hooks/useGetCommunity";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -73,21 +75,16 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
-   const [disabledState, setDisabledState] = useState(true);
-   const [disabledCity, setDisabledCity] = useState(true);
-   const [disabledColony, setDisabledColony] = useState(true);
-   const [showLoading, setShowLoading] = useState(false);
-   const [dataStates, setDataStates] = useState([]);
-   const [dataCities, setDataCities] = useState([]);
-   const [dataColonies, setDataColonies] = useState([]);
+   // const [disabledState, setDisabledState] = useState(true);
+   // const [disabledCity, setDisabledCity] = useState(true);
+   // const [disabledColony, setDisabledColony] = useState(true);
+   // const [showLoading, setShowLoading] = useState(false);
+   // const [dataStates, setDataStates] = useState([]);
+   // const [dataCities, setDataCities] = useState([]);
+   // const [dataColonies, setDataColonies] = useState([]);
 
-   const handleChangeRole = (value2 /* value, input, setFieldValue */) => {
+   const handleChangeRole = (value2) => {
       try {
-         // if (!value) return (user.role = "Seleccione una opción...");
-         // formData[input] = value ? value.id : 0;
-         // setFieldValue(input, value ? value.id : 0);
-         // user.role = value.label;
-         // console.log("value2", value2);
          user.role = value2.label;
 
          setIsAdmin(false);
@@ -116,7 +113,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // return console.log(values);
+         console.log("formData", formData);
+         console.log("values", values);
          values.community_id = values.colony;
 
          setLoadingAction(true);
@@ -156,11 +154,15 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
+   const handleGetCommunityByZip = async (zip, setFieldValue, community_id = null) => {
+      // Lógica adicional si es necesario antes de llamar a la función del componente hijo
+      await getCommunityByZip(zip, setFieldValue, community_id);
+   };
    const handleModify = async (setValues, setFieldValue) => {
       try {
          // setLoadingAction(true);
          // console.log(user);
-         if (formData.community_id > 0) getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
+         if (formData.community_id > 0) await useGetCommunityByZip(formData.zip, setFieldValue, formData.community_id);
          if (!formData.description) formData.description = "";
          setValues(formData);
          setIsAdmin(formData.role_id <= 2 ? true : false);
@@ -254,66 +256,66 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    }, [formData, user]);
 
-   const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
-      try {
-         setShowLoading(true);
-         setDisabledState(true);
-         setDisabledCity(true);
-         setDisabledColony(true);
-         let states = [];
-         let cities = [];
-         let colonies = [];
-         setDataStates(states);
-         setDataCities(cities);
-         setDataColonies(colonies);
-         setFieldValue("state", 0);
-         setFieldValue("city", 0);
-         setFieldValue("colony", 0);
-         if (community_id) {
-            const axiosMyCommunity = axios;
-            const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
+   // const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
+   //    try {
+   //       setShowLoading(true);
+   //       setDisabledState(true);
+   //       setDisabledCity(true);
+   //       setDisabledColony(true);
+   //       let states = [];
+   //       let cities = [];
+   //       let colonies = [];
+   //       setDataStates(states);
+   //       setDataCities(cities);
+   //       setDataColonies(colonies);
+   //       setFieldValue("state", 0);
+   //       setFieldValue("city", 0);
+   //       setFieldValue("colony", 0);
+   //       if (community_id) {
+   //          const axiosMyCommunity = axios;
+   //          const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
 
-            if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
-            formData.zip = data.data.result.CodigoPostal;
-            formData.state = data.data.result.Estado;
-            formData.city = data.data.result.Municipio;
-            formData.colony = community_id;
-            await setFormData(formData);
-            zip = formData.zip;
-         }
-         const axiosCommunities = axios;
-         const axiosRes = await axiosCommunities.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);
-         if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
-         await axiosRes.data.data.result.map((d) => {
-            states.push(d.Estado);
-            cities.push(d.Municipio);
-            colonies.push({ id: d.id, Colonia: d.Colonia });
-         });
-         states = [...new Set(states)];
-         cities = [...new Set(cities)];
-         colonies = [...new Set(colonies)];
+   //          if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
+   //          formData.zip = data.data.result.CodigoPostal;
+   //          formData.state = data.data.result.Estado;
+   //          formData.city = data.data.result.Municipio;
+   //          formData.colony = community_id;
+   //          await setFormData(formData);
+   //          zip = formData.zip;
+   //       }
+   //       const axiosCommunities = axios;
+   //       const axiosRes = await axiosCommunities.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);
+   //       if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
+   //       await axiosRes.data.data.result.map((d) => {
+   //          states.push(d.Estado);
+   //          cities.push(d.Municipio);
+   //          colonies.push({ id: d.id, Colonia: d.Colonia });
+   //       });
+   //       states = [...new Set(states)];
+   //       cities = [...new Set(cities)];
+   //       colonies = [...new Set(colonies)];
 
-         if (states.length == 0) {
-            setShowLoading(false);
-            return Toast.Info("No hay comunidades registradas con este C.P.");
-         }
-         if (states.length > 1) setDisabledState(false);
-         if (cities.length > 1) setDisabledCity(false);
-         if (colonies.length > 1) setDisabledColony(false);
-         setDataStates(states);
-         setDataCities(cities);
-         setDataColonies(colonies);
-         setFieldValue("zip", community_id ? formData.zip : zip);
-         setFieldValue("state", community_id ? formData.state : states[0]);
-         setFieldValue("city", community_id ? formData.city : cities[0]);
-         setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
-         setShowLoading(false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-         setShowLoading(false);
-      }
-   };
+   //       if (states.length == 0) {
+   //          setShowLoading(false);
+   //          return Toast.Info("No hay comunidades registradas con este C.P.");
+   //       }
+   //       if (states.length > 1) setDisabledState(false);
+   //       if (cities.length > 1) setDisabledCity(false);
+   //       if (colonies.length > 1) setDisabledColony(false);
+   //       setDataStates(states);
+   //       setDataCities(cities);
+   //       setDataColonies(colonies);
+   //       setFieldValue("zip", community_id ? formData.zip : zip);
+   //       setFieldValue("state", community_id ? formData.state : states[0]);
+   //       setFieldValue("city", community_id ? formData.city : cities[0]);
+   //       setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
+   //       setShowLoading(false);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //       setShowLoading(false);
+   //    }
+   // };
    // const isOptionEqualToValue = (option, value) => {
    //    return option.label === value;
    // };
@@ -706,177 +708,17 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
-                           {/* community_id */}
-                           <Field id="community_id" name="community_id" type="hidden" value={values.community_id} onChange={handleChange} onBlur={handleBlur} />
-                           {/* Comunidad */}
-                           <Grid container spacing={2} xs={12} sx={{ p: 1 }}>
-                              {/* C.P. */}
-                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                                 <TextField
-                                    id="zip"
-                                    name="zip"
-                                    label="Código Postal *"
-                                    type="number"
-                                    value={values.zip}
-                                    placeholder="35000"
-                                    inputProps={{ maxLength: 5 }}
-                                    onChange={handleChange}
-                                    onBlur={(e) => {
-                                       handleBlur(e);
-                                       getCommunityByZip(e.target.value, setFieldValue);
-                                    }}
-                                    fullWidth
-                                    // disabled={values.id == 0 ? false : true}
-                                    error={errors.zip && touched.zip}
-                                    helperText={errors.zip && touched.zip && errors.zip}
-                                 />
-                              </Grid>
-                              {/* Estado */}
-                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                                 <FormControl fullWidth>
-                                    <InputLabel id="state-label">Estado</InputLabel>
-                                    <Select
-                                       id="state"
-                                       name="state"
-                                       label="Estado"
-                                       labelId="state-label"
-                                       value={values.state}
-                                       placeholder="Estado"
-                                       // readOnly={true}
-                                       disabled={disabledState}
-                                       onChange={handleChange}
-                                       onBlur={handleBlur}
-                                       error={errors.state && touched.state}
-                                    >
-                                       <MenuItem value={0} disabled>
-                                          Seleccione una opción...
-                                       </MenuItem>
-                                       {dataStates &&
-                                          dataStates.map((d, i) => (
-                                             <MenuItem key={i} value={d}>
-                                                {d}
-                                             </MenuItem>
-                                          ))}
-                                    </Select>
-                                    {touched.state && errors.state && errors.state}
-                                 </FormControl>
-                              </Grid>
-                              {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "47%", mt: 7 }} />}
-                              {/* Ciduad */}
-                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                                 <FormControl fullWidth>
-                                    <InputLabel id="city-label">Ciudad</InputLabel>
-                                    <Select
-                                       id="city"
-                                       name="city"
-                                       label="Ciudad"
-                                       labelId="city-label"
-                                       value={values.city}
-                                       placeholder="Ciudad"
-                                       // readOnly={true}
-                                       disabled={disabledCity}
-                                       onChange={handleChange}
-                                       onBlur={handleBlur}
-                                       error={errors.city && touched.city}
-                                    >
-                                       <MenuItem value={0} disabled>
-                                          Seleccione una opción...
-                                       </MenuItem>
-                                       {dataCities &&
-                                          dataCities.map((d, i) => (
-                                             <MenuItem key={i} value={d}>
-                                                {d}
-                                             </MenuItem>
-                                          ))}
-                                    </Select>
-                                    {touched.city && errors.city && errors.city}
-                                 </FormControl>
-                              </Grid>
-                              {/* Colonia */}
-                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                                 <FormControl fullWidth>
-                                    <InputLabel id="colony-label">Colonia</InputLabel>
-                                    <Select
-                                       id="colony"
-                                       name="colony"
-                                       label="Colonia"
-                                       labelId="colony-label"
-                                       value={values.colony}
-                                       placeholder="Colonia"
-                                       // readOnly={true}
-                                       disabled={disabledColony}
-                                       onChange={handleChange}
-                                       onBlur={handleBlur}
-                                       error={errors.colony && touched.colony}
-                                    >
-                                       <MenuItem value={0} disabled>
-                                          Seleccione una opción...
-                                       </MenuItem>
-                                       {dataColonies &&
-                                          dataColonies.map((d, i) => (
-                                             <MenuItem key={i} value={d.id}>
-                                                {d.Colonia}
-                                             </MenuItem>
-                                          ))}
-                                    </Select>
-                                    {touched.colony && errors.colony && errors.colony}
-                                 </FormControl>
-                              </Grid>
-                           </Grid>
-                           {/* Calle */}
-                           <Grid xs={12} md={8} sx={{ mb: 2 }}>
-                              <TextField
-                                 id="street"
-                                 name="street"
-                                 label="Calle *"
-                                 type="text"
-                                 value={values.street}
-                                 placeholder="Calle de las Garzas"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 fullWidth
-                                 // disabled={values.id == 0 ? false : true}
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "street", true)}
-                                 error={errors.street && touched.street}
-                                 helperText={errors.street && touched.street && errors.street}
-                              />
-                           </Grid>
-                           {/* No. Ext. */}
-                           <Grid xs={12} md={2} sx={{ mb: 2 }}>
-                              <TextField
-                                 id="num_ext"
-                                 name="num_ext"
-                                 label="No. Ext. *"
-                                 type="text"
-                                 value={values.num_ext}
-                                 placeholder="S/N"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 fullWidth
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "num_ext", true)}
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.num_ext && touched.num_ext}
-                                 helperText={errors.num_ext && touched.num_ext && errors.num_ext}
-                              />
-                           </Grid>
-                           {/* No. Int. */}
-                           <Grid xs={12} md={2} sx={{ mb: 2 }}>
-                              <TextField
-                                 id="num_int"
-                                 name="num_int"
-                                 label="No. Int."
-                                 type="text"
-                                 value={values.num_int}
-                                 placeholder="S/N"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 fullWidth
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "num_int", true)}
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.num_int && touched.num_int}
-                                 helperText={errors.num_int && touched.num_int && errors.num_int}
-                              />
-                           </Grid>
+
+                           <InputsCommunityComponent
+                              formData={formData}
+                              setFormData={setFormData}
+                              values={values}
+                              setFieldValue={setFieldValue}
+                              handleChange={handleChange}
+                              handleBlur={handleBlur}
+                              errors={errors}
+                              touched={touched}
+                           />
                         </>
                      )}
 
