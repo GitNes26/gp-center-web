@@ -1,5 +1,6 @@
 import { TextField } from "@mui/material";
-import { Box, bgcolor } from "@mui/system";
+import { Box } from "@mui/system";
+import PropTypes, { string } from "prop-types";
 
 const InputFileComponent = ({
    idName,
@@ -8,6 +9,7 @@ const InputFileComponent = ({
    placeholder,
    handleChange,
    handleBlur,
+   inputProps,
    setFieldValue,
    setImgFile,
    imagePreview,
@@ -48,7 +50,7 @@ const InputFileComponent = ({
             }}
             onBlur={handleBlur}
             variant="standard"
-            // InputProps={{ }}
+            inputProps={inputProps}
             fullWidth
             // disabled={values.id == 0 ? false : true}
             // inputRef={(el) => (inputsRef.current[0] = el)}
@@ -63,6 +65,22 @@ const InputFileComponent = ({
          </Box>
       </>
    );
+};
+
+InputFileComponent.PropTypes = {
+   idName: PropTypes.string.isRequired,
+   label: PropTypes.string.isRequired,
+   value: PropTypes.any,
+   placeholder: PropTypes.string.isRequired,
+   handleChange: PropTypes.func.isRequired,
+   handleBlur: PropTypes.func.isRequired,
+   inputProps: PropTypes.object,
+   setFieldValue: PropTypes.func.isRequired,
+   setImgFile: PropTypes.func.isRequired,
+   imagePreview: PropTypes.string.isRequired,
+   setImagePreview: PropTypes.func.isRequired,
+   error: PropTypes.any,
+   touched: PropTypes.any
 };
 
 export default InputFileComponent;

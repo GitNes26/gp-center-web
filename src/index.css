@@ -1,5 +1,4 @@
-.form,
-drawer-max-width {
+.form {
    max-width: 35vw;
 }
 
@@ -33,16 +32,12 @@ drawer-max-width {
 
 .brand-container {
    position: absolute;
-   /* left: 30%; */
-   /* top: 180px; */
-   /* width: -webkit-fill-available; */
-   bottom: 50px;
-   right: 20px;
+   left: 30%;
    transform: translateX(-50%);
+   top: 180px;
    z-index: 0;
    display: flex;
    align-items: center;
-   justify-content: center;
 }
 
 .zoom-in {
@@ -72,20 +67,17 @@ drawer-max-width {
 }
 
 @media (max-width: 1500px) {
-   .form,
-   drawer-max-width {
+   .form {
       max-width: 50vw;
    }
 }
 @media (max-width: 1040px) {
-   .form,
-   drawer-max-width {
+   .form {
       max-width: 80vw;
    }
 }
 @media (max-width: 420px) {
-   .form,
-   drawer-max-width {
+   .form {
       max-width: 95vw;
    }
 }

@@ -1,13 +1,18 @@
 import PropTypes from "prop-types";
 import { TextField } from "@mui/material";
 
+/**
+ * Input para usarse en conjunto con Formik y Yup para validaciones
+ * @param {*} param0
+ * @returns
+ */
 const InputComponent = ({ idName, label, type, value, placeholder, inputProps, fullWidth, handleChange, handleBlur, error, touched }) => {
    return (
       <TextField
          id={idName}
          name={idName}
-         label={label || ""}
-         type={type || ""}
+         label={label}
+         type={type}
          fullWidth={fullWidth}
          value={value}
          placeholder={placeholder || "Ingresa tu info"}
@@ -25,7 +30,6 @@ InputComponent.PropTypes = {
    idName: PropTypes.string.isRequired,
    label: PropTypes.string.isRequired,
    type: PropTypes.oneOf([
-      "text",
       "checkbox",
       "color",
       "date",
@@ -38,6 +42,7 @@ InputComponent.PropTypes = {
       "radio",
       "range",
       "tel",
+      "text",
       "time",
       "url",
       "week"
@@ -53,6 +58,7 @@ InputComponent.PropTypes = {
 };
 
 InputComponent.defaultProps = {
+   type: "text",
    placeholder: "",
    inputProps: {},
    fullWidth: true
