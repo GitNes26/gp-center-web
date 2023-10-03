@@ -55,6 +55,35 @@ const menuItems = {
          ]
       },
       {
+         id: "garage",
+         title: "Taller",
+         caption: "Catálogos del Taller",
+         type: "group",
+         children: [
+            {
+               id: "garage-store",
+               title: "Almacen (Stock)",
+               type: "item",
+               url: "/admin/taller/alamcen",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "garage-services",
+               title: "Servicios",
+               type: "item",
+               url: "/admin/taller/servicios",
+               icon: tablerIcons["IconCar"]
+            },
+            {
+               id: "garage-request",
+               title: "Requisiones - PENDIENTE",
+               type: "item",
+               url: "/admin/taller/requisiciones",
+               icon: tablerIcons["IconCar"]
+            }
+         ]
+      },
+      {
          id: "cove",
          title: "CoVe",
          caption: "Catálogos de Control Vehicular",
@@ -130,35 +159,6 @@ const menuItems = {
                title: "Vehículos Prestados",
                type: "item",
                url: "/admin/cove/vehiculos-entregados",
-               icon: tablerIcons["IconCar"]
-            }
-         ]
-      },
-      {
-         id: "garage",
-         title: "Taller",
-         caption: "Catálogos del Taller",
-         type: "group",
-         children: [
-            {
-               id: "garage-store",
-               title: "Almacen (Stock)",
-               type: "item",
-               url: "/admin/taller/alamcen",
-               icon: tablerIcons["IconCar"]
-            },
-            {
-               id: "garage-services",
-               title: "Servicios",
-               type: "item",
-               url: "/admin/taller/servicios",
-               icon: tablerIcons["IconCar"]
-            },
-            {
-               id: "garage-request",
-               title: "Requisiones - PENDIENTE",
-               type: "item",
-               url: "/admin/taller/requisiciones",
                icon: tablerIcons["IconCar"]
             }
          ]

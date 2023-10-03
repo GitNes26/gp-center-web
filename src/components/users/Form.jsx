@@ -30,8 +30,7 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
-import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
+import { handleInputFormik } from "../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -97,6 +96,14 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          Toast.Error(error);
       }
    };
+   const handleChangeSelectDepartment = (value2) => {
+      try {
+         user.department = value2.label;
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -115,7 +122,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       try {
          console.log("formData", formData);
          console.log("values", values);
-         values.community_id = values.colony;
+         // values.community_id = values.colony_id;
 
          setLoadingAction(true);
          let axiosResponse;
@@ -159,6 +166,14 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    //    await getCommunityByZip(zip, setFieldValue, community_id);
    // };
 
+   const [disabledState, setDisabledState] = useState(true);
+   const [disabledCity, setDisabledCity] = useState(true);
+   const [disabledColony, setDisabledColony] = useState(true);
+   const [showLoading, setShowLoading] = useState(false);
+   const [dataStates, setDataStates] = useState([]);
+   const [dataCities, setDataCities] = useState([]);
+   const [dataColonies, setDataColonies] = useState([]);
+
    const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
       try {
          setShowLoading(true);
@@ -192,7 +207,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          await axiosRes.data.data.result.map((d) => {
             states.push(d.Estado);
             cities.push(d.Municipio);
-            colonies.push({ id: d.id, Colonia: d.Colonia });
+            colonies.push({ id: d.id, label: d.Colonia });
          });
          states = [...new Set(states)];
          cities = [...new Set(cities)];
@@ -219,15 +234,25 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          setShowLoading(false);
       }
    };
-   // const isOptionEqualToValue = (option, value) => {
-   //    return option.label === value;
-   // };
+
+   const handleChangeColonySuccess = (communityValues) => {
+      try {
+         console.log(communityValues);
+         user.colony = communityValues.community.label;
+         user.community_id = communityValues.community.id;
+         formData.colony = communityValues.community.label;
+         formData.community_id = communityValues.community.id;
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleModify = async (setValues, setFieldValue) => {
       try {
          // setLoadingAction(true);
          // console.log(user);
-         if (formData.community_id > 0) await useGetCommunityByZip(formData.zip, setFieldValue, formData.community_id);
+         if (formData.community_id > 0) await getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
          if (!formData.description) formData.description = "";
          setValues(formData);
          setIsAdmin(formData.role_id <= 2 ? true : false);
@@ -606,7 +631,23 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            </Grid>
                            {/* Departameto */}
                            <Grid xs={12} md={8} sx={{ mb: 1 }}>
-                              <FormControl fullWidth>
+                              <Select2Component
+                                 idName={"department_id"}
+                                 label={"Departameto *"}
+                                 valueLabel={user.department}
+                                 formDataProp={formData.department_id}
+                                 objProp={user.department_id}
+                                 placeholder={"Selecciona una opción..."}
+                                 options={dataDepartments}
+                                 fullWidth={true}
+                                 handleChange={handleChange}
+                                 handleChangeValueSuccess={handleChangeSelectDepartment}
+                                 setFieldValue={setFieldValue}
+                                 handleBlur={handleBlur}
+                                 error={errors.department_id}
+                                 touched={touched.department_id}
+                              />
+                              {/* <FormControl fullWidth>
                                  <InputLabel id="role_id-label">Departameto *</InputLabel>
                                  <Select
                                     id="department_id"
@@ -632,7 +673,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                        {errors.department_id}
                                     </FormHelperText>
                                  )}
-                              </FormControl>
+                              </FormControl> */}
                            </Grid>
                            {/* Divisor */}
                            <Grid xs={12}>
@@ -710,7 +751,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
 
-                           {/* <InputsCommunityComponent
+                           <InputsCommunityComponent
                               formData={formData}
                               setFormData={setFormData}
                               values={values}
@@ -719,8 +760,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               handleBlur={handleBlur}
                               errors={errors}
                               touched={touched}
-                              getCommunityByZip={getCommunityByZip}
-                           /> */}
+                              changeColonySuccess={handleChangeColonySuccess}
+                           />
                         </>
                      )}
 

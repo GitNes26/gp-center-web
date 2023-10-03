@@ -108,7 +108,6 @@ const UserTable = () => {
    const data = [];
    const chargerData = async () => {
       try {
-         await setLoading(true);
          // console.log("cargar listado", users);
          await users.map((obj) => {
             // console.log(obj);

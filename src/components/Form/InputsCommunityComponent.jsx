@@ -5,94 +5,17 @@ import { CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField 
 import { handleInputFormik } from "../../utils/Formats";
 import { useState } from "react";
 import axios from "axios";
-// import { useGetCommunityByZip } from "../../hooks/useGetCommunity";
-
-export const getCommunityByZip = async (
-   zip,
-   setFieldValue,
-   community_id = null,
-   setDisabledState,
-   setDisabledCity,
-   setDisabledColony,
-   setShowLoading,
-   setDataStates,
-   setDataCities,
-   setDataColonies
-) => {
-   // const [disabledState, setDisabledState] = useState(true);
-   // const [disabledCity, setDisabledCity] = useState(true);
-   // const [disabledColony, setDisabledColony] = useState(true);
-   // const [showLoading, setShowLoading ] = useState(false);
-   // const [dataStates, setDataStates] = useState([]);
-   // const [dataCities, setDataCities] = useState([]);
-   // const [dataColonies, setDataColonies] = useState([]);
-
-   try {
-      setShowLoading(true);
-      setDisabledState(true);
-      setDisabledCity(true);
-      setDisabledColony(true);
-      let states = [];
-      let cities = [];
-      let colonies = [];
-      setDataStates(states);
-      setDataCities(cities);
-      setDataColonies(colonies);
-      setFieldValue("state", 0);
-      setFieldValue("city", 0);
-      setFieldValue("colony", 0);
-      if (community_id) {
-         const axiosMyCommunity = axios;
-         const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
-
-         if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
-         formData.zip = data.data.result.CodigoPostal;
-         formData.state = data.data.result.Estado;
-         formData.city = data.data.result.Municipio;
-         formData.colony = community_id;
-         await setFormData(formData);
-         zip = formData.zip;
-      }
-      const axiosCommunities = axios;
-      const axiosRes = await axiosCommunities.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);
-      if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
-      await axiosRes.data.data.result.map((d) => {
-         states.push(d.Estado);
-         cities.push(d.Municipio);
-         colonies.push({ id: d.id, Colonia: d.Colonia });
-      });
-      states = [...new Set(states)];
-      cities = [...new Set(cities)];
-      colonies = [...new Set(colonies)];
-
-      if (states.length == 0) {
-         setShowLoading(false);
-         return Toast.Info("No hay comunidades registradas con este C.P.");
-      }
-      if (states.length > 1) setDisabledState(false);
-      if (cities.length > 1) setDisabledCity(false);
-      if (colonies.length > 1) setDisabledColony(false);
-      setDataStates(states);
-      setDataCities(cities);
-      setDataColonies(colonies);
-      setFieldValue("zip", community_id ? formData.zip : zip);
-      setFieldValue("state", community_id ? formData.state : states[0]);
-      setFieldValue("city", community_id ? formData.city : cities[0]);
-      setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
-      setShowLoading(false);
-   } catch (error) {
-      console.log(error);
-      Toast.Error(error);
-      setShowLoading(false);
-   }
-};
+import { useGlobalContext } from "../../context/GlobalContext";
+import Select2Component from "./Select2Component";
 
 /**
  * Estos Inputs, deben de estar dentro de Formik, validados con Yup y dentro de grillas
  * @param {*} param0
  * @returns community_id: int
  */
-const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue, handleChange, handleBlur, errors, touched, getCommunityByZip }) => {
+const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue, handleChange, handleBlur, errors, touched, changeColonySuccess }) => {
+   // const { getCommunityByZip } = useGlobalContext();
+
    const [disabledState, setDisabledState] = useState(true);
    const [disabledCity, setDisabledCity] = useState(true);
    const [disabledColony, setDisabledColony] = useState(true);
@@ -100,16 +23,89 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
    const [dataStates, setDataStates] = useState([]);
    const [dataCities, setDataCities] = useState([]);
    const [dataColonies, setDataColonies] = useState([]);
+   const [dataColoniesComplete, setDataColoniesComplete] = useState([]);
 
-   // handleGetCommunityByZip = async (zip, setFieldValue, community_id = null) => {
-   //    try {
-   //       getCommunityByZip(zip, setFieldValue, community_id);
-   //    } catch (error) {
-   //       console.log(error);
-   //       Toast.Error(error);
-   //       setShowLoading(false);
-   //    }
-   // };
+   const handleBlurZip = async (zip, setFieldValue, community_id = null) => {
+      try {
+         setShowLoading(true);
+         setDisabledState(true);
+         setDisabledCity(true);
+         setDisabledColony(true);
+         let states = [];
+         // states.push("Seleccione una opción...");
+         let cities = [];
+         // cities.push("Seleccione una opción...");
+         let colonies = [];
+         colonies.push("Seleccione una opción...");
+         let coloniesComplete = [];
+         coloniesComplete.push("Seleccione una opción...");
+         setDataStates(states);
+         setDataCities(cities);
+         setDataColonies(colonies);
+         setDataColoniesComplete(coloniesComplete);
+         setFieldValue("state", 0);
+         setFieldValue("city", 0);
+         setFieldValue("colony", 0);
+         if (community_id) {
+            const axiosMyCommunity = axios;
+            const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
+
+            if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
+            formData.zip = data.data.result.CodigoPostal;
+            formData.state = data.data.result.Estado;
+            formData.city = data.data.result.Municipio;
+            formData.colony = community_id;
+            await setFormData(formData);
+            zip = formData.zip;
+         }
+         const axiosCommunities = axios;
+         const axiosRes = await axiosCommunities.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);
+         if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
+         await axiosRes.data.data.result.map((d) => {
+            states.push(d.Estado);
+            cities.push(d.Municipio);
+            colonies.push(d.Colonia);
+            coloniesComplete.push({ id: d.id, label: d.Colonia });
+         });
+         states = [...new Set(states)];
+         cities = [...new Set(cities)];
+         colonies = [...new Set(colonies)];
+         coloniesComplete = [...new Set(coloniesComplete)];
+
+         if (states.length == 0) {
+            setShowLoading(false);
+            return Toast.Info("No hay comunidades registradas con este C.P.");
+         }
+         if (states.length > 1) setDisabledState(false);
+         if (cities.length > 1) setDisabledCity(false);
+         if (colonies.length > 1) setDisabledColony(false);
+         setDataStates(states);
+         setDataCities(cities);
+         setDataColonies(colonies);
+         setDataColoniesComplete(coloniesComplete);
+         setFieldValue("zip", community_id ? formData.zip : zip);
+         setFieldValue("state", community_id ? formData.state : states[0]);
+         setFieldValue("city", community_id ? formData.city : cities[0]);
+         setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
+         setShowLoading(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+         setShowLoading(false);
+      }
+   };
+
+   const handleChangeColony = (value2) => {
+      try {
+         values.colony = value2;
+         values.community = dataColoniesComplete.find((c) => c.label === value2);
+         values.community_id = values.community.id;
+         changeColonySuccess(values);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    return (
       <>
@@ -130,17 +126,7 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                   onChange={handleChange}
                   onBlur={async (e) => {
                      handleBlur(e);
-                     await getCommunityByZip(
-                        e.target.value,
-                        setFieldValue,
-                        setDisabledState,
-                        setDisabledCity,
-                        setDisabledColony,
-                        setShowLoading,
-                        setDataStates,
-                        setDataCities,
-                        setDataColonies
-                     );
+                     await handleBlurZip(e.target.value, setFieldValue);
                   }}
                   fullWidth
                   // disabled={values.id == 0 ? false : true}
@@ -150,9 +136,26 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
             </Grid>
             {/* Estado */}
             <Grid xs={12} md={6} sx={{ mb: 2 }}>
-               <FormControl fullWidth>
-                  <InputLabel id="state-label">Estado</InputLabel>
-                  <Select
+               <Select2Component
+                  idName={"state"}
+                  label={"Estado"}
+                  valueLabel={values.state}
+                  formDataProp={formData.state}
+                  objProp={values.state}
+                  placeholder={"Selecciona una opción..."}
+                  options={dataStates}
+                  fullWidth={true}
+                  handleChange={handleChange}
+                  // handleChangeValueSuccess={handleChangeState}
+                  setFieldValue={setFieldValue}
+                  handleBlur={handleBlur}
+                  error={errors.state}
+                  touched={touched.state}
+                  disabled={disabledState}
+               />
+               {/* <FormControl fullWidth>
+                  <InputLabel id="state-label">Estado</InputLabel> */}
+               {/* <Select
                      id="state"
                      name="state"
                      label="Estado"
@@ -176,12 +179,29 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                         ))}
                   </Select>
                   {touched.state && errors.state && errors.state}
-               </FormControl>
+               </FormControl> */}
             </Grid>
-            {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "47%", mt: 7 }} />}
+            {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "45.5%", mt: 7 }} />}
             {/* Ciduad */}
             <Grid xs={12} md={6} sx={{ mb: 2 }}>
-               <FormControl fullWidth>
+               <Select2Component
+                  idName={"city"}
+                  label={"Ciudad"}
+                  valueLabel={values.city}
+                  formDataProp={formData.city}
+                  objProp={values.city}
+                  placeholder={"Selecciona una opción..."}
+                  options={dataCities}
+                  fullWidth={true}
+                  handleChange={handleChange}
+                  // handleChangeValueSuccess={handleChangeState}
+                  setFieldValue={setFieldValue}
+                  handleBlur={handleBlur}
+                  error={errors.city}
+                  touched={touched.city}
+                  disabled={disabledCity}
+               />
+               {/* <FormControl fullWidth>
                   <InputLabel id="city-label">Ciudad</InputLabel>
                   <Select
                      id="city"
@@ -207,11 +227,28 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                         ))}
                   </Select>
                   {touched.city && errors.city && errors.city}
-               </FormControl>
+               </FormControl> */}
             </Grid>
             {/* Colonia */}
             <Grid xs={12} md={6} sx={{ mb: 2 }}>
-               <FormControl fullWidth>
+               <Select2Component
+                  idName={"colony"}
+                  label={"Colonia"}
+                  valueLabel={values.colony}
+                  formDataProp={formData.colony}
+                  objProp={values.colony}
+                  placeholder={"Selecciona una opción..."}
+                  options={dataColonies}
+                  fullWidth={true}
+                  handleChange={handleChange}
+                  handleChangeValueSuccess={handleChangeColony}
+                  setFieldValue={setFieldValue}
+                  handleBlur={handleBlur}
+                  error={errors.colony}
+                  touched={touched.colony}
+                  disabled={disabledColony}
+               />
+               {/* <FormControl fullWidth>
                   <InputLabel id="colony-label">Colonia</InputLabel>
                   <Select
                      id="colony"
@@ -237,7 +274,7 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                         ))}
                   </Select>
                   {touched.colony && errors.colony && errors.colony}
-               </FormControl>
+               </FormControl> */}
             </Grid>
          </Grid>
          {/* Calle */}
