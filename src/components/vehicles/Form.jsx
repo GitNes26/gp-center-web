@@ -66,6 +66,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
    const [dataModels, setDataModels] = useState([]);
+   const [changePlates, setChangePlates] = useState(false);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -598,6 +599,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 
+                     {/* Switch para mostrar el cambiar contraseña */}
+
+                     {/* <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                        <FormControlLabel control={<Switch />} label="Cambiar Contraseña" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
+                     </Grid> */}
                      {/* Placas */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField

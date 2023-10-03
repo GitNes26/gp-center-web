@@ -32,9 +32,9 @@
 
 .brand-container {
    position: absolute;
-   left: 30%;
-   transform: translateX(-50%);
-   top: 180px;
+   bottom: 50px;
+   /* transform: translateX(-50%); */
+   right: 50px;
    z-index: 0;
    display: flex;
    align-items: center;
