@@ -45,8 +45,9 @@ import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 // import bgGarage from "../../assets/images/bg-primary.jpg";
-import bgPlatform from "../../../assets/images/bg-auto.jpg";
 // import bgPrimary from "../../assets/images/fondo menú.jpg";
+// import bgPlatform from "../../../assets/images/bg-auto.jpg";
+import bgPlatform from "../../../assets/images/bg-primary.jpg";
 import { Box, fontSize } from "@mui/system";
 import ImgCar from "../../../assets/images/auto.png";
 import { drawerWidth } from "../../../config/store/constant";
@@ -288,7 +289,7 @@ const ShowVehicleView = () => {
             {/* IMAGEN INSIGNIA MARCA */}
             <Box className={`brand-container ${classesImgVehicle}`}>
                <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "100px" }} />
-               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "40px" }}>
+               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "42px", textShadow: "2px 2px 4px rgba(0, 0, 0, 1)" }}>
                   {vehicle && vehicle.model}
                </Typography>
             </Box>

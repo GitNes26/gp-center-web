@@ -78,7 +78,7 @@ const MainLayout = () => {
             enableColorOnDark
             position="fixed"
             color="inherit"
-            elevation={0}
+            elevation={5}
             sx={{
                bgcolor: theme.palette.background.default,
                transition: leftDrawerOpened ? theme.transitions.create("width") : "none"

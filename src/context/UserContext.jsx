@@ -41,7 +41,7 @@ const userInitialState = {
    license_due_date: "",
    payroll_number: "",
    department_id: "",
-   department: "Sin Asignar",
+   department: "Seleccione una opción...",
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",

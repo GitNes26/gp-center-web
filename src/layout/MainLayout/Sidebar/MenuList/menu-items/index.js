@@ -13,13 +13,20 @@ const menuItems = {
          title: "Dashboard",
          type: "group",
          children: [
+            // {
+            //    id: "default",
+            //    title: "Dashboard",
+            //    type: "item",
+            //    url: "/admin/",
+            //    icon: tablerIcons["IconDashboard"],
+            //    breadcrumbs: false
+            // },
             {
-               id: "default",
-               title: "Dashboard",
+               id: "cove-vehicles-searching",
+               title: "Busqueda",
                type: "item",
-               url: "/admin/",
-               icon: tablerIcons["IconDashboard"],
-               breadcrumbs: false
+               url: "/admin/cove",
+               icon: tablerIcons["IconSearch"]
             }
          ]
       },
@@ -111,34 +118,27 @@ const menuItems = {
                icon: tablerIcons["IconStatusChange"]
             },
             {
-               id: "cove-vehicles",
+               // id: "cove-vehicles",
+               // title: "Vehículos",
+               // type: "collapse",
+               // icon: tablerIcons["IconCar"],
+               // children: [
+               //    {
+               id: "cove-vehicles-list",
                title: "Vehículos",
-               type: "collapse",
-               icon: tablerIcons["IconCar"],
-               children: [
-                  {
-                     id: "cove-vehicles-list",
-                     title: "Lista",
-                     type: "item",
-                     url: "/admin/cove/vehiculos",
-                     icon: tablerIcons["IconCar"]
-                  },
-                  {
-                     id: "cove-vehicles-searching",
-                     title: "Busqueda",
-                     type: "item",
-                     url: "/admin/cove/vehiculos/busqueda",
-                     icon: tablerIcons["IconSearch"],
-                     bgGarage: true
-                  }
-               ]
-            },
-            {
-               id: "cove-vehicle-plates",
-               title: "Placas Vehiculares - QUIZA UNIRLO CON VEHICULOS",
                type: "item",
-               url: "/admin/cove/placas-vehiculos",
+               url: "/admin/cove/vehiculos",
                icon: tablerIcons["IconCar"]
+               //    },
+               //    {
+               //       id: "cove-vehicles-searching",
+               //       title: "Busqueda",
+               //       type: "item",
+               //       url: "/admin/cove/vehiculos/busqueda",
+               //       icon: tablerIcons["IconSearch"],
+               //       bgGarage: true
+               //    }
+               // ]
             },
             {
                id: "cove-assigned-vehicle",

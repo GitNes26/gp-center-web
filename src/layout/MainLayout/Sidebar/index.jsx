@@ -13,6 +13,7 @@ import MenuList from "./MenuList";
 import LogoSection from "../LogoSection";
 import MenuCard from "./MenuCard";
 import { drawerWidth } from "../../../config/store/constant";
+import { gpcBlue, gpcDark, gpcDark100 } from "../../../context/GlobalContext";
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
@@ -21,17 +22,17 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
    const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
 
    const drawer = (
-      <>
+      <Box sx={{ bgcolor: gpcDark }}>
          <Box sx={{ display: { xs: "block", md: "none" } }}>
             <Box sx={{ display: "flex", p: 2, mx: "auto" }}>
                <LogoSection />
             </Box>
          </Box>
-         <BrowserView>
+         <BrowserView sx={{ }}>
             <PerfectScrollbar
                component="div"
                style={{
-                  height: !matchUpMd ? "calc(100vh - 56px)" : "calc(100vh - 88px)",
+                  height: !matchUpMd ? "calc(100% - 56px)" : "calc(100% - 68px)",
                   paddingLeft: "16px",
                   paddingRight: "16px"
                }}
@@ -52,7 +53,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                </Stack>
             </Box>
          </MobileView>
-      </>
+      </Box>
    );
 
    const container = window !== undefined ? () => window.document.body : undefined;

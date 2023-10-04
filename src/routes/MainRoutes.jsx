@@ -29,11 +29,25 @@ const MainRoutes = {
    children: [
       {
          index: true,
-         element: <DashboardDefault />
+         element: (
+            <VehicleContextProvider>
+               <ShowVehicleView />
+            </VehicleContextProvider>
+         )
       },
+      // {
+      //    path: "dashboard",
+      //    element: <DashboardDefault />
+      // },
       {
-         path: "dashboard",
-         element: <DashboardDefault />
+         path: "cove",
+         element: (
+            <VehicleContextProvider>
+               <ShowVehicleView />
+            </VehicleContextProvider>
+         ),
+         // loader: loaderIndexShowVehicleView,
+         bgImage: true
       },
       {
          path: "usuarios",
@@ -91,16 +105,6 @@ const MainRoutes = {
                   </VehicleContextProvider>
                ),
                loader: loaderIndexVehiclesView
-            },
-            {
-               path: "vehiculos/busqueda",
-               element: (
-                  <VehicleContextProvider>
-                     <ShowVehicleView />
-                  </VehicleContextProvider>
-               ),
-               // loader: loaderIndexShowVehicleView,
-               bgImage: true
             }
          ]
       }

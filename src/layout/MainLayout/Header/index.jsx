@@ -13,6 +13,7 @@ import NotificationSection from "./NotificationSection";
 // assets
 import { IconMenu2 } from "@tabler/icons";
 import logoDark from "../../../assets/images/logo-dark.png";
+import { gpcBlue } from "../../../context/GlobalContext";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 

@@ -2,6 +2,15 @@ import { useSnackbar } from "notistack";
 import { createContext, useContext, useEffect, useState } from "react";
 import Toast from "../utils/Toast";
 import axios from "axios";
+
+//mis colores
+export const gpcLight = "#E9ECEF";
+export const gpcDark = "#1E2126";
+export const gpcDark100 = "#566173";
+export const gpcDarkContrast = "#E9ECEF";
+export const gpcBlue = "#1455CB";
+export const gpcText = "#1455CB";
+
 export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {

@@ -1,10 +1,9 @@
 //mis colores
-$gpcLight: #E9ECEF;
-$gpcDark: #1E2126;
-$gpcDark100: #566173;
-$gpcDarkContrast: #E9ECEF;
-$gpcBlue: #1455CB;
-$gpcText: #1455CB;
+$gpcLight: "#E9ECEF";
+$gpcDark: "#1E2126";
+$gpcDarkContrast: "#E9ECEF";
+$gpcBlue: "#1455CB";
+$gpcText: "#1455CB";
 
 // paper & background
 $paper: #ffffff;
@@ -12,14 +11,14 @@ $paper: #ffffff;
 // primary
 $primaryLight: #eef2f6;
 $primaryMain: #2196f3;
-$primaryDark: #1e88e5;
+$primaryDark: #e9ecef;
 $primary200: #90caf9;
-$primary800: #1565c0;
+$primary800: #010202;
 
 // secondary
-$secondaryLight: #ede7f6;
-$secondaryMain: #673ab7;
-$secondaryDark: #5e35b1;
+$secondaryLight: #1455cb;
+$secondaryMain: #1455cb;
+$secondaryDark: #1e2126;
 $secondary200: #b39ddb;
 $secondary800: #4527a0;
 
@@ -45,14 +44,14 @@ $warningMain: #ffe57f;
 $warningDark: #ffc107;
 
 // grey
-$grey50: #f8fafc;
+$grey50: #ffffff;
 $grey100: #eef2f6;
 $grey200: #e3e8ef;
 $grey300: #cdd5df;
-$grey500: #697586;
+$grey500: #e5e5e5;
 $grey600: #4b5565;
-$grey700: #364152;
-$grey900: #121926;
+$grey700: #a1a1a5;
+$grey900: #ffffff;
 
 // ==============================|| DARK THEME VARIANTS ||============================== //
 
@@ -86,7 +85,7 @@ $darkTextSecondary: #8492c4;
 // ==============================|| JAVASCRIPT ||============================== //
 
 :export {
-   //myColors
+   //mis variables
    gpcLight: $gpcLight;
    gpcDark: $gpcDark;
    gpcDarkContrast: $gpcDarkContrast;
