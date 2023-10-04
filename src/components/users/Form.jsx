@@ -152,7 +152,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       try {
          resetForm();
          resetUser();
-         user.role = "Seleccione una opción...";
+         user.role = "Selecciona una opción...";
          setStrength(0);
          setFieldValue("id", id);
       } catch (error) {
@@ -268,7 +268,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       try {
          resetForm();
          resetUser();
-         user.role = "Seleccione una opción...";
+         user.role = "Selecciona una opción...";
          setStrength(0);
          setOpenDialog(false);
       } catch (error) {
@@ -515,8 +515,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               fullWidth
                               disabled={values.id == 0 ? false : true}
                               error={errors.role_id && touched.role_id}
-                              defaultValue={user ? user.role : "Seleccione una opción..."}
-                              value={user ? user.role : "Seleccione una opción..."}
+                              defaultValue={user ? user.role : "Selecciona una opción..."}
+                              value={user ? user.role : "Selecciona una opción..."}
                            /> */}
 
                         {/* <InputLabel id="role_id-label">Rol *</InputLabel>
@@ -534,7 +534,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               onBlur={handleBlur}
                               error={errors.role_id && touched.role_id}
                            >
-                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
                               {dataRoles &&
                                  dataRoles.map((d) => (
                                     <MenuItem key={d.value} value={d.value}>
@@ -660,7 +660,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                     onBlur={handleBlur}
                                     error={errors.department_id && touched.department_id}
                                  >
-                                    <MenuItem value={-1}>Seleccione una opción...</MenuItem>
+                                    <MenuItem value={-1}>Selecciona una opción...</MenuItem>
                                     {dataDepartments &&
                                        dataDepartments.map((d) => (
                                           <MenuItem key={d.value} value={d.value}>

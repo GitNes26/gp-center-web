@@ -33,7 +33,7 @@ const Select2Component = ({
    const handleChangeValue = (value, input, setFieldValue) => {
       try {
          // console.log("value del changeValue", value);
-         if (!value) return (valueLabel = "Seleccione una opción...");
+         if (!value) return (valueLabel = "Selecciona una opción...");
          formDataProp = value ? value.id : 0;
          objProp = value ? value.id : 0;
          setFieldValue(input, value ? value.id : 0);
@@ -68,8 +68,8 @@ const Select2Component = ({
             // disabled={values.id == 0 ? false : true}
             disabled={disabled}
             error={error && touched}
-            defaultValue={valueLabel || "Seleccione una opción..."}
-            value={valueLabel || "Seleccione una opción..."}
+            defaultValue={valueLabel || "Selecciona una opción..."}
+            value={valueLabel || "Selecciona una opción..."}
          />
          {touched && error && (
             <FormHelperText error id={`ht-${idName}`}>

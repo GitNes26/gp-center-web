@@ -230,7 +230,7 @@ const ModelForm = ({ dataBrands }) => {
                               onBlur={handleBlur}
                               error={errors.brand_id && touched.brand_id}
                            >
-                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
                               {dataBrands &&
                                  dataBrands.map((d) => (
                                     <MenuItem key={d.value} value={d.value}>

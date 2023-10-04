@@ -280,8 +280,8 @@ const GenericForm = () => {
                               fullWidth
                               disabled={values.id == 0 ? false : true}
                               error={errors.role_id && touched.role_id}
-                              defaultValue={generic ? generic.role : "Seleccione una opción..."}
-                              value={generic ? generic.role : "Seleccione una opción..."}
+                              defaultValue={generic ? generic.role : "Selecciona una opción..."}
+                              value={generic ? generic.role : "Selecciona una opción..."}
                            />
 
                            {/* <InputLabel id="role_id-label">Rol *</InputLabel>
@@ -299,7 +299,7 @@ const GenericForm = () => {
                               onBlur={handleBlur}
                               error={errors.role_id && touched.role_id}
                            >
-                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
                               {dataRoles &&
                                  dataRoles.map((d) => (
                                     <MenuItem key={d.value} value={d.value}>

@@ -79,10 +79,10 @@ export const loaderIndexRolesView = async () => {
 
       const axiosRoles = await Axios.get("/roles/selectIndex");
       res.result.roles = axiosRoles.data.data.result;
-      // res.result.roles.unshift({ id: 0, label: "Seleccione una opción..." });
+      // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
       const axiosDepartments = await Axios.get("/departments/selectIndex");
       res.result.departments = axiosDepartments.data.data.result;
-      // res.result.departments.unshift({ id: 0, label: "Seleccione una opción..." });
+      // res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
       // const axiosColonies = await Axios.get("/colonies/selectIndex");
       // res.result.colonies = axiosColonies.data.data.result;
       // // console.log(res);

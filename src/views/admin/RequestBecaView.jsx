@@ -653,7 +653,7 @@ const RequestBecaView = () => {
                                           onBlur={handleBlur}
                                           error={errors.disability_id && touched.disability_id}
                                        >
-                                          <MenuItem value={-1}>Seleccione una opción...</MenuItem>
+                                          <MenuItem value={-1}>Selecciona una opción...</MenuItem>
                                           {dataDisabilities &&
                                              dataDisabilities.map((d) => (
                                                 <MenuItem key={d.value} value={d.value}>
@@ -708,7 +708,7 @@ const RequestBecaView = () => {
                                           error={errors.state && touched.state}
                                        >
                                           <MenuItem value={null} disabled>
-                                             Seleccione una opción...
+                                             Selecciona una opción...
                                           </MenuItem>
                                           <MenuItem value={1}>Coahuila</MenuItem>
                                           {/* {dataCities &&
@@ -738,7 +738,7 @@ const RequestBecaView = () => {
                                           error={errors.city && touched.city}
                                        >
                                           <MenuItem value={null} disabled>
-                                             Seleccione una opción...
+                                             Selecciona una opción...
                                           </MenuItem>
                                           <MenuItem value={1}>Torreón</MenuItem>
                                           {/* {dataCities &&
@@ -768,7 +768,7 @@ const RequestBecaView = () => {
                                           error={errors.colony && touched.colony}
                                        >
                                           <MenuItem value={null} disabled>
-                                             Seleccione una opción...
+                                             Selecciona una opción...
                                           </MenuItem>
                                           <MenuItem value={1}>Alamedas INFONAVIT</MenuItem>
                                           {/* {dataCities &&
@@ -879,7 +879,7 @@ const RequestBecaView = () => {
                                           error={errors.school_id && touched.school_id}
                                        >
                                           <MenuItem value={null} disabled>
-                                             Seleccione una opción...
+                                             Selecciona una opción...
                                           </MenuItem>
                                           {dataSchools &&
                                              dataSchools.map((d) => (

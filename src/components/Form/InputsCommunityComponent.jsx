@@ -32,13 +32,13 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
          setDisabledCity(true);
          setDisabledColony(true);
          let states = [];
-         // states.push("Seleccione una opción...");
+         // states.push("Selecciona una opción...");
          let cities = [];
-         // cities.push("Seleccione una opción...");
+         // cities.push("Selecciona una opción...");
          let colonies = [];
-         colonies.push("Seleccione una opción...");
+         colonies.push("Selecciona una opción...");
          let coloniesComplete = [];
-         coloniesComplete.push("Seleccione una opción...");
+         coloniesComplete.push("Selecciona una opción...");
          setDataStates(states);
          setDataCities(cities);
          setDataColonies(colonies);
@@ -169,7 +169,7 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                      error={errors.state && touched.state}
                   >
                      <MenuItem value={0} disabled>
-                        Seleccione una opción...
+                        Selecciona una opción...
                      </MenuItem>
                      {dataStates &&
                         dataStates.map((d, i) => (
@@ -217,7 +217,7 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                      error={errors.city && touched.city}
                   >
                      <MenuItem value={0} disabled>
-                        Seleccione una opción...
+                        Selecciona una opción...
                      </MenuItem>
                      {dataCities &&
                         dataCities.map((d, i) => (
@@ -264,7 +264,7 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                      error={errors.colony && touched.colony}
                   >
                      <MenuItem value={0} disabled>
-                        Seleccione una opción...
+                        Selecciona una opción...
                      </MenuItem>
                      {dataColonies &&
                         dataColonies.map((d, i) => (

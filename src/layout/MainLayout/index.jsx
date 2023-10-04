@@ -19,8 +19,6 @@ import { IconChevronRight } from "@tabler/icons";
 import { useAuthContext } from "../../context/AuthContext";
 import { useGlobalContext } from "../../context/GlobalContext";
 // import AuthContextProvider, { useAuthContext } from "../../context/AuthContextFirebase";
-import bgGarage from "../../assets/images/bg-primary.jpg";
-import bgPlatform from "../../assets/images/bg-auto.jpg";
 
 // styles
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({

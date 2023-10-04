@@ -495,7 +495,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               onBlur={handleBlur}
                               error={errors.role_id && touched.role_id}
                            >
-                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
                               {dataRoles &&
                                  dataRoles.map((d) => (
                                     <MenuItem key={d.value} value={d.value}>
@@ -603,7 +603,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                     onBlur={handleBlur}
                                     error={errors.department_id && touched.department_id}
                                  >
-                                    <MenuItem value={-1}>Seleccione una opción...</MenuItem>
+                                    <MenuItem value={-1}>Selecciona una opción...</MenuItem>
                                     {dataDepartments &&
                                        dataDepartments.map((d) => (
                                           <MenuItem key={d.value} value={d.value}>
@@ -731,7 +731,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                        error={errors.state && touched.state}
                                     >
                                        <MenuItem value={0} disabled>
-                                          Seleccione una opción...
+                                          Selecciona una opción...
                                        </MenuItem>
                                        {dataStates &&
                                           dataStates.map((d, i) => (
@@ -762,7 +762,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                        error={errors.city && touched.city}
                                     >
                                        <MenuItem value={0} disabled>
-                                          Seleccione una opción...
+                                          Selecciona una opción...
                                        </MenuItem>
                                        {dataCities &&
                                           dataCities.map((d, i) => (
@@ -792,7 +792,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                        error={errors.colony && touched.colony}
                                     >
                                        <MenuItem value={0} disabled>
-                                          Seleccione una opción...
+                                          Selecciona una opción...
                                        </MenuItem>
                                        {dataColonies &&
                                           dataColonies.map((d, i) => (

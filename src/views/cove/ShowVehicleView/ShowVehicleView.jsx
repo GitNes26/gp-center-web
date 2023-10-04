@@ -324,7 +324,7 @@ export const loaderIndexShowVehicleView = async () => {
 
       const axiosBrands = await Axios.get("/brands/selectIndex");
       res.result.brands = axiosBrands.data.data.result;
-      // res.result.brands.unshift({ id: 0, label: "Seleccione una opción..." });
+      // res.result.brands.unshift({ id: 0, label: "Selecciona una opción..." });
       const axiosStatus = await Axios.get("/vehicleStatus/selectIndex");
       res.result.vehicleStatus = axiosStatus.data.data.result;
 

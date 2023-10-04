@@ -78,7 +78,7 @@ export const loaderIndexGenericsView = async () => {
 
       axiosResponse = await Axios.get("/roles/selectIndex");
       res.result.roles = axiosResponse.data.data.result;
-      // res.result.roles.unshift({ id: 0, label: "Seleccione una opción..." });
+      // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
 
       return res;
    } catch (error) {

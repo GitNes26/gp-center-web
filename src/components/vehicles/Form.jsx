@@ -312,7 +312,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                               onBlur={handleBlur}
                               error={errors.brand_id && touched.brand_id}
                            >
-                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
                               {dataBrands &&
                                  dataBrands.map((d) => (
                                     <MenuItem key={d.value} value={d.value}>
@@ -389,7 +389,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                               disabled={dataModels.length == 0 ? true : false}
                               error={errors.model_id && touched.model_id}
                            >
-                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
                               {dataModels &&
                                  dataModels.map((d) => (
                                     <MenuItem key={d.value} value={d.value}>
@@ -514,7 +514,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                               onBlur={handleBlur}
                               error={errors.vehicle_status_id && touched.vehicle_status_id}
                            >
-                              <MenuItem value={0}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
                               {dataVehicleStatus &&
                                  dataVehicleStatus.map((d) => (
                                     <MenuItem

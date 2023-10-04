@@ -247,7 +247,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                               onBlur={handleBlur}
                               error={errors.level_id && touched.level_id}
                            >
-                              <MenuItem value={-1}>Seleccione una opción...</MenuItem>
+                              <MenuItem value={-1}>Selecciona una opción...</MenuItem>
                               {dataLevels &&
                                  dataLevels.map((d) => (
                                     <MenuItem key={d.value} value={d.value}>
@@ -294,7 +294,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                               error={errors.city_id && touched.city_id}
                            >
                               <MenuItem value={null} disabled>
-                                 Seleccione una opción...
+                                 Selecciona una opción...
                               </MenuItem>
                               {dataCities &&
                                  dataCities.map((d) => (
@@ -326,7 +326,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                               error={errors.colony_id && touched.colony_id}
                            >
                               <MenuItem value={null} disabled>
-                                 Seleccione una opción...
+                                 Selecciona una opción...
                               </MenuItem>
                               {dataColonies &&
                                  dataColonies.map((d) => (
