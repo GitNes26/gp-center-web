@@ -58,6 +58,7 @@ import { formatDatetime } from "../../../utils/Formats";
 import SearchInput from "../../../components/SearchInput";
 import PlatesRegisters from "./PlatesRegisters";
 import HistoryRegister from "./HIstoryRegister";
+import { useVehiclePlateContext } from "../../../context/VehiclePlateContext";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -90,6 +91,8 @@ const ShowVehicleView = () => {
    // const { result } = useLoaderData();
    const { setLoading, setOpenDialog, setBgImage } = useGlobalContext();
    const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicleBy, vehicle } = useVehicleContext();
+   const { vehiclePlates, setVehiclePlates, historyByVehicleId } = useVehiclePlateContext();
+
    const theme = useTheme();
    const [search, setSearch] = useState("");
    const [searchType, setSearchType] = useState("number");
@@ -98,9 +101,13 @@ const ShowVehicleView = () => {
    const [openDialogPlates, setOpenDialogPlates] = useState(false);
    const [openDialogHistory, setOpenDialogHistory] = useState(false);
 
-   const handleClickViewPlates = () => {
+   const handleClickViewPlates = async () => {
       try {
          // resetFormData();
+         setVehiclePlates([]);
+         if (vehicle == null) return Toast.Error("No hay unidad encotnrada");
+         const axiosResponse = await historyByVehicleId(vehicle.id);
+         console.log(axiosResponse);
          setOpenDialogPlates(true);
          // setTextBtnSumbit("AGREGAR");
          // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -151,7 +158,7 @@ const ShowVehicleView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, [vehicle]);
+   }, [vehicle, vehiclePlates]);
 
    const Demo = styled("div")(({ theme }) => ({
       backgroundColor: theme.palette.background.paper
@@ -191,9 +198,6 @@ const ShowVehicleView = () => {
                position: "relative"
             }}
          >
-            {/* <Button variant="contained" fullWidth onClick={() => handleClickViewPlates()} sx={{ mb: 1 }}>
-               <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-            </Button> */}
             <Grid container spacing={2}>
                {/* PRIMER COLUMNA */}
                <Grid xs={12} md={3} sx={{ mb: 2 }}>
@@ -215,7 +219,6 @@ const ShowVehicleView = () => {
                            <CardContent sx={{ color: "whitesmoke", textAlign: "center" }}>
                               <Typography variant={"h1"} sx={{ color: "whitesmoke" }}>
                                  PLACAS
-                                 {/* {vehicle && ( */}
                                  <Paper
                                     elevation={6}
                                     sx={{
@@ -229,10 +232,8 @@ const ShowVehicleView = () => {
                                  >
                                     {vehicle.plates}
                                  </Paper>
-                                 {/* )} */}
                               </Typography>
                               <Box textAlign={"center"} mt={2}>
-                                 {/* {vehicle && ( */}
                                  <Chip
                                     sx={{
                                        height: "auto",
@@ -250,7 +251,6 @@ const ShowVehicleView = () => {
                                     }}
                                     label={vehicle.vehicle_status}
                                  />
-                                 {/* )} */}
                               </Box>
                            </CardContent>
                         </Card>

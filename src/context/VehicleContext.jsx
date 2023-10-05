@@ -187,6 +187,7 @@ export default function VehicleContextProvider({ children }) {
       }
    };
 
+
    // useEffect(() => {
    //    console.log("el useEffect de VehicleContext");
    //    getVehicles();

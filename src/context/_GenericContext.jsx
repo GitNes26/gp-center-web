@@ -26,7 +26,7 @@ export default function GenericContextProvider({ children }) {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetFormData:", error);
          Toast.Error(error);
       }
    };

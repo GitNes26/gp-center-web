@@ -48,7 +48,9 @@ export function formatDatetime(the_date, long_format = true) {
 
    if (the_date.length <= 10) {
       date = new Date(date.setDate(date.getDate() + 1));
-      return (datetime = moment(date).format("DD-MM-YYYY"));
+      datetime = moment(date).format("DD-MM-YYYY");
+      // console.log("formaaatFecha", the_date, "-->", datetime);
+      return datetime;
       // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric'}).format(date);
    }
 
