@@ -156,6 +156,7 @@ export default function UserContextProvider({ children }) {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post("/users", user);
+         console.log(axiosData);
          res = axiosData.data.data;
          getUsers();
       } catch (error) {

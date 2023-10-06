@@ -120,14 +120,15 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         console.log("formData", formData);
-         console.log("values", values);
+         // console.log("formData", formData);
+         // console.log("values", values);
          // values.community_id = values.colony_id;
 
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createUser(values);
          else axiosResponse = await updateUser(values);
+         if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
             resetForm();
             setStrength(0);
