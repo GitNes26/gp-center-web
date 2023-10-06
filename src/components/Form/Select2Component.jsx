@@ -45,7 +45,7 @@ const Select2Component = ({
          console.log("values", values);
          console.log("formData", formData);
          await setFormData(values);
-         await setValues(formData);
+         await setValues(values);
          console.log("formData", formData);
 
          if (handleChangeValueSuccess) handleChangeValueSuccess(value, setValues); //en esta funcion
