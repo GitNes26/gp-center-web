@@ -40,6 +40,7 @@ import { strengthColor, strengthIndicator } from "../../utils/password-strength"
 import axios from "axios";
 import { Axios } from "../../context/AuthContext";
 import InputFileComponent from "../Form/InputFileComponent";
+import Select2Component from "../Form/Select2Component";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -191,13 +192,16 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       return msg;
    };
 
-   const handleChangeBrands = async (brand_id, setFieldValue) => {
+   const handleChangeBrands = async (value2, setFieldValue) => {
+      console.log("hola", value2);
+      const brand_id = value2.id;
       setDataModels([]);
       setFieldValue("model_id", 0);
       const axiosModels = await Axios.get(`models/brand/${brand_id}`);
       const response = axiosModels.data.data.result;
       if (response.length == 0) return;
       setDataModels(response);
+      dataModels.unshift({ id: 0, label: "Selecciona una opción..." });
    };
 
    const handleChangeYear = (e, setFieldValue) => {
@@ -250,132 +254,49 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
                      {/* Marca */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <FormControl fullWidth>
-                           {/* <Autocomplete
-                              disablePortal
-                              openOnFocus
-                              id="brand_id"
-                              name="brand_id"
-                              label="Marca"
-                              // labelId="brand_id-label"
-                              placeholder="Marca"
-                              options={dataBrands}
-                              // getOptionLabel={(option) => option.text}
-                              // isOptionEqualToValue={customIsOptionEqualToValue}
-                              renderInput={(params) => <TextField {...params} label="Marca *" />}
-                              value={values.brand_id}
-                              // componentName="brand_id"
-                              onChange={(e, newValue) => {
-                                 handleChange(e);
-                                 handleChangeR("brand_id", newValue, setValues);
-                              }}
-                              onBlur={handleBlur}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.brand_id && touched.brand_id}
-                              // value={"PRIMARIA"}
-                           /> */}
-                           {/* <Select2
-                              id="brand_id"
-                              name="brand_id"
-                              label="Marca"
-                              components={<Select />}
-                              labelId="brand_id-label"
-                              value={values.brand_id}
-                              placeholder="Marca"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.brand_id && touched.brand_id}
-                              // className="basic-single"
-                              // classNamePrefix="select"
-                              // defaultValue={dataBrands[0]}
-                              isDisabled={isDisabled}
-                              isLoading={isLoading}
-                              isClearable={isClearable}
-                              isRtl={isRtl}
-                              isSearchable={isSearchable}
-                              getOptionLabel={(option) => option.text}
-                              options={dataBrands}
-                           /> */}
-                           <InputLabel id="brand_id-label">Marca *</InputLabel>
-                           <Select
-                              id="brand_id"
-                              name="brand_id"
-                              label="Marca"
-                              labelId="brand_id-label"
-                              value={values.brand_id}
-                              placeholder="Marca"
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 handleChangeBrands(e.target.value, setFieldValue);
-                              }}
-                              onBlur={handleBlur}
-                              error={errors.brand_id && touched.brand_id}
-                           >
-                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
-                              {dataBrands &&
-                                 dataBrands.map((d) => (
-                                    <MenuItem key={d.value} value={d.value}>
-                                       {d.text}
-                                    </MenuItem>
-                                 ))}
-                           </Select>
-                           {touched.brand_id && errors.brand_id && (
-                              <FormHelperText error id="ht-brand_id">
-                                 {errors.brand_id}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
+                        <Select2Component
+                           idName={"brand_id"}
+                           label={"Marca *"}
+                           valueLabel={values.brand}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"brand"}
+                           placeholder={"Selecciona una opción..."}
+                           options={dataBrands}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeBrands(e.target.value, setFieldValue);
+                           handleChangeValueSuccess={handleChangeBrands}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.brand_id}
+                           touched={touched.brand_id}
+                           disabled={false}
+                        />
                      </Grid>
                      {/* Modelo */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <FormControl fullWidth>
-                           {/* <Autocomplete
-                              disablePortal
-                              openOnFocus
-                              id="model_id"
-                              name="model_id"
-                              label="Modelo"
-                              // labelId="model_id-label"
-                              placeholder="Modelo"
-                              options={dataModels}
-                              // getOptionLabel={(option) => option.text}
-                              // isOptionEqualToValue={customIsOptionEqualToValue}
-                              renderInput={(params) => <TextField {...params} label="Modelo *" />}
-                              value={values.model_id}
-                              // componentName="model_id"
-                              onChange={(e, newValue) => {
-                                 handleChange(e);
-                                 handleChangeR("model_id", newValue, setValues);
-                              }}
-                              onBlur={handleBlur}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.model_id && touched.model_id}
-                              // value={"PRIMARIA"}
-                           /> */}
-                           {/* <Select2
-                              id="model_id"
-                              name="model_id"
-                              label="Modelo"
-                              components={<Select />}
-                              labelId="model_id-label"
-                              value={values.model_id}
-                              placeholder="Modelo"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.model_id && touched.model_id}
-                              // className="basic-single"
-                              // classNamePrefix="select"
-                              // defaultValue={dataModels[0]}
-                              isDisabled={isDisabled}
-                              isLoading={isLoading}
-                              isClearable={isClearable}
-                              isRtl={isRtl}
-                              isSearchable={isSearchable}
-                              getOptionLabel={(option) => option.text}
-                              options={dataModels}
-                           /> */}
+                        <Select2Component
+                           idName={"model_id"}
+                           label={"Modelo *"}
+                           valueLabel={values.model}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"model"}
+                           placeholder={"Selecciona una opción..."}
+                           options={dataModels}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.model_id}
+                           touched={touched.model_id}
+                           disabled={dataModels.length == 0 ? true : false}
+                        />
+                        {/* <FormControl fullWidth>
                            <InputLabel id="model_id-label">Modelo *</InputLabel>
                            <Select
                               id="model_id"
@@ -402,7 +323,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                                  {errors.model_id}
                               </FormHelperText>
                            )}
-                        </FormControl>
+                        </FormControl> */}
                      </Grid>
                      {/* Año */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
@@ -455,8 +376,8 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
                      {/* Estatus */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <FormControl fullWidth>
-                           {/* <Autocomplete
+                        {/* <FormControl fullWidth> */}
+                        {/* <Autocomplete
                               disablePortal
                               openOnFocus
                               id="vehicle_status_id"
@@ -480,7 +401,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                               error={errors.vehicle_status_id && touched.vehicle_status_id}
                               // value={"PRIMARIA"}
                            /> */}
-                           {/* <Select2
+                        {/* <Select2
                               id="vehicle_status_id"
                               name="vehicle_status_id"
                               label="Estatus"
@@ -502,7 +423,26 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                               getOptionLabel={(option) => option.text}
                               options={dataVehicleStatus}
                            /> */}
-                           <InputLabel id="vehicle_status_id-label">Estatus *</InputLabel>
+                        <Select2Component
+                           idName={"vehicle_status_id"}
+                           label={"Marca *"}
+                           valueLabel={values.vehicle_status}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"vehicle_status"}
+                           placeholder={"Selecciona una opción..."}
+                           options={dataVehicleStatus}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.vehicle_status_id}
+                           touched={touched.vehicle_status_id}
+                           disabled={false}
+                        />
+                        {/* <InputLabel id="vehicle_status_id-label">Estatus *</InputLabel>
                            <Select
                               id="vehicle_status_id"
                               name="vehicle_status_id"
@@ -519,7 +459,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                                  dataVehicleStatus.map((d) => (
                                     <MenuItem
                                        key={d.value}
-                                       value={d.value} /* <sx={{ backgroundColor: d.bg_color, color: d.letter_black ? "#3E3E3E" : "#F3F3F3" }}> */
+                                       value={d.value} /* <sx={{ backgroundColor: d.bg_color, color: d.letter_black ? "#3E3E3E" : "#F3F3F3" }}> *
                                     >
                                        {d.text}
                                     </MenuItem>
@@ -530,7 +470,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                                  {errors.vehicle_status_id}
                               </FormHelperText>
                            )}
-                        </FormControl>
+                        </FormControl> */}
                      </Grid>
                      {/* Descripcion */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>

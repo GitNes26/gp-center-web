@@ -38,6 +38,7 @@ import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import axios from "axios";
+import Select2Component from "../Form/Select2Component";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -171,79 +172,25 @@ const ModelForm = ({ dataBrands }) => {
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Marca */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <FormControl fullWidth>
-                           {/* <Autocomplete
-                              disablePortal
-                              openOnFocus
-                              id="brand_id"
-                              name="brand_id"
-                              label="Marca"
-                              // labelId="brand_id-label"
-                              placeholder="Marca"
-                              options={dataBrands}
-                              // getOptionLabel={(option) => option.text}
-                              // isOptionEqualToValue={customIsOptionEqualToValue}
-                              renderInput={(params) => <TextField {...params} label="Marca *" />}
-                              value={values.brand_id}
-                              // componentName="brand_id"
-                              onChange={(e, newValue) => {
-                                 handleChange(e);
-                                 handleChangeR("brand_id", newValue, setValues);
-                              }}
-                              onBlur={handleBlur}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.brand_id && touched.brand_id}
-                              // value={"PRIMARIA"}
-                           /> */}
-                           {/* <Select2
-                              id="brand_id"
-                              name="brand_id"
-                              label="Marca"
-                              components={<Select />}
-                              labelId="brand_id-label"
-                              value={values.brand_id}
-                              placeholder="Marca"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.brand_id && touched.brand_id}
-                              // className="basic-single"
-                              // classNamePrefix="select"
-                              // defaultValue={dataBrands[0]}
-                              isDisabled={isDisabled}
-                              isLoading={isLoading}
-                              isClearable={isClearable}
-                              isRtl={isRtl}
-                              isSearchable={isSearchable}
-                              getOptionLabel={(option) => option.text}
-                              options={dataBrands}
-                           /> */}
-                           <InputLabel id="brand_id-label">Marca *</InputLabel>
-                           <Select
-                              id="brand_id"
-                              name="brand_id"
-                              label="Marca"
-                              labelId="brand_id-label"
-                              value={values.brand_id}
-                              placeholder="Marca"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.brand_id && touched.brand_id}
-                           >
-                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
-                              {dataBrands &&
-                                 dataBrands.map((d) => (
-                                    <MenuItem key={d.value} value={d.value}>
-                                       {d.text}
-                                    </MenuItem>
-                                 ))}
-                           </Select>
-                           {touched.brand_id && errors.brand_id && (
-                              <FormHelperText error id="ht-brand_id">
-                                 {errors.brand_id}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
+                        <Select2Component
+                           idName={"brand_id"}
+                           label={"Marca *"}
+                           valueLabel={values.brand}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"brand"}
+                           placeholder={"Selecciona una opción..."}
+                           options={dataBrands}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeValueSuccess={handleChangeBrand}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.brand_id}
+                           touched={touched.brand_id}
+                           disabled={false}
+                        />
                      </Grid>
                      {/* Modelo */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>

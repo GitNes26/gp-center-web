@@ -253,7 +253,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          // setLoadingAction(true);
          // console.log(user);
          if (formData.community_id > 0) await getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
-         if (!formData.description) formData.description = "";
+         if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
          setIsAdmin(formData.role_id <= 2 ? true : false);
          setIsGarage(formData.role_id == 4 ? true : false);
@@ -483,71 +483,22 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         <Select2Component
                            idName={"role_id"}
                            label={"Rol *"}
-                           valueLabel={user.role}
-                           formDataProp={formData.role_id}
-                           objProp={user.role_id}
-                           placeholder={"Selecciona un role..."}
+                           valueLabel={values.role}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"role"}
+                           placeholder={"Selecciona una opción..."}
                            options={dataRoles}
                            fullWidth={true}
                            handleChange={handleChange}
-                           handleChangeValueSuccess={handleChangeRole}
-                           setFieldValue={setFieldValue}
+                           // handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
                            handleBlur={handleBlur}
                            error={errors.role_id}
                            touched={touched.role_id}
+                           disabled={false}
                         />
-                        {/* <FormControl fullWidth>
-                           <Autocomplete
-                              disablePortal
-                              openOnFocus
-                              id="role_id"
-                              name="role_id"
-                              label="Rol"
-                              placeholder="Rol"
-                              options={dataRoles}
-                              isOptionEqualToValue={isOptionEqualToValue}
-                              renderInput={(params) => <TextField {...params} label="Rol *" />}
-                              onChange={(e, newValue) => {
-                                 handleChange(e);
-                                 handleChangeRole(newValue, "role_id", setFieldValue);
-                              }}
-                              onBlur={handleBlur}
-                              fullWidth
-                              disabled={values.id == 0 ? false : true}
-                              error={errors.role_id && touched.role_id}
-                              defaultValue={user ? user.role : "Selecciona una opción..."}
-                              value={user ? user.role : "Selecciona una opción..."}
-                           /> */}
-
-                        {/* <InputLabel id="role_id-label">Rol *</InputLabel>
-                           <Select
-                              id="role_id"
-                              name="role_id"
-                              label="Rol"
-                              labelId="role_id-label"
-                              value={values.role_id}
-                              placeholder="Rol"
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 handleChangeRole(e.target.value);
-                              }}
-                              onBlur={handleBlur}
-                              error={errors.role_id && touched.role_id}
-                           >
-                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
-                              {dataRoles &&
-                                 dataRoles.map((d) => (
-                                    <MenuItem key={d.value} value={d.value}>
-                                       {d.text}
-                                    </MenuItem>
-                                 ))}
-                           </Select> */}
-                        {/* {touched.role_id && errors.role_id && (
-                              <FormHelperText error id="ht-role_id">
-                                 {errors.role_id}
-                              </FormHelperText>
-                           )}
-                        </FormControl> */}
                      </Grid>
 
                      {!isAdmin && (
@@ -634,46 +585,22 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               <Select2Component
                                  idName={"department_id"}
                                  label={"Departameto *"}
-                                 valueLabel={user.department}
-                                 formDataProp={formData.department_id}
-                                 objProp={user.department_id}
+                                 valueLabel={values.department}
+                                 values={values}
+                                 formData={formData}
+                                 setFormData={setFormData}
+                                 formDataLabel={"department"}
                                  placeholder={"Selecciona una opción..."}
                                  options={dataDepartments}
                                  fullWidth={true}
                                  handleChange={handleChange}
-                                 handleChangeValueSuccess={handleChangeSelectDepartment}
-                                 setFieldValue={setFieldValue}
+                                 // handleChangeValueSuccess={handleChangeRole}
+                                 setValues={setValues}
                                  handleBlur={handleBlur}
                                  error={errors.department_id}
                                  touched={touched.department_id}
+                                 disabled={false}
                               />
-                              {/* <FormControl fullWidth>
-                                 <InputLabel id="role_id-label">Departameto *</InputLabel>
-                                 <Select
-                                    id="department_id"
-                                    name="department_id"
-                                    label="Departameto"
-                                    labelId="department_id-label"
-                                    value={values.department_id}
-                                    placeholder="Departameto"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={errors.department_id && touched.department_id}
-                                 >
-                                    <MenuItem value={-1}>Selecciona una opción...</MenuItem>
-                                    {dataDepartments &&
-                                       dataDepartments.map((d) => (
-                                          <MenuItem key={d.value} value={d.value}>
-                                             {d.text}
-                                          </MenuItem>
-                                       ))}
-                                 </Select>
-                                 {touched.department_id && errors.department_id && (
-                                    <FormHelperText error id="ht-department_id">
-                                       {errors.department_id}
-                                    </FormHelperText>
-                                 )}
-                              </FormControl> */}
                            </Grid>
                            {/* Divisor */}
                            <Grid xs={12}>

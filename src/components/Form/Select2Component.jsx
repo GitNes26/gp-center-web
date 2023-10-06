@@ -1,24 +1,30 @@
 import { Autocomplete, FormControl, FormHelperText, TextField } from "@mui/material";
 import Toast from "../../utils/Toast";
+import { useEffect } from "react";
 
 const Select2Component = ({
    idName,
    label,
    valueLabel,
-   formDataProp,
-   objProp,
+   values,
+   formData,
+   setFormData,
+   formDataLabel,
    placeholder,
    options,
    fullWidth,
    handleChange,
    handleChangeValueSuccess,
-   setFieldValue,
+   setValues,
    handleBlur,
    error,
    touched,
    disabled = false
+   // inputref = null
 }) => {
    const isOptionEqualToValue = (option, value) => {
+      // console.log("option", option);
+      // console.log("value", value);
       if (option.label) {
          if (typeof value === "string") return option.label === value;
          else {
@@ -30,21 +36,28 @@ const Select2Component = ({
       } else return option === value;
    };
 
-   const handleChangeValue = (value, input, setFieldValue) => {
+   const handleChangeValue = async (value, setValues) => {
       try {
-         // console.log("value del changeValue", value);
          if (!value) return (valueLabel = "Selecciona una opción...");
-         formDataProp = value ? value.id : 0;
-         objProp = value ? value.id : 0;
-         setFieldValue(input, value ? value.id : 0);
          valueLabel = value.label; // repetir este paso afuera
+         values[idName] = value.id;
+         values[formDataLabel] = value.label;
+         console.log("values", values);
+         console.log("formData", formData);
+         await setFormData(values);
+         await setValues(formData);
+         console.log("formData", formData);
 
-         if (handleChangeValueSuccess) handleChangeValueSuccess(value); //en esta funcion
+         if (handleChangeValueSuccess) handleChangeValueSuccess(value, setValues); //en esta funcion
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    };
+
+   useEffect(() => {
+      // console.log("useEffect");
+   }, [valueLabel]);
 
    return (
       <FormControl fullWidth>
@@ -61,12 +74,13 @@ const Select2Component = ({
             renderInput={(params) => <TextField {...params} label={label} />}
             onChange={(e, newValue) => {
                handleChange(e);
-               handleChangeValue(newValue, idName, setFieldValue);
+               handleChangeValue(newValue, setValues);
             }}
             onBlur={handleBlur}
             fullWidth={fullWidth || true}
             // disabled={values.id == 0 ? false : true}
             disabled={disabled}
+            // inputRef={inputref}
             error={error && touched}
             defaultValue={valueLabel || "Selecciona una opción..."}
             value={valueLabel || "Selecciona una opción..."}
