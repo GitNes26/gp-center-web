@@ -48,6 +48,10 @@
    animation: forwards animZoomOut 0.8s cubic-bezier(0.63, -0.14, 0.05, 0.99);
 }
 
+.cursor-loading {
+   cursor: wait;
+}
+
 @keyframes animZoomIn {
    from {
       transform: scale(0);

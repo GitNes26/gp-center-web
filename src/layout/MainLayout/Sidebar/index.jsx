@@ -22,13 +22,13 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
    const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
 
    const drawer = (
-      <Box sx={{ bgcolor: gpcDark }}>
+      <Box sx={{ bgcolor: gpcDark }} >
          <Box sx={{ display: { xs: "block", md: "none" } }}>
             <Box sx={{ display: "flex", p: 2, mx: "auto" }}>
                <LogoSection />
             </Box>
          </Box>
-         <BrowserView sx={{ }}>
+         <BrowserView sx={{ }} >
             <PerfectScrollbar
                component="div"
                style={{

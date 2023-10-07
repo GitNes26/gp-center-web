@@ -39,14 +39,23 @@ const Select2Component = ({
    const handleChangeValue = async (value, setValues) => {
       try {
          if (!value) return (valueLabel = "Selecciona una opción...");
-         valueLabel = value.label; // repetir este paso afuera
-         values[idName] = value.id;
-         values[formDataLabel] = value.label;
+         // console.log("valuesVALUESSSSSS:", typeof value);
+         console.log("que soy", formDataLabel);
+
+         if (typeof value === "object") {
+            valueLabel = value.label; // repetir este paso afuera
+            values[idName] = value.id;
+            values[formDataLabel] = value.label;
+         } else {
+            console.log("soy string");
+            valueLabel = value; // repetir este paso afuera
+            values[formDataLabel] = value;
+         }
          // console.log("values", values);
          // console.log("formData", formData);
          await setFormData(values);
          await setValues(values);
-         // console.log("formData", formData);
+         console.log("formData en el select2Component", formData);
 
          if (handleChangeValueSuccess) handleChangeValueSuccess(value, setValues); //en esta funcion
       } catch (error) {

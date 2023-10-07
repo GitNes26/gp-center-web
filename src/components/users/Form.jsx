@@ -82,23 +82,13 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    // const [dataCities, setDataCities] = useState([]);
    // const [dataColonies, setDataColonies] = useState([]);
 
-   const handleChangeRole = (value2) => {
+   const handleChangeRole = (value, setValues) => {
       try {
-         user.role = value2.label;
-
          setIsAdmin(false);
          setIsGarage(false);
-         const role_id = Number(value2.id);
+         const role_id = Number(formData.role_id);
          setIsAdmin(role_id <= 2 ? true : false);
          setIsGarage(role_id == 4 ? true : false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-   const handleChangeSelectDepartment = (value2) => {
-      try {
-         user.department = value2.label;
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -174,19 +164,27 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [dataStates, setDataStates] = useState([]);
    const [dataCities, setDataCities] = useState([]);
    const [dataColonies, setDataColonies] = useState([]);
+   const [dataColoniesComplete, setDataColoniesComplete] = useState([]);
 
    const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
       try {
+         // if (zip.length < 1) return Toast.Info("C.P. vacio");
          setShowLoading(true);
          setDisabledState(true);
          setDisabledCity(true);
          setDisabledColony(true);
          let states = [];
+         // states.push("Selecciona una opción...");
          let cities = [];
+         // cities.push("Selecciona una opción...");
          let colonies = [];
+         colonies.push("Selecciona una opción...");
+         let coloniesComplete = [];
+         coloniesComplete.push("Selecciona una opción...");
          setDataStates(states);
          setDataCities(cities);
          setDataColonies(colonies);
+         setDataColoniesComplete(coloniesComplete);
          setFieldValue("state", 0);
          setFieldValue("city", 0);
          setFieldValue("colony", 0);
@@ -198,7 +196,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
             formData.zip = data.data.result.CodigoPostal;
             formData.state = data.data.result.Estado;
             formData.city = data.data.result.Municipio;
-            formData.colony = community_id;
+            formData.colony = data.data.result.Colonia;
+            // formData.colony = community_id;
             await setFormData(formData);
             zip = formData.zip;
          }
@@ -208,11 +207,13 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          await axiosRes.data.data.result.map((d) => {
             states.push(d.Estado);
             cities.push(d.Municipio);
-            colonies.push({ id: d.id, label: d.Colonia });
+            colonies.push(d.Colonia);
+            coloniesComplete.push({ id: d.id, label: d.Colonia });
          });
          states = [...new Set(states)];
          cities = [...new Set(cities)];
          colonies = [...new Set(colonies)];
+         coloniesComplete = [...new Set(coloniesComplete)];
 
          if (states.length == 0) {
             setShowLoading(false);
@@ -224,10 +225,12 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          setDataStates(states);
          setDataCities(cities);
          setDataColonies(colonies);
+         setDataColoniesComplete(coloniesComplete);
          setFieldValue("zip", community_id ? formData.zip : zip);
          setFieldValue("state", community_id ? formData.state : states[0]);
          setFieldValue("city", community_id ? formData.city : cities[0]);
-         setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
+         setFieldValue("colony", community_id ? formData.colony : colonies[0]);
+         // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
          setShowLoading(false);
       } catch (error) {
          console.log(error);
@@ -236,13 +239,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
-   const handleChangeColonySuccess = (communityValues) => {
+   const handleChangeColonySuccess = (community_selected) => {
       try {
-         console.log(communityValues);
-         user.colony = communityValues.community.label;
-         user.community_id = communityValues.community.id;
-         formData.colony = communityValues.community.label;
-         formData.community_id = communityValues.community.id;
+         // console.log(community_selected);
+         formData.colony = community_selected.label;
+         formData.community_id = community_selected.id;
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -345,7 +346,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData, user]);
+   }, [formData]);
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
@@ -493,7 +494,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            options={dataRoles}
                            fullWidth={true}
                            handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChangeRole}
+                           handleChangeValueSuccess={handleChangeRole}
                            setValues={setValues}
                            handleBlur={handleBlur}
                            error={errors.role_id}
@@ -683,12 +684,13 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               formData={formData}
                               setFormData={setFormData}
                               values={values}
+                              setValues={setValues}
                               setFieldValue={setFieldValue}
                               handleChange={handleChange}
                               handleBlur={handleBlur}
                               errors={errors}
                               touched={touched}
-                              changeColonySuccess={handleChangeColonySuccess}
+                              // changeColonySuccess={handleChangeColonySuccess}
                            />
                         </>
                      )}

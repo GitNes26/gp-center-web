@@ -16,6 +16,7 @@ export const GlobalContext = createContext();
 export const GlobalContextProvider = ({ children }) => {
    const [loading, setLoading] = useState(true);
    const [loadingAction, setLoadingAction] = useState(false);
+   const [cursorLoading, setCursorLoading] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
    const [bgImage, setBgImage] = useState("none");
 
@@ -124,6 +125,8 @@ export const GlobalContextProvider = ({ children }) => {
             setLoading,
             loadingAction,
             setLoadingAction,
+            cursorLoading,
+            setCursorLoading,
             openDialog,
             setOpenDialog,
             toggleDrawer,

@@ -33,7 +33,7 @@ const App = () => {
             </Typography> */}
          </Backdrop>
 
-         <RouterProvider router={router} />
+         <RouterProvider router={router}/>
          {/* </NavigationSroll> */}
       </ThemeProvider>
    );

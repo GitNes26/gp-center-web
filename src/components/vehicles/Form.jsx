@@ -171,16 +171,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       due_date: Yup.date().required("Fecha de Vencimiento de Placas requerida")
    });
 
-   useEffect(() => {
-      try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   }, [formData]);
-
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       if (formHelperText) {
          return (
@@ -216,6 +206,15 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       setImgFile(file);
    };
 
+   useEffect(() => {
+      try {
+         const btnModify = document.getElementById("btnModify");
+         if (btnModify != null) btnModify.click();
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   }, [formData]);
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">

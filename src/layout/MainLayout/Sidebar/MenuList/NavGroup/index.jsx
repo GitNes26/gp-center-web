@@ -7,7 +7,6 @@ import { Divider, List, Typography } from "@mui/material";
 // project imports
 import NavItem from "../NavItem";
 import NavCollapse from "../NavCollapse";
-import { gpcBlue, gpcLight } from "../../../../../context/GlobalContext";
 
 // ==============================|| SIDEBAR MENU LIST GROUP ||============================== //
 
@@ -35,10 +34,10 @@ const NavGroup = ({ item }) => {
          <List
             subheader={
                item.title && (
-                  <Typography variant="caption" sx={{  ...theme.typography.menuCaption }} display="block" gutterBottom>
+                  <Typography variant="caption" sx={{  ...theme.typography.menuCaption_GPC }} display="block" gutterBottom>
                      {item.title}
                      {item.caption && (
-                        <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption }} display="block" gutterBottom>
+                        <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption_GPC }} display="block" gutterBottom>
                            {item.caption}
                         </Typography>
                      )}

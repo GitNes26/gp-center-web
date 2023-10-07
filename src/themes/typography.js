@@ -16,9 +16,9 @@ export default function themeTypography(theme) {
          color: theme.heading,
          fontWeight: 500
       },
-      h5a: {
-         fontSize: "1.875rem",
-         color: theme.heading,
+      h5_GPC: {
+         fontSize: "0.875rem",
+         color: theme.gpcDark,
          fontWeight: 500
       },
       h4: {
@@ -57,6 +57,11 @@ export default function themeTypography(theme) {
          fontWeight: 400
       },
       body1: {
+         fontSize: '0.875rem',
+         fontWeight: 400,
+         lineHeight: '1.334em'
+       },
+      body1_GPC: {
          fontSize: "0.875rem",
          fontWeight: 400,
          lineHeight: "1.334em",
@@ -103,6 +108,14 @@ export default function themeTypography(theme) {
          borderRadius: `${theme?.customization?.borderRadius}px`
       },
       menuCaption: {
+         fontSize: '0.875rem',
+         fontWeight: 500,
+         color: theme.heading,
+         padding: '6px',
+         textTransform: 'capitalize',
+         marginTop: '10px'
+       },
+      menuCaption_GPC: {
          fontSize: "0.875rem",
          fontWeight: 500,
          color: theme.paper,
@@ -111,6 +124,12 @@ export default function themeTypography(theme) {
          marginTop: "10px"
       },
       subMenuCaption: {
+         fontSize: '0.6875rem',
+         fontWeight: 500,
+         color: theme.darkTextSecondary,
+         textTransform: 'capitalize'
+       },
+      subMenuCaption_GPC: {
          fontSize: "0.6875rem",
          fontWeight: 500,
          color: theme.gpcLight,

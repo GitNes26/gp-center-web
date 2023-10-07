@@ -26,7 +26,7 @@ const InputsCommunityComponent = ({
    changeColonySuccess = null,
    columnsByTextField = 6
 }) => {
-   // const { getCommunityByZip } = useGlobalContext();
+   const { setCursorLoading, getCommunityByZip } = useGlobalContext();
 
    const [disabledState, setDisabledState] = useState(true);
    const [disabledCity, setDisabledCity] = useState(true);
@@ -44,6 +44,7 @@ const InputsCommunityComponent = ({
    const handleBlurZip = async (zip, setFieldValue, community_id = null) => {
       try {
          if (zip.length < 1) return Toast.Info("C.P. vacio");
+         setCursorLoading(true);
          setShowLoading(true);
          setDisabledState(true);
          setDisabledCity(true);
@@ -71,7 +72,8 @@ const InputsCommunityComponent = ({
             formData.zip = data.data.result.CodigoPostal;
             formData.state = data.data.result.Estado;
             formData.city = data.data.result.Municipio;
-            formData.colony = community_id;
+            formData.colony = data.data.result.Colonia;
+            // formData.colony = community_id;
             await setFormData(formData);
             zip = formData.zip;
          }
@@ -103,36 +105,40 @@ const InputsCommunityComponent = ({
          setFieldValue("zip", community_id ? formData.zip : zip);
          setFieldValue("state", community_id ? formData.state : states[0]);
          setFieldValue("city", community_id ? formData.city : cities[0]);
-         setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
+         setFieldValue("colony", community_id ? formData.colony : colonies[0]);
+         // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
          setShowLoading(false);
+         setCursorLoading(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
+         setCursorLoading(false);
          setShowLoading(false);
       }
    };
 
-   const handleChangeColony = async (value2) => {
+   const handleChangeColony = async (value, setValues2) => {
       try {
-         const community_selected = dataColoniesComplete.find((c) => c.label === value2);
+         console.log(values);
+         const community_selected = dataColoniesComplete.find((c) => c.label === value);
          formData.zip = values.zip;
          formData.state = values.state;
          formData.city = values.city;
          formData.colony = community_selected.label;
-         formData.colony = community_selected.label;
          formData.community_id = community_selected.id;
+         console.log("formdata....", formData);
          await setFormData(formData);
          await setValues(formData);
          // console.log(values);
 
-         // changeColonySuccess(values);
+         if (changeColonySuccess) changeColonySuccess(community_selected);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    };
 
-   useEffect(() => {}, [values]);
+   useEffect(() => {}, [formData, values]);
 
    return (
       <>
@@ -146,7 +152,6 @@ const InputsCommunityComponent = ({
                   id="zip"
                   name="zip"
                   label="Código Postal *"
-                  type="number"
                   value={values.zip}
                   placeholder="35000"
                   inputProps={{ maxLength: 5 }}
@@ -208,33 +213,6 @@ const InputsCommunityComponent = ({
                   touched={touched.city}
                   disabled={disabledCity}
                />
-               {/* <FormControl fullWidth>
-                  <InputLabel id="city-label">Ciudad</InputLabel>
-                  <Select
-                     id="city"
-                     name="city"
-                     label="Ciudad"
-                     labelId="city-label"
-                     value={values.city}
-                     placeholder="Ciudad"
-                     // readOnly={true}
-                     disabled={disabledCity}
-                     onChange={handleChange}
-                     onBlur={handleBlur}
-                     error={errors.city && touched.city}
-                  >
-                     <MenuItem value={0} disabled>
-                        Selecciona una opción...
-                     </MenuItem>
-                     {dataCities &&
-                        dataCities.map((d, i) => (
-                           <MenuItem key={i} value={d}>
-                              {d}
-                           </MenuItem>
-                        ))}
-                  </Select>
-                  {touched.city && errors.city && errors.city}
-               </FormControl> */}
             </Grid>
             {/* Colonia */}
             <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
@@ -257,33 +235,6 @@ const InputsCommunityComponent = ({
                   touched={touched.colony}
                   disabled={disabledColony}
                />
-               {/* <FormControl fullWidth>
-                  <InputLabel id="colony-label">Colonia</InputLabel>
-                  <Select
-                     id="colony"
-                     name="colony"
-                     label="Colonia"
-                     labelId="colony-label"
-                     value={values.colony}
-                     placeholder="Colonia"
-                     // readOnly={true}
-                     disabled={disabledColony}
-                     onChange={handleChange}
-                     onBlur={handleBlur}
-                     error={errors.colony && touched.colony}
-                  >
-                     <MenuItem value={0} disabled>
-                        Selecciona una opción...
-                     </MenuItem>
-                     {dataColonies &&
-                        dataColonies.map((d, i) => (
-                           <MenuItem key={i} value={d.id}>
-                              {d.Colonia}
-                           </MenuItem>
-                        ))}
-                  </Select>
-                  {touched.colony && errors.colony && errors.colony}
-               </FormControl> */}
             </Grid>
          </Grid>
          {/* Calle */}
