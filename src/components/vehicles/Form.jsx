@@ -2,42 +2,18 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Autocomplete,
-   Backdrop,
-   Button,
-   CircularProgress,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, Divider, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { useVehicleContext } from "../../context/VehicleContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
-import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../utils/password-strength";
-import axios from "axios";
+import { handleInputFormik } from "../../utils/Formats";
 import { Axios } from "../../context/AuthContext";
 import InputFileComponent from "../Form/InputFileComponent";
 import Select2Component from "../Form/Select2Component";
@@ -46,7 +22,7 @@ const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true :
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
-   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
+   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer, cursorLoading } = useGlobalContext();
    const {
       singularName,
       createVehicle,
@@ -80,6 +56,48 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          console.log(error);
          Toast.Error(error);
       }
+   };
+
+   const getModelsByBrand = async (valuesBrand, setValues, valuesModel) => {
+      try {
+         console.log(valuesBrand, valuesModel);
+
+         setDataModels([]);
+         const axiosModels = await Axios.get(`models/brand/${valuesBrand.id}`);
+         const result = await axiosModels.data.data.result;
+         result.unshift({ id: 0, label: "Selecciona una opción..." });
+         if (result.length < 2) Toast.Info(`No hay modelos de la marca: ${valuesBrand.label}`);
+         setDataModels(result);
+         formData.model_id = valuesModel == null ? 0 : valuesModel.id;
+         formData.model = valuesModel == null ? "Selecciona una opción..." : valuesModel.label;
+         setFormData(formData);
+         setValues(formData);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleChangeBrands = async (value2, setValues2) => {
+      try {
+         console.log("cambio de brand");
+         // getModelsByBrand(value2, setValues2, null);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleChangeYear = (e, setFieldValue) => {
+      let inputValue = e.target.value;
+
+      if (inputValue.length > 4) inputValue = inputValue.slice(0, 4);
+      setFieldValue("year", inputValue);
+   };
+
+   const handleChangeImg = (e, setFieldValue) => {
+      const file = e.target.files[0]; // Obtenemos el primer archivo del campo de entrada
+      setImgFile(file);
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
@@ -128,8 +146,12 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       try {
          setLoadingAction(true);
          console.log(formData);
-         if (!formData.description) formData.description = "";
-         setValues(formData);
+         if (formData.description) formData.description && (formData.description = "");
+         // setValues(formData);
+         console.log("editarrrr", formData);
+         const valuesBrnad = { id: formData.brand_id, label: formData.brand };
+         const valuesModel = { id: formData.model_id, label: formData.model };
+         await getModelsByBrand(valuesBrnad, setValues, valuesModel);
          setImgFile(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
          setImagePreview(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
          await handleChangeBrands(formData.brand_id, setFieldValue);
@@ -182,30 +204,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       return msg;
    };
 
-   const handleChangeBrands = async (value2, setFieldValue) => {
-      console.log("hola", value2);
-      const brand_id = value2.id;
-      setDataModels([]);
-      setFieldValue("model_id", 0);
-      const axiosModels = await Axios.get(`models/brand/${brand_id}`);
-      const response = axiosModels.data.data.result;
-      if (response.length == 0) return;
-      setDataModels(response);
-      dataModels.unshift({ id: 0, label: "Selecciona una opción..." });
-   };
-
-   const handleChangeYear = (e, setFieldValue) => {
-      let inputValue = e.target.value;
-
-      if (inputValue.length > 4) inputValue = inputValue.slice(0, 4);
-      setFieldValue("year", inputValue);
-   };
-
-   const handleChangeImg = (e, setFieldValue) => {
-      const file = e.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-      setImgFile(file);
-   };
-
    useEffect(() => {
       try {
          const btnModify = document.getElementById("btnModify");
@@ -215,9 +213,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          Toast.Error(error);
       }
    }, [formData]);
+
    return (
-      <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-         <Box role="presentation" p={3} pt={5} className="form">
+      <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)} className={cursorLoading ? "cursor-loading" : ""}>
+         <Box role="presentation" p={3} pt={5} className="drawer-max-width">
             <Typography variant="h2" mb={3}>
                {formTitle}
                <FormControlLabel
@@ -265,7 +264,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            options={dataBrands}
                            fullWidth={true}
                            handleChange={handleChange}
-                           // handleChangeBrands(e.target.value, setFieldValue);
                            handleChangeValueSuccess={handleChangeBrands}
                            setValues={setValues}
                            handleBlur={handleBlur}
@@ -288,12 +286,12 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            options={dataModels}
                            fullWidth={true}
                            handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChangeRole}
+                           // handleChangeValueSuccess={handleChange...}
                            setValues={setValues}
                            handleBlur={handleBlur}
                            error={errors.model_id}
                            touched={touched.model_id}
-                           disabled={dataModels.length == 0 ? true : false}
+                           disabled={dataModels.length < 2 ? true : false}
                         />
                         {/* <FormControl fullWidth>
                            <InputLabel id="model_id-label">Modelo *</InputLabel>

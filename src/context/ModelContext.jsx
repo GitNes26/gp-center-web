@@ -7,7 +7,8 @@ const ModelContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   brand_id: "",
+   brand_id: 0,
+   brand: "Selecciona una opción...",
    model: "",
    description: ""
 };

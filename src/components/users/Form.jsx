@@ -3,18 +3,10 @@ import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
-   Autocomplete,
-   Backdrop,
    Button,
-   CircularProgress,
    Divider,
    FormControlLabel,
-   FormLabel,
    InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
    Switch,
    TextField,
    Typography
@@ -23,7 +15,7 @@ import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useUserContext } from "../../context/UserContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
@@ -36,10 +28,8 @@ import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
-import axios from "axios";
 import Select2Component from "../Form/Select2Component";
-import InputsCommunityComponent from "../Form/InputsCommunityComponent";
-import { useGetCommunityByZip } from "../../hooks/useGetCommunity";
+import InputsCommunityComponent, { getCommunity } from "../Form/InputsCommunityComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -66,7 +56,21 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    };
    // #endregion Boton de Contraseña
 
-   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
+   const {
+      setLoadingAction,
+      openDialog,
+      setOpenDialog,
+      toggleDrawer,
+      setDisabledState,
+      setDisabledCity,
+      setDisabledColony,
+      setShowLoading,
+      setDataStates,
+      setDataCities,
+      setDataColonies,
+      setDataColoniesComplete,
+      cursorLoading
+   } = useGlobalContext();
    const { user, resetUser, singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
@@ -74,19 +78,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
-   // const [disabledState, setDisabledState] = useState(true);
-   // const [disabledCity, setDisabledCity] = useState(true);
-   // const [disabledColony, setDisabledColony] = useState(true);
-   // const [showLoading, setShowLoading] = useState(false);
-   // const [dataStates, setDataStates] = useState([]);
-   // const [dataCities, setDataCities] = useState([]);
-   // const [dataColonies, setDataColonies] = useState([]);
-
-   const handleChangeRole = (value, setValues) => {
+   const handleChangeRole = (value2, setValues) => {
       try {
          setIsAdmin(false);
          setIsGarage(false);
-         const role_id = Number(formData.role_id);
+         const role_id = Number(value2.role_id);
          setIsAdmin(role_id <= 2 ? true : false);
          setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
@@ -152,109 +148,28 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
-   // const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
-   //    // Lógica adicional si es necesario antes de llamar a la función del componente hijo
-   //    await getCommunityByZip(zip, setFieldValue, community_id);
-   // };
-
-   const [disabledState, setDisabledState] = useState(true);
-   const [disabledCity, setDisabledCity] = useState(true);
-   const [disabledColony, setDisabledColony] = useState(true);
-   const [showLoading, setShowLoading] = useState(false);
-   const [dataStates, setDataStates] = useState([]);
-   const [dataCities, setDataCities] = useState([]);
-   const [dataColonies, setDataColonies] = useState([]);
-   const [dataColoniesComplete, setDataColoniesComplete] = useState([]);
-
-   const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
-      try {
-         // if (zip.length < 1) return Toast.Info("C.P. vacio");
-         setShowLoading(true);
-         setDisabledState(true);
-         setDisabledCity(true);
-         setDisabledColony(true);
-         let states = [];
-         // states.push("Selecciona una opción...");
-         let cities = [];
-         // cities.push("Selecciona una opción...");
-         let colonies = [];
-         colonies.push("Selecciona una opción...");
-         let coloniesComplete = [];
-         coloniesComplete.push("Selecciona una opción...");
-         setDataStates(states);
-         setDataCities(cities);
-         setDataColonies(colonies);
-         setDataColoniesComplete(coloniesComplete);
-         setFieldValue("state", 0);
-         setFieldValue("city", 0);
-         setFieldValue("colony", 0);
-         if (community_id) {
-            const axiosMyCommunity = axios;
-            const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
-
-            if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
-            formData.zip = data.data.result.CodigoPostal;
-            formData.state = data.data.result.Estado;
-            formData.city = data.data.result.Municipio;
-            formData.colony = data.data.result.Colonia;
-            // formData.colony = community_id;
-            await setFormData(formData);
-            zip = formData.zip;
-         }
-         const axiosCommunities = axios;
-         const axiosRes = await axiosCommunities.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);
-         if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
-         await axiosRes.data.data.result.map((d) => {
-            states.push(d.Estado);
-            cities.push(d.Municipio);
-            colonies.push(d.Colonia);
-            coloniesComplete.push({ id: d.id, label: d.Colonia });
-         });
-         states = [...new Set(states)];
-         cities = [...new Set(cities)];
-         colonies = [...new Set(colonies)];
-         coloniesComplete = [...new Set(coloniesComplete)];
-
-         if (states.length == 0) {
-            setShowLoading(false);
-            return Toast.Info("No hay comunidades registradas con este C.P.");
-         }
-         if (states.length > 1) setDisabledState(false);
-         if (cities.length > 1) setDisabledCity(false);
-         if (colonies.length > 1) setDisabledColony(false);
-         setDataStates(states);
-         setDataCities(cities);
-         setDataColonies(colonies);
-         setDataColoniesComplete(coloniesComplete);
-         setFieldValue("zip", community_id ? formData.zip : zip);
-         setFieldValue("state", community_id ? formData.state : states[0]);
-         setFieldValue("city", community_id ? formData.city : cities[0]);
-         setFieldValue("colony", community_id ? formData.colony : colonies[0]);
-         // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
-         setShowLoading(false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-         setShowLoading(false);
-      }
-   };
-
-   const handleChangeColonySuccess = (community_selected) => {
-      try {
-         // console.log(community_selected);
-         formData.colony = community_selected.label;
-         formData.community_id = community_selected.id;
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
 
    const handleModify = async (setValues, setFieldValue) => {
       try {
-         // setLoadingAction(true);
-         // console.log(user);
-         if (formData.community_id > 0) await getCommunityByZip(formData.zip, setFieldValue, formData.community_id);
+         if (formData.community_id > 0) {
+            // setShowLoading(true);
+
+            getCommunity(
+               formData.zip,
+               setFieldValue,
+               formData.community_id,
+               formData,
+               setFormData,
+               setDisabledState,
+               setDisabledCity,
+               setDisabledColony,
+               setShowLoading,
+               setDataStates,
+               setDataCities,
+               setDataColonies,
+               setDataColoniesComplete
+            );
+         }
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
          setIsAdmin(formData.role_id <= 2 ? true : false);
@@ -349,7 +264,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    }, [formData]);
 
    return (
-      <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
+      <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)} className={cursorLoading ? "cursor-loading" : ""}>
          <Box role="presentation" p={3} pt={5} className="form">
             <Typography variant="h2" mb={3}>
                {formTitle}
@@ -690,7 +605,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               handleBlur={handleBlur}
                               errors={errors}
                               touched={touched}
-                              // changeColonySuccess={handleChangeColonySuccess}
                            />
                         </>
                      )}

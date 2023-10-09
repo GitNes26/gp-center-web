@@ -9,10 +9,13 @@ const formDataInitialState = {
    id: 0,
    stock_number: "",
    brand_id: 0,
+   brand: "Selecciona una opción...",
    model_id: 0,
+   model: "Selecciona una opción...",
    year: "",
    registration_date: "",
    vehicle_status_id: 0,
+   vehicle_status: "Selecciona una opción...",
    description: "",
 
    plates: "",
@@ -186,7 +189,6 @@ export default function VehicleContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-
 
    // useEffect(() => {
    //    console.log("el useEffect de VehicleContext");

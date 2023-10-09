@@ -1,11 +1,10 @@
 import { TextField } from "@mui/material";
 import { Box } from "@mui/system";
-import PropTypes, { string } from "prop-types";
+import propTypes from "prop-types";
 
 const InputFileComponent = ({
    idName,
    label,
-   value,
    placeholder,
    handleChange,
    handleBlur,
@@ -17,8 +16,6 @@ const InputFileComponent = ({
    error,
    touched
 }) => {
-   // const [imagePreview, setImagePreview] = useState(null);
-
    const handleChangeImg = (event) => {
       // if (event.target.files)
       const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
@@ -67,20 +64,19 @@ const InputFileComponent = ({
    );
 };
 
-InputFileComponent.PropTypes = {
-   idName: PropTypes.string.isRequired,
-   label: PropTypes.string.isRequired,
-   value: PropTypes.any,
-   placeholder: PropTypes.string.isRequired,
-   handleChange: PropTypes.func.isRequired,
-   handleBlur: PropTypes.func.isRequired,
-   inputProps: PropTypes.object,
-   setFieldValue: PropTypes.func.isRequired,
-   setImgFile: PropTypes.func.isRequired,
-   imagePreview: PropTypes.string.isRequired,
-   setImagePreview: PropTypes.func.isRequired,
-   error: PropTypes.any,
-   touched: PropTypes.any
+InputFileComponent.propTypes = {
+   idName: propTypes.string.isRequired,
+   label: propTypes.string.isRequired,
+   placeholder: propTypes.string.isRequired,
+   handleChange: propTypes.func.isRequired,
+   handleBlur: propTypes.func.isRequired,
+   inputProps: propTypes.object,
+   setFieldValue: propTypes.func.isRequired,
+   setImgFile: propTypes.func.isRequired,
+   // imagePreview: propTypes.any.isRequired,
+   setImagePreview: propTypes.func.isRequired,
+   error: propTypes.any,
+   touched: propTypes.any
 };
 
 export default InputFileComponent;

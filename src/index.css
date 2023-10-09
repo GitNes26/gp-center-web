@@ -1,4 +1,5 @@
-.form {
+.form,
+.drawer-max-width {
    max-width: 35vw;
 }
 
@@ -71,17 +72,20 @@
 }
 
 @media (max-width: 1500px) {
-   .form {
+   .form,
+   .drawer-max-width {
       max-width: 50vw;
    }
 }
 @media (max-width: 1040px) {
-   .form {
+   .form,
+   .drawer-max-width {
       max-width: 80vw;
    }
 }
 @media (max-width: 420px) {
-   .form {
+   .form,
+   .drawer-max-width {
       max-width: 95vw;
    }
 }

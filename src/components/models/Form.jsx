@@ -2,42 +2,18 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Autocomplete,
-   Backdrop,
-   Button,
-   CircularProgress,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { useModelContext } from "../../context/ModelContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
-import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../utils/password-strength";
-import axios from "axios";
+import { handleInputFormik } from "../../utils/Formats";
 import Select2Component from "../Form/Select2Component";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -124,26 +100,6 @@ const ModelForm = ({ dataBrands }) => {
       model: Yup.string().trim().required("Nombre del modelo requerido")
    });
 
-   useEffect(() => {
-      try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   }, [formData]);
-
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       if (formHelperText) {
          return (
@@ -155,6 +111,16 @@ const ModelForm = ({ dataBrands }) => {
       return msg;
    };
 
+   useEffect(() => {
+      try {
+         const btnModify = document.getElementById("btnModify");
+         if (btnModify != null) btnModify.click();
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   }, [formData]);
+
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
@@ -165,7 +131,7 @@ const ModelForm = ({ dataBrands }) => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>{" "}
+            </Typography>
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
@@ -184,7 +150,7 @@ const ModelForm = ({ dataBrands }) => {
                            options={dataBrands}
                            fullWidth={true}
                            handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChangeBrand}
+                           // handleChangeValueSuccess={handleChange...}
                            setValues={setValues}
                            handleBlur={handleBlur}
                            error={errors.brand_id}
@@ -203,7 +169,7 @@ const ModelForm = ({ dataBrands }) => {
                            placeholder="Ingrese el nombre del modelo"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "model", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "model", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}

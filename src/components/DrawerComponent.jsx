@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import Toast from "../utils/Toast";
 import { useGlobalContext } from "../context/GlobalContext";
 import Paper from "@mui/material/Paper";
-
+import propTypes from "prop-types";
 // ===========================================================================================
 // ========================================== COMPONENTE =====================================
 // ===========================================================================================
@@ -44,4 +44,9 @@ const DrawerComponent = ({ title, openDialog, setOpenDialog, anchor, content, bg
       </SwipeableDrawer>
    );
 };
+DrawerComponent.propTypes = {
+   title: propTypes.any.isRequired,
+   anchor: propTypes.oneOf(["right", "left", "top", "bottom"])
+};
+
 export default DrawerComponent;

@@ -65,8 +65,6 @@ const BrandForm = () => {
    } = useBrandContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   // const [imgFile, setImgFile] = useState(null);
-   // const [imagePreview, setImagePreview] = useState(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -164,17 +162,6 @@ const BrandForm = () => {
       }
    }, [formData]);
 
-   const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
-      if (formHelperText) {
-         return (
-            <FormHelperText error id="ht-disability_id">
-               {msg}
-            </FormHelperText>
-         );
-      }
-      return msg;
-   };
-
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
@@ -216,6 +203,7 @@ const BrandForm = () => {
                         <InputFileComponent
                            idName="img_path"
                            label="Foto de la marca"
+                           inputProps={{}}
                            // value={values.img_path}
                            placeholder=""
                            setImgFile={setImgFile}
@@ -227,34 +215,6 @@ const BrandForm = () => {
                            error={errors.img_path}
                            touched={touched.img_path}
                         />
-                        {/* <TextField
-                           id="img_path"
-                           name="img_path"
-                           label="Foto del Vehículo *"
-                           type="file"
-                           // value={values.img_path}
-                           placeholder="Ingrese el número de inventario"
-                           onChange={(e) => {
-                              handleChange(e);
-                              handleChangeImg(e, setFieldValue);
-                           }}
-                           onBlur={handleBlur}
-                           variant="standard"
-                           // onInput={(e) => handleInput(e, setFieldValue, "img_path", true)}
-                           // InputProps={{ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[0] = el)}
-                           // inputRef={inputRefVehicle}
-                           error={errors.img_path && touched.img_path}
-                           helperText={errors.img_path && touched.img_path && errors.img_path}
-                        /> */}
-                        {/* Vista previa de la imagen */}
-                        {/* {imagePreview && (
-                           <Box textAlign={"center"}>
-                              <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />
-                           </Box>
-                        )} */}
                      </Grid>
 
                      <LoadingButton

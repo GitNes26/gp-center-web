@@ -39,23 +39,21 @@ const Select2Component = ({
    const handleChangeValue = async (value, setValues) => {
       try {
          if (!value) return (valueLabel = "Selecciona una opción...");
-         // console.log("valuesVALUESSSSSS:", typeof value);
-         console.log("que soy", formDataLabel);
-
+         // console.log("Select2Component - handleChangeValue - value", value);
          if (typeof value === "object") {
             valueLabel = value.label; // repetir este paso afuera
             values[idName] = value.id;
             values[formDataLabel] = value.label;
          } else {
-            console.log("soy string");
+            // console.log("soy string");
             valueLabel = value; // repetir este paso afuera
             values[formDataLabel] = value;
          }
-         // console.log("values", values);
-         // console.log("formData", formData);
+         // console.log("Select2Component - handleChangeValue - values", values);
+         // console.log("Select2Component - handleChangeValue - formData", formData);
          await setFormData(values);
          await setValues(values);
-         console.log("formData en el select2Component", formData);
+         // console.log("formData en el select2Component", formData);
 
          if (handleChangeValueSuccess) handleChangeValueSuccess(value, setValues); //en esta funcion
       } catch (error) {
@@ -81,8 +79,8 @@ const Select2Component = ({
             // getOptionLabel={(option) => option.toString()}
             isOptionEqualToValue={isOptionEqualToValue}
             renderInput={(params) => <TextField {...params} label={label} />}
-            onChange={(e, newValue) => {
-               handleChange(e);
+            onChange={(e, newValue, reason, details) => {
+               handleChange(e, newValue, reason, details);
                handleChangeValue(newValue, setValues);
             }}
             onBlur={handleBlur}
