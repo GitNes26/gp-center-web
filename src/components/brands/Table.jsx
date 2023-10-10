@@ -115,7 +115,7 @@ const BrandTable = () => {
             const register = [];
             register.push(
                <Box textAlign={"center"}>
-                  {<img alt="Vista previa de la mara" src={`${import.meta.env.VITE_HOST}/${obj.img_path}`} style={{ maxWidth: 100, maxHeight: 100 }} />}
+                  {<img alt="Vista previa de la marca" src={`${import.meta.env.VITE_HOST}/${obj.img_path}`} style={{ maxWidth: 100, maxHeight: 100 }} />}
                </Box>
             );
             register.push(<Typography textAlign={"center"}>{obj.brand}</Typography>);

@@ -23,7 +23,8 @@ const formDataInitialState = {
    due_date: "",
    img_path: "",
 
-   status: ""
+   status: "",
+   changePlates: false
 };
 
 export default function VehicleContextProvider({ children }) {

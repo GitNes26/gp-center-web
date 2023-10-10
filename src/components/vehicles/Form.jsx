@@ -42,8 +42,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
-   const [dataModels, setDataModels] = useState([]);
    const [changePlates, setChangePlates] = useState(false);
+   const [dataModels, setDataModels] = useState([]);
+   const [modifying, setModifying] = useState(false);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -58,10 +59,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       }
    };
 
-   const getModelsByBrand = async (valuesBrand, setValues, valuesModel) => {
+   const getModelsByBrand = async (valuesBrand, setValues, valuesModel = null) => {
       try {
          console.log(valuesBrand, valuesModel);
-
+         formData.model_id = 0;
+         formData.model = "Selecciona una opción...";
          setDataModels([]);
          const axiosModels = await Axios.get(`models/brand/${valuesBrand.id}`);
          const result = await axiosModels.data.data.result;
@@ -70,8 +72,8 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          setDataModels(result);
          formData.model_id = valuesModel == null ? 0 : valuesModel.id;
          formData.model = valuesModel == null ? "Selecciona una opción..." : valuesModel.label;
-         setFormData(formData);
-         setValues(formData);
+         // setFormData(formData);
+         // setValues(formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -80,8 +82,8 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const handleChangeBrands = async (value2, setValues2) => {
       try {
-         console.log("cambio de brand");
-         // getModelsByBrand(value2, setValues2, null);
+         console.log("cambio de brand - value2:", value2);
+         if (typeof value2 === "object") getModelsByBrand(value2, setValues2);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -104,6 +106,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       try {
          console.log("el imgFile", imgFile);
          values.imgFile = imgFile;
+         values.changePlates = changePlates;
          console.log(values);
          setLoadingAction(true);
          let axiosResponse;
@@ -146,8 +149,8 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       try {
          setLoadingAction(true);
          console.log(formData);
-         if (formData.description) formData.description && (formData.description = "");
-         // setValues(formData);
+         if (formData.description) !formData.description && (formData.description = "");
+         setValues(formData);
          console.log("editarrrr", formData);
          const valuesBrnad = { id: formData.brand_id, label: formData.brand };
          const valuesModel = { id: formData.model_id, label: formData.model };
@@ -293,34 +296,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            touched={touched.model_id}
                            disabled={dataModels.length < 2 ? true : false}
                         />
-                        {/* <FormControl fullWidth>
-                           <InputLabel id="model_id-label">Modelo *</InputLabel>
-                           <Select
-                              id="model_id"
-                              name="model_id"
-                              label="Modelo"
-                              labelId="model_id-label"
-                              value={values.model_id}
-                              placeholder="Modelo"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              disabled={dataModels.length == 0 ? true : false}
-                              error={errors.model_id && touched.model_id}
-                           >
-                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
-                              {dataModels &&
-                                 dataModels.map((d) => (
-                                    <MenuItem key={d.value} value={d.value}>
-                                       {d.text}
-                                    </MenuItem>
-                                 ))}
-                           </Select>
-                           {touched.model_id && errors.model_id && (
-                              <FormHelperText error id="ht-model_id">
-                                 {errors.model_id}
-                              </FormHelperText>
-                           )}
-                        </FormControl> */}
                      </Grid>
                      {/* Año */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
@@ -373,56 +348,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
                      {/* Estatus */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        {/* <FormControl fullWidth> */}
-                        {/* <Autocomplete
-                              disablePortal
-                              openOnFocus
-                              id="vehicle_status_id"
-                              name="vehicle_status_id"
-                              label="Estatus"
-                              // labelId="vehicle_status_id-label"
-                              placeholder="Estatus"
-                              options={dataVehicleStatus}
-                              // getOptionLabel={(option) => option.text}
-                              // isOptionEqualToValue={customIsOptionEqualToValue}
-                              renderInput={(params) => <TextField {...params} label="Estatus *" />}
-                              value={values.vehicle_status_id}
-                              // componentName="vehicle_status_id"
-                              onChange={(e, newValue) => {
-                                 handleChange(e);
-                                 handleChangeR("vehicle_status_id", newValue, setValues);
-                              }}
-                              onBlur={handleBlur}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.vehicle_status_id && touched.vehicle_status_id}
-                              // value={"PRIMARIA"}
-                           /> */}
-                        {/* <Select2
-                              id="vehicle_status_id"
-                              name="vehicle_status_id"
-                              label="Estatus"
-                              components={<Select />}
-                              labelId="vehicle_status_id-label"
-                              value={values.vehicle_status_id}
-                              placeholder="Estatus"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.vehicle_status_id && touched.vehicle_status_id}
-                              // className="basic-single"
-                              // classNamePrefix="select"
-                              // defaultValue={dataVehicleStatus[0]}
-                              isDisabled={isDisabled}
-                              isLoading={isLoading}
-                              isClearable={isClearable}
-                              isRtl={isRtl}
-                              isSearchable={isSearchable}
-                              getOptionLabel={(option) => option.text}
-                              options={dataVehicleStatus}
-                           /> */}
                         <Select2Component
                            idName={"vehicle_status_id"}
-                           label={"Marca *"}
+                           label={"Estatus del Vehículo *"}
                            valueLabel={values.vehicle_status}
                            values={values}
                            formData={formData}
@@ -439,35 +367,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            touched={touched.vehicle_status_id}
                            disabled={false}
                         />
-                        {/* <InputLabel id="vehicle_status_id-label">Estatus *</InputLabel>
-                           <Select
-                              id="vehicle_status_id"
-                              name="vehicle_status_id"
-                              label="Estatus"
-                              labelId="vehicle_status_id-label"
-                              value={values.vehicle_status_id}
-                              placeholder="Estatus"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.vehicle_status_id && touched.vehicle_status_id}
-                           >
-                              <MenuItem value={0}>Selecciona una opción...</MenuItem>
-                              {dataVehicleStatus &&
-                                 dataVehicleStatus.map((d) => (
-                                    <MenuItem
-                                       key={d.value}
-                                       value={d.value} /* <sx={{ backgroundColor: d.bg_color, color: d.letter_black ? "#3E3E3E" : "#F3F3F3" }}> *
-                                    >
-                                       {d.text}
-                                    </MenuItem>
-                                 ))}
-                           </Select>
-                           {touched.vehicle_status_id && errors.vehicle_status_id && (
-                              <FormHelperText error id="ht-vehicle_status_id">
-                                 {errors.vehicle_status_id}
-                              </FormHelperText>
-                           )}
-                        </FormControl> */}
                      </Grid>
                      {/* Descripcion */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
@@ -536,11 +435,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 
-                     {/* Switch para mostrar el cambiar contraseña */}
-
-                     {/* <Grid xs={12} md={12} sx={{ mb: -2 }}>
-                        <FormControlLabel control={<Switch />} label="Cambiar Contraseña" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
-                     </Grid> */}
+                     {/* Switch para replaquear */}
+                     <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                        <FormControlLabel control={<Switch />} label="Replaquear" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
+                     </Grid>
                      {/* Placas */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField

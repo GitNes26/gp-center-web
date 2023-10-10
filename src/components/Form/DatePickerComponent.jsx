@@ -3,7 +3,33 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { Field } from "formik";
 
-const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setFieldValue, onChange, onBlur, error, touched, showErrorInput, formData }) => {
+/**
+ * 
+ * INSTALAR...
+ * npm install @mui/x-date-pickers
+ * npm install dayjs
+ * 
+ * AGREGAR A TODA LA APLICACION --> src/App.jsx
+ * import { LocalizationProvider } from "@mui/x-date-pickers";
+ * import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+ * <LocalizationProvider dateAdapter={AdapterDayjs}> ... </<LocalizationProvider>
+ * 
+ * <DatePickerComponent
+      idName={"license_due_date"}
+      label={"Fecha de Vencimiento *"}
+      format={"DD/MM/YYYY"}
+      value={values.license_due_date}
+      setFieldValue={setFieldValue}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      error={errors.license_due_date}
+      touched={touched.license_due_date}
+      showErrorInput={null}
+      formData={formData}
+   />
+ */
+
+const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setFieldValue, onChange, onBlur, error, touched, showErrorInput = null, formData }) => {
    const handleChangeBirthdate = (date, setFieldValue) => {
       // console.log("valor del datePicker en daysjs", date);
       const birthdate = dayjs(date).format("YYYY-MM-DD");
@@ -32,7 +58,7 @@ const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setF
                   />
                   {touched && error && (
                      <FormHelperText error id={`ht-${idName}`}>
-                        {showErrorInput(2, error)}
+                        {showErrorInput ? showErrorInput(2, error) : error}
                      </FormHelperText>
                   )}
                </>

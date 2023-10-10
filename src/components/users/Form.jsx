@@ -2,15 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Button,
-   Divider,
-   FormControlLabel,
-   InputLabel,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -30,6 +22,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import Select2Component from "../Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../Form/InputsCommunityComponent";
+import DatePickerComponent from "../Form/DatePickerComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -82,7 +75,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       try {
          setIsAdmin(false);
          setIsGarage(false);
-         const role_id = Number(value2.role_id);
+         const role_id = Number(formData.role_id);
          setIsAdmin(role_id <= 2 ? true : false);
          setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
@@ -110,11 +103,13 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          // console.log("values", values);
          // values.community_id = values.colony_id;
 
+         values.num_int = values.num_int === "" ? "S/N" : values.num_int;
+         setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createUser(values);
          else axiosResponse = await updateUser(values);
-         if (axiosResponse.message == "duplicate") return Toast.Info("hola");
+         // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
             resetForm();
             setStrength(0);
@@ -148,8 +143,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
-
-   const handleModify = async (setValues, setFieldValue) => {
+   const handleModify = async (values, setValues, setFieldValue) => {
       try {
          if (formData.community_id > 0) {
             // setShowLoading(true);
@@ -159,6 +153,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                setFieldValue,
                formData.community_id,
                formData,
+               values,
                setFormData,
                setDisabledState,
                setDisabledCity,
@@ -460,20 +455,18 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            </Grid>
                            {/* Fecha de Vencimiento */}
                            <Grid xs={12} md={4} sx={{ mb: 3 }}>
-                              <TextField
-                                 id="license_due_date"
-                                 name="license_due_date"
-                                 label="Fecha de Vencimiento *"
-                                 type="date"
+                              <DatePickerComponent
+                                 idName={"license_due_date"}
+                                 label={"Fecha de Vencimiento *"}
+                                 format={"DD/MM/YYYY"}
                                  value={values.license_due_date}
-                                 placeholder=""
-                                 // inputProps={{ maxLength: 10 }}
+                                 setFieldValue={setFieldValue}
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 fullWidth
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.license_due_date && touched.license_due_date}
-                                 helperText={errors.license_due_date && touched.license_due_date && errors.license_due_date}
+                                 error={errors.license_due_date}
+                                 touched={touched.license_due_date}
+                                 showErrorInput={null}
+                                 formData={formData}
                               />
                            </Grid>
                            {/* Divisor */}
@@ -642,7 +635,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         fullWidth
                         id="btnModify"
                         sx={{ mt: 1, display: "none" }}
-                        onClick={() => handleModify(setValues, setFieldValue)}
+                        onClick={() => handleModify(values, setValues, setFieldValue)}
                      >
                         setValues
                      </Button>

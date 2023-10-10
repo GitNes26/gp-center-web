@@ -45,6 +45,7 @@ export const getCommunity = async (
    setFieldValue,
    community_id = null,
    formData,
+   values,
    setFormData,
    setDisabledState,
    setDisabledCity,
@@ -75,9 +76,9 @@ export const getCommunity = async (
       setFieldValue("state", "Selecciona una opción...");
       setFieldValue("city", "Selecciona una opción...");
       setFieldValue("colony", "Selecciona una opción...");
-      setFieldValue("street", formData.street);
-      setFieldValue("num_ext", formData.num_ext);
-      setFieldValue("num_int", formData.num_int);
+      setFieldValue("street", values.street);
+      setFieldValue("num_ext", values.num_ext);
+      setFieldValue("num_int", values.num_int);
       if (community_id) {
          const axiosMyCommunity = axios;
          const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
@@ -176,6 +177,7 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
             setFieldValue,
             community_id,
             formData,
+            values,
             setFormData,
             setDisabledState,
             setDisabledCity,
