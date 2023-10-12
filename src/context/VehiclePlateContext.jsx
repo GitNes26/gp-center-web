@@ -143,11 +143,11 @@ export default function VehiclePlateContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/vehiclesPlates/history/${vehicle_id}`);
-         console.log("axiosData", axiosData);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          setVehiclePlates(res.result);
          // fillFormData(res.result);
-         console.log(res);
+         // console.log(res);
 
          return res;
       } catch (error) {

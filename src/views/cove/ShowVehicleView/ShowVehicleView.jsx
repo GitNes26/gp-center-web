@@ -2,45 +2,15 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
 import MainCard from "../../../ui-component/cards/MainCard";
-import VehicleTable from "../../../components/vehicles/Table";
-import VehicleForm from "../../../components/vehicles/Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../../context/AuthContext";
 
-import { cloneElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useVehicleContext } from "../../../context/VehicleContext";
-import {
-   Avatar,
-   Button,
-   ButtonBase,
-   Card,
-   CardContent,
-   CardHeader,
-   Chip,
-   Drawer,
-   FormControl,
-   FormControlLabel,
-   FormLabel,
-   Grow,
-   InputAdornment,
-   InputLabel,
-   List,
-   ListItem,
-   ListItemIcon,
-   ListItemText,
-   OutlinedInput,
-   Popover,
-   Radio,
-   RadioGroup,
-   TextField,
-   Tooltip,
-   Typography
-} from "@mui/material";
+import { Avatar, Button, Card, CardContent, Chip, Grow, List, ListItem, ListItemIcon, OutlinedInput, Tooltip, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
-import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
@@ -48,17 +18,17 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 // import bgPrimary from "../../assets/images/fondo menú.jpg";
 // import bgPlatform from "../../../assets/images/bg-auto.jpg";
 import bgPlatform from "../../../assets/images/bg-primary.jpg";
-import { Box, fontSize } from "@mui/system";
-import ImgCar from "../../../assets/images/auto.png";
+import { Box } from "@mui/system";
 import { drawerWidth } from "../../../config/store/constant";
-import { Icon123, IconCalendarStats, IconCandle, IconNotebook, IconSearch } from "@tabler/icons";
-import { display, shouldForwardProp } from "@mui/system";
+import { Icon123, IconCalendarStats, IconCandle, IconNotebook } from "@tabler/icons";
+import { shouldForwardProp } from "@mui/system";
 import { useTheme } from "@emotion/react";
 import { formatDatetime } from "../../../utils/Formats";
 import SearchInput from "../../../components/SearchInput";
 import PlatesRegisters from "./PlatesRegisters";
 import HistoryRegister from "./HIstoryRegister";
 import { useVehiclePlateContext } from "../../../context/VehiclePlateContext";
+import ModalAsig from "./ModalAsig";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -107,7 +77,7 @@ const ShowVehicleView = () => {
          setVehiclePlates([]);
          if (vehicle == null) return Toast.Error("No hay unidad encotnrada");
          const axiosResponse = await historyByVehicleId(vehicle.id);
-         console.log(axiosResponse);
+         // console.log(axiosResponse);
          setOpenDialogPlates(true);
          // setTextBtnSumbit("AGREGAR");
          // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -151,7 +121,7 @@ const ShowVehicleView = () => {
       try {
          setLoading(true);
          setBgImage("bgGarage");
-         getVehicles();
+         // getVehicles();
          setLoading(false);
          document.querySelector("#search").focus();
       } catch (error) {
@@ -286,13 +256,6 @@ const ShowVehicleView = () => {
                )}
             </Grid>
 
-            {/* IMAGEN INSIGNIA MARCA */}
-            <Box className={`brand-container ${classesImgVehicle}`}>
-               <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "100px" }} />
-               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "42px", textShadow: "2px 2px 4px rgba(0, 0, 0, 1)" }}>
-                  {vehicle && vehicle.model}
-               </Typography>
-            </Box>
             {/* IMAGEN DEL VEHICULO */}
             <Box sx={{}}>
                <img
@@ -303,12 +266,50 @@ const ShowVehicleView = () => {
                      maxHeight: "550px",
                      position: "absolute",
                      left: `calc(38% - ${drawerWidth + 10}px)`,
-                     bottom: `calc(40% - ${drawerWidth + 55}px)`,
+                     bottom: `calc(50% - ${drawerWidth + 55}px)`,
                      zIndex: 0
                   }}
                />
             </Box>
-            {/* <VehicleTable /> */}
+
+            {/* IMAGEN INSIGNIA MARCA */}
+            <Box className={`brand-container ${classesImgVehicle}`}>
+               <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "100px" }} />
+               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "42px", textShadow: "2px 2px 4px rgba(0, 0, 0, 1)" }}>
+                  {vehicle && vehicle.model}
+               </Typography>
+            </Box>
+
+            <Box
+               sx={{
+                  flexGrow: 1,
+                  width: "100%",
+                  position: "absolute",
+                  left: `0`,
+                  bottom: `1%`,
+                  mx: 2,
+                  zIndex: 0
+               }}
+            >
+               <Grid container spacing={3}>
+                  <Grid xs alignItems={"center"}>
+                     <Button variant="contained" sx={{ fontSize: 30, fontWeight: "bolder", backgroundColor: "yellow" }} color="inherit">
+                        SERVICIO
+                     </Button>
+                  </Grid>
+                  <Grid xs alignItems={"center"}>
+                     <Button variant="contained" sx={{ fontSize: 30, fontWeight: "bolder", backgroundColor: "whitesmoke" }} color="inherit">
+                        ASIGNAR
+                     </Button>
+                     {/* <ModalAsig /> */}
+                  </Grid>
+                  <Grid xs alignItems={"center"}>
+                     <Button variant="contained" sx={{ fontSize: 30, fontWeight: "bolder", backgroundColor: "black" }} color="inherit">
+                        PRESTAMO
+                     </Button>
+                  </Grid>
+               </Grid>
+            </Box>
          </MainCard>
 
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />

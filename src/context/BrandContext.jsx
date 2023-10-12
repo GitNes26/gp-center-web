@@ -108,7 +108,7 @@ export default function BrandContextProvider({ children }) {
    const updateBrand = async (brand) => {
       let res = CorrectRes;
       try {
-         console.log(brand);
+         // console.log(brand);
          // const axiosData = await Axios.put("/brands", brand, {
          const axiosData = await Axios.post(`/brands/${brand.id}`, brand, {
             headers: {

@@ -33,7 +33,7 @@
 
 .brand-container {
    position: absolute;
-   bottom: 50px;
+   bottom: 60px;
    /* transform: translateX(-50%); */
    right: 50px;
    z-index: 0;

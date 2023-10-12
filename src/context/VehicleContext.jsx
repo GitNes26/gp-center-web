@@ -77,9 +77,11 @@ export default function VehicleContextProvider({ children }) {
 
    const getVehicles = async () => {
       try {
+         setVehicle([]);
          const res = CorrectRes;
          const axiosData = await Axios.get(`/vehicles`);
          res.result.vehicles = axiosData.data.data.result;
+         // console.log(res.result);
          setVehicles(axiosData.data.data.result);
          // console.log("vehicles", vehicles);
 

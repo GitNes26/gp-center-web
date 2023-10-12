@@ -77,7 +77,7 @@ const ModelForm = ({ dataBrands }) => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
-         if (!formData.description) formData.description = "";
+         if (formData.description) formData.description === null && (formData.description = "");
          setValues(formData);
          setLoadingAction(false);
       } catch (error) {

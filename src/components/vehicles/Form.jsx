@@ -61,7 +61,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const getModelsByBrand = async (valuesBrand, setValues, valuesModel = null) => {
       try {
-         console.log(valuesBrand, valuesModel);
          formData.model_id = 0;
          formData.model = "Selecciona una opción...";
          setDataModels([]);
@@ -82,7 +81,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const handleChangeBrands = async (value2, setValues2) => {
       try {
-         console.log("cambio de brand - value2:", value2);
+         // console.log("cambio de brand - value2:", value2);
          if (typeof value2 === "object") getModelsByBrand(value2, setValues2);
       } catch (error) {
          console.log(error);
@@ -104,10 +103,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         console.log("el imgFile", imgFile);
          values.imgFile = imgFile;
-         values.changePlates = changePlates;
-         console.log(values);
+         values.changePlates = changePlates ? 1 : 0;
+
+         // console.log(values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createVehicle(values);
@@ -148,14 +147,14 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
-         console.log(formData);
+         // console.log(formData);
          if (formData.description) !formData.description && (formData.description = "");
          setValues(formData);
-         console.log("editarrrr", formData);
          const valuesBrnad = { id: formData.brand_id, label: formData.brand };
          const valuesModel = { id: formData.model_id, label: formData.model };
          await getModelsByBrand(valuesBrnad, setValues, valuesModel);
-         setImgFile(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
+         setImgFile(null);
+         // setImgFile(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
          setImagePreview(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
          await handleChangeBrands(formData.brand_id, setFieldValue);
          setFieldValue("model_id", formData.model_id);

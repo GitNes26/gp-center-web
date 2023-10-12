@@ -3,18 +3,11 @@ import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
-   Autocomplete,
-   Backdrop,
    Button,
-   CircularProgress,
-   Divider,
    FormControlLabel,
    FormLabel,
-   InputLabel,
-   MenuItem,
    Radio,
    RadioGroup,
-   Select,
    Switch,
    TextField,
    Typography
@@ -23,21 +16,14 @@ import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { useVehicleStatusContext } from "../../context/VehicleStatusContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
-import Select2 from "react-select";
 import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../utils/password-strength";
-import axios from "axios";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
