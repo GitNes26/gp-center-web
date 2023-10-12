@@ -40,6 +40,7 @@ export default function AuthContextProvider({ children }) {
             email,
             password
          });
+         // console.log("data", data);
 
          if (data.data.status_code != 200 && !data.data.result.token) return alert("algo paso");
          localStorage.setItem("token", data.data.result.token);
