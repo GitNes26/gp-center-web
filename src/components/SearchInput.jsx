@@ -6,6 +6,7 @@ import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 import { handleInputStringCase } from "../utils/Formats";
+import PropTypes from "prop-types";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -37,6 +38,14 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 // }));
 
 // ========================== COMPONENTE ==========================
+/**
+ * Componente buscador
+ * @component
+ * @param {object} props - las propiedades del componente
+ * @param {string} props.idName - Nombre que se le asigna al componente
+ * @param {string} backgroundColor - Color de fondo de la card que envuelve al componente
+ * @returns
+ */
 const SearchInput = ({
    idName,
    backgroundColor,
@@ -48,7 +57,8 @@ const SearchInput = ({
    setSearchType,
    placeholder,
    handleKeyUpSearchSuccess,
-   showOptions = true
+   showOptions = true,
+   ...prop
 }) => {
    const theme = useTheme();
    const { setLoading } = useGlobalContext();
@@ -83,7 +93,6 @@ const SearchInput = ({
                   type={searchType || "text"}
                   fullWidth
                   value={search || ""}
-                  onInput={(e) => handleInputStringCase(e, setSearch, true)}
                   onChange={(e) => handleChangeSearch(e.target.value)}
                   onKeyUp={(e) => handleKeyUpSearch(e)}
                   placeholder={placeholder || "Buscar vehículo"}
@@ -95,14 +104,12 @@ const SearchInput = ({
                   aria-describedby={`${search}-helper-text`}
                   inputProps={{ "aria-label": "weight" }}
                   sx={{}}
+                  {...prop}
                />
             </Tooltip>
 
             {showOptions && (
-               <FormControl
-                  fullWidth
-                  sx={{ color:  "#1F2227", alignItems: "center", backgroundColor: "whitesmoke", borderRadius: "10px", mt: 0.5, p: 0.5 }}
-               >
+               <FormControl fullWidth sx={{ color: "#1F2227", alignItems: "center", backgroundColor: "whitesmoke", borderRadius: "10px", mt: 0.5, p: 0.5 }}>
                   <RadioGroup
                      row
                      aria-labelledby="searchType-label"
@@ -119,6 +126,14 @@ const SearchInput = ({
          </CardContent>
       </Card>
    );
+};
+
+SearchInput.propTypes = {
+   // Ejemplo de propiedades con tipos de datos y valores específicos
+   idName: PropTypes.string, // Acepta solo números
+   positionTooltip: PropTypes.oneOf(["top", "bottom", "left", "right"]), // Acepta solo uno de estos valores
+   backgroundColor: PropTypes.string, // Acepta solo cadenas de texto
+   showOptions: PropTypes.bool // Acepta solo valores booleanos (true o false)
 };
 
 export default SearchInput;

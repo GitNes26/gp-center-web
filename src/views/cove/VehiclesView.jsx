@@ -50,7 +50,7 @@ const VehiclesView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, []);
+   }, [vehicles]);
 
    return (
       <>

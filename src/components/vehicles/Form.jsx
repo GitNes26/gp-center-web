@@ -27,6 +27,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       singularName,
       createVehicle,
       updateVehicle,
+      getVehicles,
       formData,
       setFormData,
       resetFormData,
@@ -118,6 +119,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
          setDataModels([]);
+         getVehicles();
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);

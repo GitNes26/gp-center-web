@@ -23,12 +23,16 @@ import { drawerWidth } from "../../../config/store/constant";
 import { Icon123, IconCalendarStats, IconCandle, IconNotebook } from "@tabler/icons";
 import { shouldForwardProp } from "@mui/system";
 import { useTheme } from "@emotion/react";
-import { formatDatetime } from "../../../utils/Formats";
+import { formatDatetime, handleInputStringCase } from "../../../utils/Formats";
 import SearchInput from "../../../components/SearchInput";
 import PlatesRegisters from "./PlatesRegisters";
 import HistoryRegister from "./HIstoryRegister";
 import { useVehiclePlateContext } from "../../../context/VehiclePlateContext";
 import ModalAsig from "./ModalAsig";
+import UserContextProvider from "../../../context/UserContext";
+import IconBtnService from "../../../components/icons/IconBtnService";
+import IconBtnAssign from "../../../components/icons/IconBtnAssign";
+import IconBtnLoan from "../../../components/icons/IconBtnLoan";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -57,8 +61,9 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
    }
 }));
 
+const sizeBtns = 175;
+
 const ShowVehicleView = () => {
-   // const { result } = useLoaderData();
    const { setLoading, setOpenDialog, setBgImage } = useGlobalContext();
    const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicleBy, vehicle } = useVehicleContext();
    const { vehiclePlates, setVehiclePlates, historyByVehicleId } = useVehiclePlateContext();
@@ -70,6 +75,7 @@ const ShowVehicleView = () => {
    const [growOn, setGrowOn] = useState(false);
    const [openDialogPlates, setOpenDialogPlates] = useState(false);
    const [openDialogHistory, setOpenDialogHistory] = useState(false);
+   const [open, setOpen] = useState(false);
 
    const handleClickViewPlates = async () => {
       try {
@@ -134,7 +140,7 @@ const ShowVehicleView = () => {
       backgroundColor: theme.palette.background.paper
    }));
 
-   const ComponentItem = ({ title, icon, text }) => {
+   const ComponentItem = ({ title, icon, text, ...prop }) => {
       return (
          <ListItem>
             <ListItemIcon sx={{ mr: 2 }}>
@@ -165,7 +171,8 @@ const ShowVehicleView = () => {
                width: "103%",
                margin: "-12px",
                borderRadius: "12px",
-               position: "relative"
+               position: "relative",
+               overFlow: "hidden"
             }}
          >
             <Grid container spacing={2}>
@@ -177,6 +184,7 @@ const ShowVehicleView = () => {
                      setSearch={setSearch}
                      searchType={searchType}
                      setSearchType={setSearchType}
+                     onInput={(e) => handleInputStringCase(e, setSearch, true)}
                      handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
                   />
                </Grid>
@@ -280,64 +288,53 @@ const ShowVehicleView = () => {
                </Typography>
             </Box>
 
+            {/* BOTONERA DE ACCIONES */}
             <Box
                sx={{
                   flexGrow: 1,
-                  width: "100%",
+                  width: "70%",
                   position: "absolute",
                   left: `0`,
-                  bottom: `1%`,
+                  bottom: `0`,
+                  mb: 1,
                   mx: 2,
                   zIndex: 0
                }}
             >
                <Grid container spacing={3}>
                   <Grid xs alignItems={"center"}>
-                     <Button variant="contained" sx={{ fontSize: 30, fontWeight: "bolder", backgroundColor: "yellow" }} color="inherit">
-                        SERVICIO
-                     </Button>
+                     <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
+                        <Box textAlign={"center"}>
+                           <IconBtnService width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                        </Box>
+                     </Tooltip>
                   </Grid>
                   <Grid xs alignItems={"center"}>
-                     <Button variant="contained" sx={{ fontSize: 30, fontWeight: "bolder", backgroundColor: "whitesmoke" }} color="inherit">
-                        ASIGNAR
-                     </Button>
-                     {/* <ModalAsig /> */}
+                     <Tooltip title={"Asignar unidad"} placement="top" arrow>
+                        <Box textAlign={"center"}>
+                           <IconBtnAssign onClick={() => setOpen(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                        </Box>
+                     </Tooltip>
                   </Grid>
                   <Grid xs alignItems={"center"}>
-                     <Button variant="contained" sx={{ fontSize: 30, fontWeight: "bolder", backgroundColor: "black" }} color="inherit">
-                        PRESTAMO
-                     </Button>
+                     <Tooltip title={"Prestar unidad"} placement="top" arrow>
+                        <Box textAlign={"center"}>
+                           <IconBtnLoan onClick={() => setOpen(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                        </Box>
+                     </Tooltip>
                   </Grid>
                </Grid>
             </Box>
          </MainCard>
 
+         <UserContextProvider>
+            <ModalAsig open={open} setOpen={setOpen} />
+         </UserContextProvider>
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
          <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />
          {/* <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} /> */}
       </>
    );
-};
-
-export const loaderIndexShowVehicleView = async () => {
-   try {
-      const res = CorrectRes;
-
-      const axiosBrands = await Axios.get("/brands/selectIndex");
-      res.result.brands = axiosBrands.data.data.result;
-      // res.result.brands.unshift({ id: 0, label: "Selecciona una opción..." });
-      const axiosStatus = await Axios.get("/vehicleStatus/selectIndex");
-      res.result.vehicleStatus = axiosStatus.data.data.result;
-
-      return res;
-   } catch (error) {
-      const res = ErrorRes;
-      console.log(error);
-      res.message = error;
-      res.alert_text = error;
-      sAlert.Error(error);
-      return res;
-   }
 };
 
 export default ShowVehicleView;

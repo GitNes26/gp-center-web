@@ -71,6 +71,17 @@
    }
 }
 
+.btn-action {
+   cursor: pointer;
+   opacity: 0.75;
+   transform: scale(0.95);
+   transition: all 0.2s ease-in-out;
+}
+.btn-action:hover {
+   transform: scale(1);
+   opacity: 1;
+}
+
 @media (max-width: 1500px) {
    .form,
    .drawer-max-width {

@@ -13,15 +13,18 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Fragment, forwardRef, useState } from "react";
+import { Fragment, forwardRef, useEffect, useState } from "react";
 import { ListItemButton } from "@mui/material";
+import SearchInput from "../../../components/SearchInput";
+import { useUserContext } from "../../../context/UserContext";
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ModalAsig = () => {
-   const [open, setOpen] = useState(false);
+const ModalAsig = ({ open, setOpen }) => {
+   // const [open, setOpen] = useState(false);
+   const { users, getUsers } = useUserContext();
 
    const handleClickOpen = () => {
       setOpen(true);
@@ -52,84 +55,74 @@ const ModalAsig = () => {
    }
 
    function stringAvatar(name) {
+      const letters = name.length < 3 ? "?" : `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`;
+
       return {
          sx: {
             bgcolor: stringToColor(name)
          },
-         children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`
+         children: letters
       };
    }
 
+   const ItemUser = ({ full_name = "", department, email }) => {
+      return (
+         <>
+            {/* <Divider variant="inset" component="li" /> */}
+            <ListItemButton alignItems="flex-start">
+               <ListItemAvatar>
+                  <Avatar {...stringAvatar(full_name)} />
+               </ListItemAvatar>
+               <ListItemText
+                  primary={<Typography variant="h4">{full_name}</Typography>}
+                  secondary={
+                     <Fragment>
+                        <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
+                           {department}
+                        </Typography>
+                        — {email}
+                     </Fragment>
+                  }
+               />
+            </ListItemButton>
+            <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
+         </>
+      );
+   };
+
+   useEffect(() => {
+      getUsers();
+      console.log(users);
+   }, []);
+
    return (
       <div>
-         <Button variant="outlined" onClick={handleClickOpen}>
+         {/* <Button variant="outlined" onClick={handleClickOpen}>
             Slide in alert dialog
-         </Button>
-         <Dialog open={open} TransitionComponent={Transition} keepMounted onClose={handleClose} aria-describedby="alert-dialog-slide-description">
-            <DialogTitle>{"Use Google's location service?"}</DialogTitle>
-            <DialogContent>
+         </Button> */}
+         <Dialog
+            open={open}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+            sx={{ backgroundColor: "transparent" }}
+         >
+            <DialogTitle>
+               <SearchInput placeholder={"Buscar usuarios"} showOptions={false} />
+            </DialogTitle>
+            <DialogContent sx={{ maxHeight: "500px" }}>
                <DialogContentText id="alert-dialog-slide-description">
-                  <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-                     <ListItemButton>
-                        <ListItem alignItems="flex-start">
-                           <ListItemAvatar>
-                              <Avatar {...stringAvatar("Kent Dodds")} />
-                           </ListItemAvatar>
-                           <ListItemText
-                              primary="Brunch this weekend?"
-                              secondary={
-                                 <Fragment>
-                                    <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
-                                       Ali Connors
-                                    </Typography>
-                                    {" — I'll be in your neighborhood doing errands this…"}
-                                 </Fragment>
-                              }
-                           />
-                        </ListItem>
-                     </ListItemButton>
-
-                     <Divider variant="inset" component="li" />
-                     
-                     <ListItem alignItems="flex-start">
-                        <ListItemAvatar>
-                           <Avatar {...stringAvatar("Jed Watson")} />
-                        </ListItemAvatar>
-                        <ListItemText
-                           primary="Summer BBQ"
-                           secondary={
-                              <Fragment>
-                                 <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
-                                    to Scott, Alex, Jennifer
-                                 </Typography>
-                                 {" — Wish I could come, but I'm out of town this…"}
-                              </Fragment>
-                           }
-                        />
-                     </ListItem>
-                     <Divider variant="inset" component="li" />
-                     <ListItem alignItems="flex-start">
-                        <ListItemAvatar>
-                           <Avatar {...stringAvatar("Tim Neutkens")} />
-                        </ListItemAvatar>
-                        <ListItemText
-                           primary="Oui Oui"
-                           secondary={
-                              <Fragment>
-                                 <Typography sx={{ display: "inline" }} component="span" variant="body2" color="text.primary">
-                                    Sandra Adams
-                                 </Typography>
-                                 {" — Do you have Paris recommendations? Have you ever…"}
-                              </Fragment>
-                           }
-                        />
-                     </ListItem>
+                  <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+                     {users.map((obj) => {
+                        const full_name = `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name}`;
+                        return <ItemUser key={obj.id} full_name={full_name} department={obj.department} email={obj.email} />;
+                     })}
                   </List>
                </DialogContentText>
             </DialogContent>
             <DialogActions>
-               <Button onClick={handleClose}>Disagree</Button>
-               <Button onClick={handleClose}>Agree</Button>
+               <Button onClick={handleClose}>Cerrar</Button>
             </DialogActions>
          </Dialog>
       </div>
