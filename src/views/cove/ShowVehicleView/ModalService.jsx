@@ -185,14 +185,14 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
    };
 
    const handleChangeStockNumber = (e) => {
-      console.log("change", e);
+      // console.log("change", e);
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
          if (!vehicle) return Toast.Warning("La unidad a ingresar debe estar registrada en CoVe.");
-         console.log("formData", formData);
-         console.log("values", values);
+         // console.log("formData", formData);
+         // console.log("values", values);
          // // values.community_id = values.colony_id;
 
          // // values.num_int = values.num_int === "" ? "S/N" : values.num_int;
@@ -293,8 +293,8 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
 
    useEffect(() => {
       if (stockNumber < 0) formData.stock_number = stockNumber;
-      console.log(formData);
-      console.log("vehicle", vehicle);
+      // console.log(formData);
+      // console.log("vehicle", vehicle);
    }, [formData, vehicle]);
 
    return (

@@ -25,7 +25,7 @@ const menuItems = {
                id: "cove-vehicles-searching",
                title: "Busqueda",
                type: "item",
-               url: "/admin/cove",
+               url: "/admin",
                icon: tablerIcons["IconSearch"]
             }
          ]
