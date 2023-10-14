@@ -1,4 +1,4 @@
-import { Formik } from "formik";
+import { Field, Formik } from "formik";
 import * as Yup from "yup";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import Button from "@mui/material/Button";
@@ -13,8 +13,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Fragment, forwardRef, useEffect } from "react";
-import { ButtonGroup, ListItemButton, TextField } from "@mui/material";
+import { Fragment, forwardRef, useEffect, useState } from "react";
+import { ButtonGroup, CircularProgress, ListItemButton, TextField } from "@mui/material";
 import { useUserContext } from "../../../context/UserContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
 
@@ -26,6 +26,10 @@ import InputComponentv2 from "../../../components/Form/InputComponentv2";
 import { useServiceContext } from "../../../context/ServiceContext";
 import { LoadingButton } from "@mui/lab";
 import Toast from "../../../utils/Toast";
+import { formatDatetime } from "../../../utils/Formats";
+import dayjs from "dayjs";
+import { useVehicleContext } from "../../../context/VehicleContext";
+import sAlert from "../../../utils/sAlert";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -50,13 +54,17 @@ const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ModalService = ({ open, setOpen }) => {
+let dateTime;
+
+const ModalService = ({ open, setOpen, stockNumber }) => {
    const theme = useTheme();
 
    // const [open, setOpen] = useState(false);
-   const { setLoadingAction, setDisabledState, setDisabledCity, setDisabledColony, setShowLoading, cursorLoading } = useGlobalContext();
+   const { setLoadingAction, setDisabledState, setDisabledCity, setDisabledColony, cursorLoading } = useGlobalContext();
    const { users, getUsers } = useUserContext();
-   const { formData, setFormData, resetFormData, service, createService, textBtnSubmit, setTextBtnSumbit } = useServiceContext();
+   const { vehicle, showVehicleBy } = useVehicleContext();
+   const { formData, setFormData, resetFormData, service, createService, updateReport, textBtnSubmit, setTextBtnSumbit } = useServiceContext();
+   const [showLoading, setShowLoading] = useState(false);
 
    const handleClose = () => {
       setOpen(false);
@@ -163,27 +171,48 @@ const ModalService = ({ open, setOpen }) => {
       );
    };
 
+   const handleBlurStockNumber = async (e, setFieldValue) => {
+      if (e.target.value.length == 0) return Toast.Info("Ingresa un número unidad.");
+      // if (e.key === "Enter" || e.keyCode === 13) {
+      setShowLoading(true);
+      // const searchBy = searchType == "number" ? "stock_number" : "plates";
+      const searchBy = "stock_number";
+      const res = await showVehicleBy(searchBy, e.target.value);
+      setShowLoading(false);
+      if (!res.result) return Toast.Info(res.alert_title);
+      Toast.Success(res.alert_title);
+      setFieldValue("vehicle_id", res.result.id);
+   };
+
+   const handleChangeStockNumber = (e) => {
+      console.log("change", e);
+   };
+
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
+         if (!vehicle) return Toast.Warning("La unidad a ingresar debe estar registrada en CoVe.");
          console.log("formData", formData);
          console.log("values", values);
          // // values.community_id = values.colony_id;
 
          // // values.num_int = values.num_int === "" ? "S/N" : values.num_int;
-         // setFormData(values);
-         // setLoadingAction(true);
-         // let axiosResponse;
-         // if (values.id == 0) axiosResponse = await createUser(values);
-         // else axiosResponse = await updateUser(values);
+         setFormData(values);
+         setLoadingAction(true);
+         let axiosResponse;
+         if (values.id == 0) axiosResponse = await createService(values);
+         else axiosResponse = await updateReport(values);
          // // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
-         // if (axiosResponse.status_code == 200) {
-         //    resetForm();
-         //    setStrength(0);
-         //    setTextBtnSumbit("AGREGAR");
-         //    setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
-         // }
-         // setSubmitting(false);
-         // setLoadingAction(false);
+         if (axiosResponse.status_code == 200) {
+            resetForm();
+            resetFormData();
+            setTextBtnSumbit("AGREGAR");
+            // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+         }
+         setSubmitting(false);
+         setLoadingAction(false);
+         sAlert.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, true);
+
+         setOpen(false);
          // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          // if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
       } catch (error) {
@@ -200,7 +229,7 @@ const ModalService = ({ open, setOpen }) => {
       try {
          resetForm();
          // user.role = "Selecciona una opción...";
-         setFieldValue("id", id);
+         // setFieldValue("id", id);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -230,38 +259,43 @@ const ModalService = ({ open, setOpen }) => {
    };
 
    const validationSchema = Yup.object().shape({
-      stock_number: Yup.number("Solo números").required("Número de Inventario requerido")
-   });
-   // const validationSchema = Yup.object().shape({
-   //    // contact_name: Yup.string().trim().required("Nombre de contacto requerido"),
-   //    // contact_phone: Yup.string()
-   //    //    .trim()
-   //    //    .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
-   //    //    .required("Número telefónico requerido"),
-   //    // pre_diagnosis: Yup.string().trim().required("Pre diagnostico requerido"),
-   //    stock_number: Yup.number("Solo números").required("Número de Inventario requerido")
-   //    // folio: "",
-   //    // vehicle_id: 0,
-   //    // final_diagnosis: null,
-   //    // evidence_img_path: null,
+      stock_number: Yup.number("Solo números").required("Número de Inventario requerido"),
+      contact_name: Yup.string().trim().required("Nombre de contacto requerido"),
+      contact_phone: Yup.string()
+         .trim()
+         .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
+         .required("Número telefónico requerido"),
+      pre_diagnosis: Yup.string().trim().required("Pre diagnostico requerido")
+      // folio: "",
+      // vehicle_id: 0,
+      // final_diagnosis: null,
+      // evidence_img_path: null,
 
-   //    // year: Yup.number("Solo números")
-   //    //    .min(1900, "El año esta fuera del rango permitido")
-   //    //    .max(new Date().getFullYear() + 1, "El año esta fuera del rango permitido")
-   //    //    .required("Año del modelo requerido")
-   //    // // registration_date: "",
-   //    // description: "",
-   //    // brand: "",
-   //    // model: "",
-   //    // vehicle_status: "",
-   //    // plates: "",
-   //    // initial_date: "",
-   //    // due_date: ""
-   // });
+      // year: Yup.number("Solo números")
+      //    .min(1900, "El año esta fuera del rango permitido")
+      //    .max(new Date().getFullYear() + 1, "El año esta fuera del rango permitido")
+      //    .required("Año del modelo requerido")
+      // // registration_date: "",
+      // description: "",
+      // brand: "",
+      // model: "",
+      // vehicle_status: "",
+      // plates: "",
+      // initial_date: "",
+      // due_date: ""
+   });
+
+   setInterval(() => {
+      dateTime = dayjs().format("DD-MM-YYYY hh:mm");
+      formData.dateTime = dateTime;
+      // console.log(dateTime);
+   }, 60000);
 
    useEffect(() => {
+      if (stockNumber < 0) formData.stock_number = stockNumber;
       console.log(formData);
-   }, [formData]);
+      console.log("vehicle", vehicle);
+   }, [formData, vehicle]);
 
    return (
       <div>
@@ -280,32 +314,121 @@ const ModalService = ({ open, setOpen }) => {
          >
             <DialogTitle bgcolor={gpcDark}>
                <Typography sx={{ color: gpcLight }} variant="h1">
-                  {"REGISTRAR SERVICIO".toUpperCase()}
+                  {"SOLICITAR SERVICIO".toUpperCase()}
                </Typography>
             </DialogTitle>
             <DialogContent sx={{ maxHeight: "500px", my: 1 }}>
                <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                   {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                     <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                        {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                           {/* Nombre de Usuario */}
-                           <TextField
-                              id="stock_number"
-                              name="stock_number"
-                              label="N° Unidad *"
+                     <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                        {/* N° Unidad */}
+                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <InputComponentv2
+                              idName={"stock_number"}
+                              label={"N° Unidad"}
+                              placeholder={"Ingresa el N° Unidad"}
                               type="number"
+                              formData={formData}
+                              onChange={(e) => {
+                                 handleChange(e);
+                                 handleChangeStockNumber(e);
+                              }}
+                              onBlur={(e) => {
+                                 handleBlur(e);
+                                 handleBlurStockNumber(e, setFieldValue, values);
+                              }}
+                              setFieldValue={setFieldValue}
                               value={values.stock_number}
-                              placeholder="Ingresa el N° Unidad"
-                              onChange={handleChange}
+                              error={errors.stock_number}
+                              touched={touched.stock_number}
+                           />
+                           {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "35%", mt: 0, zIndex: 10 }} />}
+                        </Grid>
+                        {/* Fecha de Registro */}
+                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <InputComponentv2
+                              idName={"dateTime"}
+                              label={"Fecha de Registro"}
+                              placeholder={"Fecha de registro"}
+                              type="text"
+                              formData={formData}
+                              // onChange={(e) => {
+                              //    handleChange(e);
+                              //    // handleChangeStockNumber(e);
+                              // }}
+                              disabled={true}
                               onBlur={handleBlur}
-                              // InputProps={{ }}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.stock_number && touched.stock_number}
-                              helperText={errors.stock_number && touched.stock_number && errors.stock_number}
+                              setFieldValue={setFieldValue}
+                              value={values.dateTime}
+                              error={errors.dateTime}
+                              touched={touched.dateTime}
                            />
                         </Grid>
+                        {/* Nombre de contacto */}
+                        <Grid xs={12} md={7} sx={{ mb: 1 }}>
+                           <InputComponentv2
+                              idName={"contact_name"}
+                              label={"Nombre de contacto"}
+                              placeholder={"Ingresa un nombre a contactar"}
+                              type="text"
+                              formData={formData}
+                              onChange={(e) => {
+                                 handleChange(e);
+                              }}
+                              onBlur={handleBlur}
+                              setFieldValue={setFieldValue}
+                              disabled={vehicle ? false : true}
+                              // sx={{ backgroundColor: "gray" }}
+                              value={values.contact_name}
+                              error={errors.contact_name}
+                              touched={touched.contact_name}
+                           />
+                        </Grid>
+                        {/* Telefono de contacto */}
+                        <Grid xs={12} md={5} sx={{ mb: 1 }}>
+                           <InputComponentv2
+                              idName={"contact_phone"}
+                              label={"Telefono de contacto"}
+                              placeholder={"Ingresa un número telefonico"}
+                              type="text"
+                              formData={formData}
+                              onChange={(e) => {
+                                 handleChange(e);
+                              }}
+                              onBlur={handleBlur}
+                              setFieldValue={setFieldValue}
+                              disabled={vehicle ? false : true}
+                              // sx={{ backgroundColor: "gray" }}
+                              inputProps={{ maxLength: 10 }}
+                              value={values.contact_phone}
+                              error={errors.contact_phone}
+                              touched={touched.contact_phone}
+                           />
+                        </Grid>
+                        {/* Diagnostico inicial */}
+                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                           <InputComponentv2
+                              idName={"pre_diagnosis"}
+                              label={"Diagnóstico inicial"}
+                              placeholder={"Ingresa un número telefonico"}
+                              type="text"
+                              formData={formData}
+                              onChange={(e) => {
+                                 handleChange(e);
+                              }}
+                              onBlur={handleBlur}
+                              setFieldValue={setFieldValue}
+                              disabled={vehicle ? false : true}
+                              // sx={{ backgroundColor: "gray" }}
+                              multiline
+                              rows={3}
+                              value={values.pre_diagnosis}
+                              error={errors.pre_diagnosis}
+                              touched={touched.pre_diagnosis}
+                           />
+                        </Grid>
+
                         <LoadingButton
                            type="submit"
                            disabled={isSubmitting}
@@ -314,6 +437,7 @@ const ModalService = ({ open, setOpen }) => {
                            variant="contained"
                            fullWidth
                            size="large"
+                           // sx={{ bgcolor: gpcDark }}
                         >
                            {textBtnSubmit}
                         </LoadingButton>
@@ -329,9 +453,9 @@ const ModalService = ({ open, setOpen }) => {
                            >
                               LIMPIAR
                            </Button>
-                           <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
+                           {/* <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
                               CANCELAR
-                           </Button>
+                           </Button> */}
                         </ButtonGroup>
                         <Button
                            type="button"

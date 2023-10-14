@@ -118,7 +118,7 @@ const ShowVehicleView = () => {
          const res = await showVehicleBy(searchBy, search);
          setSearch("");
          setLoading(false);
-         if (res.result.length == 0) return Toast.Info(res.alert_title);
+         if (!res.result) return Toast.Info(res.alert_title);
          setTimeout(() => {
             setGrowOn(true);
             setClassesImgVehicle("zoom-in");
@@ -333,7 +333,7 @@ const ShowVehicleView = () => {
          </MainCard>
 
          <UserContextProvider>
-            <ModalService open={openService} setOpen={setOpenService} />
+            <ModalService open={openService} setOpen={setOpenService} stockNumber={vehicle ? vehicle.stock_number : 0} />
             <ModalAsig open={openAssign} setOpen={setOpenAssign} />
          </UserContextProvider>
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />

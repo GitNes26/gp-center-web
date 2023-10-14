@@ -1,4 +1,4 @@
-import { FormControl } from "@mui/material";
+import { FormControl, FormHelperText } from "@mui/material";
 import { Field } from "formik";
 
 import Typography from "@mui/material/Typography";
@@ -39,15 +39,9 @@ const InputComponentv2 = ({
    error,
    touched,
    showErrorInput = null,
-   formData
+   formData,
+   ...prop
 }) => {
-   const handleChangeBirthdate = (date, setFieldValue) => {
-      // console.log("valor del datePicker en daysjs", date);
-      const birthdate = dayjs(date).format("YYYY-MM-DD");
-      formData.birthdate = birthdate;
-      setFieldValue("birthdate", formData.birthdate);
-   };
-
    return (
       <FormControl fullWidth sx={{}}>
          <Field name={idName} id={idName}>
@@ -59,36 +53,33 @@ const InputComponentv2 = ({
                      placeholder={placeholder}
                      {...field}
                      fullWidth
-                     onChange={(val) => {
-                        form.setFieldValue(field.name, val);
-                        // handleChangeBirthdate(date, form.setFieldValue);
-                     }}
-                     // onChange={handleChange}
-                     // onBlur={handleBlur}
+                     onChange={onChange}
+                     onBlur={onBlur}
+                     size="small"
                      // InputProps={{ }}
                      // disabled={values.id == 0 ? false : true}
                      error={error && touched}
-                     helperText={error && touched && error}
+                     // helperText={error && touched && error}
                      // onChange={(e) => handleChangeSearch(e.target.value)}
                      // onKeyUp={(e) => handleKeyUpSearch(e)}
                      startAdornment={
                         // <Tooltip title={""} placement={"top"}>
-                        <InputAdornment position="start" sx={{ mx: 2 }}>
-                           <Typography sx={{ color: gpcLight, fontWeight: "bolder", fontSize: 16 }}>{label}</Typography>
+                        <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                           <Typography sx={{ color: gpcLight, fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
                            {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
                         </InputAdornment>
                         // </Tooltip>
                      }
                      aria-describedby={"search-helper-text"}
                      inputProps={{ "aria-label": "weight" }}
-                     sx={{ backgroundColor: gpcDark, m: 1 }}
-                     // {...prop}
+                     sx={{ backgroundColor: gpcDark }}
+                     {...prop}
                   />
-                  {/* {touched && error && (
+                  {touched && error && (
                      <FormHelperText error id={`ht-${idName}`}>
-                        {showErrorInput ? showErrorInput(2, error) : error}
+                        {error}
                      </FormHelperText>
-                  )} */}
+                  )}
                </>
             )}
          </Field>

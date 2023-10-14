@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+import dayjs from "dayjs";
 
 const ServiceContext = createContext();
 
@@ -18,7 +19,7 @@ const formDataInitialState = {
    // evidence_img_path: null,
 
    stock_number: "",
-   year: 2020,
+   year: "",
    registration_date: "",
    description: "",
    brand: "",
@@ -30,7 +31,9 @@ const formDataInitialState = {
 
    plates: "",
    initial_date: "",
-   due_date: ""
+   due_date: "",
+
+   dateTime: ""
 };
 
 export default function ServiceContextProvider({ children }) {
@@ -40,7 +43,7 @@ export default function ServiceContextProvider({ children }) {
    const pluralName = "Servicios"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
-   const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
+   const [textBtnSubmit, setTextBtnSumbit] = useState("REGISTRAR");
 
    const [services, setServices] = useState([]);
    const [service, setService] = useState(null);

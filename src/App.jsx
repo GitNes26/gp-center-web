@@ -22,13 +22,13 @@ const App = () => {
          <CssBaseline />
          {/* <NavigationSroll> */}
          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: "#000000c0" }} open={loading}>
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={loading}>
                <img className="loader" src={imgLoading} style={{ height: "20vh" }} />
                {/* <Typography variant="h1" sx={{ color: "#fff" }}>
                CARGANDO... <CircularProgress color="inherit" />
             </Typography> */}
             </Backdrop>
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: "#000000c0" }} open={loadingAction}>
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={loadingAction}>
                <img className="loader" src={imgLoading} style={{ height: "20vh" }} />
 
                {/* <Typography variant="h1" sx={{ color: "#fff" }}>
