@@ -25,7 +25,7 @@ const menuItems = {
                id: "cove-vehicles-searching",
                title: "Busqueda",
                type: "item",
-               url: "/admin",
+               url: "/admin/cove",
                icon: tablerIcons["IconSearch"]
             }
          ]
@@ -71,7 +71,7 @@ const menuItems = {
                id: "garage-store",
                title: "Almacen (Stock)",
                type: "item",
-               url: "/admin/taller/alamcen",
+               url: "/admin/taller/almacen",
                icon: tablerIcons["IconCar"]
             },
             {

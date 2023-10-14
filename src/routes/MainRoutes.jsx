@@ -19,6 +19,7 @@ import VehiclesView, { loaderIndexVehiclesView } from "../views/cove/VehiclesVie
 import ShowVehicleView from "../views/cove/ShowVehicleView/ShowVehicleView";
 import VehiclePlateContextProvider from "../context/VehiclePlateContext";
 import ServiceContextProvider from "../context/ServiceContext";
+import ServicesView from "../views/garage/ServicesView/ServicesView";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -50,7 +51,9 @@ const MainRoutes = {
          element: (
             <VehicleContextProvider>
                <VehiclePlateContextProvider>
-                  <ShowVehicleView />
+                  <ServiceContextProvider>
+                     <ShowVehicleView />
+                  </ServiceContextProvider>
                </VehiclePlateContextProvider>
             </VehicleContextProvider>
          ),
@@ -74,6 +77,38 @@ const MainRoutes = {
             </DepartmentContextProvider>
          )
          // loader: loaderIndex
+      },
+      {
+         path: "taller",
+         children: [
+            {
+               path: "almacen",
+               element: (
+                  <BrandContextProvider>
+                     <BrandsView />
+                  </BrandContextProvider>
+               )
+               // loader: loaderIndexUsersView
+            },
+            {
+               path: "servicios",
+               element: (
+                  <ServiceContextProvider>
+                     <ServicesView />
+                  </ServiceContextProvider>
+               ),
+               loader: loaderIndexModelsView
+            },
+            {
+               path: "requisiciones",
+               element: (
+                  <VehicleStatusContextProvider>
+                     <VehicleStatussView />
+                  </VehicleStatusContextProvider>
+               )
+               // loader: loaderIndexModelsView
+            }
+         ]
       },
       {
          path: "cove",

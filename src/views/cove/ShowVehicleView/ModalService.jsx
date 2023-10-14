@@ -26,7 +26,7 @@ import InputComponentv2 from "../../../components/Form/InputComponentv2";
 import { useServiceContext } from "../../../context/ServiceContext";
 import { LoadingButton } from "@mui/lab";
 import Toast from "../../../utils/Toast";
-import { formatDatetime } from "../../../utils/Formats";
+import { formatDatetime, handleInputFormik } from "../../../utils/Formats";
 import dayjs from "dayjs";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import sAlert from "../../../utils/sAlert";
@@ -210,7 +210,7 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
          }
          setSubmitting(false);
          setLoadingAction(false);
-         sAlert.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, true);
+         sAlert.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, true, null);
 
          setOpen(false);
          // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -376,6 +376,7 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
                               onChange={(e) => {
                                  handleChange(e);
                               }}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "email", true)}
                               onBlur={handleBlur}
                               setFieldValue={setFieldValue}
                               disabled={vehicle ? false : true}
@@ -417,6 +418,7 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
                               onChange={(e) => {
                                  handleChange(e);
                               }}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "email", true)}
                               onBlur={handleBlur}
                               setFieldValue={setFieldValue}
                               disabled={vehicle ? false : true}
