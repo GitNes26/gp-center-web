@@ -33,6 +33,7 @@ import UserContextProvider from "../../../context/UserContext";
 import IconBtnService from "../../../components/icons/IconBtnService";
 import IconBtnAssign from "../../../components/icons/IconBtnAssign";
 import IconBtnLoan from "../../../components/icons/IconBtnLoan";
+import ModalService from "./ModalService";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -61,7 +62,7 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
    }
 }));
 
-const sizeBtns = 175;
+const sizeBtns = 150;
 
 const ShowVehicleView = () => {
    const { setLoading, setOpenDialog, setBgImage } = useGlobalContext();
@@ -75,7 +76,9 @@ const ShowVehicleView = () => {
    const [growOn, setGrowOn] = useState(false);
    const [openDialogPlates, setOpenDialogPlates] = useState(false);
    const [openDialogHistory, setOpenDialogHistory] = useState(false);
-   const [open, setOpen] = useState(false);
+   const [openService, setOpenService] = useState(false);
+   const [openAssign, setOpenAssign] = useState(false);
+   const [openLoan, setOpenLoan] = useState(false);
 
    const handleClickViewPlates = async () => {
       try {
@@ -301,34 +304,37 @@ const ShowVehicleView = () => {
                   zIndex: 0
                }}
             >
-               <Grid container spacing={3}>
-                  <Grid xs alignItems={"center"}>
-                     <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
-                        <Box textAlign={"center"}>
-                           <IconBtnService width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                        </Box>
-                     </Tooltip>
+               <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
+                  <Grid container spacing={3}>
+                     <Grid xs alignItems={"center"}>
+                        <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
+                           <Box textAlign={"center"}>
+                              <IconBtnService onClick={() => setOpenService(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                           </Box>
+                        </Tooltip>
+                     </Grid>
+                     <Grid xs alignItems={"center"}>
+                        <Tooltip title={"Asignar unidad"} placement="top" arrow>
+                           <Box textAlign={"center"}>
+                              <IconBtnAssign onClick={() => setOpenAssign(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                           </Box>
+                        </Tooltip>
+                     </Grid>
+                     <Grid xs alignItems={"center"}>
+                        <Tooltip title={"Prestar unidad"} placement="top" arrow>
+                           <Box textAlign={"center"}>
+                              <IconBtnLoan onClick={() => setOpenLoan(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                           </Box>
+                        </Tooltip>
+                     </Grid>
                   </Grid>
-                  <Grid xs alignItems={"center"}>
-                     <Tooltip title={"Asignar unidad"} placement="top" arrow>
-                        <Box textAlign={"center"}>
-                           <IconBtnAssign onClick={() => setOpen(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                        </Box>
-                     </Tooltip>
-                  </Grid>
-                  <Grid xs alignItems={"center"}>
-                     <Tooltip title={"Prestar unidad"} placement="top" arrow>
-                        <Box textAlign={"center"}>
-                           <IconBtnLoan onClick={() => setOpen(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                        </Box>
-                     </Tooltip>
-                  </Grid>
-               </Grid>
+               </Grow>
             </Box>
          </MainCard>
 
          <UserContextProvider>
-            <ModalAsig open={open} setOpen={setOpen} />
+            <ModalService open={openService} setOpen={setOpenService} />
+            <ModalAsig open={openAssign} setOpen={setOpenAssign} />
          </UserContextProvider>
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
          <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />

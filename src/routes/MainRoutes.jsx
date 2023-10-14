@@ -18,6 +18,7 @@ import VehicleContextProvider from "../context/VehicleContext";
 import VehiclesView, { loaderIndexVehiclesView } from "../views/cove/VehiclesView";
 import ShowVehicleView from "../views/cove/ShowVehicleView/ShowVehicleView";
 import VehiclePlateContextProvider from "../context/VehiclePlateContext";
+import ServiceContextProvider from "../context/ServiceContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -33,7 +34,9 @@ const MainRoutes = {
          element: (
             <VehicleContextProvider>
                <VehiclePlateContextProvider>
-                  <ShowVehicleView />
+                  <ServiceContextProvider>
+                     <ShowVehicleView />
+                  </ServiceContextProvider>
                </VehiclePlateContextProvider>
             </VehicleContextProvider>
          )
