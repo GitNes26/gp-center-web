@@ -20,7 +20,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import bgPlatform from "../../../assets/images/bg-primary.jpg";
 import { Box } from "@mui/system";
 import { drawerWidth } from "../../../config/store/constant";
-import { Icon123, IconCalendarStats, IconCandle, IconNotebook } from "@tabler/icons";
+import { Icon123, IconAB2, IconCalendarStats, IconCandle, IconNotebook } from "@tabler/icons";
 import { shouldForwardProp } from "@mui/system";
 import { useTheme } from "@emotion/react";
 import { formatDatetime, handleInputStringCase } from "../../../utils/Formats";
@@ -34,6 +34,7 @@ import IconBtnService from "../../../components/icons/IconBtnService";
 import IconBtnAssign from "../../../components/icons/IconBtnAssign";
 import IconBtnLoan from "../../../components/icons/IconBtnLoan";
 import ModalService from "./ModalService";
+import { IconUserPentagon } from "@tabler/icons-react";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -261,6 +262,28 @@ const ShowVehicleView = () => {
                            <Button variant="contained" fullWidth onClick={() => handleClickViewHistory()} sx={{ mb: 1 }}>
                               <IconNotebook sx={{ mr: 1 }} /> VER HISTORIAL
                            </Button>
+                        </Grid>
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <Card>
+                              <ComponentItem
+                                 title="Asignado a"
+                                 icon={<IconUserPentagon />}
+                                 text={
+                                    <Typography variant="h4" component={"span"}>
+                                       ASIGNADO A: Usuario 1
+                                    </Typography>
+                                 }
+                              />
+                              <ComponentItem
+                                 title="Prestado a"
+                                 icon={<IconAB2 />}
+                                 text={
+                                    <Typography variant="h4" component={"span"}>
+                                       PRESTADO A: Usuario 2
+                                    </Typography>
+                                 }
+                              />
+                           </Card>
                         </Grid>
                      </Grid>
                   </Grow>

@@ -376,7 +376,7 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
                               onChange={(e) => {
                                  handleChange(e);
                               }}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "email", true)}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "contact_name", true)}
                               onBlur={handleBlur}
                               setFieldValue={setFieldValue}
                               disabled={vehicle ? false : true}
@@ -418,11 +418,11 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
                               onChange={(e) => {
                                  handleChange(e);
                               }}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "email", true)}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "pre_diagnosis", true)}
                               onBlur={handleBlur}
                               setFieldValue={setFieldValue}
                               disabled={vehicle ? false : true}
-                              // sx={{ backgroundColor: "gray" }}
+                              // sx={{ backgroundColor: gpcDark }}
                               multiline
                               rows={3}
                               value={values.pre_diagnosis}
