@@ -13,7 +13,7 @@ import MenuList from "./MenuList";
 import LogoSection from "../LogoSection";
 import MenuCard from "./MenuCard";
 import { drawerWidth } from "../../../config/store/constant";
-import { gpcBlue, gpcDark, gpcDark100 } from "../../../context/GlobalContext";
+import { gpcBlue, gpcDark, gpcDark100, gpcLight } from "../../../context/GlobalContext";
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
@@ -22,13 +22,13 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
    const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
 
    const drawer = (
-      <Box sx={{ bgcolor: gpcDark }} >
+      <Box sx={{ bgcolor: gpcDark }}>
          <Box sx={{ display: { xs: "block", md: "none" } }}>
             <Box sx={{ display: "flex", p: 2, mx: "auto" }}>
                <LogoSection />
             </Box>
          </Box>
-         <BrowserView sx={{ }} >
+         <BrowserView sx={{}}>
             <PerfectScrollbar
                component="div"
                style={{
@@ -40,7 +40,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                <MenuList />
                {/* <MenuCard /> */}
                <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
-                  <Chip label={import.meta.env.VITE_VERSION} disabled chipcolor="secondary" size="small" sx={{ cursor: "pointer" }} />
+                  <Chip label={import.meta.env.VITE_VERSION} disabled chipcolor="secondary" size="small" sx={{ cursor: "pointer", color: gpcLight }} />
                </Stack>
             </PerfectScrollbar>
          </BrowserView>
@@ -74,7 +74,8 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                   borderRight: "none",
                   [theme.breakpoints.up("md")]: {
                      top: "88px"
-                  }
+                  },
+                  backgroundColor: gpcDark
                }
             }}
             ModalProps={{ keepMounted: true }}

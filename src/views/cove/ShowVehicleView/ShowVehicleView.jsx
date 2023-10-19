@@ -297,7 +297,7 @@ const ShowVehicleView = () => {
                   src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_path}`}
                   className={classesImgVehicle}
                   style={{
-                     maxHeight: "550px",
+                     maxHeight: "500px",
                      position: "absolute",
                      left: `calc(38% - ${drawerWidth + 10}px)`,
                      bottom: `calc(50% - ${drawerWidth + 55}px)`,
@@ -315,7 +315,7 @@ const ShowVehicleView = () => {
             </Box>
 
             {/* BOTONERA DE ACCIONES */}
-            <Box
+            {/* <Box
                sx={{
                   flexGrow: 1,
                   width: "70%",
@@ -352,13 +352,13 @@ const ShowVehicleView = () => {
                      </Grid>
                   </Grid>
                </Grow>
-            </Box>
+            </Box> */}
          </MainCard>
 
-         <UserContextProvider>
+         {/* <UserContextProvider>
             <ModalService open={openService} setOpen={setOpenService} stockNumber={vehicle ? vehicle.stock_number : 0} />
             <ModalAsig open={openAssign} setOpen={setOpenAssign} />
-         </UserContextProvider>
+         </UserContextProvider> */}
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
          <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />
          {/* <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} /> */}

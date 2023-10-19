@@ -4,22 +4,22 @@ import { useSelector } from "react-redux";
 // material-ui
 import { useTheme } from "@mui/material/styles";
 import {
-	Box,
-	Button,
-	Checkbox,
-	Divider,
-	FormControl,
-	FormControlLabel,
-	FormHelperText,
-	Grid,
-	IconButton,
-	InputAdornment,
-	InputLabel,
-	OutlinedInput,
-	Stack,
-	TextField,
-	Typography,
-	useMediaQuery,
+   Box,
+   Button,
+   Checkbox,
+   Divider,
+   FormControl,
+   FormControlLabel,
+   FormHelperText,
+   Grid,
+   IconButton,
+   InputAdornment,
+   InputLabel,
+   OutlinedInput,
+   Stack,
+   TextField,
+   Typography,
+   useMediaQuery
 } from "@mui/material";
 
 // third party
@@ -44,67 +44,59 @@ import { useAuthContext } from "../../../context/AuthContext";
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
-	const theme = useTheme();
-	const scriptedRef = useScriptRef();
-	const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
-	const customization = useSelector((state) => state.customization);
-	const [checked, setChecked] = useState(true);
+   const theme = useTheme();
+   const scriptedRef = useScriptRef();
+   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
+   const customization = useSelector((state) => state.customization);
+   const [checked, setChecked] = useState(true);
 
-	const { login, loggetInCheck } = useAuthContext();
+   const { login, loggetInCheck } = useAuthContext();
 
-	const googleHandler = async () => {
-		console.error("Login");
-	};
+   const googleHandler = async () => {
+      console.error("Login");
+   };
 
-	const [showPassword, setShowPassword] = useState(false);
-	const handleClickShowPassword = () => {
-		setShowPassword(!showPassword);
-	};
+   const [showPassword, setShowPassword] = useState(false);
+   const handleClickShowPassword = () => {
+      setShowPassword(!showPassword);
+   };
 
-	const handleMouseDownPassword = (event) => {
-		event.preventDefault();
-	};
+   const handleMouseDownPassword = (event) => {
+      event.preventDefault();
+   };
 
-	const onSubmit = async (
-		{ email, password },
-		{ setSubmitting, setErrors, resetForm }
-	) => {
-		try {
-			await login({ email, password });
-			await loggetInCheck;
-			resetForm();
-			if (scriptedRef.current) {
-				setStatus({ success: true });
-				setSubmitting(false);
-			}
-		} catch (error) {
-			console.error(error);
-			if (scriptedRef.current) {
-				setStatus({ success: false });
-				setErrors({ submit: error.message });
-				setSubmitting(false);
-			}
-			// if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
-			// if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
-		} finally {
-			setSubmitting(false);
-		}
-	};
+   const onSubmit = async ({ email, password }, { setSubmitting, setErrors, resetForm }) => {
+      try {
+         await login({ email, password });
+         await loggetInCheck;
+         resetForm();
+         if (scriptedRef.current) {
+            setStatus({ success: true });
+            setSubmitting(false);
+         }
+      } catch (error) {
+         console.error(error);
+         if (scriptedRef.current) {
+            setStatus({ success: false });
+            setErrors({ submit: error.message });
+            setSubmitting(false);
+         }
+         // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
+         // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
+      } finally {
+         setSubmitting(false);
+      }
+   };
 
-	const validationSchema = Yup.object().shape({
-		email: Yup.string()
-			.email("Correo no valida")
-			.required("Correo requerido"),
-		password: Yup.string()
-			.trim()
-			.min(3, "Mínimo 6 caracteres")
-			.required("Contraseña requerida"),
-	});
+   const validationSchema = Yup.object().shape({
+      email: Yup.string().email("Correo no valida").required("Correo requerido"),
+      password: Yup.string().trim().min(3, "Mínimo 6 caracteres").required("Contraseña requerida")
+   });
 
-	return (
-		<>
-			<Grid container direction='column' justifyContent='center' spacing={2}>
-				{/* <Grid item xs={12}>
+   return (
+      <>
+         <Grid container direction="column" justifyContent="center" spacing={2}>
+            {/* <Grid item xs={12}>
                <AnimateButton>
                   <Button
                      disableElevation
@@ -131,16 +123,16 @@ const FirebaseLogin = ({ ...others }) => {
                   </Button>
                </AnimateButton>
             </Grid> */}
-				<Grid item xs={12}>
-					<Box
-						sx={{
-							alignItems: "center",
-							display: "flex",
-						}}
-					>
-						<Divider sx={{ flexGrow: 1 }} orientation='horizontal' />
+            <Grid item xs={12}>
+               <Box
+                  sx={{
+                     alignItems: "center",
+                     display: "flex"
+                  }}
+               >
+                  <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
 
-						{/* <Button
+                  {/* <Button
                      variant="outlined"
                      sx={{
                         cursor: "unset",
@@ -158,13 +150,10 @@ const FirebaseLogin = ({ ...others }) => {
                      OR
                   </Button> */}
 
-						<Divider
-							sx={{ flexGrow: 1, my: 1 }}
-							orientation='horizontal'
-						/>
-					</Box>
-				</Grid>
-				{/* <Grid
+                  <Divider sx={{ flexGrow: 1, my: 1 }} orientation="horizontal" />
+               </Box>
+            </Grid>
+            {/* <Grid
                item
                xs={12}
                container
@@ -177,52 +166,40 @@ const FirebaseLogin = ({ ...others }) => {
                   </Typography>
                </Box>
             </Grid> */}
-			</Grid>
+         </Grid>
 
-			<Formik
-				initialValues={{
-					email: "admin@gmail.com",
-					password: "123",
-					submit: null,
-				}}
-				validationSchema={validationSchema}
-				onSubmit={onSubmit}
-			>
-				{({
-					errors,
-					handleBlur,
-					handleChange,
-					handleSubmit,
-					isSubmitting,
-					touched,
-					values,
-				}) => (
-					<Box onSubmit={handleSubmit} {...others} component='form'>
-						<FormControl
-							fullWidth
-							error={Boolean(touched.email && errors.email)}
-							sx={{ ...theme.typography.customInput }}
-						>
-							<InputLabel htmlFor='email'>Correo Electrónico</InputLabel>
-							<OutlinedInput
-								id='email'
-								name='email'
-								label='Correo Electrónico'
-								type='email'
-								value={values.email}
-								placeholder=''
-								onChange={handleChange}
-								onBlur={handleBlur}
-								inputProps={{}}
-							/>
-							{touched.email && errors.email && (
-								<FormHelperText error id='ht-email'>
-									{errors.email}
-								</FormHelperText>
-							)}
-						</FormControl>
+         <Formik
+            initialValues={{
+               email: "admin@gmail.com",
+               password: "123",
+               submit: null
+            }}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
+         >
+            {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+               <Box onSubmit={handleSubmit} {...others} component="form">
+                  <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
+                     <InputLabel htmlFor="email">Correo Electrónico</InputLabel>
+                     <OutlinedInput
+                        id="email"
+                        name="email"
+                        label="Correo Electrónico"
+                        type="email"
+                        value={values.email}
+                        placeholder=""
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        inputProps={{}}
+                     />
+                     {touched.email && errors.email && (
+                        <FormHelperText error id="ht-email">
+                           {errors.email}
+                        </FormHelperText>
+                     )}
+                  </FormControl>
 
-						{/* <TextField
+                  {/* <TextField
                      id="email"
                      name="email"
                      label="Correo Electrónico"
@@ -237,52 +214,39 @@ const FirebaseLogin = ({ ...others }) => {
                      helperText={errors.email && touched.email && errors.email}
                   /> */}
 
-						<FormControl
-							fullWidth
-							error={Boolean(touched.password && errors.password)}
-							sx={{ ...theme.typography.customInput }}
-						>
-							<InputLabel htmlFor='password'>Contraseña</InputLabel>
-							<OutlinedInput
-								id='password'
-								name='password'
-								label='Contraseña'
-								value={values.password}
-								type={showPassword ? "text" : "password"}
-								onBlur={handleBlur}
-								onChange={handleChange}
-								endAdornment={
-									<InputAdornment position='end'>
-										<IconButton
-											aria-label='toggle password visibility'
-											onClick={handleClickShowPassword}
-											onMouseDown={handleMouseDownPassword}
-											edge='end'
-											size='large'
-										>
-											{showPassword ? (
-												<Visibility />
-											) : (
-												<VisibilityOff />
-											)}
-										</IconButton>
-									</InputAdornment>
-								}
-								inputProps={{}}
-							/>
-							{touched.password && errors.password && (
-								<FormHelperText error id='ht-password'>
-									{errors.password}
-								</FormHelperText>
-							)}
-						</FormControl>
-						<Stack
-							direction='row'
-							alignItems='center'
-							justifyContent='space-between'
-							spacing={1}
-						>
-							<FormControlLabel
+                  <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
+                     <InputLabel htmlFor="password">Contraseña</InputLabel>
+                     <OutlinedInput
+                        id="password"
+                        name="password"
+                        label="Contraseña"
+                        value={values.password}
+                        type={showPassword ? "text" : "password"}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        endAdornment={
+                           <InputAdornment position="end">
+                              <IconButton
+                                 aria-label="toggle password visibility"
+                                 onClick={handleClickShowPassword}
+                                 onMouseDown={handleMouseDownPassword}
+                                 edge="end"
+                                 size="large"
+                              >
+                                 {showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                           </InputAdornment>
+                        }
+                        inputProps={{}}
+                     />
+                     {touched.password && errors.password && (
+                        <FormHelperText error id="ht-password">
+                           {errors.password}
+                        </FormHelperText>
+                     )}
+                  </FormControl>
+                  <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                     {/* <FormControlLabel
 								control={
 									<Checkbox
 										checked={checked}
@@ -294,42 +258,42 @@ const FirebaseLogin = ({ ...others }) => {
 									/>
 								}
 								label='Recordarme'
-							/>
-							<Typography
+							/> */}
+                     {/* <Typography
 								variant='subtitle1'
 								color='secondary'
 								sx={{ textDecoration: "none", cursor: "pointer" }}
 							>
 								¿Has olvidado tú contraseña?
-							</Typography>
-						</Stack>
-						{errors.submit && (
-							<Box sx={{ mt: 3 }}>
-								<FormHelperText error>{errors.submit}</FormHelperText>
-							</Box>
-						)}
+							</Typography> */}
+                  </Stack>
+                  {errors.submit && (
+                     <Box sx={{ mt: 3 }}>
+                        <FormHelperText error>{errors.submit}</FormHelperText>
+                     </Box>
+                  )}
 
-						<Box sx={{ mt: 2 }}>
-							<AnimateButton>
-								<LoadingButton
-									type='submit'
-									disabled={isSubmitting}
-									loading={isSubmitting}
-									// loadingPosition="start"
-									variant='contained'
-									color='secondary'
-									fullWidth
-									size='large'
-								>
-									Iniciar Sesión
-								</LoadingButton>
-							</AnimateButton>
-						</Box>
-					</Box>
-				)}
-			</Formik>
-		</>
-	);
+                  <Box sx={{ mt: 2 }}>
+                     <AnimateButton>
+                        <LoadingButton
+                           type="submit"
+                           disabled={isSubmitting}
+                           loading={isSubmitting}
+                           // loadingPosition="start"
+                           variant="contained"
+                           color="secondary"
+                           fullWidth
+                           size="large"
+                        >
+                           Iniciar Sesión
+                        </LoadingButton>
+                     </AnimateButton>
+                  </Box>
+               </Box>
+            )}
+         </Formik>
+      </>
+   );
 };
 
 export default FirebaseLogin;

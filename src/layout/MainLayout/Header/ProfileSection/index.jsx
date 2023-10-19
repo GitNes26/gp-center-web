@@ -252,7 +252,7 @@ const ProfileSection = () => {
                                     }
                                  }}
                               >
-                                 <ListItemButton
+                                 {/* <ListItemButton
                                     sx={{
                                        borderRadius: `${customization.borderRadius}px`
                                     }}
@@ -283,7 +283,7 @@ const ProfileSection = () => {
                                           </Grid>
                                        }
                                     />
-                                 </ListItemButton>
+                                 </ListItemButton> */}
                                  <ListItemButton
                                     sx={{
                                        borderRadius: `${customization.borderRadius}px`

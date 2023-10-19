@@ -23,73 +23,73 @@ const menuItems = {
             // },
             {
                id: "cove-vehicles-searching",
-               title: "Busqueda",
+               title: "Buscador",
                type: "item",
                url: "/admin/cove",
                icon: tablerIcons["IconSearch"]
             }
          ]
       },
-      {
-         id: "admin",
-         title: "Administrativo",
-         caption: "Control de usuarios",
-         type: "group",
-         children: [
-            {
-               id: "admin-users",
-               title: "Usuarios",
-               type: "item",
-               url: "/admin/usuarios",
-               icon: tablerIcons["IconUsers"],
-               breadcrumbs: false
-            },
-            {
-               id: "admin-roles",
-               title: "Roles",
-               type: "item",
-               url: "/admin/roles",
-               icon: tablerIcons["IconPaperBag"]
-            },
-            {
-               id: "admin-departments",
-               title: "Departamentos",
-               type: "item",
-               url: "/admin/departamentos",
-               icon: tablerIcons["IconBuildingSkyscraper"],
-               breadcrumbs: false
-            }
-         ]
-      },
-      {
-         id: "garage",
-         title: "Taller",
-         caption: "Catálogos del Taller",
-         type: "group",
-         children: [
-            {
-               id: "garage-store",
-               title: "Almacen (Stock)",
-               type: "item",
-               url: "/admin/taller/almacen",
-               icon: tablerIcons["IconCar"]
-            },
-            {
-               id: "garage-services",
-               title: "Servicios",
-               type: "item",
-               url: "/admin/taller/servicios",
-               icon: tablerIcons["IconCar"]
-            },
-            {
-               id: "garage-request",
-               title: "Requisiones - PENDIENTE",
-               type: "item",
-               url: "/admin/taller/requisiciones",
-               icon: tablerIcons["IconCar"]
-            }
-         ]
-      },
+      // {
+      //    id: "admin",
+      //    title: "Administrativo",
+      //    caption: "Control de usuarios",
+      //    type: "group",
+      //    children: [
+      //       {
+      //          id: "admin-users",
+      //          title: "Usuarios",
+      //          type: "item",
+      //          url: "/admin/usuarios",
+      //          icon: tablerIcons["IconUsers"],
+      //          breadcrumbs: false
+      //       },
+      //       // {
+      //       //    id: "admin-roles",
+      //       //    title: "Roles",
+      //       //    type: "item",
+      //       //    url: "/admin/roles",
+      //       //    icon: tablerIcons["IconPaperBag"]
+      //       // },
+      //       {
+      //          id: "admin-departments",
+      //          title: "Departamentos",
+      //          type: "item",
+      //          url: "/admin/departamentos",
+      //          icon: tablerIcons["IconBuildingSkyscraper"],
+      //          breadcrumbs: false
+      //       }
+      //    ]
+      // },
+      // {
+      //    id: "garage",
+      //    title: "Taller",
+      //    caption: "Catálogos del Taller",
+      //    type: "group",
+      //    children: [
+      //       {
+      //          id: "garage-store",
+      //          title: "Almacen (Stock)",
+      //          type: "item",
+      //          url: "/admin/taller/almacen",
+      //          icon: tablerIcons["IconCar"]
+      //       },
+      //       {
+      //          id: "garage-services",
+      //          title: "Servicios",
+      //          type: "item",
+      //          url: "/admin/taller/servicios",
+      //          icon: tablerIcons["IconCar"]
+      //       },
+      //       {
+      //          id: "garage-request",
+      //          title: "Requisiones - PENDIENTE",
+      //          type: "item",
+      //          url: "/admin/taller/requisiciones",
+      //          icon: tablerIcons["IconCar"]
+      //       }
+      //    ]
+      // },
       {
          id: "cove",
          title: "CoVe",
@@ -139,28 +139,28 @@ const menuItems = {
                //       bgGarage: true
                //    }
                // ]
-            },
-            {
-               id: "cove-assigned-vehicle",
-               title: "Vehículos Asignados",
-               type: "item",
-               url: "/admin/cove/vehiculos-asignados",
-               icon: tablerIcons["IconCar"]
-            },
-            {
-               id: "cove-delivered-vehicle",
-               title: "Vehículos Entregados",
-               type: "item",
-               url: "/admin/cove/vehiculos-entregados",
-               icon: tablerIcons["IconCar"]
-            },
-            {
-               id: "cove-loaned-vehicle",
-               title: "Vehículos Prestados",
-               type: "item",
-               url: "/admin/cove/vehiculos-entregados",
-               icon: tablerIcons["IconCar"]
             }
+            // {
+            //    id: "cove-assigned-vehicle",
+            //    title: "Vehículos Asignados",
+            //    type: "item",
+            //    url: "/admin/cove/vehiculos-asignados",
+            //    icon: tablerIcons["IconCar"]
+            // },
+            // {
+            //    id: "cove-delivered-vehicle",
+            //    title: "Vehículos Entregados",
+            //    type: "item",
+            //    url: "/admin/cove/vehiculos-entregados",
+            //    icon: tablerIcons["IconCar"]
+            // },
+            // {
+            //    id: "cove-loaned-vehicle",
+            //    title: "Vehículos Prestados",
+            //    type: "item",
+            //    url: "/admin/cove/vehiculos-entregados",
+            //    icon: tablerIcons["IconCar"]
+            // }
          ]
       }
    ]
