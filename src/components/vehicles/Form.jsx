@@ -108,7 +108,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          values.imgFile = imgFile;
          values.changePlates = changePlates ? 1 : 0;
 
-         // console.log(values);
+         console.log(values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createVehicle(values);
@@ -132,6 +132,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          Toast.Error(error);
       } finally {
          setSubmitting(false);
+         setLoadingAction(false);
       }
    };
 

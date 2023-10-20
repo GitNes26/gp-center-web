@@ -7,7 +7,7 @@ import { Field } from "formik";
 import Dropzone, { useDropzone } from "react-dropzone";
 import { Label } from "@mui/icons-material";
 
-const InputFileComponent2 = ({
+const InputFileComponent = ({
    idName,
    label,
    placeholder,
@@ -39,6 +39,7 @@ const InputFileComponent2 = ({
                file,
                dataURL: reader.result
             };
+            setImgFile(preview.file);
 
             if (filePreviews.length > 0) {
                // Si ya hay una imagen, muestra un mensaje de error o notificación.
@@ -48,7 +49,7 @@ const InputFileComponent2 = ({
 
             // setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
             setFilePreviews([preview]);
-            setImagePreview(preview);
+            // setImagePreview(preview);
          };
 
          reader.readAsDataURL(file);
@@ -137,7 +138,7 @@ const InputFileComponent2 = ({
    );
 };
 
-const InputFileComponent = ({
+const InputFileComponent1 = ({
    idName,
    label,
    placeholder,

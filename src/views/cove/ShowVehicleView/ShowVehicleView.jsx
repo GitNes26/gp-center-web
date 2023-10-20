@@ -110,21 +110,40 @@ const ShowVehicleView = () => {
    };
 
    const handleKeyUpSearchSuccess = async (e) => {
-      if (e.target.value.length == 0) return Toast.Info("Buscador vacio.");
-      if (e.key === "Enter" || e.keyCode === 13) {
-         setClassesImgVehicle("zoom-out");
-         setGrowOn(false);
-         setLoading(true);
-         const searchBy = searchType == "number" ? "stock_number" : "plates";
-         const res = await showVehicleBy(searchBy, search);
-         setSearch("");
+      try {
+         if (e.key === "Enter" || e.keyCode === 13) {
+            if (e.target.value.length == 0) return Toast.Info("Buscador vacio.");
+            setClassesImgVehicle("zoom-out");
+            setGrowOn(false);
+            setLoading(true);
+            const searchBy = searchType == "number" ? "stock_number" : "plates";
+            const res = await showVehicleBy(searchBy, search);
+            setSearch("");
+            setLoading(false);
+            if (!res.result) return Toast.Info(res.alert_title);
+            setTimeout(() => {
+               setGrowOn(true);
+               setClassesImgVehicle("zoom-in");
+            }, 800);
+         }
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
          setLoading(false);
-         if (!res.result) return Toast.Info(res.alert_title);
-         setTimeout(() => {
-            setGrowOn(true);
-            setClassesImgVehicle("zoom-in");
-         }, 800);
       }
+   };
+
+   const ComponentItem = ({ title, icon, text }) => {
+      return (
+         <ListItem>
+            <ListItemIcon sx={{ mr: 2 }}>
+               <Tooltip title={title} placement="left" arrow>
+                  <Avatar sx={{ backgroundColor: "#1F2227" }}>{icon}</Avatar>
+               </Tooltip>
+            </ListItemIcon>
+            <Typography sx={{ fontSize: 20, fontWeight: "bolder" }}>{text}</Typography>
+         </ListItem>
+      );
    };
 
    useEffect(() => {
@@ -139,23 +158,6 @@ const ShowVehicleView = () => {
          Toast.Error(error);
       }
    }, [vehicle, vehiclePlates]);
-
-   const Demo = styled("div")(({ theme }) => ({
-      backgroundColor: theme.palette.background.paper
-   }));
-
-   const ComponentItem = ({ title, icon, text, ...prop }) => {
-      return (
-         <ListItem>
-            <ListItemIcon sx={{ mr: 2 }}>
-               <Tooltip title={title} placement="left" arrow>
-                  <Avatar sx={{ backgroundColor: "#1F2227" }}>{icon}</Avatar>
-               </Tooltip>
-            </ListItemIcon>
-            <Typography sx={{ fontSize: 20, fontWeight: "bolder" }}>{text}</Typography>
-         </ListItem>
-      );
-   };
 
    return (
       <>
