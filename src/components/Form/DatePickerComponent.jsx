@@ -31,13 +31,13 @@ import { Field } from "formik";
 
 const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setFieldValue, onChange, onBlur, error, touched, showErrorInput = null, formData }) => {
    const handleChangeDatePicker = (date, setFieldValue) => {
-      console.log("valor del datePicker en daysjs", date);
+      // console.log("valor del datePicker en daysjs", date);
       const dateFormated = dayjs(date).format("YYYY-MM-DD");
-      console.log("idName", idName);
-      console.log("formData", formData);
+      // console.log("idName", idName);
+      // console.log("formData", formData);
       formData[idName] = dateFormated;
       setFieldValue(idName, formData[idName]);
-      console.log("formData", formData);
+      // console.log("formData", formData);
    };
 
    return (
@@ -48,7 +48,6 @@ const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setF
                   <DatePicker
                      label={label}
                      format={format}
-                     inputVariant="outlined"
                      fullWidth
                      {...field}
                      value={dayjs(field.value) || null}

@@ -5,7 +5,7 @@ import { createTheme } from "@mui/material/styles";
 
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import { Button, ButtonGroup, Tooltip } from "@mui/material";
+import { Button, ButtonGroup, Chip, Tooltip } from "@mui/material";
 import IconEdit from "../icons/IconEdit";
 import IconDelete from "../icons/IconDelete";
 
@@ -105,7 +105,7 @@ const VehicleTable = () => {
    };
 
    // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Vista Previa", "No. Inventario", "Descripción", "Acciones"];
+   const columns = ["Vista Previa", "No. Inventario", "Placas", "Estatus", "Descripción", "Acciones"];
    const data = [];
    const chargerData = async () => {
       try {
@@ -122,6 +122,29 @@ const VehicleTable = () => {
                <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
                   {obj.stock_number}
                </Typography>
+            );
+            register.push(
+               <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+                  {obj.plates}
+               </Typography>
+            );
+            register.push(
+               <Box textAlign={"center"}>
+                  <Chip
+                     sx={{
+                        height: "auto",
+                        "& .MuiChip-label": {
+                           display: "block",
+                           whiteSpace: "normal"
+                        },
+                        fontSize: "16px",
+                        fontWeight: "bolder",
+                        color: obj.letter_black ? "#3E3E3E" : "#F3F3F3",
+                        backgroundColor: obj.bg_color
+                     }}
+                     label={obj.vehicle_status}
+                  />
+               </Box>
             );
             register.push(<Typography textAlign={"center"}>{obj.description}</Typography>);
             register.push(<ButtonsAction id={obj.id} name={obj.vehicle} />);

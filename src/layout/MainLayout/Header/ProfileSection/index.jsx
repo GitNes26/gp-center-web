@@ -61,6 +61,7 @@ const ProfileSection = () => {
 
    const { logout } = useAuthContext();
    const authUser = JSON.parse(localStorage.getItem("auth"));
+   // const full_name = authUser.username;
 
    const handleLogout = async () => {
       // console.log("Logout");
@@ -99,6 +100,42 @@ const ProfileSection = () => {
       prevOpen.current = open;
    }, [open]);
 
+   function stringToColor(string) {
+      let hash = 0;
+      let i;
+
+      /* eslint-disable no-bitwise */
+      for (i = 0; i < string.length; i += 1) {
+         hash = string.charCodeAt(i) + ((hash << 5) - hash);
+      }
+
+      let color = "#";
+
+      for (i = 0; i < 3; i += 1) {
+         const value = (hash >> (i * 8)) & 0xff;
+         color += `00${value.toString(16)}`.slice(-2);
+      }
+      /* eslint-enable no-bitwise */
+
+      return color;
+   }
+
+   function stringAvatar(name) {
+      let letters = "?";
+      if (name.includes(" ")) {
+         letters = name.length < 3 ? "?" : `${name.split(" ")[0][0].toUpperCase()}${name.split(" ")[1][0].toUpperCase()}`;
+      } else {
+         letters = name.length < 2 ? "?" : `${name.substring(0, 2).toUpperCase()}`;
+      }
+
+      return {
+         sx: {
+            bgcolor: stringToColor(name)
+         },
+         children: letters
+      };
+   }
+
    return (
       <>
          <Chip
@@ -123,7 +160,8 @@ const ProfileSection = () => {
             }}
             icon={
                <Avatar
-                  src={User1}
+                  // src={User1}
+                  {...stringAvatar(authUser.username)}
                   sx={{
                      ...theme.typography.mediumAvatar,
                      margin: "8px 0 8px 8px !important",

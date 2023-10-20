@@ -59,12 +59,12 @@ const VehicleStatusView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         <MainCard /* title="Listado Escuelas" */>
-            <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-               <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-            </Button>
-            <VehicleStatusTable />
-         </MainCard>
+         {/* <MainCard> */}
+         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
+         </Button>
+         <VehicleStatusTable />
+         {/* </MainCard> */}
 
          <VehicleStatusForm />
       </>

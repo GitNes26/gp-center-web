@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const VehiclesView = () => {
    const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
+   const { singularName, vehicle, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
 
    const handleClickAdd = () => {
       try {
@@ -50,7 +50,7 @@ const VehiclesView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, []);
+   }, [vehicle]);
 
    return (
       <>
@@ -59,12 +59,12 @@ const VehiclesView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         <MainCard /* title="Listado Escuelas" */>
-            <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-               <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-            </Button>
-            <VehicleTable />
-         </MainCard>
+         {/* <MainCard > */}
+         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
+         </Button>
+         <VehicleTable />
+         {/* </MainCard> */}
 
          <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} />
       </>

@@ -59,12 +59,12 @@ const ModelsView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         <MainCard /* title="Listado Escuelas" */>
-            <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-               <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-            </Button>
-            <ModelTable />
-         </MainCard>
+         {/* <MainCard> */}
+         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
+         </Button>
+         <ModelTable />
+         {/* </MainCard> */}
 
          <ModelForm dataBrands={result.brands} />
       </>

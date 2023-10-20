@@ -291,28 +291,35 @@ const ShowVehicleView = () => {
             </Grid>
 
             {/* IMAGEN DEL VEHICULO */}
-            <Box sx={{}}>
-               <img
-                  // src={ImgCar}
-                  src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_path}`}
-                  className={classesImgVehicle}
-                  style={{
-                     maxHeight: "500px",
-                     position: "absolute",
-                     left: `calc(38% - ${drawerWidth + 10}px)`,
-                     bottom: `calc(50% - ${drawerWidth + 55}px)`,
-                     zIndex: 0
-                  }}
-               />
-            </Box>
+            {vehicle && (
+               <Box sx={{}}>
+                  <img
+                     // src={ImgCar}
+                     src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_path}`}
+                     className={classesImgVehicle}
+                     style={{
+                        // maxHeight: "350px",
+                        height: "350px",
+                        width: "650px",
+                        objectFit: "cover",
+                        position: "absolute",
+                        left: `calc(45% - ${drawerWidth + 10}px)`,
+                        bottom: `calc(51% - ${drawerWidth}px)`,
+                        zIndex: 0
+                     }}
+                  />
+               </Box>
+            )}
 
             {/* IMAGEN INSIGNIA MARCA */}
-            <Box className={`brand-container ${classesImgVehicle}`}>
-               <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "100px" }} />
-               <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "42px", textShadow: "2px 2px 4px rgba(0, 0, 0, 1)" }}>
-                  {vehicle && vehicle.model}
-               </Typography>
-            </Box>
+            {vehicle && (
+               <Box className={`brand-container ${classesImgVehicle}`}>
+                  <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "100px", objectFit: "cover" }} />
+                  <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "42px", textShadow: "2px 2px 4px rgba(0, 0, 0, 1)" }}>
+                     {vehicle && vehicle.model}
+                  </Typography>
+               </Box>
+            )}
 
             {/* BOTONERA DE ACCIONES */}
             {/* <Box

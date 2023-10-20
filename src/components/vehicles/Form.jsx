@@ -17,6 +17,7 @@ import { handleInputFormik } from "../../utils/Formats";
 import { Axios } from "../../context/AuthContext";
 import InputFileComponent from "../Form/InputFileComponent";
 import Select2Component from "../Form/Select2Component";
+import DatePickerComponent from "../Form/DatePickerComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -329,22 +330,18 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
                      {/* Fecha de Registro */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="registration_date"
-                           name="registration_date"
-                           label="Fecha de Registro"
-                           type="date"
+                        <DatePickerComponent
+                           idName={"registration_date"}
+                           label={"Fecha de Registro *"}
+                           format={"DD/MM/YYYY"}
                            value={values.registration_date}
-                           placeholder="Inserte la fecha de registro"
+                           setFieldValue={setFieldValue}
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "registration_date", false)}
-                           // inputProps={{ maxLength: 1500 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.registration_date && touched.registration_date}
-                           helperText={errors.registration_date && touched.registration_date && errors.registration_date}
+                           error={errors.registration_date}
+                           touched={touched.registration_date}
+                           showErrorInput={null}
+                           formData={formData}
                         />
                      </Grid>
                      {/* Estatus */}
@@ -394,41 +391,34 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
                      {/* Imagen */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_path"
-                           label="Foto del vehículo"
-                           // value={values.img_path}
-                           placeholder=""
-                           setImgFile={setImgFile}
-                           imagePreview={imagePreview}
-                           setImagePreview={setImagePreview}
-                           handleChange={handleChange}
-                           handleBlur={handleBlur}
-                           setFieldValue={setFieldValue}
-                           error={errors.img_path}
-                           touched={touched.img_path}
-                        />
-                        {/* <TextField
-                           id="img_path"
-                           name="img_path"
-                           label="Foto del Vehículo *"
-                           type="file"
-                           value={values.img_path}
-                           placeholder="Ingrese el número de inventario"
-                           onChange={(e) => {
-                              handleChange(e);
-                              handleChangeImg(e, setFieldValue);
-                           }}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "img_path", true)}
-                           // InputProps={{ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[0] = el)}
-                           // inputRef={inputRefVehicle}
-                           error={errors.img_path && touched.img_path}
-                           helperText={errors.img_path && touched.img_path && errors.img_path}
-                        /> */}
+                        <>
+                           <InputFileComponent
+                              idName="img_path"
+                              label="Foto del vehículo"
+                              // value={values.img_path}
+                              placeholder=""
+                              setImgFile={setImgFile}
+                              imagePreview={imagePreview}
+                              setImagePreview={setImagePreview}
+                              handleChange={handleChange}
+                              handleBlur={handleBlur}
+                              setFieldValue={setFieldValue}
+                              error={errors.img_path}
+                              touched={touched.img_path}
+                           />
+                           {/* ------------------------------------------- */}
+
+                           {/* <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+                              {({ getRootProps, getInputProps }) => (
+                                 <section>
+                                    <div {...getRootProps()}>
+                                       <input {...getInputProps()} />
+                                       <p>Drag 'n' drop some files here, or click to select files</p>
+                                    </div>
+                                 </section>
+                              )}
+                           </Dropzone> */}
+                        </>
                      </Grid>
 
                      {/* Separador */}
@@ -437,9 +427,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
 
                      {/* Switch para replaquear */}
-                     <Grid xs={12} md={12} sx={{ mb: -2 }}>
-                        <FormControlLabel control={<Switch />} label="Replaquear" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
-                     </Grid>
+                     {formData.id > 0 && (
+                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                           <FormControlLabel control={<Switch />} label="Replaquear" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
+                        </Grid>
+                     )}
                      {/* Placas */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
@@ -462,42 +454,34 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      </Grid>
                      {/* Fecha de Plaqueo */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="initial_date"
-                           name="initial_date"
-                           label="Fecha de Plaqueo"
-                           type="date"
+                        <DatePickerComponent
+                           idName={"initial_date"}
+                           label={"Fecha de Plaqueo *"}
+                           format={"DD/MM/YYYY"}
                            value={values.initial_date}
-                           placeholder=""
+                           setFieldValue={setFieldValue}
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "initial_date", false)}
-                           // inputProps={{ maxLength: 1500 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.initial_date && touched.initial_date}
-                           helperText={errors.initial_date && touched.initial_date && errors.initial_date}
+                           error={errors.initial_date}
+                           touched={touched.initial_date}
+                           showErrorInput={null}
+                           formData={formData}
                         />
                      </Grid>
                      {/* Fecha Expiracion de Placas */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="due_date"
-                           name="due_date"
-                           label="Fecha Expiración de Placas"
-                           type="date"
+                        <DatePickerComponent
+                           idName={"due_date"}
+                           label={"Fecha Expiración de Placas *"}
+                           format={"DD/MM/YYYY"}
                            value={values.due_date}
-                           placeholder=""
+                           setFieldValue={setFieldValue}
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "due_date", false)}
-                           // inputProps={{ maxLength: 1500 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.due_date && touched.due_date}
-                           helperText={errors.due_date && touched.due_date && errors.due_date}
+                           error={errors.due_date}
+                           touched={touched.due_date}
+                           showErrorInput={null}
+                           formData={formData}
                         />
                      </Grid>
 

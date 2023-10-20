@@ -4,6 +4,7 @@ import { Link, useRouteError } from "react-router-dom";
 import { HomeTwoTone } from "@mui/icons-material";
 import { useEffect } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
+import { Box } from "@mui/system";
 
 const NotFound = () => {
    const { setLoading, setLoadingAction } = useGlobalContext();
@@ -20,30 +21,30 @@ const NotFound = () => {
    switch (error.status) {
       case 404:
          errorText = "¡La página que está buscando fue movida, eliminada, renombrada o podría no existir nunca!";
-         srcImg = "/src/assets/images/not-found.jpg";
+         srcImg = "/src/assets/images/404.jpg";
          break;
       case 403:
          break;
 
       default:
          errorText = "¡La página que está buscando fue movida, eliminada, renombrada o podría no existir nunca!";
-         srcImg = "/src/assets/images/not-found.jpg";
+         srcImg = "/src/assets/images/404.jpg";
          break;
    }
 
    return (
-      <Container sx={{ textAlign: "center" }}>
-         <img src={srcImg} width={"80%"} />
-         <Typography variant="h1" mt={3} sx={{ fontWeight: "900" }} textTransform={"uppercase"}>
+      <Box sx={{ textAlign: "center", height: "100vh", width: "100%", backgroundImage: `url(${srcImg})`, backgroundPosition: "center", backgroundSize: "cover" }}>
+         {/* <img src={srcImg} width={"50%"} /> */}
+         {/* <Typography variant="h1" mt={3} sx={{ fontWeight: "900" }} textTransform={"uppercase"}>
             Algo está mal
          </Typography>
          <Typography variant="body1" sx={{ width: "35%", textAlign: "center", mx: "auto", my: 3 }}>
             {errorText}
-         </Typography>
-         <Button variant="contained" component={Link} to="/" startIcon={<HomeTwoTone />}>
-            Regresar al inicio
+         </Typography> */}
+         <Button variant="contained" fullWidth size="large" sx={{ fontWeight: "bolder" }} component={Link} to="/" startIcon={<HomeTwoTone />}>
+            REGRESAR AL INICIO
          </Button>
-      </Container>
+      </Box>
    );
 };
 export default NotFound;

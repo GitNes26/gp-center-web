@@ -46,7 +46,7 @@ export default function VehicleContextProvider({ children }) {
          setImgFile(null);
          setImagePreview(null);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetFormData:", error);
          Toast.Error(error);
       }
    };
@@ -77,7 +77,7 @@ export default function VehicleContextProvider({ children }) {
 
    const getVehicles = async () => {
       try {
-         setVehicle([]);
+         // setVehicle([]);
          const res = CorrectRes;
          const axiosData = await Axios.get(`/vehicles`);
          res.result.vehicles = axiosData.data.data.result;
