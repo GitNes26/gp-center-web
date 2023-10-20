@@ -324,7 +324,7 @@ const ShowVehicleView = () => {
             )}
 
             {/* BOTONERA DE ACCIONES */}
-            {/* <Box
+            <Box
                sx={{
                   flexGrow: 1,
                   width: "70%",
@@ -361,13 +361,13 @@ const ShowVehicleView = () => {
                      </Grid>
                   </Grid>
                </Grow>
-            </Box> */}
+            </Box>
          </MainCard>
 
-         {/* <UserContextProvider>
+         <UserContextProvider>
             <ModalService open={openService} setOpen={setOpenService} stockNumber={vehicle ? vehicle.stock_number : 0} />
             <ModalAsig open={openAssign} setOpen={setOpenAssign} />
-         </UserContextProvider> */}
+         </UserContextProvider>
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
          <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />
          {/* <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} /> */}

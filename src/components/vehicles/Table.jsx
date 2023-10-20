@@ -56,7 +56,7 @@ const VehicleTable = () => {
 
    const handleClickDelete = async (id, name) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a "${name}"`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la unidad N° "${name}"`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
                const axiosResponse = await deleteVehicle(id);
@@ -147,7 +147,7 @@ const VehicleTable = () => {
                </Box>
             );
             register.push(<Typography textAlign={"center"}>{obj.description}</Typography>);
-            register.push(<ButtonsAction id={obj.id} name={obj.vehicle} />);
+            register.push(<ButtonsAction id={obj.id} name={obj.stock_number} />);
             data.push(register);
          });
          setLoading(false);

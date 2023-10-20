@@ -121,16 +121,19 @@ const ProfileSection = () => {
    }
 
    function stringAvatar(name) {
-      let letters = "?";
-      if (name.includes(" ")) {
-         letters = name.length < 3 ? "?" : `${name.split(" ")[0][0].toUpperCase()}${name.split(" ")[1][0].toUpperCase()}`;
-      } else {
-         letters = name.length < 2 ? "?" : `${name.substring(0, 2).toUpperCase()}`;
+      let letters = "US";
+      console.log(name);
+      if (name != undefined) {
+         if (name.includes(" ")) {
+            letters = name.length < 3 ? "?" : `${name.split(" ")[0][0].toUpperCase()}${name.split(" ")[1][0].toUpperCase()}`;
+         } else {
+            letters = name.length < 2 ? "?" : `${name.substring(0, 2).toUpperCase()}`;
+         }
       }
 
       return {
          sx: {
-            bgcolor: stringToColor(name)
+            bgcolor: stringToColor(letters)
          },
          children: letters
       };
