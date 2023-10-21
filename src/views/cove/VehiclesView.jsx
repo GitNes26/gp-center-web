@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const VehiclesView = () => {
    const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, vehicle, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
+   const { singularName, vehicle, formData, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
 
    const handleClickAdd = () => {
       try {
@@ -50,7 +50,7 @@ const VehiclesView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, [vehicle]);
+   }, [vehicle, formData]);
 
    return (
       <>

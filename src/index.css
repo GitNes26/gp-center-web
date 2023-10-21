@@ -98,6 +98,11 @@
    text-align: center;
    cursor: pointer;
    width: 100%;
+   transition: all 0.3s ease-in-out;
+}
+.dropzone:hover {
+   border: 5px solid #1455cb;
+   background-color: #e9ecefb9;
 }
 
 .dropzone p {
@@ -108,12 +113,15 @@
    display: flex;
    flex-wrap: wrap;
    justify-content: center;
-   gap: 10px;
+   /* flex-direction: column; */
+   gap: 15px;
    background-color: #e9ecef;
    border-radius: 12px;
    max-width: 100%;
    overflow-x: auto;
    margin-top: 20px;
+   /* overflow-y: scroll; */
+   max-height: 350px;
 }
 .file-preview img {
    max-width: 100px;

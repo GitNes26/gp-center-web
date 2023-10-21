@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const BrandsView = () => {
    // const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, brands, getBrands, resetFormData, setTextBtnSumbit, setFormTitle } = useBrandContext();
+   const { singularName, brand, brands, getBrands, resetFormData, setTextBtnSumbit, setFormTitle } = useBrandContext();
 
    const handleClickAdd = () => {
       try {
@@ -50,7 +50,7 @@ const BrandsView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, []);
+   }, [brand]);
 
    return (
       <>

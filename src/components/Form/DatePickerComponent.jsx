@@ -46,6 +46,7 @@ const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setF
             {({ field, form, meta }) => (
                <>
                   <DatePicker
+                     closeOnSelect
                      label={label}
                      format={format}
                      fullWidth

@@ -306,7 +306,7 @@ const ShowVehicleView = () => {
                         objectFit: "cover",
                         position: "absolute",
                         left: `calc(45% - ${drawerWidth + 10}px)`,
-                        bottom: `calc(51% - ${drawerWidth}px)`,
+                        bottom: `calc(53% - ${drawerWidth}px)`,
                         zIndex: 0
                      }}
                   />

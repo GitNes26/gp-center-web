@@ -122,7 +122,7 @@ const ProfileSection = () => {
 
    function stringAvatar(name) {
       let letters = "US";
-      console.log(name);
+      // console.log(name);
       if (name != undefined) {
          if (name.includes(" ")) {
             letters = name.length < 3 ? "?" : `${name.split(" ")[0][0].toUpperCase()}${name.split(" ")[1][0].toUpperCase()}`;

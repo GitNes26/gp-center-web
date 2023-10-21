@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, TextField } from "@mui/material";
+import { FormControl, FormHelperText, InputLabel, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import propTypes from "prop-types";
 import { useCallback, useState } from "react";
@@ -19,37 +19,58 @@ const InputFileComponent = ({
    imagePreview,
    setImagePreview,
    error,
-   touched
+   touched,
+   multiple,
+   maxImages = -1,
+   accept = null
 }) => {
    const [uploadProgress, setUploadProgress] = useState(0);
    const [filePreviews, setFilePreviews] = useState([]);
 
-   const onDrop = useCallback((acceptedFiles) => {
-      if (filePreviews.length > 0) {
-         // Si ya hay una imagen, muestra un mensaje de error o notificación.
-         Toast.Info("Solo se permite cargar una imagen.");
-         return;
+   const validationQuantityImages = () => {
+      if (multiple) {
+         if (maxImages != -1) {
+            if (filePreviews.length >= maxImages) {
+               console.log("maxImages", maxImages);
+               Toast.Info(`Solo se permiten cargar ${maxImages} imagenes.`);
+               return false;
+            }
+         }
+      } else {
+         if (filePreviews.length >= 1) {
+            Toast.Info(`Solo se permite cargar una imagen.`);
+            return false;
+         }
       }
+      return true;
+   };
+
+   const onDrop = useCallback((acceptedFiles) => {
+      setFilePreviews([]);
+      // if (multiple) if (!validationQuantityImages()) return
       // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
       acceptedFiles.forEach((file) => {
          const reader = new FileReader();
 
-         reader.onload = (e) => {
+         reader.onload = async (e) => {
             const preview = {
                file,
                dataURL: reader.result
             };
-            setImgFile(preview.file);
 
-            if (filePreviews.length > 0) {
-               // Si ya hay una imagen, muestra un mensaje de error o notificación.
-               Toast.Info("Solo se permite cargar una imagen.");
-               return;
-            }
+            console.log("multiple", multiple);
+            // if (multiple) if (!validationQuantityImages) return;
+            console.log("preview", preview);
 
-            // setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-            setFilePreviews([preview]);
+            // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
+            // else
+            await setFilePreviews([preview]);
+            console.log(filePreviews);
             // setImagePreview(preview);
+            // const filesImages = [];
+            // await filePreviews.map((file) => filesImages.push(file.file));
+            // console.log(filesImages);
+            setImgFile(preview.file);
          };
 
          reader.readAsDataURL(file);
@@ -76,7 +97,7 @@ const InputFileComponent = ({
       // console.log(filePreviews);
       // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
       setFilePreviews([]);
-      // console.log(filePreviews);
+      console.log(filePreviews);
    };
 
    const { getRootProps, getInputProps } = useDropzone({
@@ -102,35 +123,44 @@ const InputFileComponent = ({
    return (
       <>
          <FormControl fullWidth sx={{}}>
-            <InputLabel htmlFor={idName}>{label}</InputLabel>
+            <Typography variant="p" mb={1} htmlFor={idName}>
+               {label}
+            </Typography>
 
             <Field name={idName} id={idName}>
                {({ field, form, meta }) => (
-                  <div className="dropzone-container">
-                     <div {...getRootProps({ className: "dropzone" })}>
-                        <input {...getInputProps()} multiple={false} />
-                        <p>Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos</p>
+                  <>
+                     <div className="dropzone-container">
+                        <div {...getRootProps({ className: "dropzone" })}>
+                           <input {...getInputProps()} multiple={multiple} accept={accept} />
+                           <p>Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos</p>
 
-                        {/* Vista previa de la imagen */}
-                        <aside className="file-preview">
-                           {filePreviews.map((preview) => (
-                              <div key={preview.file.name} className="preview-item">
-                                 <img src={preview.dataURL} alt={preview.file.name} />
-                                 <p>{preview.file.name}</p>
-                                 <button
-                                    className="remove-button"
-                                    onClick={(e) => {
-                                       e.preventDefault();
-                                       handleRemoveImage(preview.file);
-                                    }}
-                                 >
-                                    Eliminar
-                                 </button>
-                              </div>
-                           ))}
-                        </aside>
+                           {/* Vista previa de la imagen */}
+                           <aside className="file-preview">
+                              {filePreviews.map((preview) => (
+                                 <div key={preview.file.name} className="preview-item">
+                                    <img src={preview.dataURL} alt={preview.file.name} />
+                                    <p>{preview.file.name}</p>
+                                    <button
+                                       className="remove-button"
+                                       onClick={(e) => {
+                                          e.preventDefault();
+                                          handleRemoveImage(preview.file);
+                                       }}
+                                    >
+                                       Eliminar
+                                    </button>
+                                 </div>
+                              ))}
+                           </aside>
+                        </div>
                      </div>
-                  </div>
+                     {touched && error && (
+                        <FormHelperText error id={`ht-${idName}`}>
+                           {error}
+                        </FormHelperText>
+                     )}
+                  </>
                )}
             </Field>
          </FormControl>

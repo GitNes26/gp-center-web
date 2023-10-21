@@ -18,6 +18,9 @@ const formDataInitialState = {
    vehicle_status: "Selecciona una opción...",
    description: "",
 
+   insurance_policy: "",
+   insurance_policy_path: "",
+
    plates: "",
    initial_date: "",
    due_date: "",

@@ -19,6 +19,9 @@ import InputFileComponent from "../Form/InputFileComponent";
 import Select2Component from "../Form/Select2Component";
 import DatePickerComponent from "../Form/DatePickerComponent";
 
+// import Dropzone from "dropzone";
+// import "dropzone/dist/dropzone.css"; // Importa los estilos de Dropzone
+
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
@@ -47,6 +50,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const [changePlates, setChangePlates] = useState(false);
    const [dataModels, setDataModels] = useState([]);
    const [modifying, setModifying] = useState(false);
+   const [imgPoliza, setImgPoliza] = useState(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -105,10 +109,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
+         console.log("imgFile", imgFile);
          values.imgFile = imgFile;
          values.changePlates = changePlates ? 1 : 0;
 
-         console.log(values);
+         return console.log(values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createVehicle(values);
@@ -191,6 +196,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       registration_date: Yup.date("Fecha invalida").required("Fecha de registro requerida"),
       vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido"),
 
+      insurance_policy: Yup.string().trim().required("N° Póliza de Seguro requerida"),
+      insurance_policy_path: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
+
       plates: Yup.string()
          .trim()
          .matches(/^[A-Z]{3}-[0-9]{2}-[0-9]{2}$/, "Formato invalido: XXX-00-00")
@@ -214,6 +222,21 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       try {
          const btnModify = document.getElementById("btnModify");
          if (btnModify != null) btnModify.click();
+
+         // setTimeout(() => {
+         //    // Configura Dropzone
+         //    const myDropzone = new Dropzone("#my-dropzone", { url: "/upload" });
+
+         //    // Maneja eventos de Dropzone
+         //    myDropzone.on("complete", (file) => {
+         //       // Lógica para manejar la finalización de la carga
+         //    });
+
+         //    // Limpia la instancia de Dropzone cuando el componente se desmonta
+         //    return () => {
+         //       myDropzone.destroy();
+         //    };
+         // }, 5000);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -231,7 +254,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                   label="Seguir Agregando"
                />
             </Typography>
-            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
+            <Formik initialValues={formData} /* validationSchema={validationSchema} */ onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
@@ -393,6 +416,14 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      {/* Imagen */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <>
+                           {/* <div>
+                              <h2>Cargar archivos</h2>
+                              <div id="my-dropzone" className="dropzone">
+                                 <div className="dz-default dz-message">
+                                    <span>Arrastra y suelta archivos aquí o haz clic para cargar</span>
+                                 </div>
+                              </div>
+                           </div> */}
                            <InputFileComponent
                               idName="img_path"
                               label="Foto del vehículo"
@@ -406,6 +437,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                               setFieldValue={setFieldValue}
                               error={errors.img_path}
                               touched={touched.img_path}
+                              multiple={true}
+                              maxImages={4}
+                              accept={"image/*"}
                            />
                            {/* ------------------------------------------- */}
 
@@ -420,6 +454,52 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                               )}
                            </Dropzone> */}
                         </>
+                     </Grid>
+
+                     {/* Separador */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
+
+                     {/* N° Póliza de Seguro */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <TextField
+                           id="insurance_policy"
+                           name="insurance_policy"
+                           label="N° Póliza de Seguro"
+                           type="text"
+                           value={values.insurance_policy}
+                           placeholder="Inserte el número de póliza del seguro"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "insurance_policy", true)}
+                           // inputProps={{ maxLength: 9 }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[1] = el)}
+                           error={errors.insurance_policy && touched.insurance_policy}
+                           helperText={errors.insurance_policy && touched.insurance_policy && errors.insurance_policy}
+                        />
+                     </Grid>
+
+                     {/* Poliza de Seguro */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="insurance_policy_path"
+                           label="Póliza de Seguro"
+                           type={"file"}
+                           // value={values.insurance_policy_path}
+                           placeholder=""
+                           setImgFile={setImgPoliza}
+                           imagePreview={imagePreview}
+                           setImagePreview={setImagePreview}
+                           handleChange={handleChange}
+                           handleBlur={handleBlur}
+                           setFieldValue={setFieldValue}
+                           error={errors.insurance_policy_path}
+                           touched={touched.insurance_policy_path}
+                           multiple={false}
+                        />
                      </Grid>
 
                      {/* Separador */}
