@@ -471,7 +471,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      {/* Poliza FRONTAL del vehículo */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
-                           iidName="img_front"
+                           idName="img_front"
                            label="Foto FRONTAL del vehículo"
                            filePreviews={imgFront}
                            setFilePreviews={setImgFront}
