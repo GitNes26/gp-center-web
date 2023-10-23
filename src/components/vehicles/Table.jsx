@@ -115,7 +115,7 @@ const VehicleTable = () => {
             const register = [];
             register.push(
                <Box textAlign={"center"}>
-                  {<img alt="Vista previa del vehículo" src={`${import.meta.env.VITE_HOST}/${obj.img_path}`} style={{ maxWidth: 100, maxHeight: 100 }} />}
+                  {<img alt="Vista previa del vehículo" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />}
                </Box>
             );
             register.push(

@@ -40,7 +40,7 @@ import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import axios from "axios";
-import InputFileComponent from "../Form/InputFileComponent";
+import InputFileComponent, { setObjImg } from "../Form/InputFileComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -59,12 +59,16 @@ const BrandForm = () => {
       formTitle,
       setFormTitle,
       imgFile,
-      setImgFile,
-      imagePreview,
-      setImagePreview
+      setImgFile
    } = useBrandContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
+
+   const ResetForm = async (resetForm = null) => {
+      if (resetForm) await resetForm();
+      await resetFormData();
+      setImgFile([]);
+   };
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -82,21 +86,18 @@ const BrandForm = () => {
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
          setLoadingAction(true);
-         values.imgFile = imgFile;
+         values.img_path = imgFile[0].file;
          // console.log(values);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createBrand(values);
          else axiosResponse = await updateBrand(values);
          if (axiosResponse.status_code == 200) {
-            resetForm();
-            resetFormData();
+            await ResetForm(resetForm);
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
          setSubmitting(false);
          setLoadingAction(false);
-         setImagePreview(null);
-         setImgFile(null);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
       } catch (error) {
@@ -111,10 +112,7 @@ const BrandForm = () => {
 
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
-         resetForm();
-         resetFormData();
-         setImagePreview(null);
-         setImgFile(null);
+         ResetForm(resetForm);
          setFieldValue("id", id);
       } catch (error) {
          console.log(error);
@@ -126,8 +124,7 @@ const BrandForm = () => {
       try {
          setLoadingAction(true);
          setValues(formData);
-         setImgFile(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
-         setImagePreview(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
+         setObjImg(formData.img_path, setImgFile);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -137,10 +134,7 @@ const BrandForm = () => {
 
    const handleCancel = (resetForm) => {
       try {
-         resetForm();
-         resetFormData();
-         setImagePreview(null);
-         setImgFile(null);
+         ResetForm(resetForm);
          setOpenDialog(false);
       } catch (error) {
          console.log(error);
@@ -203,17 +197,12 @@ const BrandForm = () => {
                         <InputFileComponent
                            idName="img_path"
                            label="Foto de la marca"
-                           inputProps={{}}
-                           // value={values.img_path}
-                           placeholder=""
-                           setImgFile={setImgFile}
-                           imagePreview={imagePreview}
-                           setImagePreview={setImagePreview}
-                           handleChange={handleChange}
-                           handleBlur={handleBlur}
-                           setFieldValue={setFieldValue}
+                           filePreviews={imgFile}
+                           setFilePreviews={setImgFile}
                            error={errors.img_path}
                            touched={touched.img_path}
+                           multiple={false}
+                           accept={"image/*"}
                         />
                      </Grid>
 

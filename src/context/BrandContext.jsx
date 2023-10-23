@@ -21,14 +21,14 @@ export default function BrandContextProvider({ children }) {
    const [brands, setBrands] = useState([]);
    const [brand, setBrand] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
-   const [imgFile, setImgFile] = useState(null);
-   const [imagePreview, setImagePreview] = useState(null);
+   const [imgFile, setImgFile] = useState([]);
+   // const [imagePreview, setImagePreview] = useState(null);
 
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
-         setImgFile(null);
-         setImagePreview(null);
+         setImgFile([]);
+         // setImagePreview(null);
       } catch (error) {
          console.log("Error en resetFormData:", error);
          Toast.Error(error);
@@ -72,8 +72,8 @@ export default function BrandContextProvider({ children }) {
          res = axiosData.data.data;
          // await setBrand(res.result);
          setBrand(res.result);
-         // setFormData(res.result);
-         fillFormData(res.result);
+         setFormData(res.result);
+         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -170,9 +170,9 @@ export default function BrandContextProvider({ children }) {
             formTitle,
             setFormTitle,
             imgFile,
-            setImgFile,
-            imagePreview,
-            setImagePreview
+            setImgFile
+            // imagePreview,
+            // setImagePreview
          }}
       >
          {children}

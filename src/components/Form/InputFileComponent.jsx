@@ -1,31 +1,44 @@
-import { FormControl, FormHelperText, InputLabel, TextField, Typography } from "@mui/material";
+import { FormControl, FormHelperText, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import propTypes from "prop-types";
 import { useCallback, useState } from "react";
 import Toast from "../../utils/Toast";
 import { Field } from "formik";
-import Dropzone, { useDropzone } from "react-dropzone";
-import { Label } from "@mui/icons-material";
+import { useDropzone } from "react-dropzone";
 
-const InputFileComponent = ({
-   idName,
-   label,
-   placeholder,
-   handleChange,
-   handleBlur,
-   inputProps,
-   setFieldValue,
-   setImgFile,
-   imagePreview,
-   setImagePreview,
-   error,
-   touched,
-   multiple,
-   maxImages = -1,
-   accept = null
-}) => {
+export const setObjImg = (img, setImg) => {
+   const imgObj = {
+      file: {
+         name: `${img}`
+      },
+      dataURL: `${import.meta.env.VITE_HOST}/${img}`
+   };
+   setImg([imgObj]);
+};
+
+/**
+ * 
+ * <InputFileComponent
+      idName="img_preview"
+      label="Foto PREVIEW del vehículo"
+      filePreviews={imgPreview}
+      setFilePreviews={setImgPreview}
+      error={errors.img_preview}
+      touched={touched.img_preview}
+      multiple={false}
+      accept={"image/*"}
+   />
+*
+* ENVIAR (onSubmit) ----------> values.img_preview = imgPreview[0].file;
+* MODIFICAR (handleModify) ---> setObjImg(formData.img_preview, setImgPreview);
+* RESET ----------------------> setImagePreview([]);
+*
+*/
+//  ===================================== COMPONENTE =====================================
+
+const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePreviews, error, touched, multiple, maxImages = -1, accept = null }) => {
    const [uploadProgress, setUploadProgress] = useState(0);
-   const [filePreviews, setFilePreviews] = useState([]);
+   // const [filePreviews, setFilePreviews] = useState([]);
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -57,20 +70,12 @@ const InputFileComponent = ({
                file,
                dataURL: reader.result
             };
-
-            console.log("multiple", multiple);
             // if (multiple) if (!validationQuantityImages) return;
-            console.log("preview", preview);
 
             // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
             // else
             await setFilePreviews([preview]);
-            console.log(filePreviews);
-            // setImagePreview(preview);
-            // const filesImages = [];
-            // await filePreviews.map((file) => filesImages.push(file.file));
-            // console.log(filesImages);
-            setImgFile(preview.file);
+            // console.log(filePreviews);
          };
 
          reader.readAsDataURL(file);
@@ -92,55 +97,40 @@ const InputFileComponent = ({
          }
       }, 1000);
    };
-   const handleRemoveImage = (fileToRemove) => {
+   const handleRemoveImage = async (fileToRemove) => {
       // Filtra la lista de vistas previas para eliminar el archivo seleccionado.
       // console.log(filePreviews);
       // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
-      setFilePreviews([]);
-      console.log(filePreviews);
+      await setFilePreviews([]);
+      // console.log(filePreviews);
    };
 
    const { getRootProps, getInputProps } = useDropzone({
       onDrop
    });
 
-   // const handleChangeImg = (event) => {
-   //    // if (event.target.files)
-   //    const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-   //    setImgFile(file);
-
-   //    if (file) {
-   //       const reader = new FileReader();
-
-   //       reader.onload = (e) => {
-   //          setImagePreview(e.target.result);
-   //       };
-
-   //       reader.readAsDataURL(file);
-   //    }
-   // };
-
    return (
       <>
          <FormControl fullWidth sx={{}}>
-            <Typography variant="p" mb={1} htmlFor={idName}>
+            <Typography variant="p" mb={1} sx={{ fontWeight: "bolder" }} htmlFor={idName}>
                {label}
             </Typography>
 
             <Field name={idName} id={idName}>
-               {({ field, form, meta }) => (
+               {({ field, form }) => (
                   <>
                      <div className="dropzone-container">
                         <div {...getRootProps({ className: "dropzone" })}>
                            <input {...getInputProps()} multiple={multiple} accept={accept} />
-                           <p>Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos</p>
+                           <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
+                              Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
+                           </p>
 
                            {/* Vista previa de la imagen */}
                            <aside className="file-preview">
                               {filePreviews.map((preview) => (
                                  <div key={preview.file.name} className="preview-item">
                                     <img src={preview.dataURL} alt={preview.file.name} />
-                                    <p>{preview.file.name}</p>
                                     <button
                                        className="remove-button"
                                        onClick={(e) => {
@@ -233,16 +223,13 @@ const InputFileComponent1 = ({
 InputFileComponent.propTypes = {
    idName: propTypes.string.isRequired,
    label: propTypes.string.isRequired,
-   placeholder: propTypes.string.isRequired,
-   handleChange: propTypes.func.isRequired,
-   handleBlur: propTypes.func.isRequired,
    inputProps: propTypes.object,
-   setFieldValue: propTypes.func.isRequired,
-   setImgFile: propTypes.func.isRequired,
-   // imagePreview: propTypes.any.isRequired,
-   setImagePreview: propTypes.func.isRequired,
+   // filePreviews: propTypes.any.isRequired,
+   // setFilePreviews: propTypes.func.isRequired,
    error: propTypes.any,
-   touched: propTypes.any
+   touched: propTypes.any,
+   multiple: propTypes.bool,
+   maxImages: propTypes.number
 };
 
 export default InputFileComponent;

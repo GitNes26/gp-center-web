@@ -297,7 +297,7 @@ const ShowVehicleView = () => {
                <Box sx={{}}>
                   <img
                      // src={ImgCar}
-                     src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_path}`}
+                     src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_preview}`}
                      className={classesImgVehicle}
                      style={{
                         // maxHeight: "350px",

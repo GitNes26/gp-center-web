@@ -15,7 +15,7 @@ import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import { handleInputFormik } from "../../utils/Formats";
 import { Axios } from "../../context/AuthContext";
-import InputFileComponent from "../Form/InputFileComponent";
+import InputFileComponent, { setObjImg } from "../Form/InputFileComponent";
 import Select2Component from "../Form/Select2Component";
 import DatePickerComponent from "../Form/DatePickerComponent";
 
@@ -27,30 +27,32 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer, cursorLoading } = useGlobalContext();
-   const {
-      singularName,
-      createVehicle,
-      updateVehicle,
-      getVehicles,
-      formData,
-      setFormData,
-      resetFormData,
-      textBtnSubmit,
-      setTextBtnSumbit,
-      formTitle,
-      setFormTitle,
-      imgFile,
-      setImgFile,
-      imagePreview,
-      setImagePreview
-   } = useVehicleContext();
+   const { singularName, createVehicle, updateVehicle, getVehicles, formData, setFormData, resetFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
+      useVehicleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
    const [changePlates, setChangePlates] = useState(false);
    const [dataModels, setDataModels] = useState([]);
    const [modifying, setModifying] = useState(false);
-   const [imgPoliza, setImgPoliza] = useState(null);
+   const [imgPreview, setImgPreview] = useState([]);
+   const [imgRight, setImgRight] = useState([]);
+   const [imgBack, setImgBack] = useState([]);
+   const [imgLeft, setImgLeft] = useState([]);
+   const [imgFront, setImgFront] = useState([]);
+   const [imgInsurancePolicy, setImgInsurancePolicy] = useState([]);
+
+   const ResetForm = async (resetForm = null) => {
+      if (resetForm) await resetForm();
+      await resetFormData();
+      setDataModels([]);
+      setImgPreview([]);
+      setImgRight([]);
+      setImgBack([]);
+      setImgLeft([]);
+      setImgFront([]);
+      setImgInsurancePolicy([]);
+   };
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -65,18 +67,24 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       }
    };
 
-   const getModelsByBrand = async (valuesBrand, setValues, valuesModel = null) => {
+   const getModelsByBrand = async (valuesBrand, setFieldValue, valuesModel = null) => {
       try {
          formData.model_id = 0;
          formData.model = "Selecciona una opción...";
+         setFieldValue("model_id", 0);
+         setFieldValue("model", "Selecciona una opción...");
          setDataModels([]);
          const axiosModels = await Axios.get(`models/brand/${valuesBrand.id}`);
          const result = await axiosModels.data.data.result;
          result.unshift({ id: 0, label: "Selecciona una opción..." });
          if (result.length < 2) Toast.Info(`No hay modelos de la marca: ${valuesBrand.label}`);
          setDataModels(result);
-         formData.model_id = valuesModel == null ? 0 : valuesModel.id;
-         formData.model = valuesModel == null ? "Selecciona una opción..." : valuesModel.label;
+         // formData.model_id = valuesModel == null ? 0 : valuesModel.id;
+         // formData.model = valuesModel == null ? "Selecciona una opción..." : valuesModel.label;
+         const model_id = valuesModel == null ? 0 : valuesModel.id;
+         const model = valuesModel == null ? "Selecciona una opción..." : valuesModel.label;
+         setFieldValue("model_id", model_id);
+         setFieldValue("model", model);
          // setFormData(formData);
          // setValues(formData);
       } catch (error) {
@@ -85,10 +93,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       }
    };
 
-   const handleChangeBrands = async (value2, setValues2) => {
+   const handleChangeBrands = async (value2, setFieldValue2) => {
       try {
          // console.log("cambio de brand - value2:", value2);
-         if (typeof value2 === "object") getModelsByBrand(value2, setValues2);
+         if (typeof value2 === "object") getModelsByBrand(value2, setFieldValue2);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -102,28 +110,34 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       setFieldValue("year", inputValue);
    };
 
-   const handleChangeImg = (e, setFieldValue) => {
-      const file = e.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-      setImgFile(file);
-   };
+   // const handleChangeImg = (e, setFieldValue) => {
+   //    const file = e.target.files[0]; // Obtenemos el primer archivo del campo de entrada
+   //    setImgFile(file);
+   // };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         console.log("imgFile", imgFile);
-         values.imgFile = imgFile;
+         console.log("imgPreview", imgPreview);
+         values.img_preview = imgPreview[0].file;
+         values.img_right = imgRight[0].file;
+         values.img_back = imgBack[0].file;
+         values.img_left = imgLeft[0].file;
+         values.img_front = imgFront[0].file;
+         values.img_insurance_policy = imgInsurancePolicy[0].file;
          values.changePlates = changePlates ? 1 : 0;
 
-         return console.log(values);
+         console.log("values", values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createVehicle(values);
          else axiosResponse = await updateVehicle(values);
          if (axiosResponse.status_code == 200) {
-            resetForm();
-            resetFormData();
+            await ResetForm(resetForm);
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
+         // console.log("formData", formData);
+         // console.log("values", values);
          setDataModels([]);
          getVehicles();
          setSubmitting(false);
@@ -141,12 +155,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id) => {
+   const handleReset = async (resetForm, setFieldValue, id) => {
       try {
-         resetForm();
-         resetFormData();
-         setDataModels([]);
+         await ResetForm(resetForm);
          setFieldValue("id", id);
+         console.log(formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -156,28 +169,32 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
-         // console.log(formData);
+         console.log(formData);
          if (formData.description) !formData.description && (formData.description = "");
          setValues(formData);
          const valuesBrnad = { id: formData.brand_id, label: formData.brand };
          const valuesModel = { id: formData.model_id, label: formData.model };
-         await getModelsByBrand(valuesBrnad, setValues, valuesModel);
-         setImgFile(null);
-         // setImgFile(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
-         setImagePreview(`${import.meta.env.VITE_HOST}/${formData.img_path}`);
+         await getModelsByBrand(valuesBrnad, setFieldValue, valuesModel);
+
+         setObjImg(formData.img_preview, setImgPreview);
+         setObjImg(formData.img_right, setImgRight);
+         setObjImg(formData.img_back, setImgBack);
+         setObjImg(formData.img_left, setImgLeft);
+         setObjImg(formData.img_front, setImgFront);
+         setObjImg(formData.img_insurance_policy, setImgInsurancePolicy);
+
          await handleChangeBrands(formData.brand_id, setFieldValue);
-         setFieldValue("model_id", formData.model_id);
          setLoadingAction(false);
+         // console.log(formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    };
 
-   const handleCancel = (resetForm) => {
+   const handleCancel = async (resetForm) => {
       try {
-         resetForm();
-         resetFormData();
+         await ResetForm(resetForm);
          setOpenDialog(false);
       } catch (error) {
          console.log(error);
@@ -196,8 +213,8 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       registration_date: Yup.date("Fecha invalida").required("Fecha de registro requerida"),
       vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido"),
 
-      insurance_policy: Yup.string().trim().required("N° Póliza de Seguro requerida"),
-      insurance_policy_path: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
+      // insurance_policy: Yup.string().trim().required("N° Póliza de Seguro requerida"),
+      // insurance_policy_path: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
 
       plates: Yup.string()
          .trim()
@@ -254,7 +271,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                   label="Seguir Agregando"
                />
             </Typography>
-            <Formik initialValues={formData} /* validationSchema={validationSchema} */ onSubmit={onSubmit}>
+            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
@@ -295,6 +312,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            handleChange={handleChange}
                            handleChangeValueSuccess={handleChangeBrands}
                            setValues={setValues}
+                           // setFieldValue={setFieldValue}
                            handleBlur={handleBlur}
                            error={errors.brand_id}
                            touched={touched.brand_id}
@@ -413,47 +431,70 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                         />
                      </Grid>
 
-                     {/* Imagen */}
+                     {/* Imagen PREVIEW del vehículo */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <>
-                           {/* <div>
-                              <h2>Cargar archivos</h2>
-                              <div id="my-dropzone" className="dropzone">
-                                 <div className="dz-default dz-message">
-                                    <span>Arrastra y suelta archivos aquí o haz clic para cargar</span>
-                                 </div>
-                              </div>
-                           </div> */}
-                           <InputFileComponent
-                              idName="img_path"
-                              label="Foto del vehículo"
-                              // value={values.img_path}
-                              placeholder=""
-                              setImgFile={setImgFile}
-                              imagePreview={imagePreview}
-                              setImagePreview={setImagePreview}
-                              handleChange={handleChange}
-                              handleBlur={handleBlur}
-                              setFieldValue={setFieldValue}
-                              error={errors.img_path}
-                              touched={touched.img_path}
-                              multiple={true}
-                              maxImages={4}
-                              accept={"image/*"}
-                           />
-                           {/* ------------------------------------------- */}
-
-                           {/* <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
-                              {({ getRootProps, getInputProps }) => (
-                                 <section>
-                                    <div {...getRootProps()}>
-                                       <input {...getInputProps()} />
-                                       <p>Drag 'n' drop some files here, or click to select files</p>
-                                    </div>
-                                 </section>
-                              )}
-                           </Dropzone> */}
-                        </>
+                        <InputFileComponent
+                           idName="img_preview"
+                           label="Foto PREVIEW del vehículo"
+                           filePreviews={imgPreview}
+                           setFilePreviews={setImgPreview}
+                           error={errors.img_preview}
+                           touched={touched.img_preview}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
+                     </Grid>
+                     {/* Poliza L. DERECHO del vehículo */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_right"
+                           label="Foto L. DERECHO del vehículo"
+                           filePreviews={imgRight}
+                           setFilePreviews={setImgRight}
+                           error={errors.img_right}
+                           touched={touched.img_right}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
+                     </Grid>
+                     {/* Poliza TRASERA del vehículo */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_back"
+                           label="Foto TRASERA del vehículo"
+                           filePreviews={imgBack}
+                           setFilePreviews={setImgBack}
+                           error={errors.img_back}
+                           touched={touched.img_back}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
+                     </Grid>
+                     {/* Poliza L. IZQUIERDO del vehículo */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_left"
+                           label="Foto L. IZQUIERDO del vehículo"
+                           filePreviews={imgLeft}
+                           setFilePreviews={setImgLeft}
+                           error={errors.img_left}
+                           touched={touched.img_left}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
+                     </Grid>
+                     {/* Poliza FRONTAL del vehículo */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           iidName="img_front"
+                           label="Foto FRONTAL del vehículo"
+                           filePreviews={imgFront}
+                           setFilePreviews={setImgFront}
+                           error={errors.img_front}
+                           touched={touched.img_front}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
                      </Grid>
 
                      {/* Separador */}
@@ -485,20 +526,15 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                      {/* Poliza de Seguro */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
-                           idName="insurance_policy_path"
+                           idName="img_insurance_policy"
                            label="Póliza de Seguro"
-                           type={"file"}
-                           // value={values.insurance_policy_path}
-                           placeholder=""
-                           setImgFile={setImgPoliza}
-                           imagePreview={imagePreview}
-                           setImagePreview={setImagePreview}
-                           handleChange={handleChange}
-                           handleBlur={handleBlur}
-                           setFieldValue={setFieldValue}
-                           error={errors.insurance_policy_path}
-                           touched={touched.insurance_policy_path}
+                           value={values.img_insurance_policy}
+                           filePreviews={imgInsurancePolicy}
+                           setFilePreviews={setImgInsurancePolicy}
+                           error={errors.img_insurance_policy}
+                           touched={touched.img_insurance_policy}
                            multiple={false}
+                           accept={"image/*"}
                         />
                      </Grid>
 

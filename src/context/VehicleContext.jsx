@@ -18,13 +18,18 @@ const formDataInitialState = {
    vehicle_status: "Selecciona una opción...",
    description: "",
 
+   img_preview: "",
+   img_right: "",
+   img_back: "",
+   img_left: "",
+   img_front: "",
+
    insurance_policy: "",
-   insurance_policy_path: "",
+   img_insurance_policy: "",
 
    plates: "",
    initial_date: "",
    due_date: "",
-   img_path: "",
 
    status: "",
    changePlates: false
