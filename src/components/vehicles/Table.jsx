@@ -105,7 +105,7 @@ const VehicleTable = () => {
    };
 
    // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Vista Previa", "No. Inventario", "Placas", "Estatus", "Descripción", "Acciones"];
+   const columns = ["Vista Previa", "No. Inventario", "Placas", "Estatus", "N° Poliza de Seguro", "Descripción", "Acciones"];
    const data = [];
    const chargerData = async () => {
       try {
@@ -145,6 +145,11 @@ const VehicleTable = () => {
                      label={obj.vehicle_status}
                   />
                </Box>
+            );
+            register.push(
+               <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+                  {obj.insurance_policy}
+               </Typography>
             );
             register.push(<Typography textAlign={"center"}>{obj.description}</Typography>);
             register.push(<ButtonsAction id={obj.id} name={obj.stock_number} />);

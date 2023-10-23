@@ -119,10 +119,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       try {
          console.log("imgPreview", imgPreview);
          values.img_preview = imgPreview[0].file;
-         values.img_right = imgRight[0].file;
-         values.img_back = imgBack[0].file;
-         values.img_left = imgLeft[0].file;
-         values.img_front = imgFront[0].file;
+         // values.img_right = imgRight[0].file;
+         // values.img_back = imgBack[0].file;
+         // values.img_left = imgLeft[0].file;
+         // values.img_front = imgFront[0].file;
          values.img_insurance_policy = imgInsurancePolicy[0].file;
          values.changePlates = changePlates ? 1 : 0;
 
@@ -177,10 +177,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          await getModelsByBrand(valuesBrnad, setFieldValue, valuesModel);
 
          setObjImg(formData.img_preview, setImgPreview);
-         setObjImg(formData.img_right, setImgRight);
-         setObjImg(formData.img_back, setImgBack);
-         setObjImg(formData.img_left, setImgLeft);
-         setObjImg(formData.img_front, setImgFront);
+         // setObjImg(formData.img_right, setImgRight);
+         // setObjImg(formData.img_back, setImgBack);
+         // setObjImg(formData.img_left, setImgLeft);
+         // setObjImg(formData.img_front, setImgFront);
          setObjImg(formData.img_insurance_policy, setImgInsurancePolicy);
 
          await handleChangeBrands(formData.brand_id, setFieldValue);
@@ -213,7 +213,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       registration_date: Yup.date("Fecha invalida").required("Fecha de registro requerida"),
       vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido"),
 
-      // insurance_policy: Yup.string().trim().required("N° Póliza de Seguro requerida"),
+      insurance_policy: Yup.string().trim().required("N° Póliza de Seguro requerida"),
       // insurance_policy_path: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
 
       plates: Yup.string()
@@ -240,20 +240,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          const btnModify = document.getElementById("btnModify");
          if (btnModify != null) btnModify.click();
 
-         // setTimeout(() => {
-         //    // Configura Dropzone
-         //    const myDropzone = new Dropzone("#my-dropzone", { url: "/upload" });
-
-         //    // Maneja eventos de Dropzone
-         //    myDropzone.on("complete", (file) => {
-         //       // Lógica para manejar la finalización de la carga
-         //    });
-
-         //    // Limpia la instancia de Dropzone cuando el componente se desmonta
-         //    return () => {
-         //       myDropzone.destroy();
-         //    };
-         // }, 5000);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -445,7 +431,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                         />
                      </Grid>
                      {/* Poliza L. DERECHO del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_right"
                            label="Foto L. DERECHO del vehículo"
@@ -456,9 +442,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid>
+                     </Grid> */}
                      {/* Poliza TRASERA del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_back"
                            label="Foto TRASERA del vehículo"
@@ -469,9 +455,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid>
+                     </Grid> */}
                      {/* Poliza L. IZQUIERDO del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_left"
                            label="Foto L. IZQUIERDO del vehículo"
@@ -482,9 +468,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid>
+                     </Grid> */}
                      {/* Poliza FRONTAL del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            iidName="img_front"
                            label="Foto FRONTAL del vehículo"
@@ -495,7 +481,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid>
+                     </Grid> */}
 
                      {/* Separador */}
                      <Grid xs={12}>
