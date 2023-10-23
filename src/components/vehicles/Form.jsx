@@ -117,16 +117,16 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         console.log("imgPreview", imgPreview);
-         values.img_preview = imgPreview[0].file;
-         // values.img_right = imgRight[0].file;
-         // values.img_back = imgBack[0].file;
-         // values.img_left = imgLeft[0].file;
-         // values.img_front = imgFront[0].file;
-         values.img_insurance_policy = imgInsurancePolicy[0].file;
+         // console.log("imgPreview", imgPreview);
+         values.img_preview = imgPreview.length == 0 ? "" : imgPreview[0].file;
+         values.img_right = imgRight.length == 0 ? "" : imgRight[0].file;
+         values.img_back = imgBack.length == 0 ? "" : imgBack[0].file;
+         values.img_left = imgLeft.length == 0 ? "" : imgLeft[0].file;
+         values.img_front = imgFront.length == 0 ? "" : imgFront[0].file;
+         values.img_insurance_policy = imgInsurancePolicy.length == 0 ? "" : imgInsurancePolicy[0].file;
          values.changePlates = changePlates ? 1 : 0;
 
-         console.log("values", values);
+         // console.log("values", values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createVehicle(values);
@@ -159,7 +159,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       try {
          await ResetForm(resetForm);
          setFieldValue("id", id);
-         console.log(formData);
+         // console.log(formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -169,7 +169,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
-         console.log(formData);
+         // console.log(formData);
          if (formData.description) !formData.description && (formData.description = "");
          setValues(formData);
          const valuesBrnad = { id: formData.brand_id, label: formData.brand };
@@ -177,10 +177,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          await getModelsByBrand(valuesBrnad, setFieldValue, valuesModel);
 
          setObjImg(formData.img_preview, setImgPreview);
-         // setObjImg(formData.img_right, setImgRight);
-         // setObjImg(formData.img_back, setImgBack);
-         // setObjImg(formData.img_left, setImgLeft);
-         // setObjImg(formData.img_front, setImgFront);
+         setObjImg(formData.img_right, setImgRight);
+         setObjImg(formData.img_back, setImgBack);
+         setObjImg(formData.img_left, setImgLeft);
+         setObjImg(formData.img_front, setImgFront);
          setObjImg(formData.img_insurance_policy, setImgInsurancePolicy);
 
          await handleChangeBrands(formData.brand_id, setFieldValue);
@@ -239,7 +239,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       try {
          const btnModify = document.getElementById("btnModify");
          if (btnModify != null) btnModify.click();
-
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -431,7 +430,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                         />
                      </Grid>
                      {/* Poliza L. DERECHO del vehículo */}
-                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_right"
                            label="Foto L. DERECHO del vehículo"
@@ -442,9 +441,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid> */}
+                     </Grid>
                      {/* Poliza TRASERA del vehículo */}
-                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_back"
                            label="Foto TRASERA del vehículo"
@@ -455,9 +454,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid> */}
+                     </Grid>
                      {/* Poliza L. IZQUIERDO del vehículo */}
-                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_left"
                            label="Foto L. IZQUIERDO del vehículo"
@@ -468,9 +467,9 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid> */}
+                     </Grid>
                      {/* Poliza FRONTAL del vehículo */}
-                     {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            iidName="img_front"
                            label="Foto FRONTAL del vehículo"
@@ -481,7 +480,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            multiple={false}
                            accept={"image/*"}
                         />
-                     </Grid> */}
+                     </Grid>
 
                      {/* Separador */}
                      <Grid xs={12}>
