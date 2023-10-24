@@ -12,7 +12,7 @@ const NotFound = () => {
    const error = useRouteError();
    console.log(error);
    let errorText = "",
-      srcImg = "";
+      srcImg = "/src/assets/images/404.jpg";
 
    useEffect(() => {
       setLoading(false);

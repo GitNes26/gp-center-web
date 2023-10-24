@@ -14,6 +14,9 @@ export const gpcText = "#1455CB";
 export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
+   // const [loadLogo, setLoadLogo] = useState(true);
+   // const [load, setLoad] = useState(true);
+   // const [loadAction, setLoadAction] = useState(false);
    const [loading, setLoading] = useState(true);
    const [loadingAction, setLoadingAction] = useState(false);
    const [cursorLoading, setCursorLoading] = useState(false);
@@ -31,6 +34,34 @@ export const GlobalContextProvider = ({ children }) => {
          Toast.Error(error);
       }
    };
+
+   // const setLoading = (show) => {
+   //    if (show) {
+   //       setLoad(true);
+   //       setLoadLogo(true);
+   //    } else {
+   //       setTimeout(() => {
+   //          setLoadLogo(false);
+   //          setTimeout(() => {
+   //             setLoad(false);
+   //          }, 1500);
+   //       }, 1000);
+   //    }
+   // };
+
+   // const setLoadingAction = (show) => {
+   //    if (show) {
+   //       setLoadAction(true);
+   //       setLoadLogo(true);
+   //    } else {
+   //       setTimeout(() => {
+   //          setLoadLogo(false);
+   //          setTimeout(() => {
+   //             setLoadAction(false);
+   //          }, 1500);
+   //       }, 1000);
+   //    }
+   // };
 
    const [formTitle, setFormTitle] = useState("REGISTRAR OBJETO | EDITAR OBJETO");
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR | GUARDAR");
