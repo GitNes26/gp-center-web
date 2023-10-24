@@ -3,6 +3,28 @@ import Toast from "../../utils/Toast";
 import { useEffect } from "react";
 import { Field } from "formik";
 
+/**
+ * 
+ * {/* Marca *}
+   <Grid xs={12} md={6} sx={{ mb: 2 }}>
+      <Select2Component
+         idName={"brand_id"}
+         label={"Marca *"}
+         valueLabel={values.brand}
+         formDataLabel={"brand"}
+         placeholder={"Selecciona una opción..."}
+         options={dataBrands}
+         fullWidth={true}
+         handleChangeValueSuccess={handleChangeBrands}
+         handleBlur={handleBlur}
+         error={errors.brand_id}
+         touched={touched.brand_id}
+         disabled={false}
+      />
+   </Grid>
+ */
+
+// =================== COMPONENTE =======================
 const Select2Component = ({
    idName,
    label,

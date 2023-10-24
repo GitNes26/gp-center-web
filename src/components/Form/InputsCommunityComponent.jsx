@@ -45,7 +45,6 @@ export const getCommunity = async (
    setFieldValue,
    community_id = null,
    formData,
-   values,
    setFormData,
    setDisabledState,
    setDisabledCity,
@@ -76,9 +75,9 @@ export const getCommunity = async (
       setFieldValue("state", "Selecciona una opción...");
       setFieldValue("city", "Selecciona una opción...");
       setFieldValue("colony", "Selecciona una opción...");
-      setFieldValue("street", values.street);
-      setFieldValue("num_ext", values.num_ext);
-      setFieldValue("num_int", values.num_int);
+      setFieldValue("street", formData.street);
+      setFieldValue("num_ext", formData.num_ext);
+      setFieldValue("num_int", formData.num_int);
       if (community_id) {
          const axiosMyCommunity = axios;
          const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
@@ -159,36 +158,36 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
       setDataColoniesComplete
    } = useGlobalContext();
 
-   const handleKeyUpZip = async (e) => {
-      if (e.target.value.length == 0) return Toast.Info("C.P. vacio.");
-      if (e.key === "Enter" || e.keyCode === 13) return;
-   };
-   const handleBlurZip = async (zip, setFieldValue, community_id = null) => {
+   const handleKeyUpZip = async (e, setFieldValue, community_id = null) => {
       try {
-         if (zip.length < 1) {
+         const zip = e.target.value;
+         if (e.key === "Enter" || e.keyCode === 13) return;
+         if (e.target.value.length == 0) return Toast.Info("C.P. vacio.");
+
+         if (e.target.value.length == 5) {
+            setCursorLoading(true);
+            await getCommunity(
+               zip,
+               setFieldValue,
+               community_id,
+               formData,
+               setFormData,
+               setDisabledState,
+               setDisabledCity,
+               setDisabledColony,
+               setShowLoading,
+               setDataStates,
+               setDataCities,
+               setDataColonies,
+               setDataColoniesComplete
+            );
+            setCursorLoading(false);
+         } else {
+            setDisabledColony(true);
             setFieldValue("state", "Selecciona una opción...");
             setFieldValue("city", "Selecciona una opción...");
             setFieldValue("colony", "Selecciona una opción...");
-            Toast.Info("C.P. vacio");
          }
-         setCursorLoading(true);
-         await getCommunity(
-            zip,
-            setFieldValue,
-            community_id,
-            formData,
-            values,
-            setFormData,
-            setDisabledState,
-            setDisabledCity,
-            setDisabledColony,
-            setShowLoading,
-            setDataStates,
-            setDataCities,
-            setDataColonies,
-            setDataColoniesComplete
-         );
-         setCursorLoading(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -196,17 +195,44 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
          setShowLoading(false);
       }
    };
+   // const handleBlurZip = async (zip, setFieldValue, community_id = null) => {
+   //    try {
+   //       if (zip.length < 1) {
+   //          setFieldValue("state", "Selecciona una opción...");
+   //          setFieldValue("city", "Selecciona una opción...");
+   //          setFieldValue("colony", "Selecciona una opción...");
+   //          Toast.Info("C.P. vacio");
+   //       }
+   //       setCursorLoading(true);
+   //       await getCommunity(
+   //          zip,
+   //          setFieldValue,
+   //          community_id,
+   //          formData,
+   //          setFormData,
+   //          setDisabledState,
+   //          setDisabledCity,
+   //          setDisabledColony,
+   //          setShowLoading,
+   //          setDataStates,
+   //          setDataCities,
+   //          setDataColonies,
+   //          setDataColoniesComplete
+   //       );
+   //       setCursorLoading(false);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //       setCursorLoading(false);
+   //       setShowLoading(false);
+   //    }
+   // };
 
-   const handleChangeColony = async (value, setValues2) => {
+   const handleChangeColony = async (colony, setFieldValue) => {
       try {
-         const community_selected = dataColoniesComplete.find((c) => c.label === value);
-         values.colony = community_selected.label;
-         values.community_id = community_selected.id;
-         // console.log("formdata....", formData);
-         await setFormData(values);
-         await setValues(values);
-         // console.log("formdata....", formData);
-         // console.log("values....", values);
+         const community_selected = dataColoniesComplete.find((c) => c.label === colony);
+         // values.community_id = community_selected.id;
+         setFieldValue("community_id", community_selected.id);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -233,9 +259,9 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                   onChange={handleChange}
                   onBlur={async (e) => {
                      handleBlur(e);
-                     await handleBlurZip(e.target.value, setFieldValue);
+                     // await handleBlurZip(e.target.value, setFieldValue);
                   }}
-                  onKeyUp={handleKeyUpZip}
+                  onKeyUp={(e) => handleKeyUpZip(e, setFieldValue)}
                   fullWidth
                   // disabled={values.id == 0 ? false : true}
                   disabled={showLoading}
@@ -247,6 +273,20 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
             {/* Estado */}
             <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
                <Select2Component
+                  idName={"state"}
+                  label={"Estado *"}
+                  valueLabel={values.state}
+                  formDataLabel={"state"}
+                  placeholder={"Selecciona una opción..."}
+                  options={dataStates}
+                  fullWidth={true}
+                  // handleChangeValueSuccess={handleChangeState}
+                  handleBlur={handleBlur}
+                  error={errors.state}
+                  touched={touched.state}
+                  disabled={disabledState}
+               />
+               {/* <Select2Component
                   idName={"state"}
                   label={"Estado"}
                   valueLabel={values.state}
@@ -264,12 +304,26 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                   error={errors.state}
                   touched={touched.state}
                   disabled={disabledState}
-               />
+               /> */}
             </Grid>
 
             {/* Ciduad */}
             <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
                <Select2Component
+                  idName={"city"}
+                  label={"Ciudad *"}
+                  valueLabel={values.city}
+                  formDataLabel={"city"}
+                  placeholder={"Selecciona una opción..."}
+                  options={dataCities}
+                  fullWidth={true}
+                  // handleChangeValueSuccess={handleChangeCity}
+                  handleBlur={handleBlur}
+                  error={errors.city}
+                  touched={touched.city}
+                  disabled={disabledCity}
+               />
+               {/* <Select2Component
                   idName={"city"}
                   label={"Ciudad"}
                   valueLabel={values.city}
@@ -287,11 +341,25 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                   error={errors.city}
                   touched={touched.city}
                   disabled={disabledCity}
-               />
+               /> */}
             </Grid>
             {/* Colonia */}
             <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
                <Select2Component
+                  idName={"colony"}
+                  label={"Colonia *"}
+                  valueLabel={values.colony}
+                  formDataLabel={"colony"}
+                  placeholder={"Selecciona una opción..."}
+                  options={dataColonies}
+                  fullWidth={true}
+                  handleChangeValueSuccess={handleChangeColony}
+                  handleBlur={handleBlur}
+                  error={errors.colony}
+                  touched={touched.colony}
+                  disabled={disabledColony}
+               />
+               {/* <Select2Component
                   idName={"colony"}
                   label={"Colonia"}
                   valueLabel={values.colony}
@@ -309,7 +377,7 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                   error={errors.colony}
                   touched={touched.colony}
                   disabled={disabledColony}
-               />
+               /> */}
             </Grid>
          </Grid>
          {/* Calle */}
