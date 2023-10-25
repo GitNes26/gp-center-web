@@ -25,7 +25,6 @@ import { Field } from "formik";
       error={errors.license_due_date}
       touched={touched.license_due_date}
       showErrorInput={null}
-      formData={formData}
    />
  */
 

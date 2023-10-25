@@ -119,7 +119,7 @@ export default function VehicleStatusContextProvider({ children }) {
    const deleteVehicleStatus = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/vehicleStatus/${id}`);
+         const axiosData = await Axios.post(`/vehicleStatus/delete/${id}`);
          // console.log("deleteVehicleStatus() axiosData", axiosData.data);
          getVehicleStatuss();
          res = axiosData.data.data;

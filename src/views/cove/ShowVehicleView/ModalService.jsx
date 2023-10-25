@@ -313,7 +313,7 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
             sx={{ backgroundColor: "transparent" }}
          >
             <DialogTitle bgcolor={gpcDark}>
-               <Typography sx={{ color: gpcLight }} variant="h1">
+               <Typography sx={{ color: gpcLight }} variant="h1" component={"span"}>
                   {"SOLICITAR SERVICIO".toUpperCase()}
                </Typography>
             </DialogTitle>

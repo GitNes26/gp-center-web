@@ -24,8 +24,13 @@ const formDataInitialState = {
    img_left: "",
    img_front: "",
 
+   circulation_card: "",
+   img_circulation_card: "",
+
    insurance_policy: "",
    img_insurance_policy: "",
+
+   violated: "",
 
    plates: "",
    initial_date: "",
@@ -186,7 +191,7 @@ export default function VehicleContextProvider({ children }) {
    const deleteVehicle = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/vehicles/${id}`);
+         const axiosData = await Axios.post(`/vehicles/delete/${id}`);
          // console.log("deleteVehicle() axiosData", axiosData.data);
          getVehicles();
          res = axiosData.data.data;

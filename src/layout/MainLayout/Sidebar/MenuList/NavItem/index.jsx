@@ -12,6 +12,7 @@ import { MENU_OPEN, SET_MENU } from "../../../../../config/store/actions";
 
 // assets
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { useGlobalContext } from "../../../../../context/GlobalContext";
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
@@ -21,6 +22,7 @@ const NavItem = ({ item, level }) => {
    const { pathname } = useLocation();
    const customization = useSelector((state) => state.customization);
    const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
+   const { load, setLoading } = useGlobalContext();
 
    const Icon = item.icon;
    const itemIcon = item?.icon ? (
@@ -48,8 +50,13 @@ const NavItem = ({ item, level }) => {
    }
 
    const itemHandler = (id) => {
+      setLoading(true);
       dispatch({ type: MENU_OPEN, id });
       if (matchesSM) dispatch({ type: SET_MENU, opened: false });
+
+      setTimeout(() => {
+         setLoading(false);
+      }, 20000);
    };
 
    // active menu item on page load
@@ -81,11 +88,7 @@ const NavItem = ({ item, level }) => {
       >
          <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>{itemIcon}</ListItemIcon>
          <ListItemText
-            primary={
-               <Typography variant={customization.isOpen.findIndex((id) => id === item.id) > -1 ? "h5_GPC" : "body1_GPC"} >
-                  {item.title}
-               </Typography>
-            }
+            primary={<Typography variant={customization.isOpen.findIndex((id) => id === item.id) > -1 ? "h5_GPC" : "body1_GPC"}>{item.title}</Typography>}
             secondary={
                item.caption && (
                   <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption_GPC }} display="block" gutterBottom>

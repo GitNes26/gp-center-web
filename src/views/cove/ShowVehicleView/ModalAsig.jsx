@@ -112,14 +112,14 @@ const ModalAsig = ({ open, setOpen }) => {
                <SearchInput placeholder={"Buscar usuarios"} showOptions={false} />
             </DialogTitle>
             <DialogContent sx={{ maxHeight: "500px" }}>
-               <DialogContentText id="alert-dialog-slide-description">
-                  <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+               <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+                  <DialogContentText id="alert-dialog-slide-description" component={"div"}>
                      {users.map((obj) => {
                         const full_name = `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name}`;
                         return <ItemUser key={obj.id} full_name={full_name} department={obj.department} email={obj.email} />;
                      })}
-                  </List>
-               </DialogContentText>
+                  </DialogContentText>
+               </List>
             </DialogContent>
             <DialogActions>
                <Button onClick={handleClose}>Cerrar</Button>

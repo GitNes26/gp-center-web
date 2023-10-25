@@ -15,7 +15,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const App = () => {
    const customization = useSelector((state) => state.customization);
-   const { loading, loadingAction } = useGlobalContext();
+   const { load, loadAction } = useGlobalContext();
 
    // <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 100000 }} open={load}>
    //          <div className={`container-loader ${loadLogo ? "entrada" : "salida"}`} style={{ zIndex: (theme) => theme.zIndex.drawer + 100000 }}>
@@ -45,13 +45,13 @@ const App = () => {
          <CssBaseline />
          {/* <NavigationSroll> */}
          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={loading}>
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={load}>
                <img className="loader" src={imgLoading} style={{ height: "20vh" }} />
                {/* <Typography variant="h1" sx={{ color: "#fff" }}>
                CARGANDO... <CircularProgress color="inherit" />
             </Typography> */}
             </Backdrop>
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={loadingAction}>
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={loadAction}>
                <img className="loader" src={imgLoading} style={{ height: "20vh" }} />
 
                {/* <Typography variant="h1" sx={{ color: "#fff" }}>

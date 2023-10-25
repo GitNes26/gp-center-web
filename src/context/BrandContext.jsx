@@ -130,7 +130,7 @@ export default function BrandContextProvider({ children }) {
    const deleteBrand = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/brands/${id}`);
+         const axiosData = await Axios.post(`/brands/delete/${id}`);
          // console.log("deleteBrand() axiosData", axiosData.data);
          getBrands();
          res = axiosData.data.data;

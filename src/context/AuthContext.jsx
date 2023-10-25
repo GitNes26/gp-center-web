@@ -71,7 +71,7 @@ export default function AuthContextProvider({ children }) {
 
    const logout = async () => {
       try {
-         const { data } = await Axios.delete(`/logout/${auth.id}`);
+         const { data } = await Axios.post(`/logout/${auth.id}`);
 
          localStorage.removeItem("token");
          localStorage.removeItem("auth");

@@ -66,7 +66,7 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 const sizeBtns = 150;
 
 const ShowVehicleView = () => {
-   const { setLoading, setOpenDialog, setBgImage } = useGlobalContext();
+   const { setLoading, setLoadingAction, setOpenDialog, setBgImage } = useGlobalContext();
    const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicleBy, vehicle } = useVehicleContext();
    const { vehiclePlates, setVehiclePlates, historyByVehicleId } = useVehiclePlateContext();
 
@@ -115,16 +115,16 @@ const ShowVehicleView = () => {
             if (e.target.value.length == 0) return Toast.Info("Buscador vacio.");
             setClassesImgVehicle("zoom-out");
             setGrowOn(false);
-            setLoading(true);
-            const searchBy = searchType == "number" ? "stock_number" : "plates";
-            const res = await showVehicleBy(searchBy, search);
-            setSearch("");
-            setLoading(false);
-            if (!res.result) return Toast.Info(res.alert_title);
-            setTimeout(() => {
+            setLoadingAction(true);
+            setTimeout(async () => {
+               const searchBy = searchType == "number" ? "stock_number" : "plates";
+               const res = await showVehicleBy(searchBy, search);
+               setSearch("");
+               setLoadingAction(false);
+               if (!res.result) return Toast.Info(res.alert_title);
                setGrowOn(true);
                setClassesImgVehicle("zoom-in");
-            }, 800);
+            }, 850);
          }
       } catch (error) {
          console.log(error);
@@ -148,7 +148,7 @@ const ShowVehicleView = () => {
 
    useEffect(() => {
       try {
-         setLoading(true);
+         // setLoading(true);
          setBgImage("bgGarage");
          // getVehicles();
          setLoading(false);
@@ -298,16 +298,10 @@ const ShowVehicleView = () => {
                   <img
                      // src={ImgCar}
                      src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_preview}`}
-                     className={classesImgVehicle}
+                     className={`vehicle-container ${classesImgVehicle}`}
                      style={{
-                        // maxHeight: "350px",
-                        height: "350px",
-                        width: "650px",
-                        objectFit: "cover",
-                        position: "absolute",
                         left: `calc(45% - ${drawerWidth + 10}px)`,
-                        bottom: `calc(53% - ${drawerWidth}px)`,
-                        zIndex: 0
+                        bottom: `calc(53% - ${drawerWidth}px)`
                      }}
                   />
                </Box>

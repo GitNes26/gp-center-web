@@ -19,12 +19,12 @@ export const setObjImg = (img, setImg) => {
 /**
  * 
  * <InputFileComponent
-      idName="img_preview"
-      label="Foto PREVIEW del vehículo"
-      filePreviews={imgPreview}
-      setFilePreviews={setImgPreview}
-      error={errors.img_preview}
-      touched={touched.img_preview}
+      idName="img_path"
+      label="Foto de la marca"
+      filePreviews={imgFile}
+      setFilePreviews={setImgFile}
+      error={errors.img_path}
+      touched={touched.img_path}
       multiple={false}
       accept={"image/*"}
    />
@@ -39,6 +39,7 @@ export const setObjImg = (img, setImg) => {
 const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePreviews, error, touched, multiple, maxImages = -1, accept = null }) => {
    const [uploadProgress, setUploadProgress] = useState(0);
    // const [filePreviews, setFilePreviews] = useState([]);
+   const [ttShow, setTtShow] = useState("");
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -109,6 +110,13 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
       onDrop
    });
 
+   const handleMouseEnter = () => {
+      setTtShow("tt_show");
+   };
+   const handleMouseLeave = () => {
+      setTtShow("");
+   };
+
    return (
       <>
          <FormControl fullWidth sx={{}}>
@@ -130,13 +138,16 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                            <aside className="file-preview">
                               {filePreviews.map((preview) => (
                                  <div key={preview.file.name} className="preview-item">
-                                    <img src={preview.dataURL} alt={preview.file.name} />
+                                    <img className="preview-img" src={preview.dataURL} alt={preview.file.name} />
+                                    {/* <img width={"auto"} src={preview.dataURL} alt={preview.file.name} srcset="" className={`tooltip_imagen ${ttShow}`} /> */}
                                     <button
                                        className="remove-button"
                                        onClick={(e) => {
                                           e.preventDefault();
                                           handleRemoveImage(preview.file);
                                        }}
+                                       onMouseEnter={handleMouseEnter}
+                                       onMouseLeave={handleMouseLeave}
                                     >
                                        Eliminar
                                     </button>

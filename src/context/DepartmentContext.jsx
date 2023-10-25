@@ -115,7 +115,7 @@ export default function DepartmentContextProvider({ children }) {
    const deleteDepartment = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/departments/${id}`);
+         const axiosData = await Axios.post(`/departments/delete/${id}`);
          // console.log("deleteDepartment() axiosData", axiosData.data);
          getDepartments();
          res = axiosData.data.data;

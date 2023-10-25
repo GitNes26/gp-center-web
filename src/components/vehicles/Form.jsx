@@ -40,6 +40,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const [imgBack, setImgBack] = useState([]);
    const [imgLeft, setImgLeft] = useState([]);
    const [imgFront, setImgFront] = useState([]);
+   const [imgCirculationCard, setImgCirculationCard] = useState([]);
    const [imgInsurancePolicy, setImgInsurancePolicy] = useState([]);
 
    const ResetForm = async (resetForm = null) => {
@@ -51,6 +52,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       setImgBack([]);
       setImgLeft([]);
       setImgFront([]);
+      setImgCirculationCard([]);
       setImgInsurancePolicy([]);
    };
 
@@ -123,6 +125,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          values.img_back = imgBack.length == 0 ? "" : imgBack[0].file;
          values.img_left = imgLeft.length == 0 ? "" : imgLeft[0].file;
          values.img_front = imgFront.length == 0 ? "" : imgFront[0].file;
+         values.img_circulation_card = imgCirculationCard.length == 0 ? "" : imgCirculationCard[0].file;
          values.img_insurance_policy = imgInsurancePolicy.length == 0 ? "" : imgInsurancePolicy[0].file;
          values.changePlates = changePlates ? 1 : 0;
 
@@ -181,6 +184,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          setObjImg(formData.img_back, setImgBack);
          setObjImg(formData.img_left, setImgLeft);
          setObjImg(formData.img_front, setImgFront);
+         setObjImg(formData.img_circulation_card, setImgCirculationCard);
          setObjImg(formData.img_insurance_policy, setImgInsurancePolicy);
 
          await handleChangeBrands(formData.brand_id, setFieldValue);
@@ -213,8 +217,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       registration_date: Yup.date("Fecha invalida").required("Fecha de registro requerida"),
       vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido"),
 
+      circulation_card: Yup.string().trim().required("N° Tarjeta de Circulación requerida"),
+      // img_circulation_card: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
+
       insurance_policy: Yup.string().trim().required("N° Póliza de Seguro requerida"),
-      // insurance_policy_path: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
+      // img_insurance_policy: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
 
       plates: Yup.string()
          .trim()
@@ -287,17 +294,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            idName={"brand_id"}
                            label={"Marca *"}
                            valueLabel={values.brand}
-                           values={values}
-                           formData={formData}
-                           setFormData={setFormData}
                            formDataLabel={"brand"}
                            placeholder={"Selecciona una opción..."}
                            options={dataBrands}
                            fullWidth={true}
-                           handleChange={handleChange}
                            handleChangeValueSuccess={handleChangeBrands}
-                           setValues={setValues}
-                           // setFieldValue={setFieldValue}
                            handleBlur={handleBlur}
                            error={errors.brand_id}
                            touched={touched.brand_id}
@@ -310,16 +311,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            idName={"model_id"}
                            label={"Modelo *"}
                            valueLabel={values.model}
-                           values={values}
-                           formData={formData}
-                           setFormData={setFormData}
                            formDataLabel={"model"}
                            placeholder={"Selecciona una opción..."}
                            options={dataModels}
                            fullWidth={true}
-                           handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChange...}
-                           setValues={setValues}
+                           // handleChangeValueSuccess={handleChangeBrands}
                            handleBlur={handleBlur}
                            error={errors.model_id}
                            touched={touched.model_id}
@@ -368,7 +364,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            error={errors.registration_date}
                            touched={touched.registration_date}
                            showErrorInput={null}
-                           formData={formData}
                         />
                      </Grid>
                      {/* Estatus */}
@@ -429,7 +424,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            accept={"image/*"}
                         />
                      </Grid>
-                     {/* Poliza L. DERECHO del vehículo */}
+                     {/* Imagen L. DERECHO del vehículo */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_right"
@@ -442,7 +437,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            accept={"image/*"}
                         />
                      </Grid>
-                     {/* Poliza TRASERA del vehículo */}
+                     {/* Imagen TRASERA del vehículo */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_back"
@@ -455,7 +450,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            accept={"image/*"}
                         />
                      </Grid>
-                     {/* Poliza L. IZQUIERDO del vehículo */}
+                     {/* Imagen L. IZQUIERDO del vehículo */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_left"
@@ -468,7 +463,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            accept={"image/*"}
                         />
                      </Grid>
-                     {/* Poliza FRONTAL del vehículo */}
+                     {/* Imagen FRONTAL del vehículo */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_front"
@@ -477,6 +472,47 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            setFilePreviews={setImgFront}
                            error={errors.img_front}
                            touched={touched.img_front}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
+                     </Grid>
+
+                     {/* Separador */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
+
+                     {/* N° Tarjeta de Circulación */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <TextField
+                           id="circulation_card"
+                           name="circulation_card"
+                           label="N° Tajeta de Circulación"
+                           type="text"
+                           value={values.circulation_card}
+                           placeholder="Inserte el número de tarjeta de circulación"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "circulation_card", true)}
+                           // inputProps={{ maxLength: 9 }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[1] = el)}
+                           error={errors.circulation_card && touched.circulation_card}
+                           helperText={errors.circulation_card && touched.circulation_card && errors.circulation_card}
+                        />
+                     </Grid>
+
+                     {/* Tarjeta de Circulación */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_circulation_card"
+                           label="Tarjeta de circulación"
+                           value={values.img_circulation_card}
+                           filePreviews={imgCirculationCard}
+                           setFilePreviews={setImgCirculationCard}
+                           error={errors.img_circulation_card}
+                           touched={touched.img_circulation_card}
                            multiple={false}
                            accept={"image/*"}
                         />
@@ -567,7 +603,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            error={errors.initial_date}
                            touched={touched.initial_date}
                            showErrorInput={null}
-                           formData={formData}
                         />
                      </Grid>
                      {/* Fecha Expiracion de Placas */}
@@ -583,7 +618,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            error={errors.due_date}
                            touched={touched.due_date}
                            showErrorInput={null}
-                           formData={formData}
                         />
                      </Grid>
 

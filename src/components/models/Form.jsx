@@ -77,6 +77,7 @@ const ModelForm = ({ dataBrands }) => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
+         // console.log(formData);
          if (formData.description) formData.description === null && (formData.description = "");
          setValues(formData);
          setLoadingAction(false);
@@ -142,16 +143,11 @@ const ModelForm = ({ dataBrands }) => {
                            idName={"brand_id"}
                            label={"Marca *"}
                            valueLabel={values.brand}
-                           values={values}
-                           formData={formData}
-                           setFormData={setFormData}
                            formDataLabel={"brand"}
                            placeholder={"Selecciona una opción..."}
                            options={dataBrands}
                            fullWidth={true}
-                           handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChange...}
-                           setValues={setValues}
+                           // handleChangeValueSuccess={handleChangeBrands}
                            handleBlur={handleBlur}
                            error={errors.brand_id}
                            touched={touched.brand_id}

@@ -15,7 +15,7 @@ import { Field } from "formik";
          placeholder={"Selecciona una opción..."}
          options={dataBrands}
          fullWidth={true}
-         handleChangeValueSuccess={handleChangeBrands}
+         // handleChangeValueSuccess={handleChangeBrands}
          handleBlur={handleBlur}
          error={errors.brand_id}
          touched={touched.brand_id}

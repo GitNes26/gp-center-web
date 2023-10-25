@@ -15,10 +15,10 @@ export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
    // const [loadLogo, setLoadLogo] = useState(true);
-   // const [load, setLoad] = useState(true);
-   // const [loadAction, setLoadAction] = useState(false);
-   const [loading, setLoading] = useState(true);
-   const [loadingAction, setLoadingAction] = useState(false);
+   const [load, setLoad] = useState(true);
+   const [loadAction, setLoadAction] = useState(false);
+   // const [loading, setLoading] = useState(true);
+   // const [loadingAction, setLoadingAction] = useState(false);
    const [cursorLoading, setCursorLoading] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
    const [bgImage, setBgImage] = useState("none");
@@ -35,33 +35,33 @@ export const GlobalContextProvider = ({ children }) => {
       }
    };
 
-   // const setLoading = (show) => {
-   //    if (show) {
-   //       setLoad(true);
-   //       setLoadLogo(true);
-   //    } else {
-   //       setTimeout(() => {
-   //          setLoadLogo(false);
-   //          setTimeout(() => {
-   //             setLoad(false);
-   //          }, 1500);
-   //       }, 1000);
-   //    }
-   // };
+   const setLoading = (show) => {
+      if (show) {
+         setLoad(true);
+         // setLoadLogo(true);
+      } else {
+         setTimeout(() => {
+            // setLoadLogo(false);
+            // setTimeout(() => {
+            setLoad(false);
+            // }, 1500);
+         }, 500);
+      }
+   };
 
-   // const setLoadingAction = (show) => {
-   //    if (show) {
-   //       setLoadAction(true);
-   //       setLoadLogo(true);
-   //    } else {
-   //       setTimeout(() => {
-   //          setLoadLogo(false);
-   //          setTimeout(() => {
-   //             setLoadAction(false);
-   //          }, 1500);
-   //       }, 1000);
-   //    }
-   // };
+   const setLoadingAction = (show) => {
+      if (show) {
+         setLoadAction(true);
+         // setLoadLogo(true);
+      } else {
+         setTimeout(() => {
+            // setLoadLogo(false);
+            // setTimeout(() => {
+            setLoadAction(false);
+            // }, 1500);
+         }, 500);
+      }
+   };
 
    const [formTitle, setFormTitle] = useState("REGISTRAR OBJETO | EDITAR OBJETO");
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR | GUARDAR");
@@ -80,9 +80,13 @@ export const GlobalContextProvider = ({ children }) => {
    return (
       <GlobalContext.Provider
          value={{
-            loading,
+            load,
+            setLoad,
+            loadAction,
+            setLoadAction,
+            // loading,
             setLoading,
-            loadingAction,
+            // loadingAction,
             setLoadingAction,
             cursorLoading,
             setCursorLoading,

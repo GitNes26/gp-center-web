@@ -69,9 +69,9 @@ export default function ModelContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/models/${id}`);
          res = axiosData.data.data;
-         // await setModel(res.result);
-         // setFormData(res.result);
-         fillFormData(res.result);
+         await setModel(res.result);
+         setFormData(res.result);
+         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -118,7 +118,7 @@ export default function ModelContextProvider({ children }) {
    const deleteModel = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/models/${id}`);
+         const axiosData = await Axios.post(`/models/delete/${id}`);
          // console.log("deleteModel() axiosData", axiosData.data);
          getModels();
          res = axiosData.data.data;

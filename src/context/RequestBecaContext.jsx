@@ -160,7 +160,7 @@ export default function RequestBecaContextProvider({ children }) {
    const deleteRequestBeca = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/becas/${id}`);
+         const axiosData = await Axios.post(`/becas/delete/${id}`);
          // console.log("deleteRequestBeca() axiosData", axiosData.data);
          getRequestBecas();
          res = axiosData.data.data;
