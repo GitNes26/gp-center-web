@@ -99,7 +99,7 @@ const Select2Component = ({
                   openOnFocus
                   label={label}
                   placeholder={placeholder}
-                  options={options}
+                  options={options || ["Selecciona una opción..."]}
                   {...field}
                   value={valueLabel || "Selecciona una opción..."}
                   defaultValue={valueLabel || "Selecciona una opción..."}

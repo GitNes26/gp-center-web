@@ -29,7 +29,7 @@ export const setObjImg = (img, setImg) => {
       accept={"image/*"}
    />
 *
-* ENVIAR (onSubmit) ----------> values.img_preview = imgPreview[0].file;
+* ENVIAR (onSubmit) ----------> values.img_preview = imgPreview.length == 0 ? "" : imgPreview[0].file;
 * MODIFICAR (handleModify) ---> setObjImg(formData.img_preview, setImgPreview);
 * RESET ----------------------> setImagePreview([]);
 *
