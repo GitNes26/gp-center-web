@@ -174,7 +174,7 @@ export default function ServiceContextProvider({ children }) {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post(
-            `/services/${service.id}`,
+            `/services/update/${service.id}`,
             service
             // , {
             //    headers: {

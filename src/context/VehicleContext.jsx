@@ -171,7 +171,7 @@ export default function VehicleContextProvider({ children }) {
    const updateVehicle = async (vehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/vehicles/${vehicle.id}`, vehicle, {
+         const axiosData = await Axios.post(`/vehicles/update/${vehicle.id}`, vehicle, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
