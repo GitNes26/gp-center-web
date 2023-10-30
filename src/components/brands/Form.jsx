@@ -86,7 +86,7 @@ const BrandForm = () => {
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
          setLoadingAction(true);
-         values.img_path = imgFile[0].file;
+         values.img_path = imgFile.length == 0 ? "" : imgFile[0].file;
          // console.log(values);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createBrand(values);

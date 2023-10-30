@@ -197,7 +197,7 @@ export default function ServiceContextProvider({ children }) {
    const deleteService = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/services/delete/${id}`);
+         const axiosData = await Axios.post(`/services/destroy/${id}`);
          // console.log("deleteService() axiosData", axiosData.data);
          getServices();
          res = axiosData.data.data;

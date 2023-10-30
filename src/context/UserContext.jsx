@@ -188,7 +188,7 @@ export default function UserContextProvider({ children }) {
    const deleteUser = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/users/delete/${id}`);
+         const axiosData = await Axios.post(`/users/destroy/${id}`);
          // console.log("deleteUser() axiosData", axiosData.data);
          getUsers();
          res = axiosData.data.data;

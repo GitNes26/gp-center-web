@@ -112,7 +112,12 @@ const ModelTable = () => {
          await models.map((obj) => {
             // console.log(obj);
             const register = [];
-            register.push(<Typography textAlign={"center"}>{obj.brand}</Typography>);
+            register.push(
+               <Typography textAlign={"center"}>
+                  {<img alt="Marca" src={`${import.meta.env.VITE_HOST}/${obj.img_path}`} style={{ maxWidth: 100, maxHeight: 100 }} />} <br />
+                  <small>{obj.brand}</small>
+               </Typography>
+            );
             register.push(<Typography textAlign={"center"}>{obj.model}</Typography>);
             register.push(<ButtonsAction id={obj.id} name={obj.model} />);
             data.push(register);

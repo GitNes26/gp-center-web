@@ -123,7 +123,7 @@ export default function VehiclePlateContextProvider({ children }) {
    const deleteVehiclePlate = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/vehiclesPlates/delete/${id}`);
+         const axiosData = await Axios.post(`/vehiclesPlates/destroy/${id}`);
          // console.log("deleteVehiclePlate() axiosData", axiosData.data);
          getVehiclePlates();
          res = axiosData.data.data;

@@ -115,7 +115,7 @@ export default function GenericContextProvider({ children }) {
    const deleteGeneric = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/generics/delete${id}`);
+         const axiosData = await Axios.post(`/generics/destroy${id}`);
          // console.log("deleteGeneric() axiosData", axiosData.data);
          getGenerics();
          res = axiosData.data.data;
