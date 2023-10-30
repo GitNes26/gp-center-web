@@ -110,7 +110,7 @@ export default function BrandContextProvider({ children }) {
       try {
          // console.log(brand);
          // const axiosData = await Axios.put("/brands", brand, {
-         const axiosData = await Axios.post(`/brands/${brand.id}`, brand, {
+         const axiosData = await Axios.post(`/brands/update/${brand.id}`, brand, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }

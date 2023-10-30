@@ -102,7 +102,7 @@ export default function ModelContextProvider({ children }) {
    const updateModel = async (model) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/models", model);
+         const axiosData = await Axios.post("/models/update", model);
          res = axiosData.data.data;
          getModels();
       } catch (error) {

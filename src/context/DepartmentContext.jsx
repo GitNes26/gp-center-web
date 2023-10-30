@@ -99,7 +99,7 @@ export default function DepartmentContextProvider({ children }) {
    const updateDepartment = async (department) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/departments", department);
+         const axiosData = await Axios.post("/departments/update", department);
          res = axiosData.data.data;
          getDepartments();
       } catch (error) {

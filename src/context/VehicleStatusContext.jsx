@@ -103,7 +103,7 @@ export default function VehicleStatusContextProvider({ children }) {
    const updateVehicleStatus = async (vehicleStatus) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/vehicleStatus", vehicleStatus);
+         const axiosData = await Axios.post("/vehicleStatus/update", vehicleStatus);
          res = axiosData.data.data;
          getVehicleStatuss();
       } catch (error) {

@@ -99,7 +99,7 @@ export default function GenericContextProvider({ children }) {
    const updateGeneric = async (generic) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/generics", generic);
+         const axiosData = await Axios.post("/generics/update", generic);
          res = axiosData.data.data;
          getGenerics();
       } catch (error) {

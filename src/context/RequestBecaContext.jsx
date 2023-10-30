@@ -35,7 +35,6 @@ const formDataInitialState = {
    average: ""
 };
 
-
 export default function RequestBecaContextProvider({ children }) {
    const { auth } = useAuthContext();
    formDataInitialState.tutor_id = auth.id;
@@ -143,7 +142,7 @@ export default function RequestBecaContextProvider({ children }) {
    const updateRequestBeca = async (requestBeca) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/becas", requestBeca);
+         const axiosData = await Axios.post("/becas/update", requestBeca);
          res = axiosData.data.data;
          console.log("el res", res);
          // getRequestBecas();

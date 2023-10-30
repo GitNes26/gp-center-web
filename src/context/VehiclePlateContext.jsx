@@ -107,7 +107,7 @@ export default function VehiclePlateContextProvider({ children }) {
    const updateVehiclePlate = async (vehiclePlate) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put(`/vehiclesPlates/${vehiclePlate.id}`, vehiclePlate);
+         const axiosData = await Axios.post(`/vehiclesPlates/update/${vehiclePlate.id}`, vehiclePlate);
          res = axiosData.data.data;
          getVehiclePlates();
       } catch (error) {
