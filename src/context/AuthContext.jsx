@@ -45,8 +45,10 @@ export default function AuthContextProvider({ children }) {
          if (data.data.status_code != 200 && !data.data.result.token) return alert("algo paso");
          localStorage.setItem("token", data.data.result.token);
          localStorage.setItem("auth", JSON.stringify(data.data.result.user));
-         setAuth(JSON.parse(localStorage.getItem("auth")));
          // setAuth(data.data.result.auth);
+         setAuth(JSON.parse(localStorage.getItem("auth")));
+         const token = localStorage.getItem("token") || null;
+         Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
          return data.data;
       } catch (error) {
          console.log(error);
@@ -71,10 +73,12 @@ export default function AuthContextProvider({ children }) {
 
    const logout = async () => {
       try {
-         const { data } = await Axios.delete(`/logout/${auth.id}`);
+         const { data } = await Axios.get(`/logout/${auth.id}`);
 
          localStorage.removeItem("token");
          localStorage.removeItem("auth");
+         const token = localStorage.getItem("token") || null;
+         Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
          setAuth(null);
          return data.data;
       } catch (error) {
