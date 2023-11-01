@@ -17,12 +17,15 @@ const formDataInitialState = {
    vehicle_status_id: 0,
    vehicle_status: "Selecciona una opción...",
    description: "",
-
+   
    img_preview: "",
    img_right: "",
    img_back: "",
    img_left: "",
    img_front: "",
+   
+   serial_number: "",
+   img_serial_number: "",
 
    circulation_card: "",
    img_circulation_card: "",

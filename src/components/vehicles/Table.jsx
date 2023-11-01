@@ -105,7 +105,17 @@ const VehicleTable = () => {
    };
 
    // const columns = [{ name: "Clave", options: { filterOptions: { fullWidth: true } } }, "Title", "Location", "Acciones"];
-   const columns = ["Vista Previa", "No. Inventario", "Placas", "Estatus", "Tarjeta de Ciruclación", "N° Poliza de Seguro", "Descripción", "Acciones"];
+   const columns = [
+      "Vista Previa",
+      "No. Inventario",
+      "Placas",
+      "Estatus",
+      "Número de Serie",
+      "Tarjeta de Ciruclación",
+      "N° Poliza de Seguro",
+      "Descripción",
+      "Acciones"
+   ];
    const data = [];
    const chargerData = async () => {
       try {
@@ -145,6 +155,11 @@ const VehicleTable = () => {
                      label={obj.vehicle_status}
                   />
                </Box>
+            );
+            register.push(
+               <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+                  {obj.serial_number}
+               </Typography>
             );
             register.push(
                <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>

@@ -139,7 +139,17 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                               {filePreviews.map((preview) => (
                                  <div key={preview.file.name} className="preview-item">
                                     <img className="preview-img" src={preview.dataURL} alt={preview.file.name} />
-                                    {/* <img width={"auto"} src={preview.dataURL} alt={preview.file.name} srcset="" className={`tooltip_imagen ${ttShow}`} /> */}
+                                    {preview.file.name !== "undefined" && (
+                                       <img
+                                          width={"auto"}
+                                          src={preview.dataURL}
+                                          alt={preview.file.name}
+                                          srcset=""
+                                          className={`tooltip_imagen ${ttShow}`}
+                                          onMouseEnter={handleMouseEnter}
+                                          onMouseLeave={handleMouseLeave}
+                                       />
+                                    )}
                                     <button
                                        className="remove-button"
                                        onClick={(e) => {

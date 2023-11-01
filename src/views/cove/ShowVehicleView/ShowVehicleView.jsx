@@ -193,7 +193,48 @@ const ShowVehicleView = () => {
                      onInput={(e) => handleInputStringCase(e, setSearch, true)}
                      handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
                   />
+                  {/* <Box
+                        sx={{
+                           flexGrow: 1,
+                           width: "70%",
+                           position: "absolute",
+                           left: `0`,
+                           bottom: `0`,
+                           mb: 1,
+                           mx: 2,
+                           zIndex: 0
+                        }}
+                     > */}
+                  <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        {/* <Grid container spacing={3}> */}
+                        <Grid xs alignItems={"center"}>
+                           <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
+                              <Box textAlign={"center"}>
+                                 <IconBtnService onClick={() => setOpenService(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                              </Box>
+                           </Tooltip>
+                        </Grid>
+                        <Grid xs alignItems={"center"}>
+                           <Tooltip title={"Asignar unidad"} placement="top" arrow>
+                              <Box textAlign={"center"}>
+                                 <IconBtnAssign onClick={() => setOpenAssign(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                              </Box>
+                           </Tooltip>
+                        </Grid>
+                        <Grid xs alignItems={"center"}>
+                           <Tooltip title={"Prestar unidad"} placement="top" arrow>
+                              <Box textAlign={"center"}>
+                                 <IconBtnLoan onClick={() => setOpenLoan(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                              </Box>
+                           </Tooltip>
+                        </Grid>
+                        {/* </Grid> */}
+                     </Grid>
+                  </Grow>
+                  {/* </Box> */}
                </Grid>
+               {/* BOTONERA DE ACCIONES */}
 
                {/* COLUMNA CENTRAL */}
                {vehicle && (
@@ -249,7 +290,7 @@ const ShowVehicleView = () => {
                         <Grid xs={12} md={12} sx={{ mb: 2 }}>
                            <Card>
                               <List>
-                                 <ComponentItem title="No. Unidad" icon={<Icon123 />} text={vehicle.stock_number} />
+                                 <ComponentItem title="No. Económico" icon={<Icon123 />} text={vehicle.stock_number} />
                                  <ComponentItem title="Año" icon={<IconCandle />} text={vehicle.year} />
                                  <ComponentItem title="Fecha de registro" icon={<IconCalendarStats />} text={formatDatetime(vehicle.registration_date)} />
                               </List>
@@ -316,46 +357,6 @@ const ShowVehicleView = () => {
                   </Typography>
                </Box>
             )}
-
-            {/* BOTONERA DE ACCIONES */}
-            <Box
-               sx={{
-                  flexGrow: 1,
-                  width: "70%",
-                  position: "absolute",
-                  left: `0`,
-                  bottom: `0`,
-                  mb: 1,
-                  mx: 2,
-                  zIndex: 0
-               }}
-            >
-               <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
-                  <Grid container spacing={3}>
-                     <Grid xs alignItems={"center"}>
-                        <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
-                           <Box textAlign={"center"}>
-                              <IconBtnService onClick={() => setOpenService(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                           </Box>
-                        </Tooltip>
-                     </Grid>
-                     <Grid xs alignItems={"center"}>
-                        <Tooltip title={"Asignar unidad"} placement="top" arrow>
-                           <Box textAlign={"center"}>
-                              <IconBtnAssign onClick={() => setOpenAssign(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                           </Box>
-                        </Tooltip>
-                     </Grid>
-                     <Grid xs alignItems={"center"}>
-                        <Tooltip title={"Prestar unidad"} placement="top" arrow>
-                           <Box textAlign={"center"}>
-                              <IconBtnLoan onClick={() => setOpenLoan(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                           </Box>
-                        </Tooltip>
-                     </Grid>
-                  </Grid>
-               </Grow>
-            </Box>
          </MainCard>
 
          <UserContextProvider>

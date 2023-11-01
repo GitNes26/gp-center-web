@@ -118,7 +118,7 @@ const SearchInput = ({
                      value={searchType}
                      onChange={(e) => handleChangeSearchBy(e.target.value)}
                   >
-                     <FormControlLabel value={"number"} control={<Radio />} label="N° Unidad" />
+                     <FormControlLabel value={"number"} control={<Radio />} label="N° Económico" />
                      <FormControlLabel value={"text"} control={<Radio />} label="Placas" />
                   </RadioGroup>
                </FormControl>

@@ -40,6 +40,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const [imgBack, setImgBack] = useState([]);
    const [imgLeft, setImgLeft] = useState([]);
    const [imgFront, setImgFront] = useState([]);
+   const [imgSerialNumber, setImgSerialNumber] = useState([]);
    const [imgCirculationCard, setImgCirculationCard] = useState([]);
    const [imgInsurancePolicy, setImgInsurancePolicy] = useState([]);
 
@@ -52,6 +53,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       setImgBack([]);
       setImgLeft([]);
       setImgFront([]);
+      setImgSerialNumber([]);
       setImgCirculationCard([]);
       setImgInsurancePolicy([]);
    };
@@ -112,11 +114,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       setFieldValue("year", inputValue);
    };
 
-   // const handleChangeImg = (e, setFieldValue) => {
-   //    const file = e.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-   //    setImgFile(file);
-   // };
-
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
          // console.log("imgPreview", imgPreview);
@@ -125,6 +122,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          values.img_back = imgBack.length == 0 ? "" : imgBack[0].file;
          values.img_left = imgLeft.length == 0 ? "" : imgLeft[0].file;
          values.img_front = imgFront.length == 0 ? "" : imgFront[0].file;
+         values.img_serial_number = imgSerialNumber.length == 0 ? "" : imgSerialNumber[0].file;
          values.img_circulation_card = imgCirculationCard.length == 0 ? "" : imgCirculationCard[0].file;
          values.img_insurance_policy = imgInsurancePolicy.length == 0 ? "" : imgInsurancePolicy[0].file;
          values.changePlates = changePlates ? 1 : 0;
@@ -184,6 +182,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
          setObjImg(formData.img_back, setImgBack);
          setObjImg(formData.img_left, setImgLeft);
          setObjImg(formData.img_front, setImgFront);
+         setObjImg(formData.img_serial_number, setImgSerialNumber);
          setObjImg(formData.img_circulation_card, setImgCirculationCard);
          setObjImg(formData.img_insurance_policy, setImgInsurancePolicy);
 
@@ -207,7 +206,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    };
 
    const validationSchema = Yup.object().shape({
-      stock_number: Yup.number("Solo números").required("Número de Inventario requerido"),
+      stock_number: Yup.number("Solo números").required("Número Económico requerido"),
       brand_id: Yup.number("Esta opción no es valida").min(1, "Esta opción no es valida").required("Marca requerida"),
       model_id: Yup.number("Esta opción no es valida").min(1, "Esta opción no es valida").required("Modelo requerido"),
       year: Yup.number("Solo números")
@@ -217,6 +216,8 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       registration_date: Yup.date("Fecha invalida").required("Fecha de registro requerida"),
       vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido"),
 
+      serial_number: Yup.string().trim().required("Número de Serie requerido"),
+
       circulation_card: Yup.string().trim().required("N° Tarjeta de Circulación requerida"),
       // img_circulation_card: Yup.string().trim().required("Póliza de Seguro requerida, carga el documento indicado"),
 
@@ -225,7 +226,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
 
       plates: Yup.string()
          .trim()
-         .matches(/^[A-Z]{3}-[0-9]{2}-[0-9]{2}$/, "Formato invalido: XXX-00-00")
+         // .matches(/^[A-Z]{3}-[0-9]{2}-[0-9]{2}$/, "Formato invalido: XXX-00-00")
          .required("Placas requeridas"),
       initial_date: Yup.date().required("Fecha de Alta de Placas requerida"),
       due_date: Yup.date().required("Fecha de Vencimiento de Placas requerida")
@@ -267,12 +268,12 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* No. Inventario */}
+                     {/* N° Económico */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
                            id="stock_number"
                            name="stock_number"
-                           label="No. Inventario *"
+                           label="N° Económico *"
                            type="number"
                            value={values.stock_number}
                            placeholder="Ingrese el número de inventario"
@@ -482,12 +483,52 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 
+                     {/* Número de Serie */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <TextField
+                           id="serial_number"
+                           name="serial_number"
+                           label="Número de Serie *"
+                           type="text"
+                           value={values.serial_number}
+                           placeholder="Inserte el número de serie"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "serial_number", true)}
+                           // inputProps={{ maxLength: 9 }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           // inputRef={(el) => (inputsRef.current[1] = el)}
+                           error={errors.serial_number && touched.serial_number}
+                           helperText={errors.serial_number && touched.serial_number && errors.serial_number}
+                        />
+                     </Grid>
+                     {/* Evidencia de Número de Serie */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_serial_number"
+                           label="Evidencia del Número de Serie"
+                           value={values.img_serial_number}
+                           filePreviews={imgSerialNumber}
+                           setFilePreviews={setImgSerialNumber}
+                           error={errors.img_serial_number}
+                           touched={touched.img_serial_number}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
+                     </Grid>
+
+                     {/* Separador */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
+
                      {/* N° Tarjeta de Circulación */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
                            id="circulation_card"
                            name="circulation_card"
-                           label="N° Tajeta de Circulación"
+                           label="N° Tarjeta de Circulación *"
                            type="text"
                            value={values.circulation_card}
                            placeholder="Inserte el número de tarjeta de circulación"
@@ -502,7 +543,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            helperText={errors.circulation_card && touched.circulation_card && errors.circulation_card}
                         />
                      </Grid>
-
                      {/* Tarjeta de Circulación */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
@@ -543,7 +583,6 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            helperText={errors.insurance_policy && touched.insurance_policy && errors.insurance_policy}
                         />
                      </Grid>
-
                      {/* Poliza de Seguro */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
