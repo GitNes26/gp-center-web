@@ -20,6 +20,7 @@ import ShowVehicleView from "../views/cove/ShowVehicleView/ShowVehicleView";
 import VehiclePlateContextProvider from "../context/VehiclePlateContext";
 import ServiceContextProvider from "../context/ServiceContext";
 import ServicesView from "../views/garage/ServicesView/ServicesView";
+import MenuContextProvider from "../context/MenuContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -28,7 +29,11 @@ const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default"
 
 const MainRoutes = {
    path: "/admin",
-   element: <MainLayout />,
+   element: (
+      <MenuContextProvider>
+         <MainLayout />
+      </MenuContextProvider>
+   ),
    children: [
       {
          index: true,
@@ -46,20 +51,20 @@ const MainRoutes = {
       //    path: "dashboard",
       //    element: <DashboardDefault />
       // },
-      {
-         path: "cove",
-         element: (
-            <VehicleContextProvider>
-               <VehiclePlateContextProvider>
-                  <ServiceContextProvider>
-                     <ShowVehicleView />
-                  </ServiceContextProvider>
-               </VehiclePlateContextProvider>
-            </VehicleContextProvider>
-         ),
-         // loader: loaderIndexShowVehicleView,
-         bgImage: true
-      },
+      // {
+      //    path: "cove",
+      //    element: (
+      //       <VehicleContextProvider>
+      //          <VehiclePlateContextProvider>
+      //             <ServiceContextProvider>
+      //                <ShowVehicleView />
+      //             </ServiceContextProvider>
+      //          </VehiclePlateContextProvider>
+      //       </VehicleContextProvider>
+      //    ),
+      //    // loader: loaderIndexShowVehicleView,
+      //    bgImage: true
+      // },
       {
          path: "usuarios",
          element: (

@@ -16,8 +16,11 @@ import { SET_MENU } from "../../config/store/actions";
 
 // assets
 import { IconChevronRight } from "@tabler/icons";
-import { useAuthContext } from "../../context/AuthContext";
+import { Axios, useAuthContext } from "../../context/AuthContext";
 import { useGlobalContext } from "../../context/GlobalContext";
+import { useMenuContext } from "../../context/MenuContext";
+import { useEffect, useState } from "react";
+import { useRedirectTo } from "../../hooks/useRedirectTo";
 // import AuthContextProvider, { useAuthContext } from "../../context/AuthContextFirebase";
 
 // styles
@@ -67,41 +70,131 @@ const MainLayout = () => {
    };
 
    const { auth } = useAuthContext();
+   // useRedirectTo(auth, "/login", false);
+
    const { cursorLoading } = useGlobalContext();
+   const { getIdByUrl } = useMenuContext();
+   const [permissionRead, setPermissionRead] = useState(false);
+   // const [currentPath, setCurrentPath] = useState(location.hash.split("#").reverse()[0]);
+   // let permissionRead = false;
+   console.log("el main");
 
-   return auth ? (
-      <Box sx={{ display: "flex" }}>
-         <CssBaseline />
-         {/* header */}
-         <AppBar
-            enableColorOnDark
-            position="fixed"
-            color="inherit"
-            elevation={5}
-            sx={{
-               bgcolor: theme.palette.background.default,
-               transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
-            }}
-         >
-            <Toolbar>
-               <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
-            </Toolbar>
-         </AppBar>
+   useEffect(() => {
+      const init = async () => {
+         if (auth === null) return;
+         console.log("auth.read", auth.read);
+         // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
+         const currentPath = location.hash.split("#").reverse()[0];
+         let permission = false;
+         let validatePermissions = false;
+         if (auth.read !== "todas") validatePermissions = true;
+         if (currentPath === "/admin") validatePermissions = false;
 
-         {/* drawer */}
-         <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+         if (validatePermissions) {
+            console.log("a validar", currentPath);
+            const dataPost = { url: currentPath };
+            const ajaxResponse = await getIdByUrl(dataPost);
+            // setPermissionRead(false);
+            if (ajaxResponse.result !== null) {
+               const pagesRead = auth.read.split(",");
+               console.log(ajaxResponse.result.id);
+               const idPage = ajaxResponse.result.id.toString();
+               console.log("que pasa?");
+               console.log(pagesRead);
+               // permissionRead = pagesRead.includes(idPage) ? true : false;
+               permission = pagesRead.includes(idPage) ? true : false;
+               // setPermissionRead(pagesRead.includes(idPage) ? true : false);
+            }
+         } else {
+            console.log("no necesita validacion");
+            // permissionRead = true;
+            permission = true;
+            // setPermissionRead(true);
+         }
+         console.log("el permission", permission);
+         if (permission) setPermissionRead(permission);
+         console.log("el permissionRead", permissionRead);
 
-         {/* main content */}
-         <Main theme={theme} open={leftDrawerOpened} className={cursorLoading && "cursor-loading"}>
-            {/* breadcrumb */}
-            <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
-            <Outlet />
-         </Main>
-         <Customization />
-      </Box>
-   ) : (
-      <Navigate to={"/login"} />
+         // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
+      };
+      init();
+   }, [permissionRead]);
+
+   return (
+      auth && (
+         <>
+            {permissionRead ? (
+               <>
+                  <Box sx={{ display: "flex" }}>
+                     <CssBaseline />
+                     {/* header */}
+                     <AppBar
+                        enableColorOnDark
+                        position="fixed"
+                        color="inherit"
+                        elevation={5}
+                        sx={{
+                           bgcolor: theme.palette.background.default,
+                           transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
+                        }}
+                     >
+                        <Toolbar>
+                           <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
+                        </Toolbar>
+                     </AppBar>
+
+                     {/* drawer */}
+                     <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+
+                     {/* main content */}
+                     <Main theme={theme} open={leftDrawerOpened} className={cursorLoading && "cursor-loading"}>
+                        {/* breadcrumb */}
+                        <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
+                        <Outlet />
+                     </Main>
+                     <Customization />
+                  </Box>
+               </>
+            ) : (
+               <p>Sin permiso</p>
+               // <Navigate to={"/login"} />
+            )}
+         </>
+      )
    );
+   // return auth && permissionRead ? (
+   //    <Box sx={{ display: "flex" }}>
+   //       <CssBaseline />
+   //       {/* header */}
+   //       <AppBar
+   //          enableColorOnDark
+   //          position="fixed"
+   //          color="inherit"
+   //          elevation={5}
+   //          sx={{
+   //             bgcolor: theme.palette.background.default,
+   //             transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
+   //          }}
+   //       >
+   //          <Toolbar>
+   //             <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
+   //          </Toolbar>
+   //       </AppBar>
+
+   //       {/* drawer */}
+   //       <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+
+   //       {/* main content */}
+   //       <Main theme={theme} open={leftDrawerOpened} className={cursorLoading && "cursor-loading"}>
+   //          {/* breadcrumb */}
+   //          <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
+   //          <Outlet />
+   //       </Main>
+   //       <Customization />
+   //    </Box>
+   // ) : (
+   //    <Navigate to={"/login"} />
+   // );
 };
 
 export default MainLayout;

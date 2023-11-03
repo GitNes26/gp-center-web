@@ -9,11 +9,10 @@ Axios.defaults.baseURL = import.meta.env.VITE_API;
 Axios.defaults.headers.common = {
    Accept: "application/json", //*/*
    "Content-Type": "application/json",
-   Authorization: "Bearer "
+   Authorization: `Bearer ${localStorage.getItem("token") || ""}`
 };
 
 export default function AuthContextProvider({ children }) {
-   // const [auth, setAuth] = useState(null);
    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || null);
 
    const register = async ({ username, email, password, role }) => {
@@ -80,6 +79,7 @@ export default function AuthContextProvider({ children }) {
          const token = localStorage.getItem("token") || null;
          Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
          setAuth(null);
+         location.hash = "/login";
          return data.data;
       } catch (error) {
          console.log(error);
@@ -95,9 +95,6 @@ export default function AuthContextProvider({ children }) {
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
-   // return <AuthContext.Provider value={{ auth, setAuth }}>{children}</AuthContext.Provider>;
    return <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout }}>{children}</AuthContext.Provider>;
 }
 export const useAuthContext = () => useContext(AuthContext);
-
-// export default AuthContextProvider;

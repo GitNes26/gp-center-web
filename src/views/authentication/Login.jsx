@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -22,7 +22,7 @@ import { useGlobalContext } from "../../context/GlobalContext";
 const Login = () => {
    const { auth } = useAuthContext();
    const { setLoading } = useGlobalContext();
-   useRedirectTo(auth, "/admin");
+   // useRedirectTo(auth, "/admin");
 
    useEffect(() => {
       setLoading(false);
@@ -31,7 +31,9 @@ const Login = () => {
    const theme = useTheme();
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
 
-   return (
+   return auth ? (
+      <Navigate to={"/admin"} />
+   ) : (
       <AuthWrapper>
          <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: "100vh" }}>
             <Grid item xs={12}>

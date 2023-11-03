@@ -33,10 +33,10 @@ export const router = createHashRouter([
             path: "login",
             element: <AuthLogin />
          },
-         {
-            path: "register",
-            element: <AuthRegister />
-         },
+         // {
+         //    path: "registro",
+         //    element: <AuthRegister />
+         // },
          MainRoutes
       ]
    }

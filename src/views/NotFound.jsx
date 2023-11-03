@@ -5,14 +5,15 @@ import { HomeTwoTone } from "@mui/icons-material";
 import { useEffect } from "react";
 import { useGlobalContext } from "../context/GlobalContext";
 import { Box } from "@mui/system";
+import ImgNotFound from "../assets/images/404.jpg";
 
 const NotFound = () => {
    const { setLoading, setLoadingAction } = useGlobalContext();
 
    const error = useRouteError();
-   console.log(error);
+   // console.log(error);
    let errorText = "",
-      srcImg = "/src/assets/images/404.jpg";
+      srcImg = ImgNotFound;
 
    useEffect(() => {
       setLoading(false);
@@ -21,14 +22,14 @@ const NotFound = () => {
    switch (error.status) {
       case 404:
          errorText = "¡La página que está buscando fue movida, eliminada, renombrada o podría no existir nunca!";
-         srcImg = "/src/assets/images/404.jpg";
+         srcImg = ImgNotFound;
          break;
       case 403:
          break;
 
       default:
          errorText = "¡La página que está buscando fue movida, eliminada, renombrada o podría no existir nunca!";
-         srcImg = "/src/assets/images/404.jpg";
+         srcImg = ImgNotFound;
          break;
    }
 

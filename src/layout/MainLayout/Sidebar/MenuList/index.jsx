@@ -4,10 +4,18 @@ import { Typography } from "@mui/material";
 // project imports
 import NavGroup from "./NavGroup";
 import menuItem from "./menu-items";
+import { useAuthContext } from "../../../../context/AuthContext";
+import { useEffect } from "react";
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
+   const { auth } = useAuthContext();
+   console.log(auth);
+   useEffect(() => {
+      console.log("el useEffect de MenuList");
+   });
+
    const navItems = menuItem.items.map((item) => {
       switch (item.type) {
          case "group":
