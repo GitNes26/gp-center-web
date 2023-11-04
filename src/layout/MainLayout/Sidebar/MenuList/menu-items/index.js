@@ -24,6 +24,7 @@ if (auth !== null) {
       const item = {
          id: hm.id,
          title: hm.menu,
+         caption: hm.caption,
          type: hm.type,
          children: []
       };

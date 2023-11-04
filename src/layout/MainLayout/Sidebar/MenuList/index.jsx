@@ -3,20 +3,23 @@ import { Typography } from "@mui/material";
 
 // project imports
 import NavGroup from "./NavGroup";
-import menuItem from "./menu-items";
+// import menuItem from "./menu-items";
 import { useAuthContext } from "../../../../context/AuthContext";
 import { useEffect } from "react";
+import { useMenuContext } from "../../../../context/MenuContext";
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
    const { auth } = useAuthContext();
-   console.log(auth);
+   const { menuItems, showMyMenus } = useMenuContext();
+   // console.log(auth);
    useEffect(() => {
-      console.log("el useEffect de MenuList");
-   });
+      // console.log("el useEffect de MenuList", menuItems);
+      showMyMenus();
+   }, [auth]);
 
-   const navItems = menuItem.items.map((item) => {
+   const navItems = menuItems.items.map((item) => {
       switch (item.type) {
          case "group":
             return <NavGroup key={item.id} item={item} />;

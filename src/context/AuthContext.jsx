@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import sAlert from "../utils/sAlert";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -14,6 +15,7 @@ Axios.defaults.headers.common = {
 
 export default function AuthContextProvider({ children }) {
    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || null);
+   const [permissionRead, setPermissionRead] = useState(false);
 
    const register = async ({ username, email, password, role }) => {
       try {
@@ -86,6 +88,56 @@ export default function AuthContextProvider({ children }) {
       }
    };
 
+   const validateAccessPage = async () => {
+      console.log("validateAccessPage->el auth", auth);
+      try {
+         if (auth === null) {
+            console.log("al login");
+            // const navigate = useNavigate();
+            // navigate("/login");
+            window.location.hash = "/login";
+         }
+         console.log("auth.read", auth.read);
+         // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
+         const currentPath = location.hash.split("#").reverse()[0];
+         console.log("currentPath", currentPath);
+         let permission = false;
+         let validatePermissions = false;
+         if (auth.read !== "todas") validatePermissions = true;
+         if (currentPath === "/admin") validatePermissions = false;
+
+         if (validatePermissions) {
+            console.log("a validar", currentPath);
+            const dataPost = { url: currentPath };
+            const ajaxResponse = await getIdByUrl(dataPost);
+            // setPermissionRead(false);
+            if (ajaxResponse.result !== null) {
+               const pagesRead = auth.read.split(",");
+               console.log(ajaxResponse.result.id);
+               const idPage = ajaxResponse.result.id.toString();
+               console.log("que pasa?");
+               console.log(pagesRead);
+               // permissionRead = pagesRead.includes(idPage) ? true : false;
+               permission = pagesRead.includes(idPage) ? true : false;
+               // setPermissionRead(pagesRead.includes(idPage) ? true : false);
+            }
+         } else {
+            console.log("no necesita validacion");
+            // permissionRead = true;
+            permission = true;
+            // setPermissionRead(true);
+         }
+         console.log("el permission", permission);
+         if (permission) setPermissionRead(permission);
+         console.log("el permissionRead", permissionRead);
+         if (!permission) window.location.hash = "/admin";
+
+         // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
    // useEffect(() => {
    //    // console.log("el useEffect de AuthContext");
    //    // const asyncCall = async () => await loggedInCheck();
@@ -95,6 +147,6 @@ export default function AuthContextProvider({ children }) {
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
-   return <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout }}>{children}</AuthContext.Provider>;
+   return <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage }}>{children}</AuthContext.Provider>;
 }
 export const useAuthContext = () => useContext(AuthContext);

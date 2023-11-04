@@ -275,6 +275,28 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                     {/* Rol */}
+                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Select2Component
+                           idName={"role_id"}
+                           label={"Rol *"}
+                           valueLabel={values.role}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"role"}
+                           placeholder={"Selecciona una opción..."}
+                           options={dataRoles}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.role_id}
+                           touched={touched.role_id}
+                           disabled={false}
+                        />
+                     </Grid>
                      {/* Nombre de Usuario */}
                      <Grid xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
@@ -388,29 +410,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               </Box>
                            </FormControl>
                         )}
-                     </Grid>
-
-                     {/* Rol */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <Select2Component
-                           idName={"role_id"}
-                           label={"Rol *"}
-                           valueLabel={values.role}
-                           values={values}
-                           formData={formData}
-                           setFormData={setFormData}
-                           formDataLabel={"role"}
-                           placeholder={"Selecciona una opción..."}
-                           options={dataRoles}
-                           fullWidth={true}
-                           handleChange={handleChange}
-                           handleChangeValueSuccess={handleChangeRole}
-                           setValues={setValues}
-                           handleBlur={handleBlur}
-                           error={errors.role_id}
-                           touched={touched.role_id}
-                           disabled={false}
-                        />
                      </Grid>
 
                      {!isAdmin && (

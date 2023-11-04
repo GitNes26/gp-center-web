@@ -56,7 +56,7 @@ const NavItem = ({ item, level }) => {
 
       setTimeout(() => {
          setLoading(false);
-      }, 20000);
+      }, 8000);
    };
 
    // active menu item on page load

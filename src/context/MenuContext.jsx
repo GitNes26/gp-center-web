@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Axios } from "./AuthContext";
+import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+import * as tablerIcons from "@tabler/icons";
 
 const MenuContext = createContext();
 
@@ -18,6 +19,7 @@ const formDataInitialState = {
 };
 
 export default function MenuContextProvider({ children }) {
+   const { auth } = useAuthContext();
    const singularName = "Menú"; //Escribirlo siempre letra Capital
    const pluralName = "Menús"; //Escribirlo siempre letra Capital
 
@@ -27,6 +29,7 @@ export default function MenuContextProvider({ children }) {
    const [menus, setMenus] = useState([]);
    const [menu, setMenu] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const [menuItems, setMenuItems] = useState({ items: [] });
 
    const resetFormData = () => {
       try {
@@ -65,6 +68,53 @@ export default function MenuContextProvider({ children }) {
          // console.log(res);
 
          return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
+   const showMyMenus = async () => {
+      let res = CorrectRes;
+      try {
+         if (auth !== null) {
+            const pages_read = auth.read;
+            const { data } = await Axios.get(`/menus/MenusByRole/${pages_read}`);
+            const menus = data.data.result;
+            // console.log("menus", menus);
+
+            const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
+            // console.log("HeaderMenus", HeaderMenus);
+            const items = [];
+            HeaderMenus.map((hm) => {
+               const item = {
+                  id: hm.id,
+                  title: hm.menu,
+                  caption: hm.caption,
+                  type: hm.type,
+                  children: []
+               };
+
+               const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
+               // console.log("childrenMenus", childrenMenus);
+               childrenMenus.map((iCh) => {
+                  const child = {
+                     id: iCh.id,
+                     title: iCh.menu,
+                     type: iCh.type,
+                     url: iCh.url,
+                     icon: tablerIcons[`${iCh.icon}`]
+                  };
+                  item.children.push(child);
+               });
+
+               items.push(item);
+            });
+            // console.log("items", items);
+            setMenuItems({ items: items });
+         }
       } catch (error) {
          console.log(error);
          res.message = error;
@@ -205,6 +255,8 @@ export default function MenuContextProvider({ children }) {
             showMenu,
             MenusByRole,
             getIdByUrl,
+            showMyMenus,
+            menuItems,
             createMenu,
             updateMenu,
             deleteMenu,

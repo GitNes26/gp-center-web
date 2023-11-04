@@ -69,17 +69,19 @@ const MainLayout = () => {
       dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
    };
 
-   const { auth } = useAuthContext();
-   // useRedirectTo(auth, "/login", false);
+   console.log("el index de MainLayout");
+   const { auth, permissionRead, validateAccessPage } = useAuthContext();
+   // useRedirectTo(auth, "/login");
 
    const { cursorLoading } = useGlobalContext();
    const { getIdByUrl } = useMenuContext();
-   const [permissionRead, setPermissionRead] = useState(false);
+   // const [permissionRead, setPermissionRead] = useState(false);
    // const [currentPath, setCurrentPath] = useState(location.hash.split("#").reverse()[0]);
    // let permissionRead = false;
-   console.log("el main");
+   console.log("el mainLayOut");
 
    useEffect(() => {
+      validateAccessPage();
       const init = async () => {
          if (auth === null) return;
          console.log("auth.read", auth.read);
@@ -117,13 +119,13 @@ const MainLayout = () => {
 
          // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
       };
-      init();
-   }, [permissionRead]);
+      // init();
+   }, []);
 
    return (
       auth && (
          <>
-            {permissionRead ? (
+            {permissionRead && (
                <>
                   <Box sx={{ display: "flex" }}>
                      <CssBaseline />
@@ -155,10 +157,10 @@ const MainLayout = () => {
                      <Customization />
                   </Box>
                </>
-            ) : (
-               <p>Sin permiso</p>
-               // <Navigate to={"/login"} />
             )}
+            {/* // : ( // <p>Sin permiso</p>
+            // // <Navigate to={"/login"} />
+            // )} */}
          </>
       )
    );

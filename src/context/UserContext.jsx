@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Axios } from "./AuthContext";
+import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
@@ -57,6 +57,8 @@ const userInitialState = {
 };
 
 export default function UserContextProvider({ children }) {
+   const { auth } = useAuthContext();
+
    const singularName = "Usuario"; //Escribirlo siempre letra Capital
    const pluralName = "Usuarios"; //Escribirlo siempre letra Capital
 
@@ -84,42 +86,10 @@ export default function UserContextProvider({ children }) {
       }
    };
 
-   const fillFormData = (values) => {
-      try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.username = values.username;
-         newData.email = values.email;
-         // newData.password = values.password;
-         newData.role_id = values.role_id;
-         newData.phone = values.phone;
-         newData.license_number = values.license_number;
-         newData.license_due_date = values.license_due_date;
-         newData.payroll_number = values.payroll_number;
-         newData.department_id = values.department_id;
-         newData.name = values.name;
-         newData.paternal_last_name = values.paternal_last_name;
-         newData.maternal_last_name = values.maternal_last_name;
-         newData.community_id = values.community_id;
-         newData.street = values.street;
-         newData.num_ext = values.num_ext;
-         newData.num_int = values.num_int;
-
-         // newData.zip = values.zip;
-         // newData.state = values.state;
-         // newData.city = values.city;
-         // newData.colony = values.colony;
-         setFormData(newData);
-      } catch (error) {
-         console.log("Error en fillFormData:", error);
-         Toast.Error(error);
-      }
-   };
-
    const getUsers = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/users`);
+         const axiosData = await Axios.get(`/users/${auth.role_id}`);
          res.result.users = axiosData.data.data.result;
          setUsers(axiosData.data.data.result);
          // console.log("users", users);
@@ -140,7 +110,6 @@ export default function UserContextProvider({ children }) {
          res = axiosData.data.data;
          setUser(res.result);
          setFormData(res.result);
-         // fillFormData(res.result);
          // console.log(res);
 
          return res;
