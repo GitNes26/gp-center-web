@@ -139,9 +139,9 @@ export default function AuthContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    // console.log("el useEffect de AuthContext");
-   //    // const asyncCall = async () => await loggedInCheck();
-   //    // asyncCall();
+   //    console.log("el useEffect de AuthContext");
+   //    const asyncCall = async () => await loggedInCheck();
+   //    asyncCall();
    // }, []);
 
    // console.log("el auth en el context: ", auth);

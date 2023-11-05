@@ -7,46 +7,46 @@ import { Axios } from "../../../../../context/AuthContext";
 
 // ==============================|| MENU ITEMS ||============================== //
 
-const auth = JSON.parse(localStorage.getItem("auth"));
+// const auth = JSON.parse(localStorage.getItem("auth"));
 const menuItems = {
    items: []
 };
-if (auth !== null) {
-   const pages_read = auth.read;
-   const { data } = await Axios.get(`/menus/MenusByRole/${pages_read}`);
-   const menus = data.data.result;
-   console.log("menus", menus);
+// if (auth !== null) {
+//    const pages_read = auth.read;
+//    const { data } = await Axios.get(`/menus/MenusByRole/${pages_read}`);
+//    const menus = data.data.result;
+//    console.log("menus", menus);
 
-   const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
-   // console.log("HeaderMenus", HeaderMenus);
-   const items = [];
-   HeaderMenus.map((hm) => {
-      const item = {
-         id: hm.id,
-         title: hm.menu,
-         caption: hm.caption,
-         type: hm.type,
-         children: []
-      };
+//    const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
+//    // console.log("HeaderMenus", HeaderMenus);
+//    const items = [];
+//    HeaderMenus.map((hm) => {
+//       const item = {
+//          id: hm.id,
+//          title: hm.menu,
+//          caption: hm.caption,
+//          type: hm.type,
+//          children: []
+//       };
 
-      const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
-      // console.log(childrenMenus);
-      childrenMenus.map((iCh) => {
-         const child = {
-            id: iCh.id,
-            title: iCh.menu,
-            type: iCh.type,
-            url: iCh.url,
-            icon: tablerIcons[`${iCh.icon}`]
-         };
-         item.children.push(child);
-      });
+//       const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
+//       // console.log(childrenMenus);
+//       childrenMenus.map((iCh) => {
+//          const child = {
+//             id: iCh.id,
+//             title: iCh.menu,
+//             type: iCh.type,
+//             url: iCh.url,
+//             icon: tablerIcons[`${iCh.icon}`]
+//          };
+//          item.children.push(child);
+//       });
 
-      items.push(item);
-   });
-   // console.log("items", items);
-   menuItems.items = items;
-}
+//       items.push(item);
+//    });
+//    // console.log("items", items);
+//    menuItems.items = items;
+// }
 
 // const menuItems = {
 //    items: [
@@ -208,6 +208,6 @@ if (auth !== null) {
 //    ]
 //    // items: [dashboard, catalogs]
 // };
-console.log("menuItems", menuItems);
+// console.log("menuItems", menuItems);
 
 export default menuItems;

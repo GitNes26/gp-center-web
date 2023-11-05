@@ -19,7 +19,7 @@ const formDataInitialState = {
 };
 
 export default function MenuContextProvider({ children }) {
-   const { auth } = useAuthContext();
+   const { auth, logout } = useAuthContext();
    const singularName = "Menú"; //Escribirlo siempre letra Capital
    const pluralName = "Menús"; //Escribirlo siempre letra Capital
 
@@ -45,6 +45,8 @@ export default function MenuContextProvider({ children }) {
          // setMenu([]);
          let res = CorrectRes;
          const axiosData = await Axios.post(`/menus/getIdByUrl`, dataPost);
+         console.log("axiosData", axiosData);
+
          res = axiosData.data.data;
          // console.log(res);
 
@@ -61,6 +63,8 @@ export default function MenuContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/menus/MenusByRole/${role_id}`);
+         // console.log("axiosData", axiosData.status);
+
          res = axiosData.data.data;
          // await setMenu(res.result);
          setMenu(res.result);
@@ -81,8 +85,9 @@ export default function MenuContextProvider({ children }) {
       try {
          if (auth !== null) {
             const pages_read = auth.read;
-            const { data } = await Axios.get(`/menus/MenusByRole/${pages_read}`);
-            const menus = data.data.result;
+            const axiosResponse = await Axios.get(`/menus/MenusByRole/${pages_read}`);
+            console.log("axiosResponse", axiosResponse);
+            const menus = axiosResponse.data.data.result;
             // console.log("menus", menus);
 
             const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
@@ -116,7 +121,10 @@ export default function MenuContextProvider({ children }) {
             setMenuItems({ items: items });
          }
       } catch (error) {
-         console.log(error);
+         if (error.response.status === 401) {
+            logout();
+            console.log("no estoy aytasd");
+         }
          res.message = error;
          res.alert_text = error;
          Toast.Error(error);

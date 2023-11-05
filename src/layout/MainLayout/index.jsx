@@ -16,12 +16,9 @@ import { SET_MENU } from "../../config/store/actions";
 
 // assets
 import { IconChevronRight } from "@tabler/icons";
-import { Axios, useAuthContext } from "../../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import { useGlobalContext } from "../../context/GlobalContext";
-import { useMenuContext } from "../../context/MenuContext";
-import { useEffect, useState } from "react";
-import { useRedirectTo } from "../../hooks/useRedirectTo";
-// import AuthContextProvider, { useAuthContext } from "../../context/AuthContextFirebase";
+import { useEffect } from "react";
 
 // styles
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
@@ -69,57 +66,14 @@ const MainLayout = () => {
       dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
    };
 
-   console.log("el index de MainLayout");
+   // console.log("el index de MainLayout");
    const { auth, permissionRead, validateAccessPage } = useAuthContext();
    // useRedirectTo(auth, "/login");
 
    const { cursorLoading } = useGlobalContext();
-   const { getIdByUrl } = useMenuContext();
-   // const [permissionRead, setPermissionRead] = useState(false);
-   // const [currentPath, setCurrentPath] = useState(location.hash.split("#").reverse()[0]);
-   // let permissionRead = false;
-   console.log("el mainLayOut");
 
    useEffect(() => {
       validateAccessPage();
-      const init = async () => {
-         if (auth === null) return;
-         console.log("auth.read", auth.read);
-         // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
-         const currentPath = location.hash.split("#").reverse()[0];
-         let permission = false;
-         let validatePermissions = false;
-         if (auth.read !== "todas") validatePermissions = true;
-         if (currentPath === "/admin") validatePermissions = false;
-
-         if (validatePermissions) {
-            console.log("a validar", currentPath);
-            const dataPost = { url: currentPath };
-            const ajaxResponse = await getIdByUrl(dataPost);
-            // setPermissionRead(false);
-            if (ajaxResponse.result !== null) {
-               const pagesRead = auth.read.split(",");
-               console.log(ajaxResponse.result.id);
-               const idPage = ajaxResponse.result.id.toString();
-               console.log("que pasa?");
-               console.log(pagesRead);
-               // permissionRead = pagesRead.includes(idPage) ? true : false;
-               permission = pagesRead.includes(idPage) ? true : false;
-               // setPermissionRead(pagesRead.includes(idPage) ? true : false);
-            }
-         } else {
-            console.log("no necesita validacion");
-            // permissionRead = true;
-            permission = true;
-            // setPermissionRead(true);
-         }
-         console.log("el permission", permission);
-         if (permission) setPermissionRead(permission);
-         console.log("el permissionRead", permissionRead);
-
-         // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
-      };
-      // init();
    }, []);
 
    return (
