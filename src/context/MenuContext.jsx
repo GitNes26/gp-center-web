@@ -68,7 +68,6 @@ export default function MenuContextProvider({ children }) {
          res = axiosData.data.data;
          // await setMenu(res.result);
          setMenu(res.result);
-         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -86,7 +85,7 @@ export default function MenuContextProvider({ children }) {
          if (auth !== null) {
             const pages_read = auth.read;
             const axiosResponse = await Axios.get(`/menus/MenusByRole/${pages_read}`);
-            console.log("axiosResponse", axiosResponse);
+            // console.log("axiosResponse", axiosResponse);
             const menus = axiosResponse.data.data.result;
             // console.log("menus", menus);
 
@@ -123,7 +122,6 @@ export default function MenuContextProvider({ children }) {
       } catch (error) {
          if (error.response.status === 401) {
             logout();
-            console.log("no estoy aytasd");
          }
          res.message = error;
          res.alert_text = error;

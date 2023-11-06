@@ -1,7 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import sAlert from "../utils/sAlert";
-import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -72,8 +71,17 @@ export default function AuthContextProvider({ children }) {
       }
    };
 
-   const logout = async () => {
+   const logout = async (status = null) => {
       try {
+         if (status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("auth");
+            const token = localStorage.getItem("token") || null;
+            Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+            setAuth(null);
+            location.hash = "/login";
+            return;
+         }
          const { data } = await Axios.get(`/logout/${auth.id}`);
 
          localStorage.removeItem("token");
@@ -89,52 +97,46 @@ export default function AuthContextProvider({ children }) {
    };
 
    const validateAccessPage = async () => {
-      console.log("validateAccessPage->el auth", auth);
+      // console.log("validateAccessPage->el auth", auth);
       try {
          if (auth === null) {
-            console.log("al login");
-            // const navigate = useNavigate();
-            // navigate("/login");
+            // console.log("al login");
             window.location.hash = "/login";
+            return;
          }
-         console.log("auth.read", auth.read);
+         // console.log("auth.read", auth.read);
          // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
          const currentPath = location.hash.split("#").reverse()[0];
-         console.log("currentPath", currentPath);
+         // console.log("currentPath", currentPath);
          let permission = false;
          let validatePermissions = false;
          if (auth.read !== "todas") validatePermissions = true;
          if (currentPath === "/admin") validatePermissions = false;
 
          if (validatePermissions) {
-            console.log("a validar", currentPath);
             const dataPost = { url: currentPath };
-            const ajaxResponse = await getIdByUrl(dataPost);
-            // setPermissionRead(false);
-            if (ajaxResponse.result !== null) {
+            const { data } = await Axios.post(`/menus/getIdByUrl`, dataPost);
+            // console.log("data/getIdByUrl", data);
+            if (data.data.result !== null) {
                const pagesRead = auth.read.split(",");
-               console.log(ajaxResponse.result.id);
-               const idPage = ajaxResponse.result.id.toString();
-               console.log("que pasa?");
-               console.log(pagesRead);
-               // permissionRead = pagesRead.includes(idPage) ? true : false;
+               // console.log(data.data.result.id);
+               const idPage = data.data.result.id.toString();
+               // console.log(pagesRead);
                permission = pagesRead.includes(idPage) ? true : false;
-               // setPermissionRead(pagesRead.includes(idPage) ? true : false);
             }
          } else {
-            console.log("no necesita validacion");
-            // permissionRead = true;
+            // console.log("no necesita validacion");
             permission = true;
-            // setPermissionRead(true);
          }
-         console.log("el permission", permission);
+         // console.log("el permission", permission);
          if (permission) setPermissionRead(permission);
-         console.log("el permissionRead", permissionRead);
+         // console.log("el permissionRead", permissionRead);
          if (!permission) window.location.hash = "/admin";
 
          // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
       } catch (error) {
          console.log(error);
+         if (error.response.status === 401) logout(error.response.status);
       }
    };
 

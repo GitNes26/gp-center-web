@@ -74,7 +74,7 @@ const MainLayout = () => {
 
    useEffect(() => {
       validateAccessPage();
-   }, []);
+   });
 
    return (
       auth && (
