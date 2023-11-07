@@ -27,7 +27,7 @@ const muiCache = createCache({
 const UserTable = () => {
    const [responsive, setResponsive] = useState("vertical");
    const [tableBodyHeight, setTableBodyHeight] = useState("61vh");
-   const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("58vh");
+   const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("75vh"); //58vh
    const [searchBtn, setSearchBtn] = useState(true);
    const [downloadBtn, setDownloadBtn] = useState(true);
    const [printBtn, setPrintBtn] = useState(true);

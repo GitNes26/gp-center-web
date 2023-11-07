@@ -42,7 +42,7 @@ export default function AuthContextProvider({ children }) {
          });
          // console.log("data", data);
 
-         if (data.data.status_code != 200 && !data.data.result.token) return alert("algo paso");
+         if (data.data.result.token === null) sAlert.Customizable(data.data.alert_text, data.data.alert_icon, true, false);
          localStorage.setItem("token", data.data.result.token);
          localStorage.setItem("auth", JSON.stringify(data.data.result.user));
          // setAuth(data.data.result.auth);
@@ -82,7 +82,7 @@ export default function AuthContextProvider({ children }) {
             location.hash = "/login";
             return;
          }
-         const { data } = await Axios.get(`/logout/${auth.id}`);
+         const { data } = await Axios.get(`/logout`);
 
          localStorage.removeItem("token");
          localStorage.removeItem("auth");
@@ -93,6 +93,12 @@ export default function AuthContextProvider({ children }) {
          return data.data;
       } catch (error) {
          console.log(error);
+         localStorage.removeItem("token");
+         localStorage.removeItem("auth");
+         const token = localStorage.getItem("token") || null;
+         Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+         setAuth(null);
+         location.hash = "/login";
       }
    };
 
@@ -108,8 +114,8 @@ export default function AuthContextProvider({ children }) {
          // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
          const currentPath = location.hash.split("#").reverse()[0];
          // console.log("currentPath", currentPath);
-         let permission = false;
-         let validatePermissions = false;
+         let permission = false; // tengo permiso para estar en esta pagina?
+         let validatePermissions = false; // voy a validar el permiso??? es decir, si estoy auth y no tengo en "read"=todas
          if (auth.read !== "todas") validatePermissions = true;
          if (currentPath === "/admin") validatePermissions = false;
 
@@ -118,6 +124,7 @@ export default function AuthContextProvider({ children }) {
             const { data } = await Axios.post(`/menus/getIdByUrl`, dataPost);
             // console.log("data/getIdByUrl", data);
             if (data.data.result !== null) {
+               if (auth.read === undefined) return logout(401);
                const pagesRead = auth.read.split(",");
                // console.log(data.data.result.id);
                const idPage = data.data.result.id.toString();

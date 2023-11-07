@@ -22,6 +22,8 @@
     "@mui/x-date-pickers": "^6.16.1",
     "@tabler/icons": "^1.119.0",
     "@tabler/icons-react": "^2.38.0",
+    "ag-grid-community": "^30.2.1",
+    "ag-grid-react": "^30.2.1",
     "apexcharts": "^3.41.1",
     "axios": "^1.4.0",
     "dayjs": "^1.11.10",

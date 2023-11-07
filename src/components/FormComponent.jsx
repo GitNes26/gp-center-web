@@ -474,7 +474,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         {textBtnSubmit}
                      </LoadingButton>
                      <ButtonGroup variant="outlined" fullWidth>
-                        <Button
+                        {/* <Button
                            type="reset"
                            variant="outlined"
                            color="secondary"
@@ -484,7 +484,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                            onClick={() => handleReset(resetForm, setFieldValue, values.id, values.code)}
                         >
                            LIMPIAR
-                        </Button>
+                        </Button> */}
                         <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
                            CANCELAR
                         </Button>

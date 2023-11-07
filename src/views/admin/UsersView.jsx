@@ -16,6 +16,7 @@ import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../utils/sAlert";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
+import DataTableComponent from "../../components/DataTableComponent";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -24,6 +25,15 @@ const Item = styled(Paper)(({ theme }) => ({
    textAlign: "center",
    color: theme.palette.text.secondary
 }));
+
+const columnDefs = [
+   { field: "Usuario", filter: true },
+   { field: "Role", filter: true },
+   { field: "Información personal", filter: true },
+   { field: "Dirección", filter: true },
+   { field: "Otra Info", filter: true }
+   // { field: "Acciones", filter: true }
+];
 
 const UsersView = () => {
    const { result } = useLoaderData();
@@ -61,12 +71,13 @@ const UsersView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         <MainCard /* title="Listado Escuelas" */>
-            <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-               <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-            </Button>
-            <UserTable />
-         </MainCard>
+         {/* <MainCard > */}
+         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
+         </Button>
+         {/* <DataTableComponent /> */}
+         <UserTable />
+         {/* </MainCard> */}
 
          <UserForm dataRoles={result.roles} dataDepartments={result.departments} />
       </>

@@ -121,7 +121,14 @@ export default function MenuContextProvider({ children }) {
          }
       } catch (error) {
          if (error.response.status === 401) {
-            logout();
+            console.log("no AUUUUTH!");
+            localStorage.removeItem("token");
+            localStorage.removeItem("auth");
+            const token = localStorage.getItem("token") || null;
+            Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+            setAuth(null);
+            location.hash = "/login";
+            return;
          }
          res.message = error;
          res.alert_text = error;

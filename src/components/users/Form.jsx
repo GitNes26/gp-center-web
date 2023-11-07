@@ -71,11 +71,12 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
-   const handleChangeRole = (value2, setValues) => {
+   const handleChangeRole = (value2, setFieldValue) => {
       try {
+         // console.log("amanas", value2);
          setIsAdmin(false);
          setIsGarage(false);
-         const role_id = Number(formData.role_id);
+         const role_id = Number(value2.id);
          setIsAdmin(role_id <= 2 ? true : false);
          setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
@@ -613,7 +614,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         {textBtnSubmit}
                      </LoadingButton>
                      <ButtonGroup variant="outlined" fullWidth>
-                        <Button
+                        {/* <Button
                            type="reset"
                            variant="outlined"
                            color="secondary"
@@ -623,7 +624,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            onClick={() => handleReset(resetForm, setFieldValue, values.id)}
                         >
                            LIMPIAR
-                        </Button>
+                        </Button> */}
                         <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
                            CANCELAR
                         </Button>

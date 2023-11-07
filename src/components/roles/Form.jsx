@@ -898,7 +898,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         {textBtnSubmit}
                      </LoadingButton>
                      <ButtonGroup variant="outlined" fullWidth>
-                        <Button
+                        {/* <Button
                            type="reset"
                            variant="outlined"
                            color="secondary"
@@ -908,7 +908,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            onClick={() => handleReset(resetForm, setFieldValue, values.id)}
                         >
                            LIMPIAR
-                        </Button>
+                        </Button> */}
                         <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
                            CANCELAR
                         </Button>
