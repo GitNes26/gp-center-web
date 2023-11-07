@@ -26,6 +26,9 @@ const Login = () => {
 
    useEffect(() => {
       setLoading(false);
+      setTimeout(() => {
+         setLoading(false);
+      }, 5000);
    }, []);
 
    const theme = useTheme();
