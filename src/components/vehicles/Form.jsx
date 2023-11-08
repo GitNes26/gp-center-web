@@ -274,7 +274,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            id="stock_number"
                            name="stock_number"
                            label="N° Económico *"
-                           type="number"
+                           type="text"
                            value={values.stock_number}
                            placeholder="Ingrese el número de inventario"
                            onChange={handleChange}
