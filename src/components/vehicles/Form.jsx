@@ -206,7 +206,7 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    };
 
    const validationSchema = Yup.object().shape({
-      stock_number: Yup.number("Solo números").required("Número Económico requerido"),
+      stock_number: Yup.string().trim().required("Número Económico requerido"),
       brand_id: Yup.number("Esta opción no es valida").min(1, "Esta opción no es valida").required("Marca requerida"),
       model_id: Yup.number("Esta opción no es valida").min(1, "Esta opción no es valida").required("Modelo requerido"),
       year: Yup.number("Solo números")
