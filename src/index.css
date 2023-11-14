@@ -234,11 +234,24 @@
       max-width: 50vw;
    }
 }
+@media (max-width: 1460px) {
+   .vehicle-container {
+      display: none;
+   }
+}
 @media (max-width: 1040px) {
    .form,
    .drawer-max-width {
       max-width: 80vw;
    }
+   .brand-container {
+      display: none;
+   }
+}
+@media (max-width: 899px) {
+   /* .brand-container {
+      display: none;
+   } */
 }
 @media (max-width: 420px) {
    .form,

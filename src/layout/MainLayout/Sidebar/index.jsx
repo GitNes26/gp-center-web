@@ -32,7 +32,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
             <PerfectScrollbar
                component="div"
                style={{
-                  height: !matchUpMd ? "calc(100% - 56px)" : "calc(100% - 68px)",
+                  height: "100px", //!matchUpMd ? "calc(100% - 8px)" : "calc(100% - 68px)",
                   paddingLeft: "16px",
                   paddingRight: "16px"
                }}
