@@ -285,6 +285,7 @@ export default function DataTableComponent({ columns, data, headerFilters = true
    };
 
    const header = (
+      // <div className="flex align-items-center justify-content-end gap-2">
       <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between", alignItems: "center" }}>
          <Tooltip title="Exportar a Excel" placement="top">
             <Button type="button" variant="text" color="success" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportExcel}>
@@ -302,16 +303,28 @@ export default function DataTableComponent({ columns, data, headerFilters = true
                <i className="pi pi-refresh"></i>
             </Button>
          </Tooltip>
+         {/* <span className="p-input-icon-left">
+            <IconSearch />
+            <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscador general..." />
+         </span> */}
          <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
+         {rowEdit && (
+            <Button variant="contained" onClick={() => addRow()}>
+               <AddCircleOutlineOutlined sx={{ mr: 0.2 }} />
+               AGREGAR
+            </Button>
+         )}
       </Box>
    );
 
    useEffect(() => {
       console.log("la data", data);
-
+      const columnActionsExist = columns.find((c) => c.field === "actions");
+      if (!columnActionsExist && !rowEdit) columns.push({ field: "actions", header: "Acciones", sortable: false, functionEdit: null, body: null, filter: false });
+      console.log("lsa columns", columns);
       // if (columnActionsExist) {
       //    console.log("holaaaaa", data);
       //    const datas = data.map((obj) => {
@@ -364,19 +377,7 @@ export default function DataTableComponent({ columns, data, headerFilters = true
                      footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                   ></Column>
                ))}
-               <Column
-                  key={"index"}
-                  field={"actions"}
-                  header={"Acciones"}
-                  headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-                  filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-                  // editor={(options) => col.functionEdit(options)}
-                  sortable={false}
-                  // body={col.body}
-                  filter={false}
-                  style={{ width: "15%" }}
-                  footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-               ></Column>
+               {rowEdit && <Column rowEditor headerStyle={{ width: "10%", minWidth: "8rem" }} bodyStyle={{ textAlign: "center" }}></Column>}
             </DataTable>
          </Card>
       </div>
