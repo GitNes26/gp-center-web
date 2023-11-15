@@ -134,33 +134,69 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                               Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
                            </p>
 
-                           {/* Vista previa de la imagen */}
+                           {/* Vista previa de la imagen o PDF */}
                            <aside className="file-preview">
                               {filePreviews.map((preview) => (
                                  <div key={preview.file.name} className="preview-item">
-                                    <img className="preview-img" src={preview.dataURL} alt={preview.file.name} />
-                                    {preview.file.name !== "undefined" && (
-                                       <img
-                                          width={"auto"}
-                                          src={preview.dataURL}
-                                          alt={preview.file.name}
-                                          srcset=""
-                                          className={`tooltip_imagen ${ttShow}`}
-                                          onMouseEnter={handleMouseEnter}
-                                          onMouseLeave={handleMouseLeave}
-                                       />
+                                    {preview.file.name.includes(".pdf") || preview.file.name.includes(".PDF") ? (
+                                       <>
+                                          <embed
+                                             className="preview-pdf"
+                                             src={preview.dataURL}
+                                             type="application/pdf"
+                                             width="100%"
+                                             height="500px"
+                                             onMouseEnter={handleMouseEnter}
+                                             onMouseLeave={handleMouseLeave}
+                                          />
+                                          {preview.file.name !== "undefined" && (
+                                             <embed
+                                                className={`tooltip_imagen ${ttShow}`}
+                                                src={preview.dataURL}
+                                                type="application/pdf"
+                                                width="50%"
+                                                height="80%"
+                                                onMouseEnter={handleMouseEnter}
+                                                onMouseLeave={handleMouseLeave}
+                                             />
+                                          )}
+                                          <button
+                                             className="remove-pdf-button"
+                                             onClick={(e) => {
+                                                e.preventDefault();
+                                                handleRemoveImage(preview.file);
+                                             }}
+                                          >
+                                             Eliminar
+                                          </button>
+                                       </>
+                                    ) : (
+                                       <>
+                                          <img className="preview-img" src={preview.dataURL} alt={preview.file.name} />
+                                          {preview.file.name !== "undefined" && (
+                                             <img
+                                                width={"50%"}
+                                                src={preview.dataURL}
+                                                alt={preview.file.name}
+                                                srcSet=""
+                                                className={`tooltip_imagen ${ttShow}`}
+                                                onMouseEnter={handleMouseEnter}
+                                                onMouseLeave={handleMouseLeave}
+                                             />
+                                          )}
+                                          <button
+                                             className="remove-button"
+                                             onClick={(e) => {
+                                                e.preventDefault();
+                                                handleRemoveImage(preview.file);
+                                             }}
+                                             onMouseEnter={handleMouseEnter}
+                                             onMouseLeave={handleMouseLeave}
+                                          >
+                                             Eliminar
+                                          </button>
+                                       </>
                                     )}
-                                    <button
-                                       className="remove-button"
-                                       onClick={(e) => {
-                                          e.preventDefault();
-                                          handleRemoveImage(preview.file);
-                                       }}
-                                       onMouseEnter={handleMouseEnter}
-                                       onMouseLeave={handleMouseLeave}
-                                    >
-                                       Eliminar
-                                    </button>
                                  </div>
                               ))}
                            </aside>

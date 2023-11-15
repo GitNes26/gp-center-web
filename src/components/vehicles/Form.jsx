@@ -27,8 +27,20 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer, cursorLoading } = useGlobalContext();
-   const { singularName, createVehicle, updateVehicle, getVehicles, formData, setFormData, resetFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useVehicleContext();
+   const {
+      singularName,
+      createVehicle,
+      updateVehicle,
+      getVehicles,
+      showVehicleBy,
+      formData,
+      setFormData,
+      resetFormData,
+      textBtnSubmit,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle
+   } = useVehicleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -58,6 +70,11 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
       setImgInsurancePolicy([]);
    };
 
+   const handleBlurStockNumber = async (e) => {
+      const value = e.target.value;
+      const axiosReponse = await showVehicleBy("stock_number", value);
+      if (axiosReponse.result !== null) Toast.Warning(`el número economico ${value} ya ha sido registrado`);
+   };
    const handleChangeCheckAdd = (e) => {
       try {
          const active = e.target.checked;
@@ -278,7 +295,10 @@ const VehicleForm = ({ dataBrands, dataVehicleStatus }) => {
                            value={values.stock_number}
                            placeholder="Ingrese el número de inventario"
                            onChange={handleChange}
-                           onBlur={handleBlur}
+                           onBlur={(e) => {
+                              handleBlur(e);
+                              handleBlurStockNumber(e);
+                           }}
                            // onInput={(e) => handleInput(e, setFieldValue, "stock_number", true)}
                            // InputProps={{ }}
                            fullWidth
