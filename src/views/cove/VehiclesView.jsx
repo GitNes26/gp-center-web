@@ -16,6 +16,7 @@ import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../utils/sAlert";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
+import VehicleDT from "./VehiclesView/VehicleDT";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -63,7 +64,8 @@ const VehiclesView = () => {
          <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
             <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
          </Button>
-         <VehicleTable />
+         <VehicleDT />
+         {/* <VehicleTable /> */}
          {/* </MainCard> */}
 
          <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} />

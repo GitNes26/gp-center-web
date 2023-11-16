@@ -11,7 +11,7 @@ import { Button, ButtonGroup, Tooltip } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import { useLevelContext } from "../../../context/LevelContext";
+import { useGenericContext } from "../../../context/GenericContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -19,10 +19,10 @@ import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/Table/DataTableComponent";
 
-const LevelTable = () => {
+const GenericTable = () => {
    const { setLoading, setLoadingAction } = useGlobalContext();
-   const { levels, showLevel, deleteLevel, setTextBtnSumbit, setFormTitle } = useLevelContext();
-   const columns = [{ field: "level", header: "Nivel", sortable: true, functionEdit: null, body: null }];
+   const { generics, showGeneric, deleteGeneric, setTextBtnSumbit, setFormTitle } = useGenericContext();
+   const columns = [{ field: "generic", header: "Generico", sortable: true, functionEdit: null, body: null }];
 
    const mySwal = withReactContent(Swal);
 
@@ -30,8 +30,8 @@ const LevelTable = () => {
       try {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
-         setFormTitle("EDITAR NIVEL");
-         const axiosResponse = await showLevel(id);
+         setFormTitle("EDITAR GENERICO");
+         const axiosResponse = await showGeneric(id);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -44,7 +44,7 @@ const LevelTable = () => {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteLevel(id);
+               const axiosResponse = await deleteGeneric(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -58,12 +58,12 @@ const LevelTable = () => {
    const ButtonsAction = ({ id, name }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={"Editar Nivel"} placement="top">
+            <Tooltip title={"Editar Generico"} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
             </Tooltip>
-            <Tooltip title={"Eliminar Nivel"} placement="top">
+            <Tooltip title={"Eliminar Generico"} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
                </Button>
@@ -75,12 +75,12 @@ const LevelTable = () => {
    const data = [];
    const chargerData = async () => {
       try {
-         console.log("cargar listado", levels);
-         await levels.map((obj) => {
+         console.log("cargar listado", generics);
+         await generics.map((obj) => {
             // console.log(obj);
             let register = {};
             register = obj;
-            register.actions = <ButtonsAction id={obj.id} name={obj.level} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.generic} />;
             data.push(register);
          });
          console.log("la data del charger", data);
@@ -97,4 +97,4 @@ const LevelTable = () => {
    });
    return <DataTableComponent columns={columns} data={data} />;
 };
-export default LevelTable;
+export default GenericTable;

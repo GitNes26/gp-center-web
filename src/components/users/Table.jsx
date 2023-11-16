@@ -40,7 +40,7 @@ const UserTable = () => {
    const mySwal = withReactContent(Swal);
 
    const handleClickEdit = async (id) => {
-      try {
+      try { 
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);

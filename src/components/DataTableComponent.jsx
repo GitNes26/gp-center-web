@@ -10,22 +10,21 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
-import { Button, ButtonGroup, Tooltip } from "@mui/material";
+import { Button, ButtonGroup, Card, Tooltip } from "@mui/material";
 import { IconEdit, IconFile, IconFileSpreadsheet, IconSearch } from "@tabler/icons";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Box } from "@mui/system";
-import { Card } from "@material-ui/core";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 
-import { useGlobalContext } from "../../context/GlobalContext";
+import { useGlobalContext } from "../context/GlobalContext";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import Toast from "../../utils/Toast";
-import { QuestionAlertConfig } from "../../utils/sAlert";
-import IconDelete from "../icons/IconDelete";
+import Toast from "../utils/Toast";
+import { QuestionAlertConfig } from "../utils/sAlert";
+import IconDelete from "./icons/IconDelete";
 
-export default function DataTableComponent({ columns, data, headerFilters = true, rowEdit = true, refreshTable }) {
+export default function DataTableComponent({ columns, globalFilterFields, data, headerFilters = true, rowEdit = true, refreshTable }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [dataRows, setDataRows] = useState([]);
 
@@ -68,18 +67,17 @@ export default function DataTableComponent({ columns, data, headerFilters = true
    //    }
    // ]);
    const dt = useRef(null);
-   const [statuses] = useState(["INSTOCK", "LOWSTOCK", "OUTOFSTOCK"]);
+   // const [statuses] = useState(["INSTOCK", "LOWSTOCK", "OUTOFSTOCK"]);
 
    // FILTROS
-   // const [filters, setFilters] = useState({
-   //    // global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-   //    code: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-   //    name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-   //    inventoryStatus: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-   //    price: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
-   // });
+   let filtersColumns = columns.map((c) => [c.field, { value: null, matchMode: FilterMatchMode.STARTS_WITH }]);
+   filtersColumns = Object.fromEntries(filtersColumns);
+   filtersColumns.global = { value: null, matchMode: FilterMatchMode.CONTAINS };
+   // console.log("filtersColumns", filtersColumns);
+   const [filters, setFilters] = useState(filtersColumns);
    const [loading, setLoading] = useState(true);
    const [globalFilterValue, setGlobalFilterValue] = useState("");
+   // const [globalFilterFields, setGlobalFilterFields] = useState();
    // FILTROS
 
    const getSeverity = (value) => {
@@ -165,38 +163,38 @@ export default function DataTableComponent({ columns, data, headerFilters = true
       }
    };
 
-   const handleClickDelete = async (id, name) => {
-      try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a "${name}"`)).then(async (result) => {
-            if (result.isConfirmed) {
-               setLoadingAction(true);
-               const axiosResponse = await deleteUser(id);
-               setLoadingAction(false);
-               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-            }
-         });
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   // const handleClickDelete = async (id, name) => {
+   //    try {
+   //       mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a "${name}"`)).then(async (result) => {
+   //          if (result.isConfirmed) {
+   //             setLoadingAction(true);
+   //             const axiosResponse = await deleteUser(id);
+   //             setLoadingAction(false);
+   //             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+   //          }
+   //       });
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
 
-   const ButtonsAction = ({ id, name }) => {
-      return (
-         <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(id, name)}>
-                  <IconDelete />
-               </Button>
-            </Tooltip>
-         </ButtonGroup>
-      );
-   };
+   // const ButtonsAction = ({ id, name }) => {
+   //    return (
+   //       <ButtonGroup variant="outlined">
+   //          <Tooltip title={`Editar ${singularName}`} placement="top">
+   //             <Button color="info" onClick={() => handleClickEdit(id)}>
+   //                <IconEdit />
+   //             </Button>
+   //          </Tooltip>
+   //          <Tooltip title={`Eliminar ${singularName}`} placement="top">
+   //             <Button color="error" onClick={() => handleClickDelete(id, name)}>
+   //                <IconDelete />
+   //             </Button>
+   //          </Tooltip>
+   //       </ButtonGroup>
+   //    );
+   // };
 
    //#region EXPORTAR
    const exportColumns = columns.map((col) => {
@@ -248,11 +246,13 @@ export default function DataTableComponent({ columns, data, headerFilters = true
 
    const onGlobalFilterChange = (e) => {
       const value = e.target.value;
-      // let _filters = { ...filters };
+      // console.log("buscador", value);
+      if (value === undefined || value === null) value = "";
+      let _filters = { ...filters };
 
-      // _filters["global"].value = value;
+      _filters["global"].value = value;
 
-      // setFilters(_filters);
+      setFilters(_filters);
       setGlobalFilterValue(value);
    };
 
@@ -310,17 +310,8 @@ export default function DataTableComponent({ columns, data, headerFilters = true
    );
 
    useEffect(() => {
-      console.log("la data", data);
-
-      // if (columnActionsExist) {
-      //    console.log("holaaaaa", data);
-      //    const datas = data.map((obj) => {
-      //       return { ...obj, actions: <ButtonsAction id={obj.id} name={obj.folio} /> };
-      //    });
-      //    setDataRows(datas);
-      // } else setDataRows(data);
-      console.log("dataRows", dataRows);
-   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+      // if (data.length > 0) setGlobalFilterFields(Object.keys(data[0]));
+   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
    return (
       <div className="card p-fluid">
@@ -339,10 +330,10 @@ export default function DataTableComponent({ columns, data, headerFilters = true
                rowsPerPageOptions={[5, 10, 50, 100, 1000]}
                rows={10}
                loading={false}
-               // filters={filters}
+               filters={filters}
                filterDisplay={headerFilters ? "row" : "menu"}
                globalFilter={globalFilterValue}
-               // globalFilterFields={["name", "country.name", "representative.name", "status"]}
+               globalFilterFields={globalFilterFields}
                onRowEditComplete={onRowEditComplete}
                tableStyle={{ minWidth: "50rem" }}
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -360,6 +351,7 @@ export default function DataTableComponent({ columns, data, headerFilters = true
                      sortable={col.sortable}
                      body={col.body}
                      filter={headerFilters}
+                     filterField={col.filterField}
                      style={{ width: "auto" }}
                      footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                   ></Column>
@@ -374,7 +366,7 @@ export default function DataTableComponent({ columns, data, headerFilters = true
                   sortable={false}
                   // body={col.body}
                   filter={false}
-                  style={{ width: "15%" }}
+                  style={{ width: "auto" }}
                   footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                ></Column>
             </DataTable>

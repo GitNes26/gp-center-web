@@ -89,7 +89,7 @@ export default function UserContextProvider({ children }) {
    const getUsers = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/users/${auth.role_id}`);
+         const axiosData = await Axios.get(`/users/role_id/${auth.role_id}`);
          res.result.users = axiosData.data.data.result;
          setUsers(axiosData.data.data.result);
          // console.log("users", users);

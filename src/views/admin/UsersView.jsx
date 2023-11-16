@@ -17,6 +17,7 @@ import sAlert from "../../utils/sAlert";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import DataTableComponent from "../../components/DataTableComponent";
+import UserDT from "./UsersView/UserDT";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -76,7 +77,7 @@ const UsersView = () => {
             <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
          </Button>
          {/* <DataTableComponent /> */}
-         <UserTable />
+         <UserDT />
          {/* </MainCard> */}
 
          <UserForm dataRoles={result.roles} dataDepartments={result.departments} />
