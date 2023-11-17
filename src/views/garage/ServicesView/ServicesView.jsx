@@ -14,7 +14,7 @@ import { AddCircleOutlineOutlined } from "@mui/icons-material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import ServicesTable from "./Table";
+import ServiceDT from "./ServiceDT";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -63,7 +63,7 @@ const ServicesView = () => {
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button>
          </MainCard> */}
-         <ServicesTable />
+         <ServiceDT />
 
          {/* <ServiceForm dataBrands={result.brands} dataServiceStatus={result.serviceStatus} /> */}
       </>

@@ -1,23 +1,23 @@
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
-import MainCard from "../../ui-component/cards/MainCard";
-import UserTable from "../../components/users/Table";
-import UserForm from "../../components/users/Form";
+import MainCard from "../../../ui-component/cards/MainCard";
+import UserTable from "../../../components/users/Table";
+import UserForm from "../../../components/users/Form";
 
-import { CorrectRes, ErrorRes } from "../../utils/Response";
+import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../context/AuthContext";
+import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useUserContext } from "../../context/UserContext";
+import { useUserContext } from "../../../context/UserContext";
 import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
-import sAlert from "../../utils/sAlert";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import DataTableComponent from "../../components/DataTableComponent";
-import UserDT from "./UsersView/UserDT";
+import sAlert from "../../../utils/sAlert";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import DataTableComponent from "../../../components/DataTableComponent";
+import UserDT from "./UserDT";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",

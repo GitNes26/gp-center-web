@@ -11,7 +11,7 @@ import { Button, ButtonGroup, Chip, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import { useVehicleContext } from "../../../context/VehicleContext";
+import { useVehicleStatusContext } from "../../../context/VehicleStatusContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -20,28 +20,14 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { Box } from "@mui/system";
 
-const VehicleDT = () => {
+const VehicleStatusDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, pluralName, vehicles, getVehicles, showVehicle, deleteVehicle, setTextBtnSumbit, setFormTitle } = useVehicleContext();
-   const globalFilterFields = ["stock_number", "plates", "vehicle_status", "serial_number", "circulation_card", "insurance_policy", "description"];
+   const { singularName, pluralName, vehicleStatuss, getVehicleStatuss, showVehicleStatus, deleteVehicleStatus, setTextBtnSumbit, setFormTitle } =
+      useVehicleStatusContext();
+   const globalFilterFields = ["vehicle_status", "description"];
 
    // #region BodysTemplate
-   const ImagePreviewBodyTemplate = (obj) => (
-      <Box textAlign={"center"}>
-         {<img alt="Vista previa del vehículo" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />}
-      </Box>
-   );
-   const StockNumberBodyTemplate = (obj) => (
-      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.stock_number}
-      </Typography>
-   );
-   const PlatesBodyTemplate = (obj) => (
-      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.plates}
-      </Typography>
-   );
-   const StatusBodyTemplate = (obj) => (
+   const VehicleStatusBodyTemplate = (obj) => (
       <Box textAlign={"center"}>
          <Chip
             sx={{
@@ -59,33 +45,12 @@ const VehicleDT = () => {
          />
       </Box>
    );
-   const SerialNumberBodyTemplate = (obj) => (
-      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.serial_number}
-      </Typography>
-   );
-   const CirculationCardBodyTemplate = (obj) => (
-      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.circulation_card}
-      </Typography>
-   );
-   const InsurancePolicyBodyTemplate = (obj) => (
-      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.insurance_policy}
-      </Typography>
-   );
    const DescriptionBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.description}</Typography>;
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "image_preview", header: "Vista Previa", sortable: false, functionEdit: null, body: ImagePreviewBodyTemplate, filterField: null },
-      { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
-      { field: "plates", header: "Placas", sortable: true, functionEdit: null, body: PlatesBodyTemplate, filterField: null },
-      { field: "vehicle_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
-      { field: "serial_number", header: "N° de Serie", sortable: true, functionEdit: null, body: SerialNumberBodyTemplate, filterField: null },
-      { field: "circulation_card", header: "Tarjeta de Circulación", sortable: true, functionEdit: null, body: CirculationCardBodyTemplate, filterField: null },
-      { field: "insurance_policy", header: "Poliza de Seguro", sortable: true, functionEdit: null, body: InsurancePolicyBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null }
+      { field: "vehicle_status", header: "Estatus del Vehículo", sortable: true, functionEdit: null, body: VehicleStatusBodyTemplate, filterField: null },
+      { field: "description", header: "Descripción", sortable: false, functionEdit: null, body: DescriptionBodyTemplate, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);
@@ -95,7 +60,7 @@ const VehicleDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showVehicle(id);
+         await showVehicleStatus(id);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -109,7 +74,7 @@ const VehicleDT = () => {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteVehicle(id);
+               const axiosResponse = await deleteVehicleStatus(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -140,14 +105,14 @@ const VehicleDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         // console.log("cargar listado", vehicles);
-         await vehicles.map((obj) => {
+         // console.log("cargar listado", vehicleStatuss);
+         await vehicleStatuss.map((obj) => {
             // console.log(obj);
             let register = obj;
-            register.actions = <ButtonsAction id={obj.id} name={obj.vehiclename} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.vehicleStatus} />;
             data.push(register);
          });
-         // if (data.length > 0) setGlobalFilterFields(Object.keys(vehicles[0]));
+         // if (data.length > 0) setGlobalFilterFields(Object.keys(vehicleStatuss[0]));
          // console.log("la data del formatData", globalFilterFields);
          setLoading(false);
       } catch (error) {
@@ -160,6 +125,6 @@ const VehicleDT = () => {
    useEffect(() => {
       setLoading(false);
    }, []);
-   return <DataTableComponent columns={columns} data={data} globalFilterFields={globalFilterFields} headerFilters={false} refreshTable={getVehicles} />;
+   return <DataTableComponent columns={columns} data={data} globalFilterFields={globalFilterFields} headerFilters={false} refreshTable={getVehicleStatuss} />;
 };
-export default VehicleDT;
+export default VehicleStatusDT;

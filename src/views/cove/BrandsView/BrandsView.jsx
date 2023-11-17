@@ -1,22 +1,21 @@
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
-import MainCard from "../../ui-component/cards/MainCard";
-import VehicleTable from "../../components/vehicles/Table";
-import VehicleForm from "../../components/vehicles/Form";
+import MainCard from "../../../ui-component/cards/MainCard";
+import BrandForm from "../../../components/brands/Form";
 
-import { CorrectRes, ErrorRes } from "../../utils/Response";
+import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../context/AuthContext";
+import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useVehicleContext } from "../../context/VehicleContext";
+import { useBrandContext } from "../../../context/BrandContext";
 import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
-import sAlert from "../../utils/sAlert";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import VehicleDT from "./VehiclesView/VehicleDT";
+import sAlert from "../../../utils/sAlert";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import BrandDT from "./BrandDT";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -26,10 +25,10 @@ const Item = styled(Paper)(({ theme }) => ({
    color: theme.palette.text.secondary
 }));
 
-const VehiclesView = () => {
-   const { result } = useLoaderData();
+const BrandsView = () => {
+   // const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, vehicle, formData, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleContext();
+   const { singularName, brand, brands, getBrands, resetFormData, setTextBtnSumbit, setFormTitle } = useBrandContext();
 
    const handleClickAdd = () => {
       try {
@@ -46,12 +45,12 @@ const VehiclesView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getVehicles();
+         getBrands();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [vehicle, formData]);
+   }, [brand]);
 
    return (
       <>
@@ -64,25 +63,21 @@ const VehiclesView = () => {
          <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
             <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
          </Button>
-         <VehicleDT />
-         {/* <VehicleTable /> */}
+         <BrandDT />
          {/* </MainCard> */}
 
-         <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} />
+         <BrandForm />
       </>
    );
 };
 
-export const loaderIndexVehiclesView = async () => {
+export const loaderIndexBrandsView = async () => {
    try {
       const res = CorrectRes;
 
-      const axiosBrands = await Axios.get("/brands/selectIndex");
-      res.result.brands = axiosBrands.data.data.result;
-      res.result.brands.unshift({ id: 0, label: "Selecciona una opción..." });
-      const axiosStatus = await Axios.get("/vehicleStatus/selectIndex");
-      res.result.vehicleStatus = axiosStatus.data.data.result;
-      res.result.vehicleStatus.unshift({ id: 0, label: "Selecciona una opción..." });
+      // const axiosRoles = await Axios.get("/roles/selectIndex");
+      // res.result.roles = axiosRoles.data.data.result;
+      // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
 
       return res;
    } catch (error) {
@@ -95,4 +90,4 @@ export const loaderIndexVehiclesView = async () => {
    }
 };
 
-export default VehiclesView;
+export default BrandsView;

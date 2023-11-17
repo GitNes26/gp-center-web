@@ -191,16 +191,6 @@
    margin-top: 18px;
    /* max-width: 100px;
    max-height: 100px; 
-   
-   {
-    "file": {
-        "path": "CURP_PUIG880809HCLNNS02.pdf"
-    },
-    "dataURL": "data:application/pdf;base64,JVBERi0xLjQKJeLjz9="
-   }
-   
-   
-   
    */
    object-fit: cover;
    /* border: 1px solid #ddd; */
@@ -261,6 +251,10 @@
    transition: all 0.3s ease-in-out;
 }
 /* CONTENEDOR DE IMAGENES */
+
+th.text-center .p-column-header-content {
+   justify-content: center;
+}
 
 @media (max-width: 1500px) {
    .form,

@@ -1,21 +1,21 @@
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
-import MainCard from "../../ui-component/cards/MainCard";
-import DepartmentTable from "../../components/departments/Table";
-import DepartmentForm from "../../components/departments/Form";
+import MainCard from "../../../ui-component/cards/MainCard";
+import VehicleStatusForm from "../../../components/vehicleStatus/Form";
 
-import { CorrectRes, ErrorRes } from "../../utils/Response";
+import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../context/AuthContext";
+import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useDepartmentContext } from "../../context/DepartmentContext";
+import { useVehicleStatusContext } from "../../../context/VehicleStatusContext";
 import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
-import sAlert from "../../utils/sAlert";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
+import sAlert from "../../../utils/sAlert";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import VehicleStatusDT from "./VehicleStatusDT";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -25,10 +25,10 @@ const Item = styled(Paper)(({ theme }) => ({
    color: theme.palette.text.secondary
 }));
 
-const DepartmentsView = () => {
+const VehicleStatusView = () => {
    // const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, departments, getDepartments, resetFormData, setTextBtnSumbit, setFormTitle } = useDepartmentContext();
+   const { singularName, vehicleStatus, getVehicleStatuss, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleStatusContext();
 
    const handleClickAdd = () => {
       try {
@@ -45,7 +45,7 @@ const DepartmentsView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getDepartments();
+         getVehicleStatuss();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -59,19 +59,19 @@ const DepartmentsView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         <MainCard /* title="Listado Escuelas" */>
-            <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-               <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-            </Button>
-            <DepartmentTable />
-         </MainCard>
+         {/* <MainCard> */}
+         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
+         </Button>
+         <VehicleStatusDT />
+         {/* </MainCard> */}
 
-         <DepartmentForm />
+         <VehicleStatusForm />
       </>
    );
 };
 
-export const loaderIndexDepartmentsView = async () => {
+export const loaderIndexVehicleStatusView = async () => {
    try {
       const res = CorrectRes;
 
@@ -90,4 +90,4 @@ export const loaderIndexDepartmentsView = async () => {
    }
 };
 
-export default DepartmentsView;
+export default VehicleStatusView;

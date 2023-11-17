@@ -146,10 +146,10 @@ const ServicesTable = () => {
             );
             register.push(
                <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-                  {obj.contact_name} - {obj.contact_phone}
+                  {obj.contact_name} - {formatPhone(obj.contact_phone)}
                </Typography>
             );
-            register.push(<Typography textAlign={"center"}>{obj.pre_diagnosis }</Typography>);
+            register.push(<Typography textAlign={"center"}>{obj.pre_diagnosis}</Typography>);
             register.push(
                <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
                   {obj.status}
