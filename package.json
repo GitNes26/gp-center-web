@@ -38,6 +38,7 @@
     "mui-datatables": "^4.3.0",
     "node-sass": "^9.0.0",
     "notistack": "^3.0.1",
+    "particles.js": "^2.0.0",
     "primeicons": "^6.0.1",
     "primereact": "^10.0.9",
     "prop-types": "^15.8.1",
