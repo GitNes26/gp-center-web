@@ -69,11 +69,11 @@ const FirebaseLogin = ({ ...others }) => {
       try {
          await login({ email, password });
          await loggetInCheck;
-         resetForm();
          if (scriptedRef.current) {
             // setStatus({ success: true });
             setSubmitting(false);
          }
+         resetForm();
       } catch (error) {
          console.error(error);
          if (scriptedRef.current) {
