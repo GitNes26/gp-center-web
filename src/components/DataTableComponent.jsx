@@ -24,7 +24,7 @@ import Toast from "../utils/Toast";
 import { QuestionAlertConfig } from "../utils/sAlert";
 import IconDelete from "./icons/IconDelete";
 
-export default function DataTableComponent({ columns, globalFilterFields, data, headerFilters = true, rowEdit = true, refreshTable }) {
+export default function DataTableComponent({ columns, globalFilterFields, data, headerFilters = true, rowEdit = true, handleClickAdd, refreshTable }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
 
    const dt = useRef(null);
@@ -186,6 +186,9 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
             <i className="pi pi-search" />
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
+         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
+            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
+         </Button>
       </Box>
    );
 

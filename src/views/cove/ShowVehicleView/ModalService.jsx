@@ -412,7 +412,7 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
                            <InputComponentv2
                               idName={"pre_diagnosis"}
                               label={"Diagnóstico inicial"}
-                              placeholder={"Ingresa un número telefonico"}
+                              placeholder={"Describe la falla que el conductor redacta"}
                               type="text"
                               formData={formData}
                               onChange={(e) => {
@@ -428,6 +428,34 @@ const ModalService = ({ open, setOpen, stockNumber }) => {
                               value={values.pre_diagnosis}
                               error={errors.pre_diagnosis}
                               touched={touched.pre_diagnosis}
+                           />
+                        </Grid>
+
+                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                           <Divider sx={{ flexGrow: 1, my: 1, borderStyle: "dashed", borderBottomWidth: "thick", borderColor: gpcDark }} orientation="horizontal" />
+                        </Grid>
+
+                        {/* Diagnostico Final */}
+                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                           <InputComponentv2
+                              idName={"final_diagnosis"}
+                              label={"Diagnóstico Final"}
+                              placeholder={"Describe la falla del diagnostico"}
+                              type="text"
+                              formData={formData}
+                              onChange={(e) => {
+                                 handleChange(e);
+                              }}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "final_diagnosis", true)}
+                              onBlur={handleBlur}
+                              setFieldValue={setFieldValue}
+                              // disabled={vehicle ? false : true}
+                              // sx={{ backgroundColor: gpcDark }}
+                              multiline
+                              rows={3}
+                              value={values.final_diagnosis}
+                              error={errors.final_diagnosis}
+                              touched={touched.final_diagnosis}
                            />
                         </Grid>
 

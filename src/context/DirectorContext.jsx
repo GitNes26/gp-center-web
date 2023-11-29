@@ -3,7 +3,7 @@ import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
-const UserContext = createContext();
+const DirectorContext = createContext();
 
 const formDataInitialState = {
    id: 0,
@@ -11,6 +11,7 @@ const formDataInitialState = {
    email: "",
    password: "",
    role_id: 0,
+   avatar: "",
    phone: "",
    license_number: "",
    license_due_date: "",
@@ -29,13 +30,14 @@ const formDataInitialState = {
    city: 0,
    colony: 0
 };
-const userInitialState = {
+const directorInitialState = {
    id: 0,
    username: "",
    email: "",
    password: "",
    role_id: 0,
    role: "Selecciona una opción...",
+   avatar: "",
    phone: "",
    license_number: "",
    license_due_date: "",
@@ -56,17 +58,17 @@ const userInitialState = {
    colony: 0
 };
 
-export default function UserContextProvider({ children }) {
+export default function DirectorContextProvider({ children }) {
    const { auth } = useAuthContext();
 
-   const singularName = "Usuario"; //Escribirlo siempre letra Capital
-   const pluralName = "Usuarios"; //Escribirlo siempre letra Capital
+   const singularName = "Director"; //Escribirlo siempre letra Capital
+   const pluralName = "Directores"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [user, setUser] = useState(userInitialState);
-   const [users, setUsers] = useState([]);
+   const [director, setDirector] = useState(directorInitialState);
+   const [directors, setDirectors] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
@@ -77,22 +79,22 @@ export default function UserContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-   const resetUser = () => {
+   const resetDirector = () => {
       try {
-         setUser(userInitialState);
+         setDirector(directorInitialState);
       } catch (error) {
-         console.log("Error en resetUser:", error);
+         console.log("Error en resetDirector:", error);
          Toast.Error(error);
       }
    };
 
-   const getUsers = async () => {
+   const getDirectors = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/users/role_id/${auth.role_id}`);
-         res.result.users = axiosData.data.data.result;
-         setUsers(axiosData.data.data.result);
-         // console.log("users", users);
+         const axiosData = await Axios.get(`/directors`);
+         res.result.directors = axiosData.data.data.result;
+         setDirectors(axiosData.data.data.result);
+         // console.log("directors", directors);
 
          return res;
       } catch (error) {
@@ -103,12 +105,12 @@ export default function UserContextProvider({ children }) {
       }
    };
 
-   const showUser = async (id) => {
+   const showDirector = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/users/${id}`);
+         const axiosData = await Axios.get(`/directors/${id}`);
          res = axiosData.data.data;
-         setUser(res.result);
+         setDirector(res.result);
          setFormData(res.result);
          // console.log(res);
 
@@ -121,13 +123,13 @@ export default function UserContextProvider({ children }) {
       }
    };
 
-   const createUser = async (user) => {
+   const createDirector = async (director) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/create/${user.role_id}`, user);
+         const axiosData = await Axios.post(`/users/create/${director.role_id}`, director);
          // console.log(axiosData);
          res = axiosData.data.data;
-         getUsers();
+         getDirectors();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -138,12 +140,12 @@ export default function UserContextProvider({ children }) {
       return res;
    };
 
-   const updateUser = async (user) => {
+   const updateDirector = async (director) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/users/update", user);
+         const axiosData = await Axios.post("/directors/update", director);
          res = axiosData.data.data;
-         getUsers();
+         getDirectors();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -154,12 +156,12 @@ export default function UserContextProvider({ children }) {
       return res;
    };
 
-   const deleteUser = async (id) => {
+   const deleteDirector = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/users/destroy/${id}`);
-         // console.log("deleteUser() axiosData", axiosData.data);
-         getUsers();
+         const axiosData = await Axios.post(`/directors/destroy/${id}`);
+         // console.log("deleteDirector() axiosData", axiosData.data);
+         getDirectors();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -173,27 +175,27 @@ export default function UserContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de UserContext");
-   //    getUsers();
+   //    console.log("el useEffect de DirectorContext");
+   //    getDirectors();
    // });
 
    return (
-      <UserContext.Provider
+      <DirectorContext.Provider
          value={{
             singularName,
             pluralName,
-            users,
-            user,
-            setUser,
-            resetUser,
+            directors,
+            director,
+            setDirector,
+            resetDirector,
             formData,
             setFormData,
             resetFormData,
-            getUsers,
-            showUser,
-            createUser,
-            updateUser,
-            deleteUser,
+            getDirectors,
+            showDirector,
+            createDirector,
+            updateDirector,
+            deleteDirector,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
@@ -201,7 +203,7 @@ export default function UserContextProvider({ children }) {
          }}
       >
          {children}
-      </UserContext.Provider>
+      </DirectorContext.Provider>
    );
 }
-export const useUserContext = () => useContext(UserContext);
+export const useDirectorContext = () => useContext(DirectorContext);

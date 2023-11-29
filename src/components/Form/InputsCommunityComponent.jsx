@@ -83,12 +83,16 @@ export const getCommunity = async (
          const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
 
          if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
-         formData.zip = data.data.result.CodigoPostal;
-         formData.state = data.data.result.Estado;
-         formData.city = data.data.result.Municipio;
-         formData.colony = data.data.result.Colonia;
+         // formData.zip = data.data.result.CodigoPostal;
+         // formData.state = data.data.result.Estado;
+         // formData.city = data.data.result.Municipio;
+         // formData.colony = data.data.result.Colonia;
          // formData.colony = community_id;
-         await setFormData(formData);
+         // await setFormData(formData);
+         setFieldValue("zip", data.data.result.CodigoPostal);
+         setFieldValue("state", data.data.result.Estado);
+         setFieldValue("city", data.data.result.Municipio);
+         setFieldValue("colony", data.data.result.Colonia);
          zip = formData.zip;
       }
       if (zip.length > 1) {
@@ -182,11 +186,13 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
                setDataColoniesComplete
             );
             setCursorLoading(false);
+            setShowLoading(false);
          } else {
             setDisabledColony(true);
             setFieldValue("state", "Selecciona una opción...");
             setFieldValue("city", "Selecciona una opción...");
             setFieldValue("colony", "Selecciona una opción...");
+            setShowLoading(false);
          }
       } catch (error) {
          console.log(error);
@@ -239,7 +245,9 @@ const InputsCommunityComponent = ({ formData, setFormData, values, setFieldValue
       }
    };
 
-   useEffect(() => {}, [formData, values]);
+   useEffect(() => {
+      setShowLoading(false);
+   }, [formData, values]);
 
    return (
       <>

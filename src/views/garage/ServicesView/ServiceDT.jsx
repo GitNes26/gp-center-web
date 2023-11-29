@@ -21,11 +21,15 @@ import DataTableComponent from "../../../components/DataTableComponent";
 import { Box } from "@mui/system";
 import { formatPhone } from "../../../utils/Formats";
 import { IconCircleCheck, IconEye, IconUpload } from "@tabler/icons";
+import ModalService from "../../cove/ShowVehicleView/ModalService";
+import UserContextProvider from "../../../context/UserContext";
+import VehicleContextProvider from "../../../context/VehicleContext";
 
 const ServiceDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, services, getServices, showService, deleteService, setTextBtnSumbit, setFormTitle } = useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
+   const [openService, setOpenService] = useState(false);
 
    // #region BodysTemplate
    const FolioBodyTemplate = (obj) => (
@@ -91,11 +95,16 @@ const ServiceDT = () => {
       }
    };
 
-   const ButtonsAction = ({ id, name }) => {
+   const handleClickShowRequest = (id, folio) => {
+      Toast.Info("Solicitud: Folio " + folio);
+      setOpenService(true);
+   };
+
+   const ButtonsAction = ({ id, folio }) => {
       return (
          <ButtonGroup variant="outlined">
             <Tooltip title={`Ver Solicitud de ${singularName}`} placement="top">
-               <Button color="info" onClick={() => Toast.Info("Abrir modal")}>
+               <Button color="info" onClick={() => handleClickShowRequest(id, folio)}>
                   <IconEye />
                </Button>
             </Tooltip>
@@ -128,9 +137,9 @@ const ServiceDT = () => {
       try {
          // console.log("cargar listado", services);
          await services.map((obj) => {
-            // console.log(obj);
+            console.log(obj);
             let register = obj;
-            register.actions = <ButtonsAction id={obj.id} name={obj.servicename} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.folio} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(services[0]));
@@ -146,6 +155,15 @@ const ServiceDT = () => {
    useEffect(() => {
       setLoading(false);
    }, []);
-   return <DataTableComponent columns={columns} data={data} globalFilterFields={globalFilterFields} headerFilters={false} refreshTable={getServices} />;
+   return (
+      <>
+         <DataTableComponent columns={columns} data={data} globalFilterFields={globalFilterFields} headerFilters={false} refreshTable={getServices} />
+         <UserContextProvider>
+            <VehicleContextProvider>
+               <ModalService open={openService} setOpen={setOpenService} stockNumber={1} />;
+            </VehicleContextProvider>
+         </UserContextProvider>
+      </>
+   );
 };
 export default ServiceDT;

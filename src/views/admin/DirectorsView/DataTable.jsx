@@ -18,76 +18,48 @@ import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
+import { IconCircleCheckFilled } from "@tabler/icons-react";
+import { IconCircleXFilled } from "@tabler/icons-react";
 
 const UserDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, pluralName, users, getUsers, showUser, deleteUser, setTextBtnSumbit, setFormTitle } = useUserContext();
-   const globalFilterFields = [
-      "username",
-      "email",
-      "role",
-      "name",
-      "paternal_last_name",
-      "maternal_last_name",
-      "phone",
-      "street",
-      "num_ext",
-      "license_number",
-      "license_due_date"
-   ];
+   const { singularName, pluralName, user, users, getUsers, showUser, deleteUser, resetFormData, resetUser, setTextBtnSumbit, setFormTitle } = useUserContext();
+   const globalFilterFields = ["username", "email", "role"];
 
    // #region BodysTemplate
-   const UserBodyTemplate = (obj) => (
+   const UserBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
+   const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
+   const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
+   const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         {obj.username} <br /> {obj.email}
+         {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
       </Typography>
    );
-   const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
-   const InfoBodyTemplate = (obj) => (
-      <Fragment>
-         {obj["paternal_last_name"] == "No Aplica" ? (
-            <Typography textAlign={"center"}>No Aplica</Typography>
-         ) : (
-            <Typography textAlign={"center"}>
-               {obj.name} {obj.paternal_last_name} {obj.maternal_last_name} <br /> {formatPhone(obj.phone)}
-            </Typography>
-         )}
-      </Fragment>
-   );
-   const AddressBodyTemplate = (obj) => (
-      <Fragment>
-         {obj.street == "No Aplica" ? (
-            <Typography textAlign={"center"}>No Aplica</Typography>
-         ) : (
-            <Fragment>
-               {obj.street} {obj.num_ext == "S/N" ? obj.num_ext : `# ${obj.num_ext}`}
-            </Fragment>
-         )}
-      </Fragment>
-   );
-   const MoreInfoBodyTemplate = (obj) => (
-      <Fragment>
-         {obj.license_number == "No Aplica" ? (
-            <Typography>No Aplica</Typography>
-         ) : (
-            <Typography>
-               No. Licencia: <b>{obj.license_number}</b> <br />
-               vence: <b>{formatDatetime(obj.license_due_date, false)}</b>
-            </Typography>
-         )}
-      </Fragment>
-   );
+
    // #endregion BodysTemplate
 
    const columns = [
       { field: "user", header: "Usuario", sortable: true, functionEdit: null, body: UserBodyTemplate, filterField: null },
+      { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
       { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
-      { field: "info", header: "Información Personal", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null },
-      { field: "address", header: "Dirección", sortable: true, functionEdit: null, body: AddressBodyTemplate, filterField: null },
-      { field: "more_info", header: "Más Información", sortable: true, functionEdit: null, body: MoreInfoBodyTemplate, filterField: null }
+      { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);
+
+   const handleClickAdd = () => {
+      try {
+         resetUser();
+         user.role = "Selecciona una opción...";
+         resetFormData();
+         setOpenDialog(true);
+         setTextBtnSumbit("AGREGAR");
+         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleClickEdit = async (id) => {
       try {
@@ -159,6 +131,15 @@ const UserDT = () => {
    useEffect(() => {
       setLoading(false);
    }, []);
-   return <DataTableComponent columns={columns} data={data} globalFilterFields={globalFilterFields} headerFilters={false} refreshTable={getUsers} />;
+   return (
+      <DataTableComponent
+         columns={columns}
+         data={data}
+         globalFilterFields={globalFilterFields}
+         headerFilters={false}
+         handleClickAdd={handleClickAdd}
+         refreshTable={getUsers}
+      />
+   );
 };
 export default UserDT;
