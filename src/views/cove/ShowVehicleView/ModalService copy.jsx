@@ -56,7 +56,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 let dateTime;
 
-const ModalService = ({ open, setOpen, stockNumber = null, objService = null, title = "SOLICITAR SERVICIO" }) => {
+const ModalService = ({ open, setOpen, stockNumber = null, idService = null, title = "SOLICITAR SERVICIO" }) => {
    const theme = useTheme();
 
    // const [open, setOpen] = useState(false);
@@ -65,13 +65,6 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
    const { vehicle, showVehicleBy } = useVehicleContext();
    const { formData, setFormData, resetFormData, service, showService, createService, updateReport, textBtnSubmit, setTextBtnSumbit } = useServiceContext();
    const [showLoading, setShowLoading] = useState(false);
-
-   if (objService) {
-      console.log("hay un objService", objService);
-      setFormData(objService);
-      console.log(formData);
-      btnModify.click();
-   }
 
    const handleClose = () => {
       setOpen(false);
@@ -298,19 +291,14 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
       // console.log(dateTime);
    }, 60000);
 
-   // const handleShowService = async () => {
-   //    if (idService && service == null) {
-   //       console.log("hay servicio");
-   //       await showService(idService);
-   //       console.log("service", service);
-   //    }
-   // };
-   // handleShowService();
+   const handleShowService = async () => {
+      console.log("hay servicio");
+      await showService(idService);
+   };
 
    useEffect(() => {
       if (stockNumber < 0) formData.stock_number = stockNumber;
-      const btnModify = document.getElementById("btnModify");
-      if (btnModify != null) btnModify.click();
+      if (idService) handleShowService();
       console.log(formData);
       // console.log("vehicle", vehicle);
    }, [formData, vehicle]);

@@ -7,7 +7,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import { Button, ButtonGroup, Chip, Tooltip, Typography } from "@mui/material";
+import { Button, ButtonGroup, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
@@ -30,6 +30,7 @@ const ServiceDT = () => {
    const { singularName, pluralName, services, getServices, showService, deleteService, setTextBtnSumbit, setFormTitle } = useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
    const [openService, setOpenService] = useState(false);
+   const [objService, setObjService] = useState(null);
 
    // #region BodysTemplate
    const FolioBodyTemplate = (obj) => (
@@ -95,18 +96,19 @@ const ServiceDT = () => {
       }
    };
 
-   const handleClickShowRequest = (id, folio) => {
+   const handleClickShowRequest = (id, folio, obj) => {
       Toast.Info("Solicitud: Folio " + folio);
+      setObjService(obj);
       setOpenService(true);
    };
 
-   const ButtonsAction = ({ id, folio }) => {
+   const ButtonsAction = ({ id, folio, obj }) => {
       return (
          <ButtonGroup variant="outlined">
             <Tooltip title={`Ver Solicitud de ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickShowRequest(id, folio)}>
+               <IconButton color="info" onClick={() => handleClickShowRequest(id, folio, obj)}>
                   <IconEye />
-               </Button>
+               </IconButton>
             </Tooltip>
             <Tooltip title={`Aceptar ${singularName}`} placement="top">
                <Button color="success" onClick={() => Toast.Success("Servicio Aceptado")}>
@@ -139,7 +141,7 @@ const ServiceDT = () => {
          await services.map((obj) => {
             console.log(obj);
             let register = obj;
-            register.actions = <ButtonsAction id={obj.id} name={obj.folio} />;
+            register.actions = <ButtonsAction id={obj.id} folio={obj.folio} obj={obj} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(services[0]));
@@ -160,7 +162,7 @@ const ServiceDT = () => {
          <DataTableComponent columns={columns} data={data} globalFilterFields={globalFilterFields} headerFilters={false} refreshTable={getServices} />
          <UserContextProvider>
             <VehicleContextProvider>
-               <ModalService open={openService} setOpen={setOpenService} stockNumber={1} />;
+               <ModalService open={openService} setOpen={setOpenService} objService={objService} title={"SERVICIO SOLICITADO"} />;
             </VehicleContextProvider>
          </UserContextProvider>
       </>

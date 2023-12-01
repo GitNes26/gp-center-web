@@ -21,6 +21,8 @@ import VehiclePlateContextProvider from "../context/VehiclePlateContext";
 import ServiceContextProvider from "../context/ServiceContext";
 import ServicesView from "../views/garage/ServicesView/ServicesView";
 import MenuContextProvider from "../context/MenuContext";
+import DirectorsView from "../views/admin/DirectorsView/DirectorsView";
+import DirectorContextProvider from "../context/DirectorContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -47,24 +49,6 @@ const MainRoutes = {
             </VehicleContextProvider>
          )
       },
-      // {
-      //    path: "dashboard",
-      //    element: <DashboardDefault />
-      // },
-      // {
-      //    path: "cove",
-      //    element: (
-      //       <VehicleContextProvider>
-      //          <VehiclePlateContextProvider>
-      //             <ServiceContextProvider>
-      //                <ShowVehicleView />
-      //             </ServiceContextProvider>
-      //          </VehiclePlateContextProvider>
-      //       </VehicleContextProvider>
-      //    ),
-      //    // loader: loaderIndexShowVehicleView,
-      //    bgImage: true
-      // },
       {
          path: "usuarios",
          element: (
@@ -80,6 +64,33 @@ const MainRoutes = {
             <DepartmentContextProvider>
                <DepartmentsView />
             </DepartmentContextProvider>
+         )
+         // loader: loaderIndex
+      },
+      {
+         path: "administradores",
+         element: (
+            <UserContextProvider>
+               <UsersView />
+            </UserContextProvider>
+         )
+         // loader: loaderIndex
+      },
+      {
+         path: "encargados-de-almacen",
+         element: (
+            <UserContextProvider>
+               <UsersView />
+            </UserContextProvider>
+         )
+         // loader: loaderIndex
+      },
+      {
+         path: "directores",
+         element: (
+            <DirectorContextProvider>
+               <DirectorsView />
+            </DirectorContextProvider>
          )
          // loader: loaderIndex
       },

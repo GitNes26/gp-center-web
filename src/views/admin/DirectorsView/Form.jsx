@@ -8,7 +8,7 @@ import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useState } from "react";
-import { useUserContext } from "../../../context/UserContext";
+import { useDirectorContext } from "../../../context/DirectorContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
@@ -27,7 +27,7 @@ import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const UserForm = ({ dataRoles, dataDepartments }) => {
+const DirectorForm = ({ dataRoles, dataDepartments }) => {
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
@@ -64,7 +64,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       setDataColoniesComplete,
       cursorLoading
    } = useGlobalContext();
-   const { user, resetUser, singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
+   const { director, resetDirector, singularName, createDirector, updateDirector, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
+      useDirectorContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isAdmin, setIsAdmin] = useState(false);
@@ -108,8 +109,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createUser(values);
-         else axiosResponse = await updateUser(values);
+         if (values.id == 0) axiosResponse = await createDirector(values);
+         else axiosResponse = await updateDirector(values);
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
             resetForm();
@@ -134,8 +135,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
-         resetUser();
-         user.role = "Selecciona una opción...";
+         resetDirector();
+         director.role = "Selecciona una opción...";
          setStrength(0);
          setFieldValue("id", id);
       } catch (error) {
@@ -180,8 +181,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const handleCancel = (resetForm) => {
       try {
          resetForm();
-         resetUser();
-         user.role = "Selecciona una opción...";
+         resetDirector();
+         director.role = "Selecciona una opción...";
          setStrength(0);
          setOpenDialog(false);
       } catch (error) {
@@ -646,4 +647,4 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       </SwipeableDrawer>
    );
 };
-export default UserForm;
+export default DirectorForm;

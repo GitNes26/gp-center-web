@@ -1,31 +1,31 @@
-import UserForm from "./Form";
+import DirectorForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useUserContext } from "../../../context/UserContext";
+import { useDirectorContext } from "../../../context/DirectorContext";
 import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import UserDT from "./DataTable";
+import DirectorDT from "./DataTable";
 
-const UsersView = () => {
+const DirectorsView = () => {
    const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, user, getUsers } = useUserContext();
+   const { pluralName, director, getDirectors } = useDirectorContext();
 
    useEffect(() => {
       try {
          setLoading(true);
-         getUsers();
+         getDirectors();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [user]);
+   }, [director]);
 
    return (
       <>
@@ -39,15 +39,15 @@ const UsersView = () => {
             {pluralName.toUpperCase()}
          </Typography>
          {/* <DataTableComponent /> */}
-         <UserDT />
+         <DirectorDT />
          {/* </MainCard> */}
 
-         <UserForm dataRoles={result.roles} dataDepartments={result.departments} />
+         <DirectorForm dataRoles={result.roles} dataDepartments={result.departments} />
       </>
    );
 };
 
-export const loaderIndexUsersView = async () => {
+export const loaderIndexDirectorsView = async () => {
    try {
       const res = CorrectRes;
       const auth = JSON.parse(localStorage.getItem("auth"));
@@ -71,4 +71,4 @@ export const loaderIndexUsersView = async () => {
    }
 };
 
-export default UsersView;
+export default DirectorsView;
