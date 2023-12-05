@@ -21,7 +21,7 @@ import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalCont
 import { InputAdornment, OutlinedInput } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useTheme } from "@emotion/react";
-import { shouldForwardProp } from "@mui/system";
+import { Box, shouldForwardProp } from "@mui/system";
 import InputComponentv2 from "../../../components/Form/InputComponentv2";
 import { useServiceContext } from "../../../context/ServiceContext";
 import { LoadingButton } from "@mui/lab";
@@ -30,6 +30,40 @@ import { formatDatetime, handleInputFormik } from "../../../utils/Formats";
 import dayjs from "dayjs";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import sAlert from "../../../utils/sAlert";
+// import TabsComponent from "../../../components/TabsComponent";
+
+// Tabs
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import SwipeableViews from "react-swipeable-views";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+
+// import { useTheme } from "@mui/material/styles";
+function TabPanel(props) {
+   const { children, value, index, ...other } = props;
+
+   return (
+      <div role="tabpanel" hidden={value !== index} id={`full-width-tabpanel-${index}`} aria-labelledby={`full-width-tab-${index}`} {...other}>
+         {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+   );
+}
+
+TabPanel.propTypes = {
+   children: PropTypes.node,
+   index: PropTypes.number.isRequired,
+   value: PropTypes.number.isRequired
+};
+
+function a11yProps(index) {
+   return {
+      id: `full-width-tab-${index}`,
+      "aria-controls": `full-width-tabpanel-${index}`
+   };
+}
+// Tabs
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -65,6 +99,20 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
    const { vehicle, showVehicleBy } = useVehicleContext();
    const { formData, setFormData, resetFormData, service, showService, createService, updateReport, textBtnSubmit, setTextBtnSumbit } = useServiceContext();
    const [showLoading, setShowLoading] = useState(false);
+   const [clickShow, setClickShow] = useState(false);
+   const [clickUpMaterial, setClickUpMaterial] = useState(false);
+
+   // Tabs
+   const [valueTabs, setValueTabs] = useState(0);
+
+   const handleChange = (event, newValueTabs) => {
+      setValueTabs(newValueTabs);
+   };
+
+   const handleChangeIndex = (index) => {
+      setValueTabs(index);
+   };
+   // Tabs
 
    if (objService) {
       console.log("hay un objService", objService);
@@ -315,6 +363,142 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
       // console.log("vehicle", vehicle);
    }, [formData, vehicle]);
 
+   const ParteUno = ({ typeModal, values, errors, touched, setFieldValue, handleChange, handleBlur }) => {
+      // let form;
+      console.log("values", values);
+      let disabled;
+      let valueDateTime;
+      switch (typeModal) {
+         case "modalSearching":
+            disabled = vehicle ? false : true;
+            valueDateTime = formatDatetime(values.dateTime, true); // value={values.dateTime} // value de la Fecha de Registro
+            break;
+
+         case "modalShowService":
+            disabled = showService;
+            valueDateTime = formatDatetime(values.created_at, true);
+            break;
+
+         default:
+            form = <h1>Sin Modal?</h1>;
+            break;
+      }
+      return (
+         <>
+            <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+            {/* N° Unidad */}
+            <Grid xs={12} md={6} sx={{ mb: 1 }}>
+               <InputComponentv2
+                  idName={"stock_number"}
+                  label={"N° Unidad"}
+                  placeholder={"Ingresa el N° Unidad"}
+                  type="number"
+                  formData={formData}
+                  onChange={(e) => {
+                     handleChange(e);
+                     handleChangeStockNumber(e);
+                  }}
+                  onBlur={(e) => {
+                     handleBlur(e);
+                     handleBlurStockNumber(e, setFieldValue, values);
+                  }}
+                  disabled={typeModal !== "modalSearching" && disabled}
+                  setFieldValue={setFieldValue}
+                  value={values.stock_number}
+                  error={errors.stock_number}
+                  touched={touched.stock_number}
+               />
+               {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "35%", mt: 0, zIndex: 10 }} />}
+            </Grid>
+            {/* Fecha de Registro */}
+            <Grid xs={12} md={6} sx={{ mb: 1 }}>
+               <InputComponentv2
+                  idName={"dateTime"}
+                  label={"Fecha de Registro"}
+                  placeholder={"Fecha de registro"}
+                  type="text"
+                  formData={formData}
+                  // onChange={(e) => {
+                  //    handleChange(e);
+                  //    // handleChangeStockNumber(e);
+                  // }}
+                  disabled={true}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  value={valueDateTime}
+                  error={errors.dateTime}
+                  touched={touched.dateTime}
+               />
+            </Grid>
+            {/* Nombre de contacto */}
+            <Grid xs={12} md={7} sx={{ mb: 1 }}>
+               <InputComponentv2
+                  idName={"contact_name"}
+                  label={"Nombre de contacto"}
+                  placeholder={"Ingresa un nombre a contactar"}
+                  type="text"
+                  formData={formData}
+                  onChange={(e) => {
+                     handleChange(e);
+                  }}
+                  onInput={(e) => handleInputFormik(e, setFieldValue, "contact_name", true)}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  disabled={disabled}
+                  // sx={{ backgroundColor: "gray" }}
+                  value={values.contact_name}
+                  error={errors.contact_name}
+                  touched={touched.contact_name}
+               />
+            </Grid>
+            {/* Telefono de contacto */}
+            <Grid xs={12} md={5} sx={{ mb: 1 }}>
+               <InputComponentv2
+                  idName={"contact_phone"}
+                  label={"Telefono de contacto"}
+                  placeholder={"Ingresa un número telefonico"}
+                  type="text"
+                  formData={formData}
+                  onChange={(e) => {
+                     handleChange(e);
+                  }}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  disabled={disabled}
+                  // sx={{ backgroundColor: "gray" }}
+                  inputProps={{ maxLength: 10 }}
+                  value={values.contact_phone}
+                  error={errors.contact_phone}
+                  touched={touched.contact_phone}
+               />
+            </Grid>
+            {/* Diagnostico inicial */}
+            <Grid xs={12} md={12} sx={{ mb: 1 }}>
+               <InputComponentv2
+                  idName={"pre_diagnosis"}
+                  label={"Diagnóstico inicial"}
+                  placeholder={"Describe la falla que el conductor redacta"}
+                  type="text"
+                  formData={formData}
+                  onChange={(e) => {
+                     handleChange(e);
+                  }}
+                  onInput={(e) => handleInputFormik(e, setFieldValue, "pre_diagnosis", true)}
+                  onBlur={handleBlur}
+                  setFieldValue={setFieldValue}
+                  disabled={disabled}
+                  // sx={{ backgroundColor: gpcDark }}
+                  multiline
+                  rows={3}
+                  value={values.pre_diagnosis}
+                  error={errors.pre_diagnosis}
+                  touched={touched.pre_diagnosis}
+               />
+            </Grid>
+         </>
+      );
+   };
+
    return (
       <div>
          {/* <Button variant="outlined" onClick={handleClickOpen}>
@@ -336,161 +520,70 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                </Typography>
             </DialogTitle>
             <DialogContent sx={{ maxHeight: "500px", my: 1 }}>
-               <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-                  {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                     <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                        {/* N° Unidad */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                           <InputComponentv2
-                              idName={"stock_number"}
-                              label={"N° Unidad"}
-                              placeholder={"Ingresa el N° Unidad"}
-                              type="number"
-                              formData={formData}
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 handleChangeStockNumber(e);
-                              }}
-                              onBlur={(e) => {
-                                 handleBlur(e);
-                                 handleBlurStockNumber(e, setFieldValue, values);
-                              }}
-                              setFieldValue={setFieldValue}
-                              value={values.stock_number}
-                              error={errors.stock_number}
-                              touched={touched.stock_number}
-                           />
-                           {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "35%", mt: 0, zIndex: 10 }} />}
-                        </Grid>
-                        {/* Fecha de Registro */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                           <InputComponentv2
-                              idName={"dateTime"}
-                              label={"Fecha de Registro"}
-                              placeholder={"Fecha de registro"}
-                              type="text"
-                              formData={formData}
-                              // onChange={(e) => {
-                              //    handleChange(e);
-                              //    // handleChangeStockNumber(e);
-                              // }}
-                              disabled={true}
-                              onBlur={handleBlur}
-                              setFieldValue={setFieldValue}
-                              value={values.dateTime}
-                              error={errors.dateTime}
-                              touched={touched.dateTime}
-                           />
-                        </Grid>
-                        {/* Nombre de contacto */}
-                        <Grid xs={12} md={7} sx={{ mb: 1 }}>
-                           <InputComponentv2
-                              idName={"contact_name"}
-                              label={"Nombre de contacto"}
-                              placeholder={"Ingresa un nombre a contactar"}
-                              type="text"
-                              formData={formData}
-                              onChange={(e) => {
-                                 handleChange(e);
-                              }}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "contact_name", true)}
-                              onBlur={handleBlur}
-                              setFieldValue={setFieldValue}
-                              disabled={vehicle ? false : true}
-                              // sx={{ backgroundColor: "gray" }}
-                              value={values.contact_name}
-                              error={errors.contact_name}
-                              touched={touched.contact_name}
-                           />
-                        </Grid>
-                        {/* Telefono de contacto */}
-                        <Grid xs={12} md={5} sx={{ mb: 1 }}>
-                           <InputComponentv2
-                              idName={"contact_phone"}
-                              label={"Telefono de contacto"}
-                              placeholder={"Ingresa un número telefonico"}
-                              type="text"
-                              formData={formData}
-                              onChange={(e) => {
-                                 handleChange(e);
-                              }}
-                              onBlur={handleBlur}
-                              setFieldValue={setFieldValue}
-                              disabled={vehicle ? false : true}
-                              // sx={{ backgroundColor: "gray" }}
-                              inputProps={{ maxLength: 10 }}
-                              value={values.contact_phone}
-                              error={errors.contact_phone}
-                              touched={touched.contact_phone}
-                           />
-                        </Grid>
-                        {/* Diagnostico inicial */}
-                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                           <InputComponentv2
-                              idName={"pre_diagnosis"}
-                              label={"Diagnóstico inicial"}
-                              placeholder={"Describe la falla que el conductor redacta"}
-                              type="text"
-                              formData={formData}
-                              onChange={(e) => {
-                                 handleChange(e);
-                              }}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "pre_diagnosis", true)}
-                              onBlur={handleBlur}
-                              setFieldValue={setFieldValue}
-                              disabled={vehicle ? false : true}
-                              // sx={{ backgroundColor: gpcDark }}
-                              multiline
-                              rows={3}
-                              value={values.pre_diagnosis}
-                              error={errors.pre_diagnosis}
-                              touched={touched.pre_diagnosis}
-                           />
-                        </Grid>
+               <Tabs value={valueTabs} onChange={handleChange} variant="fullWidth" aria-label="icon label tabs example">
+                  <Tab icon={<ReceiptIcon />} label="SOLICITUD" />
+                  <Tab icon={<FileUploadIcon />} label="MATERIALES" />
+               </Tabs>
+               <SwipeableViews axis={theme.direction === "rtl" ? "x-reverse" : "x"} index={valueTabs} onChangeIndex={handleChangeIndex}>
+                  <TabPanel value={valueTabs} index={0} dir={theme.direction}>
+                     <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
+                        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
+                           <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                              <ParteUno
+                                 typeModal={"modalShowService"}
+                                 values={values}
+                                 errors={errors}
+                                 touched={touched}
+                                 setFieldValue={setFieldValue}
+                                 handleChange={handleChange}
+                                 handleBlur={handleBlur}
+                              />
 
-                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                           <Divider sx={{ flexGrow: 1, my: 1, borderStyle: "dashed", borderBottomWidth: "thick", borderColor: gpcDark }} orientation="horizontal" />
-                        </Grid>
+                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                                 <Divider
+                                    sx={{ flexGrow: 1, my: 1, borderStyle: "dashed", borderBottomWidth: "thick", borderColor: gpcDark }}
+                                    orientation="horizontal"
+                                 />
+                              </Grid>
 
-                        {/* Diagnostico Final */}
-                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                           <InputComponentv2
-                              idName={"final_diagnosis"}
-                              label={"Diagnóstico Final"}
-                              placeholder={"Describe la falla del diagnostico"}
-                              type="text"
-                              formData={formData}
-                              onChange={(e) => {
-                                 handleChange(e);
-                              }}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "final_diagnosis", true)}
-                              onBlur={handleBlur}
-                              setFieldValue={setFieldValue}
-                              // disabled={vehicle ? false : true}
-                              // sx={{ backgroundColor: gpcDark }}
-                              multiline
-                              rows={3}
-                              value={values.final_diagnosis}
-                              error={errors.final_diagnosis}
-                              touched={touched.final_diagnosis}
-                           />
-                        </Grid>
+                              {/* Diagnostico Final */}
+                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                                 <InputComponentv2
+                                    idName={"final_diagnosis"}
+                                    label={"Diagnóstico Final"}
+                                    placeholder={"Describe la falla del diagnostico"}
+                                    type="text"
+                                    formData={formData}
+                                    onChange={(e) => {
+                                       handleChange(e);
+                                    }}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "final_diagnosis", true)}
+                                    onBlur={handleBlur}
+                                    setFieldValue={setFieldValue}
+                                    // disabled={vehicle ? false : true}
+                                    // sx={{ backgroundColor: gpcDark }}
+                                    multiline
+                                    rows={3}
+                                    value={values.final_diagnosis}
+                                    error={errors.final_diagnosis}
+                                    touched={touched.final_diagnosis}
+                                 />
+                              </Grid>
 
-                        <LoadingButton
-                           type="submit"
-                           disabled={isSubmitting}
-                           loading={isSubmitting}
-                           // loadingPosition="start"
-                           variant="contained"
-                           fullWidth
-                           size="large"
-                           // sx={{ bgcolor: gpcDark }}
-                        >
-                           {textBtnSubmit}
-                        </LoadingButton>
-                        <ButtonGroup variant="outlined" fullWidth>
-                           {/* <Button
+                              <LoadingButton
+                                 type="submit"
+                                 disabled={isSubmitting}
+                                 loading={isSubmitting}
+                                 // loadingPosition="start"
+                                 variant="contained"
+                                 fullWidth
+                                 size="large"
+                                 // sx={{ bgcolor: gpcDark }}
+                              >
+                                 {textBtnSubmit}
+                              </LoadingButton>
+                              <ButtonGroup variant="outlined" fullWidth>
+                                 {/* <Button
                               type="reset"
                               variant="outlined"
                               color="secondary"
@@ -501,23 +594,115 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                            >
                               LIMPIAR
                            </Button> */}
-                           {/* <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
+                                 {/* <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
                               CANCELAR
                            </Button> */}
-                        </ButtonGroup>
-                        <Button
-                           type="button"
-                           color="info"
-                           fullWidth
-                           id="btnModify"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleModify(values, setValues, setFieldValue)}
-                        >
-                           setValues
-                        </Button>
-                     </Grid>
-                  )}
-               </Formik>
+                              </ButtonGroup>
+                              <Button
+                                 type="button"
+                                 color="info"
+                                 fullWidth
+                                 id="btnModify"
+                                 sx={{ mt: 1, display: "none" }}
+                                 onClick={() => handleModify(values, setValues, setFieldValue)}
+                              >
+                                 setValues
+                              </Button>
+                           </Grid>
+                        )}
+                     </Formik>
+                  </TabPanel>
+                  <TabPanel value={valueTabs} index={1} dir={theme.direction}>
+                     <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
+                        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
+                           <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                              <ParteUno
+                                 typeModal={"modalShowService"}
+                                 values={values}
+                                 errors={errors}
+                                 touched={touched}
+                                 setFieldValue={setFieldValue}
+                                 handleChange={handleChange}
+                                 handleBlur={handleBlur}
+                              />
+
+                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                                 <Divider
+                                    sx={{ flexGrow: 1, my: 1, borderStyle: "dashed", borderBottomWidth: "thick", borderColor: gpcDark }}
+                                    orientation="horizontal"
+                                 />
+                              </Grid>
+
+                              {/* Diagnostico Final */}
+                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                                 <InputComponentv2
+                                    idName={"final_diagnosis"}
+                                    label={"Diagnóstico Final"}
+                                    placeholder={"Describe la falla del diagnostico"}
+                                    type="text"
+                                    formData={formData}
+                                    onChange={(e) => {
+                                       handleChange(e);
+                                    }}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "final_diagnosis", true)}
+                                    onBlur={handleBlur}
+                                    setFieldValue={setFieldValue}
+                                    // disabled={vehicle ? false : true}
+                                    // sx={{ backgroundColor: gpcDark }}
+                                    multiline
+                                    rows={3}
+                                    value={values.final_diagnosis}
+                                    error={errors.final_diagnosis}
+                                    touched={touched.final_diagnosis}
+                                 />
+                              </Grid>
+
+                              <LoadingButton
+                                 type="submit"
+                                 disabled={isSubmitting}
+                                 loading={isSubmitting}
+                                 // loadingPosition="start"
+                                 variant="contained"
+                                 fullWidth
+                                 size="large"
+                                 // sx={{ bgcolor: gpcDark }}
+                              >
+                                 {textBtnSubmit}
+                              </LoadingButton>
+                              <ButtonGroup variant="outlined" fullWidth>
+                                 {/* <Button
+                              type="reset"
+                              variant="outlined"
+                              color="secondary"
+                              fullWidth
+                              size="large"
+                              sx={{ mt: 1 }}
+                              onClick={() => handleReset(resetForm, setFieldValue, values.id)}
+                           >
+                              LIMPIAR
+                           </Button> */}
+                                 {/* <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
+                              CANCELAR
+                           </Button> */}
+                              </ButtonGroup>
+                              <Button
+                                 type="button"
+                                 color="info"
+                                 fullWidth
+                                 id="btnModify"
+                                 sx={{ mt: 1, display: "none" }}
+                                 onClick={() => handleModify(values, setValues, setFieldValue)}
+                              >
+                                 setValues
+                              </Button>
+                           </Grid>
+                        )}
+                     </Formik>
+                  </TabPanel>
+                  <TabPanel value={valueTabs} index={2} dir={theme.direction}>
+                     Item Three
+                  </TabPanel>
+               </SwipeableViews>
             </DialogContent>
             <DialogActions sx={{ bgcolor: gpcDark }}>
                <Button variant="text" sx={{ color: gpcLight, fontSize: 16 }} onClick={handleClose}>

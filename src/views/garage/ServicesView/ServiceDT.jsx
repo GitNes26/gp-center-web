@@ -16,16 +16,19 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { Box } from "@mui/system";
 import { formatPhone } from "../../../utils/Formats";
-import { IconCircleCheck, IconEye, IconUpload } from "@tabler/icons";
+import { IconCircleCheck, IconEye } from "@tabler/icons";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ModalService from "../../cove/ShowVehicleView/ModalService";
 import UserContextProvider from "../../../context/UserContext";
 import VehicleContextProvider from "../../../context/VehicleContext";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const ServiceDT = () => {
+   const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, services, getServices, showService, deleteService, setTextBtnSumbit, setFormTitle } = useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
@@ -106,30 +109,34 @@ const ServiceDT = () => {
       return (
          <ButtonGroup variant="outlined">
             <Tooltip title={`Ver Solicitud de ${singularName}`} placement="top">
-               <IconButton color="info" onClick={() => handleClickShowRequest(id, folio, obj)}>
+               <Button color="info" onClick={() => handleClickShowRequest(id, folio, obj)}>
                   <IconEye />
-               </IconButton>
+               </Button>
             </Tooltip>
-            <Tooltip title={`Aceptar ${singularName}`} placement="top">
+            {/* <Tooltip title={`Aceptar ${singularName}`} placement="top">
                <Button color="success" onClick={() => Toast.Success("Servicio Aceptado")}>
                   <IconCircleCheck />
                </Button>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title={`Cargar Material al ${singularName}`} placement="top">
-               <Button color="success" onClick={() => Toast.Success("Cargar Material")}>
-                  <IconUpload />
+               <Button color="secondary" oonClick={() => handleClickLoadMaterial(id, folio, obj)}>
+                  <FileUploadIcon />
                </Button>
             </Tooltip>
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => Toast.Default("Editar Info")} /* onClick={() => handleClickEdit(id)} */>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <Button color="error" onClick={() => Toast.Default("Eliminar Servicio")} /* onClick={() => handleClickDelete(id, name)} */>
-                  <IconDelete />
-               </Button>
-            </Tooltip>
+            {auth.role_id === ROLE_SUPER_ADMIN && (
+               <>
+                  <Tooltip title={`Editar ${singularName}`} placement="top">
+                     <Button color="info" onClick={() => Toast.Default("Editar Info")} /* onClick={() => handleClickEdit(id)} */>
+                        <IconEdit />
+                     </Button>
+                  </Tooltip>
+                  <Tooltip title={`Eliminar ${singularName}`} placement="top">
+                     <Button color="error" onClick={() => Toast.Default("Eliminar Servicio")} /* onClick={() => handleClickDelete(id, name)} */>
+                        <IconDelete />
+                     </Button>
+                  </Tooltip>
+               </>
+            )}
          </ButtonGroup>
       );
    };

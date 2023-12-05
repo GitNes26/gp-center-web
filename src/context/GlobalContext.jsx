@@ -11,6 +11,10 @@ export const gpcDarkContrast = "#E9ECEF";
 export const gpcBlue = "#1455CB";
 export const gpcText = "#1455CB";
 
+export const ROLE_SUPER_ADMIN = 1;
+export const ROLE_ADMIN = 2;
+export const ROLE_MA = 3;
+
 export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {

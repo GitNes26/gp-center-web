@@ -38,7 +38,7 @@ const formDataInitialState = {
 
 export default function ServiceContextProvider({ children }) {
    const { auth } = useAuthContext();
-   formDataInitialState.mechanic_id = auth.id;
+   if (auth.role_id === 4) formDataInitialState.mechanic_id = auth.id;
    const singularName = "Servicio"; //Escribirlo siempre letra Capital
    const pluralName = "Servicios"; //Escribirlo siempre letra Capital
 
