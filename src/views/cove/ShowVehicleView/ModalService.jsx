@@ -14,7 +14,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Fragment, forwardRef, useEffect, useState } from "react";
-import { ButtonGroup, CircularProgress, ListItemButton, TextField } from "@mui/material";
+import { ButtonGroup, CircularProgress, IconButton, ListItemButton, TextField, Tooltip } from "@mui/material";
 import { useUserContext } from "../../../context/UserContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
 
@@ -40,6 +40,8 @@ import SwipeableViews from "react-swipeable-views";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 
+import UploadIcon from "@mui/icons-material/Upload";
+import ServiceMaterialDT from "./ServiceMaterialDT";
 // import { useTheme } from "@mui/material/styles";
 function TabPanel(props) {
    const { children, value, index, ...other } = props;
@@ -512,14 +514,14 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
             keepMounted
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
-            sx={{ backgroundColor: "transparent" }}
+            sx={{ backgroundColor: "transparent", height: "100vh" }}
          >
             <DialogTitle bgcolor={gpcDark}>
                <Typography sx={{ color: gpcLight }} variant="h1" component={"span"}>
                   {title.toUpperCase()}
                </Typography>
             </DialogTitle>
-            <DialogContent sx={{ maxHeight: "500px", my: 1 }}>
+            <DialogContent sx={{ maxHeight: "2500px", my: 1 }}>
                <Tabs value={valueTabs} onChange={handleChange} variant="fullWidth" aria-label="icon label tabs example">
                   <Tab icon={<ReceiptIcon />} label="SOLICITUD" />
                   <Tab icon={<FileUploadIcon />} label="MATERIALES" />
@@ -615,30 +617,35 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                   <TabPanel value={valueTabs} index={1} dir={theme.direction}>
                      <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                           <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                              <ParteUno
-                                 typeModal={"modalShowService"}
-                                 values={values}
-                                 errors={errors}
-                                 touched={touched}
-                                 setFieldValue={setFieldValue}
-                                 handleChange={handleChange}
-                                 handleBlur={handleBlur}
-                              />
-
+                           <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} sx={{ mt: 0 }}>
+                              {/* Folio del servicio */}
                               <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                                 <Divider
-                                    sx={{ flexGrow: 1, my: 1, borderStyle: "dashed", borderBottomWidth: "thick", borderColor: gpcDark }}
-                                    orientation="horizontal"
+                                 <InputComponentv2
+                                    idName={"folio"}
+                                    label={"Folio del servicio"}
+                                    placeholder={"No. del servicio / Folio"}
+                                    type="text"
+                                    formData={formData}
+                                    onChange={(e) => {
+                                       handleChange(e);
+                                    }}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "folio", true)}
+                                    onBlur={handleBlur}
+                                    setFieldValue={setFieldValue}
+                                    disabled={true}
+                                    // sx={{ backgroundColor: gpcDark }}
+                                    value={values.folio}
+                                    error={errors.folio}
+                                    touched={touched.folio}
                                  />
                               </Grid>
 
-                              {/* Diagnostico Final */}
-                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                              {/* Codigo material */}
+                              <Grid xs={12} md={3} sx={{ mb: 1 }}>
                                  <InputComponentv2
                                     idName={"final_diagnosis"}
-                                    label={"Diagnóstico Final"}
-                                    placeholder={"Describe la falla del diagnostico"}
+                                    label={"Código material"}
+                                    placeholder={"999"}
                                     type="text"
                                     formData={formData}
                                     onChange={(e) => {
@@ -649,13 +656,63 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                                     setFieldValue={setFieldValue}
                                     // disabled={vehicle ? false : true}
                                     // sx={{ backgroundColor: gpcDark }}
-                                    multiline
-                                    rows={3}
                                     value={values.final_diagnosis}
                                     error={errors.final_diagnosis}
                                     touched={touched.final_diagnosis}
                                  />
                               </Grid>
+                              {/* Descripción */}
+                              <Grid xs={12} md={5} sx={{ mb: 1 }}>
+                                 <InputComponentv2
+                                    idName={"description"}
+                                    label={"Descripción"}
+                                    placeholder={"Descripción de la pieza"}
+                                    type="text"
+                                    formData={formData}
+                                    onChange={(e) => {
+                                       handleChange(e);
+                                    }}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "description", true)}
+                                    onBlur={handleBlur}
+                                    setFieldValue={setFieldValue}
+                                    // disabled={vehicle ? false : true}
+                                    // sx={{ backgroundColor: gpcDark }}
+                                    value={values.description}
+                                    error={errors.description}
+                                    touched={touched.description}
+                                 />
+                              </Grid>
+                              {/* Cantidad */}
+                              <Grid xs={12} md={3} sx={{ mb: 1 }}>
+                                 <InputComponentv2
+                                    idName={"quantity"}
+                                    label={"Cantidad"}
+                                    placeholder={"999"}
+                                    type="text"
+                                    formData={formData}
+                                    onChange={(e) => {
+                                       handleChange(e);
+                                    }}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "quantity", true)}
+                                    onBlur={handleBlur}
+                                    setFieldValue={setFieldValue}
+                                    // disabled={vehicle ? false : true}
+                                    // sx={{ backgroundColor: gpcDark }}
+                                    value={values.quantity}
+                                    error={errors.quantity}
+                                    touched={touched.quantity}
+                                 />
+                              </Grid>
+                              {/* Btn Cargar */}
+                              <Grid xs={12} md={1} sx={{ mb: 1 }}>
+                                 <Tooltip title="Cargar Material">
+                                    <IconButton variant="outlined" onClick={() => Toast.Success("Cargando material")}>
+                                       <UploadIcon />
+                                    </IconButton>
+                                 </Tooltip>
+                              </Grid>
+
+                              <ServiceMaterialDT />
 
                               <LoadingButton
                                  type="submit"
@@ -698,9 +755,6 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                            </Grid>
                         )}
                      </Formik>
-                  </TabPanel>
-                  <TabPanel value={valueTabs} index={2} dir={theme.direction}>
-                     Item Three
                   </TabPanel>
                </SwipeableViews>
             </DialogContent>
