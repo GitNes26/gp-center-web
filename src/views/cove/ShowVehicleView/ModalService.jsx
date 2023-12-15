@@ -424,7 +424,8 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                   //    handleChange(e);
                   //    // handleChangeStockNumber(e);
                   // }}
-                  disabled={true}
+                  // disabled={true}
+                  inputProps={{ readOnly: true }}
                   onBlur={handleBlur}
                   setFieldValue={setFieldValue}
                   value={valueDateTime}
@@ -632,8 +633,9 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                                     onInput={(e) => handleInputFormik(e, setFieldValue, "folio", true)}
                                     onBlur={handleBlur}
                                     setFieldValue={setFieldValue}
-                                    disabled={true}
+                                    // disabled={true}
                                     // sx={{ backgroundColor: gpcDark }}
+                                    inputProps={{ readOnly: true }}
                                     value={values.folio}
                                     error={errors.folio}
                                     touched={touched.folio}

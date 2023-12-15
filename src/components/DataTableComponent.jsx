@@ -10,7 +10,7 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
-import { Button, ButtonGroup, Card, Tooltip } from "@mui/material";
+import { Button, ButtonGroup, Card, IconButton, Tooltip } from "@mui/material";
 import { IconEdit, IconFile, IconFileSpreadsheet, IconSearch } from "@tabler/icons";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
@@ -23,12 +23,34 @@ import Swal from "sweetalert2";
 import Toast from "../utils/Toast";
 import { QuestionAlertConfig } from "../utils/sAlert";
 import IconDelete from "./icons/IconDelete";
+import { Toolbar } from "primereact/toolbar";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
-export default function DataTableComponent({ columns, globalFilterFields, data, headerFilters = true, rowEdit = true, handleClickAdd, refreshTable }) {
+export default function DataTableComponent({
+   idName = "table",
+   columns,
+   globalFilterFields,
+   data,
+   setData,
+   headerFilters = true,
+   rowEdit = false,
+   handleClickAdd,
+   createData,
+   onRowEditCompleteContinue = null,
+   updateData,
+   handleClickDeleteContinue,
+   refreshTable,
+   btnAdd = true,
+   newRow = null,
+   btnsExport = true,
+   showGridlines = false
+}) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
+   const [selectedData, setSelectedData] = useState(null);
+   const [updating, setUpdating] = useState(false);
 
    const dt = useRef(null);
-   // const [statuses] = useState(["INSTOCK", "LOWSTOCK", "OUTOFSTOCK"]);
+   // columns.unshift({ id: 0, label: "Selecciona una opción..." });
 
    // FILTROS
    let filtersColumns = columns.map((c) => [c.field, { value: null, matchMode: FilterMatchMode.STARTS_WITH }]);
@@ -39,53 +61,83 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
    const [globalFilterValue, setGlobalFilterValue] = useState("");
    // FILTROS
 
-   const getSeverity = (value) => {
-      switch (value) {
-         case "INSTOCK":
-            return "success";
+   const addRow = () => {
+      // console.log(data);
+      // console.log("newRow", newRow);
 
-         case "LOWSTOCK":
-            return "warning";
+      let _data = [...data];
+      // console.log("_data", _data);
+      // // let { newData, index } = e;
 
-         case "OUTOFSTOCK":
-            return "danger";
+      // // _data[index] = newData;
+      _data.unshift(newRow);
 
-         default:
-            return null;
+      setData(_data);
+
+      document.querySelector(`#${idName} tbody`).childNodes[0].querySelector("button").click();
+      // // setData(newRow);
+      // console.log(data);
+   };
+
+   const handleOnRowEditIinit = (e) => {
+      setUpdating(true);
+      const firtsColumn = e.originalEvent.target.closest("tr").childNodes[1];
+      firtsColumn.querySelector(".p-inputtext");
+   };
+   const handleOnRowEditCancel = (e) => {
+      setUpdating(false);
+      const dataSelected = e.data;
+      if (dataSelected.relationship == "" && dataSelected.age == "" && dataSelected.occupation == "" && dataSelected.monthly_income == null) {
+         let _data = data.filter((val) => val.id !== dataSelected.id);
+         setData(_data);
       }
    };
 
-   const onRowEditComplete = (e) => {
-      console.log(e);
-      let _products = [...data];
-      let { newData, index } = e;
+   const onRowEditComplete = async (e) => {
+      try {
+         // console.log(e);
+         let _data = [...data];
+         let { newData, index } = e;
 
-      _products[index] = newData;
+         _data[index] = newData;
 
-      setData(_products);
+         setData(_data);
+         // onRowEditCompleteContinue(newData);
+         const newNewData = newData;
+         delete newNewData.actions;
+         let ajaxResponse;
+         if (newNewData.id > 0) ajaxResponse = await updateData(newNewData);
+         else ajaxResponse = await createData(newNewData);
+         Toast.Customizable(ajaxResponse.alert_text, ajaxResponse.alert_icon);
+         setUpdating(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+         setUpdating(false);
+      }
    };
 
-   const textEditor = (options) => {
-      return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
-   };
+   // const textEditor = (options) => {
+   //    return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+   // };
 
-   const statusEditor = (options) => {
-      return (
-         <Dropdown
-            value={options.value}
-            options={statuses}
-            onChange={(e) => options.editorCallback(e.value)}
-            placeholder="Select a Status"
-            itemTemplate={(option) => {
-               return <Tag value={option} severity={getSeverity(option)}></Tag>;
-            }}
-         />
-      );
-   };
+   // const statusEditor = (options) => {
+   //    return (
+   //       <Dropdown
+   //          value={options.value}
+   //          options={statuses}
+   //          onChange={(e) => options.editorCallback(e.value)}
+   //          placeholder="Select a Status"
+   //          itemTemplate={(option) => {
+   //             return <Tag value={option} severity={getSeverity(option)}></Tag>;
+   //          }}
+   //       />
+   //    );
+   // };
 
-   const priceEditor = (options) => {
-      return <InputNumber value={options.value} onValueChange={(e) => options.editorCallback(e.value)} mode="currency" currency="USD" locale="en-US" />;
-   };
+   // const priceEditor = (options) => {
+   //    return <InputNumber value={options.value} onValueChange={(e) => options.editorCallback(e.value)} mode="currency" currency="USD" locale="en-US" />;
+   // };
 
    //#region EXPORTAR
    const exportColumns = columns.map((col) => {
@@ -157,38 +209,88 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
          setLoading(true);
          await refreshTable();
          setLoading(false);
-         Toast.Info("Tabla Actualizada");
+         Toast.Success("Tabla Actualizada");
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    };
+   const confirmDeleteSelected = () => {
+      setDeleteDataDialog(true);
+   };
+   const leftToolbarTemplate = () => {
+      return (
+         <div className="flex flex-wrap gap-2">
+            {/* <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} /> */}
+            <Button variant="contained" color="error" startIcon={<IconDelete />} onClick={confirmDeleteSelected} disabled={!selectedData || !selectedData.length}>
+               Eliminar Seleccionados
+            </Button>
+         </div>
+      );
+   };
+
+   const handleClickDelete = async () => {
+      // console.log(selectedData);
+      await handleClickDeleteContinue(selectedData);
+      setSelectedData([]);
+   };
 
    const header = (
       <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between", alignItems: "center" }}>
-         <Tooltip title="Exportar a Excel" placement="top">
-            <Button type="button" variant="text" color="success" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportExcel}>
-               <IconFileSpreadsheet />
-            </Button>
-         </Tooltip>
+         {btnsExport && (
+            <>
+               <Tooltip title="Exportar a Excel" placement="top">
+                  <IconButton type="button" variant="text" color="success" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportExcel}>
+                     <IconFileSpreadsheet />
+                  </IconButton>
+               </Tooltip>
 
-         <Tooltip title="Exportar a PDF" placement="top">
-            <Button type="button" variant="text" color="error" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportPdf}>
-               <PictureAsPdfIcon />
-            </Button>
-         </Tooltip>
+               <Tooltip title="Exportar a PDF" placement="top">
+                  <IconButton type="button" variant="text" color="error" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportPdf}>
+                     <PictureAsPdfIcon />
+                  </IconButton>
+               </Tooltip>
+            </>
+         )}
+
+         {rowEdit && (
+            <Tooltip title="Eliminar Seleccionados" placement="top">
+               <span>
+                  <IconButton
+                     type="button"
+                     variant="text"
+                     color="error"
+                     onClick={handleClickDelete}
+                     disabled={!selectedData || !selectedData.length}
+                     sx={{ borderRadius: "12px", mr: 1 }}
+                  >
+                     <i className="pi pi-trash"></i>
+                  </IconButton>
+               </span>
+            </Tooltip>
+         )}
+
          <Tooltip title="Refrescar Tabla" placement="top">
-            <Button type="button" variant="text" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
+            <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
                <i className="pi pi-refresh"></i>
-            </Button>
+            </IconButton>
          </Tooltip>
          <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
-         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-         </Button>
+         {btnAdd && (
+            <Button
+               variant="contained"
+               sx={{ width: 250 }}
+               startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
+               size="large"
+               disabled={updating}
+               onClick={() => (rowEdit ? addRow() : handleClickAdd())}
+            >
+               AGREGAR
+            </Button>
+         )}
       </Box>
    );
 
@@ -200,15 +302,22 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
       <div className="card p-fluid">
          {/* <Tooltip target=".export-buttons>button" position="bottom" /> */}
          <Card>
+            {/* {rowEdit && <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>} */}
+
             <DataTable
+               id={idName}
+               name={idName}
+               ref={dt}
                style={{ borderRadius: "20px" }}
                stripedRows
+               // rowHover
+               showGridlines={showGridlines}
                removableSort
                size="small"
                value={data}
                editMode="row"
                header={header}
-               dataKey="id"
+               dataKey="key"
                paginator
                rowsPerPageOptions={[5, 10, 50, 100, 1000]}
                rows={10}
@@ -216,47 +325,64 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
                filters={filters}
                scrollable={true}
                scrollHeight="67vh"
-               filterDisplay={headerFilters ? "row" : "menu"}
                globalFilter={globalFilterValue}
                globalFilterFields={globalFilterFields}
-               onRowEditComplete={onRowEditComplete}
+               filterDisplay={headerFilters ? "row" : "menu"}
                tableStyle={{ minWidth: "50rem" }}
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                emptyMessage="No se encontraron registros."
                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+               selection={selectedData}
+               onSelectionChange={(e) => setSelectedData(e.value)}
+               onRowEditComplete={onRowEditComplete}
+               onRowEditInit={handleOnRowEditIinit}
+               onRowEditCancel={handleOnRowEditCancel}
             >
+               <Column selectionMode="multiple" exportable={false}></Column>
                {columns.map((col, index) => (
                   <Column
                      key={index}
                      field={col.field}
                      header={col.header}
-                     headerClassName="text-center"
                      headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
+                     headerClassName="text-center"
+                     filter={headerFilters}
+                     filterField={col.filterField}
                      filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                      editor={(options) => col.functionEdit(options)}
                      sortable={col.sortable}
                      body={col.body}
-                     filter={headerFilters}
-                     filterField={col.filterField}
                      style={{ width: "auto" }}
                      footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                   ></Column>
                ))}
-               <Column
-                  key={"index"}
-                  field={"actions"}
-                  header={"Acciones"}
-                  headerClassName="text-center"
-                  headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-                  filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-                  // editor={(options) => col.functionEdit(options)}
-                  // body={col.body}
-                  sortable={false}
-                  bodyStyle={{ textAlign: "center" }}
-                  filter={false}
-                  style={{ width: "auto" }}
-                  footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-               ></Column>
+               {rowEdit ? (
+                  <Column
+                     rowEditor
+                     // headerStyle={{ width: "10%", minWidth: "8rem" }}
+                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
+                     headerClassName="text-center"
+                     filter={false}
+                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     bodyStyle={{ textAlign: "center" }}
+                  ></Column>
+               ) : (
+                  <Column
+                     key={"index"}
+                     field={"actions"}
+                     header={"Acciones"}
+                     headerClassName="text-center"
+                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     // editor={(options) => col.functionEdit(options)}
+                     // body={col.body}
+                     sortable={false}
+                     bodyStyle={{ textAlign: "center" }}
+                     filter={false}
+                     style={{ width: "auto" }}
+                     footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                  ></Column>
+               )}
             </DataTable>
          </Card>
       </div>

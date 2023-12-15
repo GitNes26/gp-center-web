@@ -49,7 +49,7 @@ const InputComponentv2 = ({
                <>
                   <OutlineInputStyle
                      type={type}
-                     value={value}
+                     value={value || ""}
                      placeholder={placeholder}
                      {...field}
                      fullWidth
