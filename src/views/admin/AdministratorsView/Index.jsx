@@ -1,31 +1,31 @@
-import AdministrationForm from "./Form";
-import AdministrationDT from "./DataTable";
+import AdministratorForm from "./Form";
+import AdministratorDT from "./DataTable";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useAdministrationContext } from "../../../context/AdministrationContext";
+import { useAdministratorContext } from "../../../context/AdministratorContext";
 import { Alert, AlertTitle, Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
-const AdministrationsView = () => {
+const AdministratorsView = () => {
    const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, administration, getAdministrations } = useAdministrationContext();
+   const { pluralName, administrator, getAdministrators } = useAdministratorContext();
 
    useEffect(() => {
       try {
          setLoading(true);
-         getAdministrations();
+         getAdministrators();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [administration]);
+   }, [administrator]);
 
    return (
       <>
@@ -38,21 +38,23 @@ const AdministrationsView = () => {
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
-         <AdministrationDT />
+         <AdministratorDT />
          {/* </MainCard> */}
 
-         <AdministrationForm dataRoles={result.roles} />
+         <AdministratorForm dataRoles={result.roles} />
       </>
    );
 };
 
-export const loaderIndexAdministrationsView = async () => {
+export const loaderIndexAdministratorsView = async () => {
    try {
       const res = CorrectRes;
-      // const axiosData = await Axios.get("/administrations");
-      // res.result.administrations = axiosData.data.data.result;
+      // const axiosData = await Axios.get("/administrators");
+      // res.result.administrators = axiosData.data.data.result;
+      const auth = JSON.parse(localStorage.getItem("auth"));
 
-      const axiosRoles = await Axios.get("/roles/selectIndex");
+      const axiosRoles = await Axios.get(`/roles/selectIndex/${auth.role_id}`);
+      // console.log(axiosRoles.data.data);
       res.result.roles = axiosRoles.data.data.result;
       res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
       // // console.log(res);
@@ -68,4 +70,4 @@ export const loaderIndexAdministrationsView = async () => {
    }
 };
 
-export default AdministrationsView;
+export default AdministratorsView;

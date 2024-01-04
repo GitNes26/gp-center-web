@@ -38,13 +38,12 @@ export default function DataTableComponent({
    createData,
    onRowEditCompleteContinue = null,
    updateData,
+   handleClickDeleteContinue,
    refreshTable,
    btnAdd = true,
    newRow = null,
    btnsExport = true,
-   showGridlines = false,
-   btnDeleteMultiple = false,
-   handleClickDeleteMultipleContinue
+   showGridlines = false
 }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
@@ -62,22 +61,6 @@ export default function DataTableComponent({
    const [globalFilterValue, setGlobalFilterValue] = useState("");
    // FILTROS
 
-   const getSeverity = (value) => {
-      switch (value) {
-         case "INSTOCK":
-            return "success";
-
-         case "LOWSTOCK":
-            return "warning";
-
-         case "OUTOFSTOCK":
-            return "danger";
-
-         default:
-            return null;
-      }
-   };
-
    const addRow = () => {
       // console.log(data);
       // console.log("newRow", newRow);
@@ -91,9 +74,8 @@ export default function DataTableComponent({
 
       setData(_data);
 
-      setTimeout(() => {
-         document.querySelector(`#${idName} tbody`).childNodes[0].querySelector("button").click();
-      }, 100); // // setData(newRow);
+      document.querySelector(`#${idName} tbody`).childNodes[0].querySelector("button").click();
+      // // setData(newRow);
       // console.log(data);
    };
 
@@ -114,7 +96,6 @@ export default function DataTableComponent({
    const onRowEditComplete = async (e) => {
       try {
          // console.log(e);
-         // console.log(data);
          let _data = [...data];
          let { newData, index } = e;
 
@@ -248,31 +229,14 @@ export default function DataTableComponent({
       );
    };
 
-   const handleClickDeleteMultiple = async () => {
+   const handleClickDelete = async () => {
       // console.log(selectedData);
-      await handleClickDeleteMultipleContinue(selectedData);
+      await handleClickDeleteContinue(selectedData);
       setSelectedData([]);
    };
 
    const header = (
       <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between", alignItems: "center" }}>
-         {btnDeleteMultiple && (
-            <Tooltip title="Eliminar Seleccionados" placement="top">
-               <span>
-                  <IconButton
-                     type="button"
-                     variant="text"
-                     color="error"
-                     onClick={handleClickDeleteMultiple}
-                     disabled={!selectedData || !selectedData.length}
-                     sx={{ borderRadius: "12px", mr: 1 }}
-                  >
-                     <i className="pi pi-trash"></i>
-                  </IconButton>
-               </span>
-            </Tooltip>
-         )}
-
          {btnsExport && (
             <>
                <Tooltip title="Exportar a Excel" placement="top">
@@ -287,6 +251,23 @@ export default function DataTableComponent({
                   </IconButton>
                </Tooltip>
             </>
+         )}
+
+         {rowEdit && (
+            <Tooltip title="Eliminar Seleccionados" placement="top">
+               <span>
+                  <IconButton
+                     type="button"
+                     variant="text"
+                     color="error"
+                     onClick={handleClickDelete}
+                     disabled={!selectedData || !selectedData.length}
+                     sx={{ borderRadius: "12px", mr: 1 }}
+                  >
+                     <i className="pi pi-trash"></i>
+                  </IconButton>
+               </span>
+            </Tooltip>
          )}
 
          <Tooltip title="Refrescar Tabla" placement="top">

@@ -8,7 +8,7 @@ import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useState } from "react";
-import { useAdministrationContext } from "../../../context/AdministrationContext";
+import { useAdministratorContext } from "../../../context/AdministratorContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
@@ -26,7 +26,7 @@ import { useRoleContext } from "../../../context/RoleContext";
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const AdministrationForm = ({ dataRoles }) => {
+const AdministratorForm = ({ dataRoles }) => {
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
@@ -50,7 +50,7 @@ const AdministrationForm = ({ dataRoles }) => {
 
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
    // const { roles, getRolesSelectIndex } = useRoleContext();
-   const { resetAdministration, singularName, createAdministration, updateAdministration, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useAdministrationContext();
+   const { resetAdministrator, singularName, createAdministrator, updateAdministrator, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useAdministratorContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
@@ -76,8 +76,8 @@ const AdministrationForm = ({ dataRoles }) => {
 
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createAdministration(values);
-         else axiosResponse = await updateAdministration(values);
+         if (values.id == 0) axiosResponse = await createAdministrator(values);
+         else axiosResponse = await updateAdministrator(values);
          // console.log(axiosResponse);
          if (axiosResponse.status_code == 200) {
             resetForm();
@@ -102,7 +102,7 @@ const AdministrationForm = ({ dataRoles }) => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
-         resetAdministration();
+         resetAdministrator();
          formData.role = "Selecciona una opción...";
          setStrength(0);
          setFieldValue("id", id);
@@ -128,7 +128,7 @@ const AdministrationForm = ({ dataRoles }) => {
    const handleCancel = (resetForm) => {
       try {
          resetForm();
-         resetAdministration();
+         resetAdministrator();
          formData.role = "Selecciona una opción...";
          setStrength(0);
          setOpenDialog(false);
@@ -362,4 +362,4 @@ const AdministrationForm = ({ dataRoles }) => {
       </SwipeableDrawer>
    );
 };
-export default AdministrationForm;
+export default AdministratorForm;

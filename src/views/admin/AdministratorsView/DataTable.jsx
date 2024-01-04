@@ -11,7 +11,7 @@ import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import { useAdministrationContext } from "../../../context/AdministrationContext";
+import { useAdministratorContext } from "../../../context/AdministratorContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -24,14 +24,26 @@ import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import SwitchComponent from "../../../components/SwitchComponent";
 
-const AdministrationDT = () => {
+const AdministratorDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, administration, administrations, getAdministrations, showAdministration, deleteAdministration, DisEnableAdministration, resetFormData, resetAdministration, setTextBtnSumbit, setFormTitle } = useAdministrationContext();
-   const globalFilterFields = ["administrationname", "email", "role", "active", "created_at"];
+   const {
+      singularName,
+      administrator,
+      administrators,
+      getAdministrators,
+      showAdministrator,
+      deleteAdministrator,
+      DisEnableAdministrator,
+      resetFormData,
+      resetAdministrator,
+      setTextBtnSumbit,
+      setFormTitle
+   } = useAdministratorContext();
+   const globalFilterFields = ["username", "email", "role", "active", "created_at"];
 
    // #region BodysTemplate
-   const AdministrationBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.administrationname}</Typography>;
+   const AdministratorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
@@ -44,7 +56,7 @@ const AdministrationDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: AdministrationBodyTemplate, filterField: null },
+      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: AdministratorBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
       { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null }
    ];
@@ -58,8 +70,8 @@ const AdministrationDT = () => {
 
    const handleClickAdd = () => {
       try {
-         resetAdministration();
-         // administration.role = "Selecciona una opción...";
+         resetAdministrator();
+         // administrator.role = "Selecciona una opción...";
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
@@ -75,7 +87,7 @@ const AdministrationDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showAdministration(id);
+         await showAdministrator(id);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -89,7 +101,7 @@ const AdministrationDT = () => {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteAdministration(id);
+               const axiosResponse = await deleteAdministrator(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -104,7 +116,7 @@ const AdministrationDT = () => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await DisEnableAdministration(id, !active);
+            axiosResponse = await DisEnableAdministrator(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }, 500);
       } catch (error) {
@@ -140,14 +152,15 @@ const AdministrationDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         // console.log("cargar listado", administrations);
-         await administrations.map((obj) => {
-            // console.log(obj);
+         console.log("cargar listado", administrators);
+         await administrators.map((obj, index) => {
+            console.log(obj);
             let register = obj;
-            register.actions = <ButtonsAction id={obj.id} name={obj.administrationname} active={obj.active} />;
+            register.key = index + 1;
+            register.actions = <ButtonsAction id={obj.id} name={obj.username} active={obj.active} />;
             data.push(register);
          });
-         // if (data.length > 0) setGlobalFilterFields(Object.keys(administrations[0]));
+         // if (data.length > 0) setGlobalFilterFields(Object.keys(administrators[0]));
          // console.log("la data del formatData", globalFilterFields);
          setLoading(false);
       } catch (error) {
@@ -168,8 +181,8 @@ const AdministrationDT = () => {
          headerFilters={false}
          handleClickAdd={handleClickAdd}
          rowEdit={false}
-         refreshTable={getAdministrations}
+         refreshTable={getAdministrators}
       />
    );
 };
-export default AdministrationDT;
+export default AdministratorDT;

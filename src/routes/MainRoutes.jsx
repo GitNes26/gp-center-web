@@ -23,7 +23,8 @@ import ServicesView from "../views/garage/ServicesView/ServicesView";
 import MenuContextProvider from "../context/MenuContext";
 import DirectorsView from "../views/admin/DirectorsView/DirectorsView";
 import DirectorContextProvider from "../context/DirectorContext";
-import AdministrationsView from "../views/admin/AdministrationsView/Index";
+import AdministratorsView, { loaderIndexAdministratorsView } from "../views/admin/AdministratorsView/Index";
+import AdministratorContextProvider from "../context/AdministratorContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -62,11 +63,11 @@ const MainRoutes = {
       {
          path: "administradores",
          element: (
-            <UserContextProvider>
-               <AdministrationsView />
-            </UserContextProvider>
-         )
-         // loader: loaderIndexUsersView
+            <AdministratorContextProvider>
+               <AdministratorsView />
+            </AdministratorContextProvider>
+         ),
+         loader: loaderIndexAdministratorsView
       },
       {
          path: "departamentos",

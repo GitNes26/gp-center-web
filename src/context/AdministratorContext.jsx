@@ -3,11 +3,11 @@ import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
-const UserContext = createContext();
+const AdministratorContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   username: "",
+   administratorname: "",
    email: "",
    password: "",
    role_id: 0,
@@ -29,9 +29,9 @@ const formDataInitialState = {
    city: 0,
    colony: 0
 };
-const userInitialState = {
+const administratorInitialState = {
    id: 0,
-   username: "",
+   administratorname: "",
    email: "",
    password: "",
    role_id: 0,
@@ -56,36 +56,18 @@ const userInitialState = {
    colony: 0
 };
 
-export default function UserContextProvider({ children }) {
+export default function AdministratorContextProvider({ children }) {
    const { auth } = useAuthContext();
 
-   const singularName = "Usuario"; //Escribirlo siempre letra Capital
-   const pluralName = "Usuarios"; //Escribirlo siempre letra Capital
+   const singularName = "Administrador"; //Escribirlo siempre letra Capital
+   const pluralName = "Administradores"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [user, setUser] = useState(userInitialState);
-   const [users, setUsers] = useState([]);
+   const [administrator, setAdministrator] = useState(administratorInitialState);
+   const [administrators, setAdministrators] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
-
-   const DisEnableUser = async (id, active) => {
-      try {
-         let res = CorrectRes;
-         const axiosData = await Axios.get(`/users/${id}/DisEnableUser/${active ? "1" : "0"}`);
-         // console.log("deleteUser() axiosData", axiosData.data);
-         getUsers();
-         res = axiosData.data.data;
-         // console.log("res", res);
-         return res;
-      } catch (error) {
-         const res = ErrorRes;
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
-         Toast.Error(error);
-      }
-   };
 
    const resetFormData = () => {
       try {
@@ -95,22 +77,22 @@ export default function UserContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-   const resetUser = () => {
+   const resetAdministrator = () => {
       try {
-         setUser(userInitialState);
+         setAdministrator(administratorInitialState);
       } catch (error) {
-         console.log("Error en resetUser:", error);
+         console.log("Error en resetAdministrator:", error);
          Toast.Error(error);
       }
    };
 
-   const getUsers = async () => {
+   const getAdministrators = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/users/role_id/${auth.role_id}`);
-         res.result.users = axiosData.data.data.result;
-         setUsers(axiosData.data.data.result);
-         // console.log("users", users);
+         const axiosData = await Axios.get(`/users/by/role_id/2`);
+         res.result.administrators = axiosData.data.data.result;
+         setAdministrators(axiosData.data.data.result);
+         // console.log("administrators", administrators);
 
          return res;
       } catch (error) {
@@ -121,14 +103,14 @@ export default function UserContextProvider({ children }) {
       }
    };
 
-   const showUser = async (id) => {
+   const showAdministrator = async (id) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/users/${id}`);
          res = axiosData.data.data;
-         // console.log(res);
-         setUser(res.result);
+         setAdministrator(res.result);
          setFormData(res.result);
+         // console.log(res);
 
          return res;
       } catch (error) {
@@ -136,17 +118,16 @@ export default function UserContextProvider({ children }) {
          res.message = error;
          res.alert_text = error;
          Toast.Error(error);
-         return res;
       }
    };
 
-   const createUser = async (user) => {
+   const createAdministrator = async (administrator) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/create/${user.role_id}`, user);
+         const axiosData = await Axios.post(`/users/create/2`, administrator);
          // console.log(axiosData);
          res = axiosData.data.data;
-         getUsers();
+         getAdministrators();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -157,12 +138,12 @@ export default function UserContextProvider({ children }) {
       return res;
    };
 
-   const updateUser = async (user) => {
+   const updateAdministrator = async (administrator) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/users/update", user);
+         const axiosData = await Axios.post("/users/update", administrator);
          res = axiosData.data.data;
-         getUsers();
+         getAdministrators();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -173,12 +154,12 @@ export default function UserContextProvider({ children }) {
       return res;
    };
 
-   const deleteUser = async (id) => {
+   const deleteAdministrator = async (id) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/users/destroy/${id}`);
-         // console.log("deleteUser() axiosData", axiosData.data);
-         getUsers();
+         // console.log("deleteAdministrator() axiosData", axiosData.data);
+         getAdministrators();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -188,57 +169,39 @@ export default function UserContextProvider({ children }) {
          res.message = error;
          res.alert_text = error;
          Toast.Error(error);
-      }
-   };
-   const deleteMultiple = async (ids) => {
-      try {
-         let res = CorrectRes;
-         const axiosData = await Axios.post(`/users/destroyMultiple`, { ids });
-         // console.log("deleteMultiple() axiosData", axiosData.data);
-         getUsers();
-         res = axiosData.data.data;
-         // console.log("res", res);
-         return res;
-      } catch (error) {
-         const res = ErrorRes;
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
       }
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de UserContext");
-   //    getUsers();
+   //    console.log("el useEffect de AdministratorContext");
+   //    getAdministrators();
    // });
 
    return (
-      <UserContext.Provider
+      <AdministratorContext.Provider
          value={{
             singularName,
             pluralName,
-            users,
-            user,
-            setUser,
-            resetUser,
+            administrator,
+            administrators,
+            setAdministrator,
+            resetAdministrator,
             formData,
             setFormData,
             resetFormData,
-            getUsers,
-            showUser,
-            createUser,
-            updateUser,
-            deleteUser,
+            getAdministrators,
+            showAdministrator,
+            createAdministrator,
+            updateAdministrator,
+            deleteAdministrator,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle,
-            DisEnableUser,
-            deleteMultiple
+            setFormTitle
          }}
       >
          {children}
-      </UserContext.Provider>
+      </AdministratorContext.Provider>
    );
 }
-export const useUserContext = () => useContext(UserContext);
+export const useAdministratorContext = () => useContext(AdministratorContext);
