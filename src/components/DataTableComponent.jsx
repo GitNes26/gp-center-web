@@ -26,6 +26,62 @@ import IconDelete from "./icons/IconDelete";
 import { Toolbar } from "primereact/toolbar";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
+/* COMO IMPROTAR
+*    columns={columns}
+         data={data}
+         globalFilterFields={globalFilterFields}
+         headerFilters={false}
+         handleClickAdd={handleClickAdd}
+         refreshTable={getUsers}
+         btnAdd={true}
+         showGridlines={false}
+         btnsExport={true}
+         rowEdit={false}
+         // handleClickDeleteContinue={handleClickDeleteContinue}
+         // ELIMINAR MULTIPLES REGISTROS
+         btnDeleteMultiple={true}
+         handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+         // PARA HACER FORMULARIO EN LA TABLA
+         // AGREGAR
+         // createData={createUser}
+         // newRow={newRow}
+         // EDITAR
+         // setData={setUsers}
+         // updateData={updateUser}
+      />
+*/
+
+/* const newRow = {
+      key: 0,
+      beca_id: becaId,
+      relationship: "",
+      age: "",
+      occupation: "",
+      monthly_income: ""
+   }; */
+/* FUNCIONES DE COMPLEMENTO
+*  FUNCION PARA ELIMINAR MULTIPLES REGISTROS
+   const handleClickDeleteContinue = async (selectedData) => {
+      try {
+         let ids = selectedData.map((d) => d.id);
+         if (ids.length < 1) console.log("no hay registros");
+         let msg = `¿Estas seguro de eliminar `;
+         if (selectedData.length === 1) msg += `al familiar registrado como tu ${selectedData[0].relationship}?`;
+         else if (selectedData.length > 1) msg += `a los familiares registrados como tu ${selectedData.map((d) => d.relationship)}?`;
+         mySwal.fire(QuestionAlertConfig(msg)).then(async (result) => {
+            if (result.isConfirmed) {
+               setLoadingAction(true);
+               const axiosResponse = await deleteFamily(ids);
+               setLoadingAction(false);
+               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            }
+         });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+*/
 export default function DataTableComponent({
    idName = "table",
    columns,

@@ -190,10 +190,22 @@ const UserDT = () => {
          globalFilterFields={globalFilterFields}
          headerFilters={false}
          handleClickAdd={handleClickAdd}
-         rowEdit={false}
          refreshTable={getUsers}
+         btnAdd={true}
+         showGridlines={false}
+         btnsExport={true}
+         rowEdit={false}
+         // handleClickDeleteContinue={handleClickDeleteContinue}
+         // ELIMINAR MULTIPLES REGISTROS
          btnDeleteMultiple={true}
          handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+         // PARA HACER FORMULARIO EN LA TABLA
+         // AGREGAR
+         // createData={createUser}
+         // newRow={newRow}
+         // EDITAR
+         // setData={setUsers}
+         // updateData={updateUser}
       />
    );
 };
