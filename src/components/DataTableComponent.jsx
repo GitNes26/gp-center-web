@@ -413,7 +413,7 @@ export default function DataTableComponent({
                onRowEditInit={handleOnRowEditIinit}
                onRowEditCancel={handleOnRowEditCancel}
             >
-               <Column selectionMode="multiple" exportable={false}></Column>
+               {btnDeleteMultiple && <Column selectionMode="multiple" exportable={false}></Column>}
                {columns.map((col, index) => (
                   <Column
                      key={index}
