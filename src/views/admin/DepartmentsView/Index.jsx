@@ -1,8 +1,5 @@
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-
-import MainCard from "../../../ui-component/cards/MainCard";
-import DepartmentForm from "../../../components/departments/Form";
+import DepartmentDT from "./DataTable";
+import DepartmentForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
@@ -10,37 +7,15 @@ import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
-import { Button } from "@mui/material";
-import { AddCircleOutlineOutlined } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import DepartmentDT from "./DepartmentDT";
-
-const Item = styled(Paper)(({ theme }) => ({
-   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
-   ...theme.typography.body2,
-   padding: theme.spacing(1),
-   textAlign: "center",
-   color: theme.palette.text.secondary
-}));
 
 const DepartmentsView = () => {
    // const { result } = useLoaderData();
-   const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, departments, getDepartments, resetFormData, setTextBtnSumbit, setFormTitle } = useDepartmentContext();
-
-   const handleClickAdd = () => {
-      try {
-         resetFormData();
-         setOpenDialog(true);
-         setTextBtnSumbit("AGREGAR");
-         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   const { setLoading } = useGlobalContext();
+   const { pluralName, department, getDepartments } = useDepartmentContext();
 
    useEffect(() => {
       try {
@@ -50,7 +25,7 @@ const DepartmentsView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, []);
+   }, [department]);
 
    return (
       <>
@@ -60,9 +35,10 @@ const DepartmentsView = () => {
          </Alert> */}
 
          {/* <MainCard > */}
-         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-         </Button>
+         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+            {pluralName.toUpperCase()}
+         </Typography>
+         {/* <DataTableComponent /> */}
          <DepartmentDT />
          {/* </MainCard> */}
 
@@ -74,10 +50,15 @@ const DepartmentsView = () => {
 export const loaderIndexDepartmentsView = async () => {
    try {
       const res = CorrectRes;
+      // const auth = JSON.parse(localStorage.getItem("auth"));
 
-      // const axiosRoles = await Axios.get("/roles/selectIndex");
+      // const axiosRoles = await Axios.get(`/roles/selectIndex/`);
       // res.result.roles = axiosRoles.data.data.result;
       // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
+      // const axiosDepartments = await Axios.get("/departments/selectIndex");
+      // res.result.departments = axiosDepartments.data.data.result;
+      // res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
+      // // console.log(res);
 
       return res;
    } catch (error) {

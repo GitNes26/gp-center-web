@@ -7,7 +7,6 @@ import UsersView, { loaderIndexUsersView } from "../views/admin/UsersView/UsersV
 import UserContextProvider from "../context/UserContext";
 import { element } from "prop-types";
 import DepartmentContextProvider from "../context/DepartmentContext";
-import DepartmentsView from "../views/admin/DepartmentsView/DepartmentsView";
 import BrandContextProvider from "../context/BrandContext";
 import BrandsView from "../views/cove/BrandsView/BrandsView";
 import ModelContextProvider from "../context/ModelContext";
@@ -25,6 +24,7 @@ import DirectorsView from "../views/admin/DirectorsView/DirectorsView";
 import DirectorContextProvider from "../context/DirectorContext";
 import AdministratorsView, { loaderIndexAdministratorsView } from "../views/admin/AdministratorsView/Index";
 import AdministratorContextProvider from "../context/AdministratorContext";
+import DepartmentsView from "../views/admin/DepartmentsView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));

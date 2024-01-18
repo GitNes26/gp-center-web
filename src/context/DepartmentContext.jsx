@@ -26,20 +26,15 @@ export default function DepartmentContextProvider({ children }) {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetFormData:", error);
          Toast.Error(error);
       }
    };
-
-   const fillFormData = (values) => {
+   const resetDepartment = () => {
       try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.department = values.department;
-         newData.description = values.description;
-         setFormData(newData);
+         setDepartment(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetDepartment:", error);
          Toast.Error(error);
       }
    };
@@ -66,10 +61,9 @@ export default function DepartmentContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/departments/${id}`);
          res = axiosData.data.data;
-         // await setDepartment(res.result);
-         // setFormData(res.result);
-         fillFormData(res.result);
          // console.log(res);
+         setDepartment(res.result);
+         setFormData(res.result);
 
          return res;
       } catch (error) {
@@ -83,7 +77,7 @@ export default function DepartmentContextProvider({ children }) {
    const createDepartment = async (department) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/departments", department);
+         const axiosData = await Axios.post("/departments/create", department);
          res = axiosData.data.data;
          getDepartments();
       } catch (error) {
@@ -145,6 +139,7 @@ export default function DepartmentContextProvider({ children }) {
             formData,
             setFormData,
             resetFormData,
+            resetDepartment,
             getDepartments,
             showDepartment,
             createDepartment,
