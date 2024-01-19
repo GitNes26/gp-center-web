@@ -64,6 +64,25 @@ export default function ModelContextProvider({ children }) {
       }
    };
 
+   const getModelsSelectIndex = async () => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/models/selectIndex`);
+         // console.log("el selectedDeModels", axiosData);
+         res.result.models = axiosData.data.data.result;
+         res.result.models.unshift({ id: 0, label: "Selecciona una opción..." });
+         setModels(axiosData.data.data.result);
+         // console.log("models", models);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const showModel = async (id) => {
       try {
          let res = CorrectRes;
@@ -149,6 +168,7 @@ export default function ModelContextProvider({ children }) {
             setFormData,
             resetFormData,
             getModels,
+            getModelsSelectIndex,
             showModel,
             createModel,
             updateModel,

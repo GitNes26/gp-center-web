@@ -65,6 +65,25 @@ export default function BrandContextProvider({ children }) {
       }
    };
 
+   const getBrandsSelectIndex = async () => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/brands/selectIndex`);
+         // console.log("el selectedDeBrands", axiosData);
+         res.result.brands = axiosData.data.data.result;
+         res.result.brands.unshift({ id: 0, label: "Selecciona una opción..." });
+         setBrands(axiosData.data.data.result);
+         // console.log("brands", brands);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const showBrand = async (id) => {
       try {
          let res = CorrectRes;
@@ -161,6 +180,7 @@ export default function BrandContextProvider({ children }) {
             setFormData,
             resetFormData,
             getBrands,
+            getBrandsSelectIndex,
             showBrand,
             createBrand,
             updateBrand,

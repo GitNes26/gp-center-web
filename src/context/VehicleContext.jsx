@@ -17,13 +17,13 @@ const formDataInitialState = {
    vehicle_status_id: 0,
    vehicle_status: "Selecciona una opción...",
    description: "",
-   
+
    img_preview: "",
    img_right: "",
    img_back: "",
    img_left: "",
    img_front: "",
-   
+
    serial_number: "",
    img_serial_number: "",
 
@@ -66,27 +66,13 @@ export default function VehicleContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-
-   const fillFormData = (values) => {
+   const resetVehicle = () => {
       try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.stock_number = values.stock_number;
-         newData.brand_id = values.brand_id;
-         newData.model_id = values.model_id;
-         newData.year = values.year;
-         newData.registration_date = values.registration_date;
-         newData.description = values.description;
-         newData.vehicle_status_id = values.vehicle_status_id;
-
-         newData.plates = values.plates;
-         newData.initial_date = values.initial_date;
-         newData.due_date = values.due_date;
-
-         newData.status = values.status;
-         setFormData(newData);
+         setVehicle(formDataInitialState);
+         setImgFile(null);
+         setImagePreview(null);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetVehicle:", error);
          Toast.Error(error);
       }
    };
@@ -224,6 +210,7 @@ export default function VehicleContextProvider({ children }) {
             formData,
             setFormData,
             resetFormData,
+            resetVehicle,
             getVehicles,
             showVehicle,
             showVehicleBy,

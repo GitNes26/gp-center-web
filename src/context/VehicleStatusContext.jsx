@@ -28,22 +28,15 @@ export default function VehicleStatusContextProvider({ children }) {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetFormData:", error);
          Toast.Error(error);
       }
    };
-
-   const fillFormData = (values) => {
+   const resetVehicleStatus = () => {
       try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.vehicle_status = values.vehicle_status;
-         newData.bg_color = values.bg_color;
-         newData.letter_black = values.letter_black;
-         newData.description = values.description;
-         setFormData(newData);
+         setVehicleStatus(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetVehicleStatus:", error);
          Toast.Error(error);
       }
    };
@@ -65,14 +58,33 @@ export default function VehicleStatusContextProvider({ children }) {
       }
    };
 
+   const getVehicleStatussSelectIndex = async () => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/vehicleStatus/selectIndex`);
+         // console.log("el selectedDeVehicleStatuss", axiosData);
+         res.result.vehicleStatuss = axiosData.data.data.result;
+         res.result.vehicleStatuss.unshift({ id: 0, label: "Selecciona una opción..." });
+         setVehicleStatuss(axiosData.data.data.result);
+         // console.log("vehicleStatus", vehicleStatus);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const showVehicleStatus = async (id) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/vehicleStatus/${id}`);
          res = axiosData.data.data;
-         // await setVehicleStatus(res.result);
-         // setFormData(res.result);
-         fillFormData(res.result);
+         await setVehicleStatus(res.result);
+         setFormData(res.result);
+         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -149,7 +161,9 @@ export default function VehicleStatusContextProvider({ children }) {
             formData,
             setFormData,
             resetFormData,
+            resetVehicleStatus,
             getVehicleStatuss,
+            getVehicleStatussSelectIndex,
             showVehicleStatus,
             createVehicleStatus,
             updateVehicleStatus,
