@@ -114,7 +114,7 @@ const DirectorDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         console.log("cargar listado", directors);
+         // console.log("cargar listado", directors);
          await directors.map((obj, index) => {
             // console.log(obj);
             let register = obj;

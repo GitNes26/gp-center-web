@@ -70,18 +70,12 @@ const DirectorForm = () => {
       useDirectorContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   const [isAdmin, setIsAdmin] = useState(false);
-   const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
    const handleChangeRole = (value2, setFieldValue) => {
       try {
          // console.log("amanas", value2);
-         setIsAdmin(false);
-         setIsGarage(false);
          const role_id = Number(value2.id);
-         setIsAdmin(role_id <= 2 ? true : false);
-         setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -151,7 +145,6 @@ const DirectorForm = () => {
       try {
          if (formData.community_id > 0) {
             // setShowLoading(true);
-
             getCommunity(
                formData.zip,
                setFieldValue,
@@ -171,8 +164,6 @@ const DirectorForm = () => {
          }
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
-         setIsAdmin(formData.role_id <= 2 ? true : false);
-         setIsGarage(formData.role_id == 4 ? true : false);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -198,7 +189,7 @@ const DirectorForm = () => {
          username: Yup.string().trim().required("Nombre de usario requerido"),
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
+         // role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
          phone: Yup.string()
             .trim()
             .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")

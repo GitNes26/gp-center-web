@@ -56,6 +56,8 @@ export const getCommunity = async (
    setDataColoniesComplete
 ) => {
    try {
+      console.log("getCommunity -> setFieldValue", setFieldValue);
+      console.log("getCommunity -> formData", formData);
       setShowLoading(true);
       setDisabledState(true);
       setDisabledCity(true);
@@ -89,12 +91,13 @@ export const getCommunity = async (
          // formData.colony = data.data.result.Colonia;
          // formData.colony = community_id;
          // await setFormData(formData);
-         setFieldValue("zip", data.data.result.CodigoPostal);
-         setFieldValue("state", data.data.result.Estado);
-         setFieldValue("city", data.data.result.Municipio);
-         setFieldValue("colony", data.data.result.Colonia);
          zip = formData.zip;
+         await setFieldValue("zip", data.data.result.CodigoPostal);
+         await setFieldValue("state", data.data.result.Estado);
+         await setFieldValue("city", data.data.result.Municipio);
+         await setFieldValue("colony", data.data.result.Colonia);
       }
+      console.log("zip", zip);
       if (zip.length > 1) {
          const axiosCommunities = axios;
          const axiosRes = await axiosCommunities.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);

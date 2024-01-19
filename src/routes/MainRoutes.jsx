@@ -18,7 +18,6 @@ import VehiclePlateContextProvider from "../context/VehiclePlateContext";
 import ServiceContextProvider from "../context/ServiceContext";
 import ServicesView from "../views/garage/ServicesView/ServicesView";
 import MenuContextProvider from "../context/MenuContext";
-import DirectorsView from "../views/admin/DirectorsView/DirectorsView";
 import DirectorContextProvider from "../context/DirectorContext";
 import AdministratorsView, { loaderIndexAdministratorsView } from "../views/admin/AdministratorsView/Index";
 import AdministratorContextProvider from "../context/AdministratorContext";
@@ -27,6 +26,7 @@ import RoleContextProvider from "../context/RoleContext";
 import ShowVehicleView from "../views/cove/ShowVehicleView/Index";
 import AssignedVehicleContextProvider from "../context/AssignedVehicleContext";
 import VehiclesView from "../views/cove/VehiclesView/Index";
+import DirectorsView from "../views/admin/DirectorsView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));

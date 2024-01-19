@@ -53,9 +53,9 @@ const directorInitialState = {
    num_int: "",
 
    zip: "",
-   state: 0,
-   city: 0,
-   colony: 0
+   state: "Selecciona una opción...",
+   city: "Selecciona una opción...",
+   colony: "Selecciona una opción..."
 };
 
 export default function DirectorContextProvider({ children }) {
@@ -110,9 +110,13 @@ export default function DirectorContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/directors/${id}`);
          res = axiosData.data.data;
+         res.result.zip = "";
+         res.result.state = "Selecciona una opción...";
+         res.result.city = "Selecciona una opción...";
+         res.result.colony = "Selecciona una opción...";
          setDirector(res.result);
          setFormData(res.result);
-         // console.log(res);
+         // console.log("showDirector", res);
 
          return res;
       } catch (error) {
