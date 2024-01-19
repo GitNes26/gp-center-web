@@ -15,7 +15,6 @@ import VehicleStatusContextProvider from "../context/VehicleStatusContext";
 import VehicleStatussView from "../views/cove/VehicleStatusView/VehicleStatusView";
 import VehicleContextProvider from "../context/VehicleContext";
 import VehiclesView, { loaderIndexVehiclesView } from "../views/cove/VehiclesView/VehiclesView";
-import ShowVehicleView from "../views/cove/ShowVehicleView/ShowVehicleView";
 import VehiclePlateContextProvider from "../context/VehiclePlateContext";
 import ServiceContextProvider from "../context/ServiceContext";
 import ServicesView from "../views/garage/ServicesView/ServicesView";
@@ -25,6 +24,9 @@ import DirectorContextProvider from "../context/DirectorContext";
 import AdministratorsView, { loaderIndexAdministratorsView } from "../views/admin/AdministratorsView/Index";
 import AdministratorContextProvider from "../context/AdministratorContext";
 import DepartmentsView from "../views/admin/DepartmentsView/Index";
+import RoleContextProvider from "../context/RoleContext";
+import ShowVehicleView from "../views/cove/ShowVehicleView/Index";
+import AssignedVehicleContextProvider from "../context/AssignedVehicleContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -45,7 +47,11 @@ const MainRoutes = {
             <VehicleContextProvider>
                <VehiclePlateContextProvider>
                   <ServiceContextProvider>
-                     <ShowVehicleView />
+                     <DirectorContextProvider>
+                        <AssignedVehicleContextProvider>
+                           <ShowVehicleView />
+                        </AssignedVehicleContextProvider>
+                     </DirectorContextProvider>
                   </ServiceContextProvider>
                </VehiclePlateContextProvider>
             </VehicleContextProvider>
@@ -100,7 +106,9 @@ const MainRoutes = {
          path: "directores",
          element: (
             <DirectorContextProvider>
-               <DirectorsView />
+               <DepartmentContextProvider>
+                  <DirectorsView />
+               </DepartmentContextProvider>
             </DirectorContextProvider>
          )
          // loader: loaderIndex

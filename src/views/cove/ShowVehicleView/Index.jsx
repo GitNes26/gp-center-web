@@ -119,6 +119,7 @@ const ShowVehicleView = () => {
             setTimeout(async () => {
                const searchBy = searchType == "number" ? "stock_number" : "plates";
                const res = await showVehicleBy(searchBy, search);
+               console.log("res", res.result);
                setSearch("");
                setLoadingAction(false);
                if (!res.result) return Toast.Info(res.alert_title);

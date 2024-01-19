@@ -50,7 +50,18 @@ const AdministratorForm = ({ dataRoles }) => {
 
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
    // const { roles, getRolesSelectIndex } = useRoleContext();
-   const { resetAdministrator, singularName, createAdministrator, updateAdministrator, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useAdministratorContext();
+   const {
+      resetAdministrator,
+      singularName,
+      createAdministrator,
+      updateAdministrator,
+      formData,
+      setFormData,
+      textBtnSubmit,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle
+   } = useAdministratorContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
@@ -80,7 +91,9 @@ const AdministratorForm = ({ dataRoles }) => {
          else axiosResponse = await updateAdministrator(values);
          // console.log(axiosResponse);
          if (axiosResponse.status_code == 200) {
-            resetForm();
+            console.log("limpiar");
+            await resetForm();
+            resetAdministrator();
             setStrength(0);
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -89,6 +102,7 @@ const AdministratorForm = ({ dataRoles }) => {
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
+         console.log("formData", formData);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
@@ -142,8 +156,7 @@ const AdministratorForm = ({ dataRoles }) => {
       let validationSchema = Yup.object().shape({
          username: Yup.string().trim().required("Nombre de usario requerido"),
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-         password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
+         password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida")
       });
 
       return validationSchema;
@@ -298,24 +311,6 @@ const AdministratorForm = ({ dataRoles }) => {
                               </Box>
                            </FormControl>
                         )}
-                     </Grid>
-
-                     {/* Rol */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <Select2Component
-                           idName={"role_id"}
-                           label={"Rol *"}
-                           valueLabel={values.role}
-                           formDataLabel={"role"}
-                           placeholder={"Selecciona una opción..."}
-                           options={dataRoles}
-                           fullWidth={true}
-                           // handleChangeValueSuccess={handleChangeRole}
-                           handleBlur={handleBlur}
-                           error={errors.role_id}
-                           touched={touched.role_id}
-                           disabled={false}
-                        />
                      </Grid>
 
                      <LoadingButton

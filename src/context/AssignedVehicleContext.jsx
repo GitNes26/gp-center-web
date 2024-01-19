@@ -3,23 +3,24 @@ import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
-const DepartmentContext = createContext();
+const AssignedVehicleContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   department: "",
-   description: ""
+   user_id: 0,
+   vehicle_id: 0,
+   date: ""
 };
 
-export default function DepartmentContextProvider({ children }) {
-   const singularName = "Departamento"; //Escribirlo siempre letra Capital
-   const pluralName = "Departamentos"; //Escribirlo siempre letra Capital
+export default function AssignedVehicleContextProvider({ children }) {
+   const singularName = "Asignación de Vehiculo"; //Escribirlo siempre letra Capital
+   const pluralName = "Asignaciones de Vehiculo"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [departments, setDepartments] = useState([]);
-   const [department, setDepartment] = useState(null);
+   const [assignedVehicles, setAssignedVehicles] = useState([]);
+   const [assignedVehicle, setAssignedVehicle] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
@@ -30,22 +31,22 @@ export default function DepartmentContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-   const resetDepartment = () => {
+   const resetAssignedVehicle = () => {
       try {
-         setDepartment(formDataInitialState);
+         setAssignedVehicle(formDataInitialState);
       } catch (error) {
-         console.log("Error en resetDepartment:", error);
+         console.log("Error en resetAssignedVehicle:", error);
          Toast.Error(error);
       }
    };
 
-   const getDepartments = async () => {
+   const getAssignedVehicles = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/departments`);
-         res.result.departments = axiosData.data.data.result;
-         setDepartments(axiosData.data.data.result);
-         // console.log("departments", departments);
+         const axiosData = await Axios.get(`/assignedVehicle`);
+         res.result.assignedVehicles = axiosData.data.data.result;
+         setAssignedVehicles(axiosData.data.data.result);
+         // console.log("assignedVehicles", assignedVehicles);
 
          return res;
       } catch (error) {
@@ -56,15 +57,15 @@ export default function DepartmentContextProvider({ children }) {
       }
    };
 
-   const getDepartmentsSelectIndex = async () => {
+   const getAssignedVehiclesSelectIndex = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/departments/selectIndex`);
+         const axiosData = await Axios.get(`/assignedVehicle/selectIndex`);
          // console.log("el selectedDeRoles", axiosData);
-         res.result.departments = axiosData.data.data.result;
-         res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
-         setDepartments(axiosData.data.data.result);
-         // console.log("departments", departments);
+         res.result.assignedVehicles = axiosData.data.data.result;
+         res.result.assignedVehicles.unshift({ id: 0, label: "Selecciona una opción..." });
+         setAssignedVehicles(axiosData.data.data.result);
+         // console.log("assignedVehicles", assignedVehicles);
 
          return res;
       } catch (error) {
@@ -75,13 +76,13 @@ export default function DepartmentContextProvider({ children }) {
       }
    };
 
-   const showDepartment = async (id) => {
+   const showAssignedVehicle = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/departments/${id}`);
+         const axiosData = await Axios.get(`/assignedVehicle/${id}`);
          res = axiosData.data.data;
          // console.log(res);
-         setDepartment(res.result);
+         setAssignedVehicle(res.result);
          setFormData(res.result);
 
          return res;
@@ -93,12 +94,12 @@ export default function DepartmentContextProvider({ children }) {
       }
    };
 
-   const createDepartment = async (department) => {
+   const createAssignedVehicle = async (assignedVehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/departments/create", department);
+         const axiosData = await Axios.post("/assignedVehicle/create", assignedVehicle);
          res = axiosData.data.data;
-         getDepartments();
+         getAssignedVehicles();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -109,12 +110,12 @@ export default function DepartmentContextProvider({ children }) {
       return res;
    };
 
-   const updateDepartment = async (department) => {
+   const updateAssignedVehicle = async (assignedVehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/departments/update", department);
+         const axiosData = await Axios.post("/assignedVehicle/update", assignedVehicle);
          res = axiosData.data.data;
-         getDepartments();
+         getAssignedVehicles();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -125,12 +126,12 @@ export default function DepartmentContextProvider({ children }) {
       return res;
    };
 
-   const deleteDepartment = async (id) => {
+   const deleteAssignedVehicle = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/departments/destroy/${id}`);
-         // console.log("deleteDepartment() axiosData", axiosData.data);
-         getDepartments();
+         const axiosData = await Axios.post(`/assignedVehicle/destroy/${id}`);
+         // console.log("deleteAssignedVehicle() axiosData", axiosData.data);
+         getAssignedVehicles();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -144,27 +145,27 @@ export default function DepartmentContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de DepartmentContext");
-   //    getDepartments();
+   //    console.log("el useEffect de AssignedVehicleContext");
+   //    getAssignedVehicles();
    // });
 
    return (
-      <DepartmentContext.Provider
+      <AssignedVehicleContext.Provider
          value={{
             singularName,
             pluralName,
-            departments,
-            department,
+            assignedVehicles,
+            assignedVehicle,
             formData,
             setFormData,
             resetFormData,
-            resetDepartment,
-            getDepartments,
-            getDepartmentsSelectIndex,
-            showDepartment,
-            createDepartment,
-            updateDepartment,
-            deleteDepartment,
+            resetAssignedVehicle,
+            getAssignedVehicles,
+            getAssignedVehiclesSelectIndex,
+            showAssignedVehicle,
+            createAssignedVehicle,
+            updateAssignedVehicle,
+            deleteAssignedVehicle,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
@@ -172,7 +173,7 @@ export default function DepartmentContextProvider({ children }) {
          }}
       >
          {children}
-      </DepartmentContext.Provider>
+      </AssignedVehicleContext.Provider>
    );
 }
-export const useDepartmentContext = () => useContext(DepartmentContext);
+export const useAssignedVehicleContext = () => useContext(AssignedVehicleContext);

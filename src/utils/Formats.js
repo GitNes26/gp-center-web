@@ -61,8 +61,8 @@ export function formatDatetime(the_date, long_format = true) {
    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(date);
 }
 
-function formatDatetimeToSQL(the_date) {
-   let datetime = moment(the_date).format("YYYY-MM-DDTh:mm:ss");
+export function formatDatetimeToSQL(the_date) {
+   let datetime = moment(the_date).format("YYYY-MM-DDThh:mm:ss");
    return datetime;
 }
 //#endregion /** FECHAS - FORMATEADO */

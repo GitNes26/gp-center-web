@@ -126,7 +126,7 @@ export default function DirectorContextProvider({ children }) {
    const createDirector = async (director) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/create/${director.role_id}`, director);
+         const axiosData = await Axios.post(`/users/create/5`, director);
          // console.log(axiosData);
          res = axiosData.data.data;
          getDirectors();

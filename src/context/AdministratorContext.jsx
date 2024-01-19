@@ -7,7 +7,7 @@ const AdministratorContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   administratorname: "",
+   username: "",
    email: "",
    password: "",
    role_id: 0,
@@ -31,7 +31,7 @@ const formDataInitialState = {
 };
 const administratorInitialState = {
    id: 0,
-   administratorname: "",
+   username: "",
    email: "",
    password: "",
    role_id: 0,

@@ -152,9 +152,9 @@ const AdministratorDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         console.log("cargar listado", administrators);
+         // console.log("cargar listado", administrators);
          await administrators.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.username} active={obj.active} />;
