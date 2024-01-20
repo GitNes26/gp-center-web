@@ -175,7 +175,7 @@ const DepartmentDT = () => {
       try {
          // console.log("cargar listado", departments);
          await departments.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.department} active={obj.active} />;

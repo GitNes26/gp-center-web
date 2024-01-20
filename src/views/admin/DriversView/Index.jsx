@@ -1,34 +1,37 @@
-import DirectorForm from "./Form";
+import DriverForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useDirectorContext } from "../../../context/DirectorContext";
+import { useDriverContext } from "../../../context/DriverContext";
 import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import DirectorDT from "./DataTable";
+import DriverDT from "./DataTable";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
+import { useDirectorContext } from "../../../context/DirectorContext";
 
-const DirectorsView = () => {
+const DriversView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, director, getDirectors } = useDirectorContext();
+   const { pluralName, driver, getDrivers } = useDriverContext();
    const { getDepartmentsSelectIndex } = useDepartmentContext();
+   const { getDirectorsSelectIndex } = useDirectorContext();
 
    useEffect(() => {
       try {
          setLoading(true);
-         getDirectors();
+         getDrivers();
          getDepartmentsSelectIndex();
+         getDirectorsSelectIndex();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [director]);
+   }, [driver]);
 
    return (
       <>
@@ -42,15 +45,15 @@ const DirectorsView = () => {
             {pluralName.toUpperCase()}
          </Typography>
          {/* <DataTableComponent /> */}
-         <DirectorDT />
+         <DriverDT />
          {/* </MainCard> */}
 
-         <DirectorForm />
+         <DriverForm />
       </>
    );
 };
 
-export const loaderIndexDirectorsView = async () => {
+export const loaderIndexDriversView = async () => {
    try {
       const res = CorrectRes;
       // const auth = JSON.parse(localStorage.getItem("auth"));
@@ -74,4 +77,4 @@ export const loaderIndexDirectorsView = async () => {
    }
 };
 
-export default DirectorsView;
+export default DriversView;

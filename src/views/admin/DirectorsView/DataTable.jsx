@@ -25,7 +25,7 @@ const DirectorDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, director, directors, getDirectors, showDirector, deleteDirector, resetFormData, resetDirector, setTextBtnSumbit, setFormTitle } =
       useDirectorContext();
-   const globalFilterFields = ["username", "email", "role"];
+   const globalFilterFields = ["username", "email", "department"];
 
    // #region BodysTemplate
    const DirectorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
@@ -41,7 +41,7 @@ const DirectorDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "director", header: "Usuario", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
+      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
       // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },

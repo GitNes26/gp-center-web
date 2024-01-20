@@ -11,7 +11,7 @@ import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import { useDirectorContext } from "../../../context/DirectorContext";
+import { useDriverContext } from "../../../context/DriverContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -21,15 +21,17 @@ import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 
-const DirectorDT = () => {
+const DriverDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, pluralName, director, directors, getDirectors, showDirector, deleteDirector, resetFormData, resetDirector, setTextBtnSumbit, setFormTitle } =
-      useDirectorContext();
-   const globalFilterFields = ["username", "email", "role"];
+   const { singularName, pluralName, driver, drivers, getDrivers, showDriver, deleteDriver, resetFormData, resetDriver, setTextBtnSumbit, setFormTitle } =
+      useDriverContext();
+   const globalFilterFields = ["username", "email", "department", "director"];
 
    // #region BodysTemplate
-   const DirectorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
+   const DriverBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
+   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
+   const DirectorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.director}</Typography>;
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -40,9 +42,11 @@ const DirectorDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "director", header: "Usuario", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
+      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: DriverBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
-      { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
+      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
+      { field: "director", header: "Director", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
+      // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
    ];
 
@@ -50,8 +54,8 @@ const DirectorDT = () => {
 
    const handleClickAdd = () => {
       try {
-         resetDirector();
-         director.role = "Selecciona una opción...";
+         resetDriver();
+         driver.role = "Selecciona una opción...";
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
@@ -67,7 +71,7 @@ const DirectorDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showDirector(id);
+         await showDriver(id);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -81,7 +85,7 @@ const DirectorDT = () => {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteDirector(id);
+               const axiosResponse = await deleteDriver(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -112,15 +116,15 @@ const DirectorDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         console.log("cargar listado", directors);
-         await directors.map((obj, index) => {
+         console.log("cargar listado", drivers);
+         await drivers.map((obj, index) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.username} />;
             data.push(register);
          });
-         // if (data.length > 0) setGlobalFilterFields(Object.keys(directors[0]));
+         // if (data.length > 0) setGlobalFilterFields(Object.keys(drivers[0]));
          // console.log("la data del formatData", globalFilterFields);
          setLoading(false);
       } catch (error) {
@@ -140,8 +144,8 @@ const DirectorDT = () => {
          globalFilterFields={globalFilterFields}
          headerFilters={false}
          handleClickAdd={handleClickAdd}
-         refreshTable={getDirectors}
+         refreshTable={getDrivers}
       />
    );
 };
-export default DirectorDT;
+export default DriverDT;

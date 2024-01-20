@@ -3,7 +3,7 @@ import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
-const DirectorContext = createContext();
+const DriverContext = createContext();
 
 const formDataInitialState = {
    id: 0,
@@ -11,6 +11,8 @@ const formDataInitialState = {
    username: "",
    email: "",
    password: "",
+   director_id: 0,
+   director: "Selecciona una opción...",
    role_id: 0,
    avatar: "",
    phone: "",
@@ -31,12 +33,14 @@ const formDataInitialState = {
    city: 0,
    colony: 0
 };
-const directorInitialState = {
+const driverInitialState = {
    id: 0,
    user_id: 0,
    username: "",
    email: "",
    password: "",
+   director_id: 0,
+   director: "Selecciona una opción...",
    role_id: 0,
    role: "Selecciona una opción...",
    avatar: "",
@@ -60,17 +64,17 @@ const directorInitialState = {
    colony: "Selecciona una opción..."
 };
 
-export default function DirectorContextProvider({ children }) {
+export default function DriverContextProvider({ children }) {
    const { auth } = useAuthContext();
 
-   const singularName = "Director"; //Escribirlo siempre letra Capital
-   const pluralName = "Directores"; //Escribirlo siempre letra Capital
+   const singularName = "Conductor"; //Escribirlo siempre letra Capital
+   const pluralName = "Conductores"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [director, setDirector] = useState(directorInitialState);
-   const [directors, setDirectors] = useState([]);
+   const [driver, setDriver] = useState(driverInitialState);
+   const [drivers, setDrivers] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
@@ -81,22 +85,22 @@ export default function DirectorContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-   const resetDirector = () => {
+   const resetDriver = () => {
       try {
-         setDirector(directorInitialState);
+         setDriver(driverInitialState);
       } catch (error) {
-         console.log("Error en resetDirector:", error);
+         console.log("Error en resetDriver:", error);
          Toast.Error(error);
       }
    };
 
-   const getDirectors = async () => {
+   const getDrivers = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/directors`);
-         res.result.directors = axiosData.data.data.result;
-         setDirectors(axiosData.data.data.result);
-         // console.log("directors", directors);
+         const axiosData = await Axios.get(`/drivers`);
+         console.log("getDrivers", axiosData);
+         res.result.drivers = axiosData.data.data.result;
+         setDrivers(axiosData.data.data.result);
 
          return res;
       } catch (error) {
@@ -107,18 +111,18 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const showDirector = async (id) => {
+   const showDriver = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/directors/${id}`);
+         const axiosData = await Axios.get(`/drivers/${id}`);
          res = axiosData.data.data;
          res.result.zip = "";
          res.result.state = "Selecciona una opción...";
          res.result.city = "Selecciona una opción...";
          res.result.colony = "Selecciona una opción...";
-         setDirector(res.result);
+         setDriver(res.result);
          setFormData(res.result);
-         // console.log("showDirector", res);
+         // console.log("showDriver", res);
 
          return res;
       } catch (error) {
@@ -129,33 +133,14 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const getDirectorsSelectIndex = async () => {
-      try {
-         const res = CorrectRes;
-         const axiosData = await Axios.get(`/directors/selectIndex`);
-         // console.log("el selectedDeRoles", axiosData);
-         res.result.directors = axiosData.data.data.result;
-         res.result.directors.unshift({ id: 0, label: "Selecciona una opción..." });
-         setDirectors(axiosData.data.data.result);
-         // console.log("directors", directors);
-
-         return res;
-      } catch (error) {
-         const res = ErrorRes;
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
-      }
-   };
-
-   const createDirector = async (director) => {
+   const createDriver = async (driver) => {
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post(`/users/create/5`, director);
-         const axiosData = await Axios.post(`/users/create/role_id/5`, director);
+         // const axiosData = await Axios.post(`/users/create/5`, driver);
+         const axiosData = await Axios.post(`/users/create/6`, driver);
          // console.log(axiosData);
          res = axiosData.data.data;
-         getDirectors();
+         getDrivers();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -166,14 +151,13 @@ export default function DirectorContextProvider({ children }) {
       return res;
    };
 
-   const updateDirector = async (director) => {
+   const updateDriver = async (driver) => {
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post("/directors/update", director);
-         // const axiosData = await Axios.post(`/users/update/${director.user_id}`, director);
-         const axiosData = await Axios.post(`/users/${director.user_id}update/role_id/5`, director);
+         // const axiosData = await Axios.post(`/users/update/${driver.user_id}`, driver);
+         const axiosData = await Axios.post(`/users/${driver.user_id}/update/6`, driver);
          res = axiosData.data.data;
-         getDirectors();
+         getDrivers();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -184,12 +168,12 @@ export default function DirectorContextProvider({ children }) {
       return res;
    };
 
-   const deleteDirector = async (user_id) => {
+   const deleteDriver = async (user_id) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/users/destroy/${user_id}`);
-         // console.log("deleteDirector() axiosData", axiosData.data);
-         getDirectors();
+         // console.log("deleteDriver() axiosData", axiosData.data);
+         getDrivers();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -203,28 +187,27 @@ export default function DirectorContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de DirectorContext");
-   //    getDirectors();
+   //    console.log("el useEffect de DriverContext");
+   //    getDrivers();
    // });
 
    return (
-      <DirectorContext.Provider
+      <DriverContext.Provider
          value={{
             singularName,
             pluralName,
-            directors,
-            director,
-            setDirector,
-            resetDirector,
+            drivers,
+            driver,
+            setDriver,
+            resetDriver,
             formData,
             setFormData,
             resetFormData,
-            getDirectors,
-            showDirector,
-            getDirectorsSelectIndex,
-            createDirector,
-            updateDirector,
-            deleteDirector,
+            getDrivers,
+            showDriver,
+            createDriver,
+            updateDriver,
+            deleteDriver,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
@@ -232,7 +215,7 @@ export default function DirectorContextProvider({ children }) {
          }}
       >
          {children}
-      </DirectorContext.Provider>
+      </DriverContext.Provider>
    );
 }
-export const useDirectorContext = () => useContext(DirectorContext);
+export const useDriverContext = () => useContext(DriverContext);

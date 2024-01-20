@@ -42,7 +42,7 @@ const VehicleDT = () => {
       setTextBtnSumbit,
       setFormTitle
    } = useVehicleContext();
-   const globalFilterFields = ["vehicle", "description"];
+   const globalFilterFields = ["stock_number", "plates", "vehicle_status", "serial_number", "circulation_card", "insurance_policy", "description"];
 
    // #region BodysTemplate
    const ImagePreviewBodyTemplate = (obj) => (

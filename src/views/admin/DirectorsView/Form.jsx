@@ -150,7 +150,6 @@ const DirectorForm = () => {
                setFieldValue,
                formData.community_id,
                formData,
-               values,
                setFormData,
                setDisabledState,
                setDisabledCity,

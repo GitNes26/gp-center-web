@@ -8,7 +8,7 @@ import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useState } from "react";
-import { useDirectorContext } from "../../../context/DirectorContext";
+import { useDriverContext } from "../../../context/DriverContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
@@ -24,12 +24,14 @@ import Select2Component from "../../../components/Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
+import { useDirectorContext } from "../../../context/DirectorContext";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const DirectorForm = () => {
+const DriverForm = () => {
    const { departments } = useDepartmentContext();
+   const { directors } = useDirectorContext();
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
@@ -66,22 +68,16 @@ const DirectorForm = () => {
       setDataColoniesComplete,
       cursorLoading
    } = useGlobalContext();
-   const { director, resetDirector, singularName, createDirector, updateDirector, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useDirectorContext();
+   const { driver, resetDriver, singularName, createDriver, updateDriver, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
+      useDriverContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   const [isAdmin, setIsAdmin] = useState(false);
-   const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
    const handleChangeRole = (value2, setFieldValue) => {
       try {
          // console.log("amanas", value2);
-         setIsAdmin(false);
-         setIsGarage(false);
          const role_id = Number(value2.id);
-         setIsAdmin(role_id <= 2 ? true : false);
-         setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -111,8 +107,8 @@ const DirectorForm = () => {
          setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDirector(values);
-         else axiosResponse = await updateDirector(values);
+         if (values.id == 0) axiosResponse = await createDriver(values);
+         else axiosResponse = await updateDriver(values);
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
             resetForm();
@@ -137,8 +133,8 @@ const DirectorForm = () => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
-         resetDirector();
-         director.role = "Selecciona una opción...";
+         resetDriver();
+         driver.role = "Selecciona una opción...";
          setStrength(0);
          setFieldValue("id", id);
       } catch (error) {
@@ -151,13 +147,11 @@ const DirectorForm = () => {
       try {
          if (formData.community_id > 0) {
             // setShowLoading(true);
-
             getCommunity(
                formData.zip,
                setFieldValue,
                formData.community_id,
                formData,
-               values,
                setFormData,
                setDisabledState,
                setDisabledCity,
@@ -171,8 +165,6 @@ const DirectorForm = () => {
          }
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
-         setIsAdmin(formData.role_id <= 2 ? true : false);
-         setIsGarage(formData.role_id == 4 ? true : false);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -183,8 +175,8 @@ const DirectorForm = () => {
    const handleCancel = (resetForm) => {
       try {
          resetForm();
-         resetDirector();
-         director.role = "Selecciona una opción...";
+         resetDriver();
+         driver.role = "Selecciona una opción...";
          setStrength(0);
          setOpenDialog(false);
       } catch (error) {
@@ -198,7 +190,7 @@ const DirectorForm = () => {
          username: Yup.string().trim().required("Nombre de usario requerido"),
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
+         // role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
          phone: Yup.string()
             .trim()
             .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
@@ -207,6 +199,7 @@ const DirectorForm = () => {
          license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
          payroll_number: Yup.number("Solo números"),
          department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
+         director_id: Yup.number().min(1, "Esta opción no es valida").required("Director requerido"),
 
          name: Yup.string().trim().required("Nombre(s) requerido"),
          paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
@@ -221,27 +214,6 @@ const DirectorForm = () => {
          city: Yup.string().trim().required("Ciudad requerido"),
          colony: Yup.string().trim().required("Colonia requerido")
       });
-      if (isAdmin)
-         validationSchema = Yup.object().shape({
-            username: Yup.string().trim().required("Nombre de usario requerido"),
-            email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-            password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-            role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
-         });
-      else if (isGarage)
-         validationSchema = Yup.object().shape({
-            username: Yup.string().trim().required("Nombre de usario requerido"),
-            email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-            password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-            role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
-            phone: Yup.string()
-               .trim()
-               .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
-               .required("Número telefónico requerido"),
-            name: Yup.string().trim().required("Nombre(s) requerido"),
-            paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-            maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
-         });
       return validationSchema;
    };
 
@@ -407,179 +379,188 @@ const DirectorForm = () => {
                            placeholder="10 dígitos"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // fullWidth
+                           fullWidth
                            inputProps={{ maxLength: 10 }}
                            error={errors.phone && touched.phone}
                            helperText={errors.phone && touched.phone && errors.phone}
                         />
                      </Grid>
-                     {!isAdmin && !isGarage && (
-                        <>
-                           {/* Numero de Licencia */}
-                           <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                              <TextField
-                                 id="license_number"
-                                 name="license_number"
-                                 label="Número de Licencia *"
-                                 type="text"
-                                 value={values.license_number}
-                                 placeholder="99999999999"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 // fullWidth
-                                 inputProps={{ maxLength: 11 }}
-                                 error={errors.license_number && touched.license_number}
-                                 helperText={errors.license_number && touched.license_number && errors.license_number}
-                              />
-                           </Grid>
-                           {/* Fecha de Vencimiento */}
-                           <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                              <DatePickerComponent
-                                 idName={"license_due_date"}
-                                 label={"Fecha de Vencimiento *"}
-                                 format={"DD/MM/YYYY"}
-                                 value={values.license_due_date}
-                                 setFieldValue={setFieldValue}
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 error={errors.license_due_date}
-                                 touched={touched.license_due_date}
-                                 showErrorInput={null}
-                                 formData={formData}
-                              />
-                           </Grid>
-                           {/* Divisor */}
-                           <Grid xs={12}>
-                              <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                           </Grid>
-                           {/* Número de Nómina */}
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
-                              <TextField
-                                 id="payroll_number"
-                                 name="payroll_number"
-                                 label="Número de Nómina *"
-                                 type="number"
-                                 value={values.payroll_number}
-                                 placeholder="99999"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 fullWidth
-                                 // inputProps={{ maxLength: 11 }}
-                                 error={errors.payroll_number && touched.payroll_number}
-                                 helperText={errors.payroll_number && touched.payroll_number && errors.payroll_number}
-                              />
-                           </Grid>
-                           {/* Departameto */}
-                           <Grid xs={12} md={8} sx={{ mb: 1 }}>
-                              <Select2Component
-                                 idName={"department_id"}
-                                 label={"Departameto *"}
-                                 valueLabel={values.department}
-                                 values={values}
-                                 formData={formData}
-                                 setFormData={setFormData}
-                                 formDataLabel={"department"}
-                                 placeholder={"Selecciona una opción..."}
-                                 options={departments}
-                                 fullWidth={true}
-                                 handleChange={handleChange}
-                                 // handleChangeValueSuccess={handleChangeRole}
-                                 setValues={setValues}
-                                 handleBlur={handleBlur}
-                                 error={errors.department_id}
-                                 touched={touched.department_id}
-                                 disabled={false}
-                              />
-                           </Grid>
-                           {/* Divisor */}
-                           <Grid xs={12}>
-                              <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                           </Grid>
-                        </>
-                     )}
+                     {/* Numero de Licencia */}
+                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <TextField
+                           id="license_number"
+                           name="license_number"
+                           label="Número de Licencia *"
+                           type="text"
+                           value={values.license_number}
+                           placeholder="99999999999"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           fullWidth
+                           inputProps={{ maxLength: 11 }}
+                           error={errors.license_number && touched.license_number}
+                           helperText={errors.license_number && touched.license_number && errors.license_number}
+                        />
+                     </Grid>
+                     {/* Fecha de Vencimiento */}
+                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                        <DatePickerComponent
+                           idName={"license_due_date"}
+                           label={"Fecha de Vencimiento *"}
+                           format={"DD/MM/YYYY"}
+                           value={values.license_due_date}
+                           setFieldValue={setFieldValue}
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           error={errors.license_due_date}
+                           touched={touched.license_due_date}
+                           showErrorInput={null}
+                           formData={formData}
+                        />
+                     </Grid>
+                     {/* Divisor */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
+                     {/* Número de Nómina */}
+                     <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                        <TextField
+                           id="payroll_number"
+                           name="payroll_number"
+                           label="Número de Nómina *"
+                           type="number"
+                           value={values.payroll_number}
+                           placeholder="99999"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           fullWidth
+                           // inputProps={{ maxLength: 11 }}
+                           error={errors.payroll_number && touched.payroll_number}
+                           helperText={errors.payroll_number && touched.payroll_number && errors.payroll_number}
+                        />
+                     </Grid>
+                     {/* Director */}
+                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Select2Component
+                           idName={"director_id"}
+                           label={"Director *"}
+                           valueLabel={values.director}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"director"}
+                           placeholder={"Selecciona una opción..."}
+                           options={directors}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.director_id}
+                           touched={touched.director_id}
+                           disabled={false}
+                        />
+                     </Grid>
+                     {/* Departameto */}
+                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Select2Component
+                           idName={"department_id"}
+                           label={"Departameto *"}
+                           valueLabel={values.department}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"department"}
+                           placeholder={"Selecciona una opción..."}
+                           options={departments}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.department_id}
+                           touched={touched.department_id}
+                           disabled={false}
+                        />
+                     </Grid>
+                     {/* Divisor */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
 
-                     {!isAdmin && (
-                        <>
-                           {/* Nombre */}
-                           <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                              <TextField
-                                 id="name"
-                                 name="name"
-                                 label="Nombre(s) *"
-                                 type="text"
-                                 value={values.name}
-                                 placeholder="Ingrese tu(s) nombre(s)"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
-                                 // InputProps={{ }}
-                                 fullWidth
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.name && touched.name}
-                                 helperText={errors.name && touched.name && errors.name}
-                              />
-                           </Grid>
-                           {/* Apellido Paterno */}
-                           <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                              <TextField
-                                 id="paternal_last_name"
-                                 name="paternal_last_name"
-                                 label="Apellido Paterno *"
-                                 type="text"
-                                 value={values.paternal_last_name}
-                                 placeholder="Ingrese tu primer apellido"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
-                                 // InputProps={{ }}
-                                 fullWidth
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.paternal_last_name && touched.paternal_last_name}
-                                 helperText={errors.paternal_last_name && touched.paternal_last_name && errors.paternal_last_name}
-                              />
-                           </Grid>
-                           {/* Apellido Materno */}
-                           <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                              <TextField
-                                 id="maternal_last_name"
-                                 name="maternal_last_name"
-                                 label="Apellido Materno *"
-                                 type="text"
-                                 value={values.maternal_last_name}
-                                 placeholder="Ingrese tu segundo apellido"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
-                                 // InputProps={{ }}
-                                 fullWidth
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.maternal_last_name && touched.maternal_last_name}
-                                 helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
-                              />
-                           </Grid>
-                        </>
-                     )}
+                     {/* Nombre */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <TextField
+                           id="name"
+                           name="name"
+                           label="Nombre(s) *"
+                           type="text"
+                           value={values.name}
+                           placeholder="Ingrese tu(s) nombre(s)"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
+                           // InputProps={{ }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           error={errors.name && touched.name}
+                           helperText={errors.name && touched.name && errors.name}
+                        />
+                     </Grid>
+                     {/* Apellido Paterno */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <TextField
+                           id="paternal_last_name"
+                           name="paternal_last_name"
+                           label="Apellido Paterno *"
+                           type="text"
+                           value={values.paternal_last_name}
+                           placeholder="Ingrese tu primer apellido"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
+                           // InputProps={{ }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           error={errors.paternal_last_name && touched.paternal_last_name}
+                           helperText={errors.paternal_last_name && touched.paternal_last_name && errors.paternal_last_name}
+                        />
+                     </Grid>
+                     {/* Apellido Materno */}
+                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <TextField
+                           id="maternal_last_name"
+                           name="maternal_last_name"
+                           label="Apellido Materno *"
+                           type="text"
+                           value={values.maternal_last_name}
+                           placeholder="Ingrese tu segundo apellido"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
+                           // InputProps={{ }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           error={errors.maternal_last_name && touched.maternal_last_name}
+                           helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
+                        />
+                     </Grid>
+                     {/* Divisor */}
+                     <Grid xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid>
 
-                     {!isAdmin && !isGarage && (
-                        <>
-                           {/* Divisor */}
-                           <Grid xs={12}>
-                              <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                           </Grid>
-
-                           <InputsCommunityComponent
-                              formData={formData}
-                              setFormData={setFormData}
-                              values={values}
-                              setValues={setValues}
-                              setFieldValue={setFieldValue}
-                              handleChange={handleChange}
-                              handleBlur={handleBlur}
-                              errors={errors}
-                              touched={touched}
-                           />
-                        </>
-                     )}
+                     <InputsCommunityComponent
+                        formData={formData}
+                        setFormData={setFormData}
+                        values={values}
+                        setValues={setValues}
+                        setFieldValue={setFieldValue}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        errors={errors}
+                        touched={touched}
+                     />
 
                      <LoadingButton
                         type="submit"
@@ -625,4 +606,4 @@ const DirectorForm = () => {
       </SwipeableDrawer>
    );
 };
-export default DirectorForm;
+export default DriverForm;

@@ -259,7 +259,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          setFieldValue("colony", 0);
          if (community_id) {
             const axiosMyCommunity = axios;
-            const { data } = await axiosMyCommunity.get(`https://api.gomezpalacio.gob.mx/api/cp/colonia/${community_id}`);
+            const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/cp/colonia/${community_id}`);
 
             if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
             formData.zip = data.data.result.CodigoPostal;
@@ -270,7 +270,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
             zip = formData.zip;
          }
          const axiosCommunities = axios;
-         const axiosRes = await axiosCommunities.get(`https://api.gomezpalacio.gob.mx/api/cp/${zip}`);
+         const axiosRes = await axiosCommunities.get(`${import.meta.env.VITE_API_CP}/cp/${zip}`);
          if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
          await axiosRes.data.data.result.map((d) => {
             states.push(d.Estado);
