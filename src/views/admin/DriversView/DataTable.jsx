@@ -27,7 +27,7 @@ const DriverDT = () => {
    const { singularName, pluralName, driver, drivers, getDrivers, showDriver, deleteDriver, resetFormData, resetDriver, setTextBtnSumbit, setFormTitle } =
       useDriverContext();
    const { directors } = useDirectorContext();
-   const globalFilterFields = ["username", "email", "department", "director"];
+   const globalFilterFields = ["username", "email", "department", "director", "director"];
 
    // #region BodysTemplate
    const DriverBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
@@ -98,16 +98,16 @@ const DriverDT = () => {
       }
    };
 
-   const ButtonsAction = ({ id, name }) => {
+   const ButtonsAction = ({ id, user_id, name }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={"Editar Usuario"} placement="top">
+            <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
             </Tooltip>
-            <Tooltip title={"Eliminar Usuario"} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(id, name)}>
+            <Tooltip title={`Eliminar ${singularName}`} placement="top">
+               <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
                   <IconDelete />
                </Button>
             </Tooltip>
@@ -120,10 +120,10 @@ const DriverDT = () => {
       try {
          console.log("cargar listado", drivers);
          await drivers.map((obj, index) => {
-            // console.log(obj);
+            console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.username} />;
+            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(drivers[0]));

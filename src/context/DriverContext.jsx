@@ -112,9 +112,10 @@ export default function DriverContextProvider({ children }) {
    };
 
    const showDriver = async (id) => {
+      let res = CorrectRes;
       try {
-         let res = CorrectRes;
          const axiosData = await Axios.get(`/drivers/${id}`);
+         console.log(axiosData);
          res = axiosData.data.data;
          res.result.zip = "";
          res.result.state = "Selecciona una opción...";
@@ -137,7 +138,7 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/create/5`, driver);
-         const axiosData = await Axios.post(`/users/create/6`, driver);
+         const axiosData = await Axios.post(`/users/create/role_id/6`, driver);
          // console.log(axiosData);
          res = axiosData.data.data;
          getDrivers();
@@ -155,7 +156,7 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/update/${driver.user_id}`, driver);
-         const axiosData = await Axios.post(`/users/update/6`, driver);
+         const axiosData = await Axios.post(`/users/update/role_id/6`, driver);
          res = axiosData.data.data;
          getDrivers();
       } catch (error) {

@@ -94,16 +94,16 @@ const DirectorDT = () => {
       }
    };
 
-   const ButtonsAction = ({ id, name }) => {
+   const ButtonsAction = ({ id, user_id, name }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={"Editar Usuario"} placement="top">
+            <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
             </Tooltip>
-            <Tooltip title={"Eliminar Usuario"} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(id, name)}>
+            <Tooltip title={`Eliminar ${singularName}`} placement="top">
+               <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
                   <IconDelete />
                </Button>
             </Tooltip>
@@ -119,7 +119,7 @@ const DirectorDT = () => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.username} />;
+            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(directors[0]));
