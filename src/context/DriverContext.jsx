@@ -155,7 +155,7 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/update/${driver.user_id}`, driver);
-         const axiosData = await Axios.post(`/users/${driver.user_id}/update/6`, driver);
+         const axiosData = await Axios.post(`/users/update/6`, driver);
          res = axiosData.data.data;
          getDrivers();
       } catch (error) {

@@ -171,7 +171,7 @@ export default function DirectorContextProvider({ children }) {
       try {
          // const axiosData = await Axios.post("/directors/update", director);
          // const axiosData = await Axios.post(`/users/update/${director.user_id}`, director);
-         const axiosData = await Axios.post(`/users/${director.user_id}update/role_id/5`, director);
+         const axiosData = await Axios.post(`/users/update/role_id/5`, director);
          res = axiosData.data.data;
          getDirectors();
       } catch (error) {

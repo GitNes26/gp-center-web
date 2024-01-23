@@ -20,11 +20,13 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
+import { useDirectorContext } from "../../../context/DirectorContext";
 
 const DriverDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, driver, drivers, getDrivers, showDriver, deleteDriver, resetFormData, resetDriver, setTextBtnSumbit, setFormTitle } =
       useDriverContext();
+   const { directors } = useDirectorContext();
    const globalFilterFields = ["username", "email", "department", "director"];
 
    // #region BodysTemplate
