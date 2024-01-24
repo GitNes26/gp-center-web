@@ -33,10 +33,13 @@ const Transition = forwardRef(function Transition(props, ref) {
 const ModalAsig = ({ open, setOpen }) => {
    // const [open, setOpen] = useState(false);
    const mySwal = withReactContent(Swal);
+   const [search, setSearch] = useState("");
    const { setLoadingAction } = useGlobalContext();
    const { directors, getDirectors } = useDirectorContext();
-   const { vehicle } = useVehicleContext();
+   const { vehicle, showVehicle } = useVehicleContext();
    const { /* assignedVehicle, setAssignedVehicle, */ createAssignedVehicle } = useAssignedVehicleContext();
+
+   const [dataList, setDataList] = useState([]);
 
    const handleClickOpen = () => {
       setOpen(true);
@@ -103,7 +106,7 @@ const ModalAsig = ({ open, setOpen }) => {
    };
 
    const handleClickDirector = (id, full_name) => {
-      console.log("voy a asignarle el vehiculo ");
+      // console.log("voy a asignarle el vehiculo ");
       // console.log("voy a asignarle el vehiculo ", vehicle_id, "a ", director_id);
       try {
          mySwal
@@ -115,6 +118,8 @@ const ModalAsig = ({ open, setOpen }) => {
                   const assignedVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
                   // return console.log(assignedVehicle);
                   const axiosResponse = await createAssignedVehicle(assignedVehicle);
+                  await showVehicle(vehicle.id);
+                  setOpen(false);
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
                }
@@ -125,10 +130,46 @@ const ModalAsig = ({ open, setOpen }) => {
       }
    };
 
+   const handleKeyUpSearchSuccess = async (e) => {
+      try {
+         setDataList(directors);
+         const value = e.target.value;
+         if (value.length < 1) return;
+         console.log(directors);
+         let _data = [...dataList];
+         // const filter1 = _data.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
+         _data = _data.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
+         // _data = [...new Set(_data)];
+         console.log(_data);
+         setDataList(_data);
+
+         // if (e.key === "Enter" || e.keyCode === 13) {
+         //    if (e.target.value.length == 0) return Toast.Info("Buscador vacio.");
+         //    setClassesImgVehicle("zoom-out");
+         //    setGrowOn(false);
+         //    setLoadingAction(true);
+         //    setTimeout(async () => {
+         //       const searchBy = searchType == "number" ? "stock_number" : "plates";
+         //       const res = await showVehicleBy(searchBy, search);
+         //       console.log("res", res.result);
+         //       setSearch("");
+         //       setLoadingAction(false);
+         //       if (!res.result) return Toast.Info(res.alert_title);
+         //       setGrowOn(true);
+         //       setClassesImgVehicle("zoom-in");
+         //    }, 850);
+         // }
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+         setLoading(false);
+      }
+   };
+
    useEffect(() => {
       getDirectors();
       // console.log(users);
-   }, []);
+   }, [dataList]);
 
    return (
       <div>
@@ -147,17 +188,37 @@ const ModalAsig = ({ open, setOpen }) => {
                <Typography variant="h3" component={"p"} textAlign={"center"}>
                   ASIGNAR VEHICULO
                </Typography>
-               <SearchInput placeholder={"Buscar usuarios"} showOptions={false} />
+
+               <SearchInput
+                  idName="search"
+                  search={search}
+                  setSearch={setSearch}
+                  placeholder={"Buscar director"}
+                  titleTooltip={"Buscar por Departamento"}
+                  handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
+                  showOptions={false}
+               />
             </DialogTitle>
             <DialogContent sx={{ maxHeight: "500px" }}>
                <List sx={{ width: "100%", bgcolor: "background.paper" }}>
                   <DialogContentText id="alert-dialog-slide-description" component={"div"}>
-                     {directors.map((obj) => {
-                        const full_name = `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name}`;
-                        return (
-                           <ItemUser key={obj.id} id={obj.user_id} full_name={full_name} department={obj.department} email={obj.email} handleClick={handleClickDirector} />
-                        );
-                     })}
+                     {dataList.length > 0 ? (
+                        dataList.map((obj) => {
+                           const full_name = `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name}`;
+                           return (
+                              <ItemUser
+                                 key={obj.id}
+                                 id={obj.user_id}
+                                 full_name={full_name}
+                                 department={obj.department}
+                                 email={obj.email}
+                                 handleClick={handleClickDirector}
+                              />
+                           );
+                        })
+                     ) : (
+                        <Typography>No se encontraron registros o coincidencias</Typography>
+                     )}
                   </DialogContentText>
                </List>
             </DialogContent>

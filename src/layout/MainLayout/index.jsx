@@ -90,11 +90,11 @@ const MainLayout = () => {
                         color="inherit"
                         elevation={5}
                         sx={{
-                           // background: "rgb(255,255,255)",
+                           // background: "#f1f1f1",
                            // background: "linear-gradient(337deg, rgba(255,255,255,1) 0%, rgba(30,33,38,1) 50%, rgba(255,255,255,1) 100%)",
                            // background: "radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(230,231,235,1) 80%, rgba(30,33,38,1) 100%)",
                            // background: "linear-gradient(337deg, rgba(13,52,25,1) 0%, rgba(52,128,63,1) 50%, rgba(13,52,25,1) 100%)",
-                           background: "linear-gradient(355xdeg, rgba(255,255,255,1) 0%, rgba(230,231,235,1) 50%, rgba(255,255,255,1) 100%)",
+                           background: "linear-gradient(355deg, rgba(255,255,255,1) 0%, rgba(230,231,235,1) 50%, rgba(255,255,255,1) 100%)",
                            bgcolor: theme.palette.background.default,
                            transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
                         }}

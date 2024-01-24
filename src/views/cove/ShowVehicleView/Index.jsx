@@ -11,7 +11,7 @@ import { useVehicleContext } from "../../../context/VehicleContext";
 import { Avatar, Button, Card, CardContent, Chip, Grow, List, ListItem, ListItemIcon, OutlinedInput, Tooltip, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
-import sAlert from "../../../utils/sAlert";
+import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 // import bgGarage from "../../assets/images/bg-primary.jpg";
@@ -23,7 +23,7 @@ import { drawerWidth } from "../../../config/store/constant";
 import { Icon123, IconAB2, IconCalendarStats, IconCandle, IconNotebook } from "@tabler/icons";
 import { shouldForwardProp } from "@mui/system";
 import { useTheme } from "@emotion/react";
-import { formatDatetime, handleInputStringCase } from "../../../utils/Formats";
+import { formatDatetime, formatDatetimeToSQL, handleInputStringCase } from "../../../utils/Formats";
 import SearchInput from "../../../components/SearchInput";
 import PlatesRegisters from "./PlatesRegisters";
 import HistoryRegister from "./HIstoryRegister";
@@ -35,6 +35,8 @@ import IconBtnAssign from "../../../components/icons/IconBtnAssign";
 import IconBtnLoan from "../../../components/icons/IconBtnLoan";
 import ModalService from "./ModalService";
 import { IconUserPentagon } from "@tabler/icons-react";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -66,8 +68,10 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 const sizeBtns = 150;
 
 const ShowVehicleView = () => {
+   const mySwal = withReactContent(Swal);
+
    const { setLoading, setLoadingAction, setOpenDialog, setBgImage } = useGlobalContext();
-   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicleBy, vehicle } = useVehicleContext();
+   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicle, showVehicleBy, vehicle } = useVehicleContext();
    const { vehiclePlates, setVehiclePlates, historyByVehicleId } = useVehiclePlateContext();
 
    const theme = useTheme();
@@ -147,10 +151,34 @@ const ShowVehicleView = () => {
       );
    };
 
+   const handleClickDeliver = () => {
+      try {
+         mySwal
+            .fire(QuestionAlertConfig(`Estas por devolver el vehículo con N° económico ${vehicle.stock_number}`, "DEVOLVER", "CANCELAR", "info"))
+            .then(async (result) => {
+               if (result.isConfirmed) {
+                  setLoadingAction(true);
+                  // setAssignedVehicle({ user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) });
+                  const deliveredVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
+                  // return console.log(deliveredVehicle);
+                  const axiosResponse = await createAssignedVehicle(deliveredVehicle);
+                  await showVehicle(vehicle.id);
+                  setLoadingAction(false);
+                  Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+               }
+            });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+         setLoading(false);
+      }
+   };
+
    useEffect(() => {
       try {
          // setLoading(true);
          setBgImage("bgGarage");
+         console.log("se actualizo el vehiculo", vehicle);
          // getVehicles();
          setLoading(false);
          document.querySelector("#search").focus();
@@ -228,6 +256,23 @@ const ShowVehicleView = () => {
                               <Box textAlign={"center"}>
                                  <IconBtnLoan onClick={() => setOpenLoan(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
                               </Box>
+                           </Tooltip>
+                        </Grid>
+                        <Grid xs alignItems={"center"}>
+                           <Tooltip title={"Devolver unidad"} placement="top" arrow>
+                              <Button
+                                 variant="contained"
+                                 color="error"
+                                 fullWidth
+                                 size="large"
+                                 onClick={handleClickDeliver}
+                                 width={sizeBtns}
+                                 height={sizeBtns}
+                                 sx={{ fontWeight: "bolder" }}
+                                 className={"btn-action"}
+                              >
+                                 DEVOLVER UNIDAD
+                              </Button>
                            </Tooltip>
                         </Grid>
                         {/* </Grid> */}
@@ -314,7 +359,7 @@ const ShowVehicleView = () => {
                                  icon={<IconUserPentagon />}
                                  text={
                                     <Typography variant="h4" component={"span"}>
-                                       ASIGNADO A: Usuario 1
+                                       ASIGNADO A: {vehicle.dir_username}
                                     </Typography>
                                  }
                               />
@@ -323,7 +368,7 @@ const ShowVehicleView = () => {
                                  icon={<IconAB2 />}
                                  text={
                                     <Typography variant="h4" component={"span"}>
-                                       PRESTADO A: Usuario 2
+                                       PRESTADO A: {vehicle.dri_username}
                                     </Typography>
                                  }
                               />
@@ -352,7 +397,7 @@ const ShowVehicleView = () => {
             {/* IMAGEN INSIGNIA MARCA */}
             {vehicle && (
                <Box className={`brand-container ${classesImgVehicle}`}>
-                  <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_brand}`} style={{ maxHeight: "100px", objectFit: "cover" }} />
+                  <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.brand_img}`} style={{ maxHeight: "100px", objectFit: "cover" }} />
                   <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "42px", textShadow: "2px 2px 4px rgba(0, 0, 0, 1)" }}>
                      {vehicle && vehicle.model}
                   </Typography>

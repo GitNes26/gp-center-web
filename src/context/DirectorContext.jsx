@@ -213,6 +213,7 @@ export default function DirectorContextProvider({ children }) {
             singularName,
             pluralName,
             directors,
+            setDirectors,
             director,
             setDirector,
             resetDirector,

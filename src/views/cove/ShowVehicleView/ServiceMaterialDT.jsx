@@ -22,7 +22,7 @@ import { Box } from "@mui/system";
 import { formatPhone } from "../../../utils/Formats";
 import { IconCircleCheck, IconEye } from "@tabler/icons";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import ModalService from "../../cove/ShowVehicleView/ModalService";
+import ModalService from "./ModalService_v2";
 import UserContextProvider from "../../../context/UserContext";
 import VehicleContextProvider from "../../../context/VehicleContext";
 import { useAuthContext } from "../../../context/AuthContext";
