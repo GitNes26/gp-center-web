@@ -40,10 +40,10 @@ const Question = (msg, confirmText, cancelText) => {
       .fire({
          icon: "question",
          html: `<h3>${msg}</h3>`,
-         confirmButtonText: confirmText || "Si, eliminar!",
+         confirmButtonText: `<b>${confirmText}</b>` || "<b>Si, eliminar!</b>",
          confirmButtonColor: "green",
          showCancelButton: true,
-         cancelButtonText: cancelText || "No, cancelar!",
+         cancelButtonText: `<b>${cancelText}</b>` || "<b>No, cancelar!</b>",
          reverseButtons: true
       })
       .then((result) => {
@@ -66,10 +66,10 @@ export const QuestionAlertConfig = (msg, confirmText, cancelText, icon = "questi
    return {
       icon: icon,
       html: `<h3>${msg}</h3>`,
-      confirmButtonText: confirmText || "Si, eliminar!",
+      confirmButtonText: `<b>${confirmText}</b>` || "<b>Si, eliminar!</b>",
       confirmButtonColor: "green",
       showCancelButton: true,
-      cancelButtonText: cancelText || "No, cancelar!",
+      cancelButtonText: `<b>${cancelText}</b>` || "<b>No, cancelar!</b>",
       reverseButtons: true
    };
 };

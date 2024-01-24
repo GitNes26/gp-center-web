@@ -76,6 +76,7 @@ export const getCommunity = async (
    setDataColoniesComplete
 ) => {
    try {
+      let _community_id = null;
       setShowLoading(true);
       setDisabledState(true);
       setDisabledCity(true);
@@ -138,7 +139,7 @@ export const getCommunity = async (
       setFieldValue("state", community_id ? formData.state : states.length == 1 ? states[0] : states[1]);
       setFieldValue("city", community_id ? formData.city : cities.length == 1 ? cities[0] : cities[1]);
       setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
-      // setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
+      if (!community_id) setFieldValue("community_id", coloniesComplete.length == 2 && coloniesComplete[1].id);
       // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
       setShowLoading(false);
    } catch (error) {

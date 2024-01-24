@@ -55,6 +55,7 @@ const SearchInput = ({
    setSearch,
    searchType,
    setSearchType,
+   searchOptions,
    placeholder,
    handleKeyUpSearchSuccess,
    showOptions = true,
@@ -118,8 +119,11 @@ const SearchInput = ({
                      value={searchType}
                      onChange={(e) => handleChangeSearchBy(e.target.value)}
                   >
-                     <FormControlLabel value={"number"} control={<Radio />} label="N° Económico" />
-                     <FormControlLabel value={"text"} control={<Radio />} label="Placas" />
+                     {searchOptions.map((o, index) => (
+                        <FormControlLabel key={index} value={o.value} control={<Radio />} label={o.label} />
+                     ))}
+                     {/* <FormControlLabel value={"number"} control={<Radio />} label="N° Económico" />
+                     <FormControlLabel value={"text"} control={<Radio />} label="Placas" /> */}
                   </RadioGroup>
                </FormControl>
             )}

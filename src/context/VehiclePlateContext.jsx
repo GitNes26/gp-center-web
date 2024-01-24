@@ -15,8 +15,8 @@ const formDataInitialState = {
 };
 
 export default function VehiclePlateContextProvider({ children }) {
-   const singularName = "Placa del Vehiculo"; //Escribirlo siempre letra Capital
-   const pluralName = "Placas del vehiculo"; //Escribirlo siempre letra Capital
+   const singularName = "Placa del Vehículo"; //Escribirlo siempre letra Capital
+   const pluralName = "Placas del Vehículo"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");

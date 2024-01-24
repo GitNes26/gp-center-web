@@ -15,7 +15,7 @@ const formDataInitialState = {
 
 export default function VehicleStatusContextProvider({ children }) {
    const singularName = "Estatus"; //Escribirlo siempre letra Capital
-   const pluralName = "Estatus de Vehiculo"; //Escribirlo siempre letra Capital
+   const pluralName = "Estatus de Vehículo"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");

@@ -3,7 +3,7 @@ import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
-const AssignedVehicleContext = createContext();
+const LoanedVehicleContext = createContext();
 
 const formDataInitialState = {
    id: 0,
@@ -12,15 +12,15 @@ const formDataInitialState = {
    date: ""
 };
 
-export default function AssignedVehicleContextProvider({ children }) {
-   const singularName = "Asignación de Vehículo"; //Escribirlo siempre letra Capital
-   const pluralName = "Asignaciones de Vehículo"; //Escribirlo siempre letra Capital
+export default function LoanedVehicleContextProvider({ children }) {
+   const singularName = "Prestamo de Vehículo"; //Escribirlo siempre letra Capital
+   const pluralName = "Prestaciones de Vehículo"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [assignedVehicles, setAssignedVehicles] = useState([]);
-   const [assignedVehicle, setAssignedVehicle] = useState(null);
+   const [loanedVehicles, setLoanedVehicles] = useState([]);
+   const [loanedVehicle, setLoanedVehicle] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
@@ -31,22 +31,22 @@ export default function AssignedVehicleContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-   const resetAssignedVehicle = () => {
+   const resetLoanedVehicle = () => {
       try {
-         setAssignedVehicle(formDataInitialState);
+         setLoanedVehicle(formDataInitialState);
       } catch (error) {
-         console.log("Error en resetAssignedVehicle:", error);
+         console.log("Error en resetLoanedVehicle:", error);
          Toast.Error(error);
       }
    };
 
-   const getAssignedVehicles = async () => {
+   const getLoanedVehicles = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/assignedVehicle`);
-         res.result.assignedVehicles = axiosData.data.data.result;
-         setAssignedVehicles(axiosData.data.data.result);
-         // console.log("assignedVehicles", assignedVehicles);
+         const axiosData = await Axios.get(`/loanedVehicle`);
+         res.result.loanedVehicles = axiosData.data.data.result;
+         setLoanedVehicles(axiosData.data.data.result);
+         // console.log("loanedVehicles", loanedVehicles);
 
          return res;
       } catch (error) {
@@ -57,15 +57,15 @@ export default function AssignedVehicleContextProvider({ children }) {
       }
    };
 
-   const getAssignedVehiclesSelectIndex = async () => {
+   const getLoanedVehiclesSelectIndex = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/assignedVehicle/selectIndex`);
+         const axiosData = await Axios.get(`/loanedVehicle/selectIndex`);
          // console.log("el selectedDeRoles", axiosData);
-         res.result.assignedVehicles = axiosData.data.data.result;
-         res.result.assignedVehicles.unshift({ id: 0, label: "Selecciona una opción..." });
-         setAssignedVehicles(axiosData.data.data.result);
-         // console.log("assignedVehicles", assignedVehicles);
+         res.result.loanedVehicles = axiosData.data.data.result;
+         res.result.loanedVehicles.unshift({ id: 0, label: "Selecciona una opción..." });
+         setLoanedVehicles(axiosData.data.data.result);
+         // console.log("loanedVehicles", loanedVehicles);
 
          return res;
       } catch (error) {
@@ -76,13 +76,13 @@ export default function AssignedVehicleContextProvider({ children }) {
       }
    };
 
-   const showAssignedVehicle = async (id) => {
+   const showLoanedVehicle = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/assignedVehicle/${id}`);
+         const axiosData = await Axios.get(`/loanedVehicle/${id}`);
          res = axiosData.data.data;
          // console.log(res);
-         setAssignedVehicle(res.result);
+         setLoanedVehicle(res.result);
          setFormData(res.result);
 
          return res;
@@ -94,12 +94,12 @@ export default function AssignedVehicleContextProvider({ children }) {
       }
    };
 
-   const createAssignedVehicle = async (assignedVehicle) => {
+   const createLoanedVehicle = async (loanedVehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/assignedVehicle/create", assignedVehicle);
+         const axiosData = await Axios.post("/loanedVehicle/create", loanedVehicle);
          res = axiosData.data.data;
-         getAssignedVehicles();
+         getLoanedVehicles();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -110,12 +110,12 @@ export default function AssignedVehicleContextProvider({ children }) {
       return res;
    };
 
-   const updateAssignedVehicle = async (assignedVehicle) => {
+   const updateLoanedVehicle = async (loanedVehicle) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/assignedVehicle/update", assignedVehicle);
+         const axiosData = await Axios.post("/loanedVehicle/update", loanedVehicle);
          res = axiosData.data.data;
-         getAssignedVehicles();
+         getLoanedVehicles();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -126,12 +126,12 @@ export default function AssignedVehicleContextProvider({ children }) {
       return res;
    };
 
-   const deleteAssignedVehicle = async (id) => {
+   const deleteLoanedVehicle = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/assignedVehicle/destroy/${id}`);
-         // console.log("deleteAssignedVehicle() axiosData", axiosData.data);
-         getAssignedVehicles();
+         const axiosData = await Axios.post(`/loanedVehicle/destroy/${id}`);
+         // console.log("deleteLoanedVehicle() axiosData", axiosData.data);
+         getLoanedVehicles();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -145,27 +145,27 @@ export default function AssignedVehicleContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de AssignedVehicleContext");
-   //    getAssignedVehicles();
+   //    console.log("el useEffect de LoanedVehicleContext");
+   //    getLoanedVehicles();
    // });
 
    return (
-      <AssignedVehicleContext.Provider
+      <LoanedVehicleContext.Provider
          value={{
             singularName,
             pluralName,
-            assignedVehicles,
-            assignedVehicle,
+            loanedVehicles,
+            loanedVehicle,
             formData,
             setFormData,
             resetFormData,
-            resetAssignedVehicle,
-            getAssignedVehicles,
-            getAssignedVehiclesSelectIndex,
-            showAssignedVehicle,
-            createAssignedVehicle,
-            updateAssignedVehicle,
-            deleteAssignedVehicle,
+            resetLoanedVehicle,
+            getLoanedVehicles,
+            getLoanedVehiclesSelectIndex,
+            showLoanedVehicle,
+            createLoanedVehicle,
+            updateLoanedVehicle,
+            deleteLoanedVehicle,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
@@ -173,7 +173,7 @@ export default function AssignedVehicleContextProvider({ children }) {
          }}
       >
          {children}
-      </AssignedVehicleContext.Provider>
+      </LoanedVehicleContext.Provider>
    );
 }
-export const useAssignedVehicleContext = () => useContext(AssignedVehicleContext);
+export const useLoanedVehicleContext = () => useContext(LoanedVehicleContext);

@@ -111,6 +111,7 @@ export default function DirectorContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/directors/${id}`);
+         console.log("axiosData", axiosData);
          res = axiosData.data.data;
          res.result.zip = "";
          res.result.state = "Selecciona una opción...";

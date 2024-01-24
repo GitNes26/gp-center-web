@@ -7,13 +7,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Fragment, forwardRef, useEffect, useState } from "react";
+import { Fragment, forwardRef, useEffect, useLayoutEffect, useState } from "react";
 import { ListItemButton } from "@mui/material";
 import SearchInput from "../../../components/SearchInput";
 import { useDirectorContext } from "../../../context/DirectorContext";
@@ -22,7 +21,7 @@ import Swal from "sweetalert2";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import Toast from "../../../utils/Toast";
-import { useAssignedVehicleContext } from "../../../context/AssignedVehicleContext";
+import { useLoanedVehicleContext } from "../../../context/LoanedVehicleContext";
 import { formatDatetimeToSQL } from "../../../utils/Formats";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
@@ -30,16 +29,14 @@ const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ModalAsig = ({ open, setOpen }) => {
+const ModalLoan = ({ open, setOpen }) => {
    // const [open, setOpen] = useState(false);
    const mySwal = withReactContent(Swal);
    const [search, setSearch] = useState("");
    const { setLoadingAction } = useGlobalContext();
    const { directors, getDirectors } = useDirectorContext();
-   const { vehicle, showVehicle } = useVehicleContext();
-   const { /* assignedVehicle, setAssignedVehicle, */ createAssignedVehicle } = useAssignedVehicleContext();
-
-   const [dataList, setDataList] = useState([]);
+   const { vehicle, showVehicle, dataList, setDataList } = useVehicleContext();
+   const { /* assignedVehicle, setLoanedVehicle, */ createLoanedVehicle } = useLoanedVehicleContext();
 
    const handleClickOpen = () => {
       setOpen(true);
@@ -114,10 +111,10 @@ const ModalAsig = ({ open, setOpen }) => {
             .then(async (result) => {
                if (result.isConfirmed) {
                   setLoadingAction(true);
-                  // setAssignedVehicle({ user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) });
+                  // setLoanedVehicle({ user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) });
                   const assignedVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
                   // return console.log(assignedVehicle);
-                  const axiosResponse = await createAssignedVehicle(assignedVehicle);
+                  const axiosResponse = await createLoanedVehicle(assignedVehicle);
                   await showVehicle(vehicle.id);
                   setOpen(false);
                   setLoadingAction(false);
@@ -134,31 +131,17 @@ const ModalAsig = ({ open, setOpen }) => {
       try {
          setDataList(directors);
          const value = e.target.value;
-         if (value.length < 1) return;
-         console.log(directors);
-         let _data = [...dataList];
-         // const filter1 = _data.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
-         _data = _data.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
-         // _data = [...new Set(_data)];
-         console.log(_data);
-         setDataList(_data);
-
-         // if (e.key === "Enter" || e.keyCode === 13) {
-         //    if (e.target.value.length == 0) return Toast.Info("Buscador vacio.");
-         //    setClassesImgVehicle("zoom-out");
-         //    setGrowOn(false);
-         //    setLoadingAction(true);
-         //    setTimeout(async () => {
-         //       const searchBy = searchType == "number" ? "stock_number" : "plates";
-         //       const res = await showVehicleBy(searchBy, search);
-         //       console.log("res", res.result);
-         //       setSearch("");
-         //       setLoadingAction(false);
-         //       if (!res.result) return Toast.Info(res.alert_title);
-         //       setGrowOn(true);
-         //       setClassesImgVehicle("zoom-in");
-         //    }, 850);
-         // }
+         if (value.length == 0) return setDataList(directors);
+         const filter1 = directors.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
+         const filter2 = directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
+         const filter3 = directors.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
+         const result = [];
+         result.push(...filter1);
+         result.push(...filter2);
+         result.push(...filter3);
+         const data = [...new Set(result)];
+         setDataList(data);
+         // setDataList(directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase())));
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -167,8 +150,11 @@ const ModalAsig = ({ open, setOpen }) => {
    };
 
    useEffect(() => {
+      // console.log("estoy en el modal", directors);
+   }, [dataList]);
+   useLayoutEffect(() => {
+      // console.log("estoy en el useLayoutEffect", directors);
       getDirectors();
-      // console.log(users);
    }, [dataList]);
 
    return (
@@ -186,7 +172,7 @@ const ModalAsig = ({ open, setOpen }) => {
          >
             <DialogTitle>
                <Typography variant="h3" component={"p"} textAlign={"center"}>
-                  ASIGNAR VEHICULO
+                  ASIGNAR VEHÍCULO
                </Typography>
 
                <SearchInput
@@ -204,12 +190,11 @@ const ModalAsig = ({ open, setOpen }) => {
                   <DialogContentText id="alert-dialog-slide-description" component={"div"}>
                      {dataList.length > 0 ? (
                         dataList.map((obj) => {
-                           const full_name = `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name}`;
                            return (
                               <ItemUser
                                  key={obj.id}
                                  id={obj.user_id}
-                                 full_name={full_name}
+                                 full_name={obj.full_name}
                                  department={obj.department}
                                  email={obj.email}
                                  handleClick={handleClickDirector}
@@ -230,4 +215,4 @@ const ModalAsig = ({ open, setOpen }) => {
    );
 };
 
-export default ModalAsig;
+export default ModalLoan;

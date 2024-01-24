@@ -44,8 +44,8 @@ const formDataInitialState = {
 };
 
 export default function VehicleContextProvider({ children }) {
-   const singularName = "Vehiculo"; //Escribirlo siempre letra Capital
-   const pluralName = "Vehiculos"; //Escribirlo siempre letra Capital
+   const singularName = "Vehículo"; //Escribirlo siempre letra Capital
+   const pluralName = "Vehículos"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
@@ -55,6 +55,8 @@ export default function VehicleContextProvider({ children }) {
    const [formData, setFormData] = useState(formDataInitialState);
    const [imgFile, setImgFile] = useState(null);
    const [imagePreview, setImagePreview] = useState(null);
+
+   const [dataList, setDataList] = useState([]);
 
    const resetFormData = () => {
       try {
@@ -224,7 +226,9 @@ export default function VehicleContextProvider({ children }) {
             imgFile,
             setImgFile,
             imagePreview,
-            setImagePreview
+            setImagePreview,
+            dataList,
+            setDataList
          }}
       >
          {children}

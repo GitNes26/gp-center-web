@@ -28,7 +28,6 @@ import SearchInput from "../../../components/SearchInput";
 import PlatesRegisters from "./PlatesRegisters";
 import HistoryRegister from "./HIstoryRegister";
 import { useVehiclePlateContext } from "../../../context/VehiclePlateContext";
-import ModalAsig from "./ModalAsig";
 import UserContextProvider from "../../../context/UserContext";
 import IconBtnService from "../../../components/icons/IconBtnService";
 import IconBtnAssign from "../../../components/icons/IconBtnAssign";
@@ -37,6 +36,8 @@ import ModalService from "./ModalService";
 import { IconUserPentagon } from "@tabler/icons-react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { useDirectorContext } from "../../../context/DirectorContext";
+import ModalAssign from "./ModalAssign";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -71,8 +72,10 @@ const ShowVehicleView = () => {
    const mySwal = withReactContent(Swal);
 
    const { setLoading, setLoadingAction, setOpenDialog, setBgImage } = useGlobalContext();
-   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicle, showVehicleBy, vehicle } = useVehicleContext();
+   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicle, showVehicleBy, vehicle, dataList, setDataList } =
+      useVehicleContext();
    const { vehiclePlates, setVehiclePlates, historyByVehicleId } = useVehiclePlateContext();
+   const { directors, getDirectors } = useDirectorContext();
 
    const theme = useTheme();
    const [search, setSearch] = useState("");
@@ -151,6 +154,12 @@ const ShowVehicleView = () => {
       );
    };
 
+   const handleClickAssign = () => {
+      setOpenAssign(true);
+      getDirectors();
+      setDataList(directors);
+   };
+
    const handleClickDeliver = () => {
       try {
          mySwal
@@ -178,8 +187,6 @@ const ShowVehicleView = () => {
       try {
          // setLoading(true);
          setBgImage("bgGarage");
-         console.log("se actualizo el vehiculo", vehicle);
-         // getVehicles();
          setLoading(false);
          document.querySelector("#search").focus();
       } catch (error) {
@@ -219,6 +226,10 @@ const ShowVehicleView = () => {
                      setSearch={setSearch}
                      searchType={searchType}
                      setSearchType={setSearchType}
+                     searchOptions={[
+                        { value: "number", label: "N° Económico" },
+                        { value: "text", label: "Placas" }
+                     ]}
                      onInput={(e) => handleInputStringCase(e, setSearch, true)}
                      handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
                   />
@@ -247,7 +258,7 @@ const ShowVehicleView = () => {
                         <Grid xs alignItems={"center"}>
                            <Tooltip title={"Asignar unidad"} placement="top" arrow>
                               <Box textAlign={"center"}>
-                                 <IconBtnAssign onClick={() => setOpenAssign(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                                 <IconBtnAssign onClick={handleClickAssign} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
                               </Box>
                            </Tooltip>
                         </Grid>
@@ -379,7 +390,7 @@ const ShowVehicleView = () => {
                )}
             </Grid>
 
-            {/* IMAGEN DEL VEHICULO */}
+            {/* IMAGEN DEL VEHÍCULO */}
             {vehicle && (
                <Box sx={{}}>
                   <img
@@ -407,7 +418,8 @@ const ShowVehicleView = () => {
 
          <UserContextProvider>
             <ModalService open={openService} setOpen={setOpenService} stockNumber={vehicle ? vehicle.stock_number : 0} />
-            <ModalAsig open={openAssign} setOpen={setOpenAssign} />
+            <ModalAssign open={openAssign} setOpen={setOpenAssign} />
+            {/* <ModalAsig open={openAssign} setOpen={setOpenAssign} /> */}
          </UserContextProvider>
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
          <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />

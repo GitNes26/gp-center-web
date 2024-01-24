@@ -436,13 +436,13 @@ const ModalService = ({ open, setOpen, stockNumber = null, idService = null, tit
                               touched={touched.pre_diagnosis}
                            />
                         </Grid>
-
+                        {/* 
                         <Grid xs={12} md={12} sx={{ mb: 1 }}>
                            <Divider sx={{ flexGrow: 1, my: 1, borderStyle: "dashed", borderBottomWidth: "thick", borderColor: gpcDark }} orientation="horizontal" />
-                        </Grid>
+                        </Grid> */}
 
                         {/* Diagnostico Final */}
-                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        {/* <Grid xs={12} md={12} sx={{ mb: 1 }}>
                            <InputComponentv2
                               idName={"final_diagnosis"}
                               label={"Diagnóstico Final"}
@@ -455,15 +455,13 @@ const ModalService = ({ open, setOpen, stockNumber = null, idService = null, tit
                               onInput={(e) => handleInputFormik(e, setFieldValue, "final_diagnosis", true)}
                               onBlur={handleBlur}
                               setFieldValue={setFieldValue}
-                              // disabled={vehicle ? false : true}
-                              // sx={{ backgroundColor: gpcDark }}
                               multiline
                               rows={3}
                               value={values.final_diagnosis}
                               error={errors.final_diagnosis}
                               touched={touched.final_diagnosis}
                            />
-                        </Grid>
+                        </Grid> */}
 
                         <LoadingButton
                            type="submit"
