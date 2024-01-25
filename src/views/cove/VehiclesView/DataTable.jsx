@@ -42,13 +42,29 @@ const VehicleDT = () => {
       setTextBtnSumbit,
       setFormTitle
    } = useVehicleContext();
-   const globalFilterFields = ["stock_number", "plates", "vehicle_status", "serial_number", "circulation_card", "insurance_policy", "description"];
+   const globalFilterFields = [
+      "stock_number",
+      "brand",
+      "model",
+      "year",
+      "plates",
+      "vehicle_status",
+      "serial_number",
+      "circulation_card",
+      "insurance_policy",
+      "description"
+   ];
 
    // #region BodysTemplate
    const ImagePreviewBodyTemplate = (obj) => (
       <Box textAlign={"center"}>
          {<img alt="Vista previa del vehículo" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />}
       </Box>
+   );
+   const InfoBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+         {obj.brand} - {obj.model} {obj.year}
+      </Typography>
    );
    const StockNumberBodyTemplate = (obj) => (
       <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
@@ -105,6 +121,7 @@ const VehicleDT = () => {
 
    const columns = [
       { field: "image_preview", header: "Vista Previa", sortable: false, functionEdit: null, body: ImagePreviewBodyTemplate, filterField: null },
+      { field: "info", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null },
       { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
       { field: "plates", header: "Placas", sortable: true, functionEdit: null, body: PlatesBodyTemplate, filterField: null },
       { field: "vehicle_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
@@ -228,7 +245,7 @@ const VehicleDT = () => {
       try {
          // console.log("cargar listado", vehicles);
          await vehicles.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.stock_number} active={obj.active} />;

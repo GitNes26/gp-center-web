@@ -13,7 +13,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Fragment, forwardRef, useEffect, useLayoutEffect, useState } from "react";
-import { ListItemButton } from "@mui/material";
+import { ListItemButton, TextField } from "@mui/material";
 import SearchInput from "../../../components/SearchInput";
 import { useDirectorContext } from "../../../context/DirectorContext";
 import withReactContent from "sweetalert2-react-content";
@@ -37,13 +37,21 @@ const ModalAssign = ({ open, setOpen }) => {
    const { directors, getDirectors } = useDirectorContext();
    const { vehicle, showVehicle, dataList, setDataList } = useVehicleContext();
    const { /* assignedVehicle, setAssignedVehicle, */ createAssignedVehicle } = useAssignedVehicleContext();
-
-   const handleClickOpen = () => {
-      setOpen(true);
-   };
+   const [openKm, setOpenKm] = useState(false);
+   const [showErrorKm, setShowErrorKm] = useState(false);
+   const [formData, setFormData] = useState({
+      user_id: 0,
+      vehicle_id: 0,
+      km_assignment: 0,
+      date: "",
+      full_name: ""
+   });
 
    const handleClose = () => {
       setOpen(false);
+   };
+   const handleCloseKm = () => {
+      setOpenKm(false);
    };
 
    function stringToColor(string) {
@@ -103,19 +111,36 @@ const ModalAssign = ({ open, setOpen }) => {
    };
 
    const handleClickDirector = (id, full_name) => {
-      // console.log("voy a asignarle el vehiculo ");
-      // console.log("voy a asignarle el vehiculo ", vehicle_id, "a ", director_id);
+      setFormData({
+         ...formData,
+         user_id: id,
+         vehicle_id: vehicle.id,
+         full_name: full_name
+      });
+      setOpenKm(true);
+   };
+   const handleClickKm = (e) => {
       try {
+         e.preventDefault();
+         if (formData.km_assignment < 0) setShowErrorKm(true);
+         if (showErrorKm) return;
+
+         setFormData({
+            ...formData,
+            date: formatDatetimeToSQL(new Date())
+         });
+
          mySwal
-            .fire(QuestionAlertConfig(`Estas por asignar el vehículo con N° económico ${vehicle.stock_number} a ${full_name}`, "ASIGNAR", "CANCELAR", "info"))
+            .fire(QuestionAlertConfig(`Estas por asignar el vehículo con N° económico ${vehicle.stock_number} a ${formData.full_name}`, "ASIGNAR", "CANCELAR", "info"))
             .then(async (result) => {
                if (result.isConfirmed) {
-                  setLoadingAction(true);
+                  // setLoadingAction(true);
                   // setAssignedVehicle({ user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) });
-                  const assignedVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
-                  // return console.log(assignedVehicle);
-                  const axiosResponse = await createAssignedVehicle(assignedVehicle);
+                  // const assignedVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
+                  // return console.log(formData);
+                  const axiosResponse = await createAssignedVehicle(formData);
                   await showVehicle(vehicle.id);
+                  setOpenKm(false);
                   setOpen(false);
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -209,6 +234,55 @@ const ModalAssign = ({ open, setOpen }) => {
             </DialogContent>
             <DialogActions>
                <Button onClick={handleClose}>Cerrar</Button>
+            </DialogActions>
+         </Dialog>
+
+         {/* FORMULARIO COMPLEMENTARIO */}
+         <Dialog
+            open={openKm}
+            TransitionComponent={Transition}
+            keepMounted
+            fullWidth
+            onClose={handleCloseKm}
+            aria-describedby="alert-dialog-slide-description"
+            sx={{ backgroundColor: "transparent" }}
+         >
+            <DialogTitle>
+               <Typography variant="h4" component={"p"} textAlign={"center"}>
+                  KILOMETRAJE ACTUAL
+               </Typography>
+            </DialogTitle>
+            <DialogContent sx={{ pb: 0 }}>
+               <form onSubmit={handleClickKm}>
+                  <TextField
+                     id="km_assignment"
+                     name="km_assignment"
+                     label="Kilometraje *"
+                     type="number"
+                     value={formData.km_assignment}
+                     placeholder="Ingrese el km actual de la unidad..."
+                     onChange={(e) => {
+                        setFormData({
+                           ...formData,
+                           km_assignment: Number(e.target.value)
+                        });
+                        setShowErrorKm(false);
+                        if (Number(e.target.value) < 0) setShowErrorKm(true);
+                     }}
+                     InputProps={{ step: "01" }}
+                     fullWidth
+                     sx={{ mt: 3 }}
+                  />
+                  {showErrorKm && (
+                     <Typography color={"red"} variant="subtitle2">
+                        El Kilometraje es requerido.
+                     </Typography>
+                  )}
+                  <Button type="submit">ACEPTAR</Button>
+               </form>
+            </DialogContent>
+            <DialogActions sx={{ my: 0, pt: 0 }}>
+               <Button onClick={handleCloseKm}>Cerrar</Button>
             </DialogActions>
          </Dialog>
       </div>

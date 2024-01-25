@@ -13,9 +13,9 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Fragment, forwardRef, useEffect, useLayoutEffect, useState } from "react";
-import { ListItemButton } from "@mui/material";
+import { ListItemButton, TextField } from "@mui/material";
 import SearchInput from "../../../components/SearchInput";
-import { useDirectorContext } from "../../../context/DirectorContext";
+import { useDriverContext } from "../../../context/DriverContext";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -34,16 +34,27 @@ const ModalLoan = ({ open, setOpen }) => {
    const mySwal = withReactContent(Swal);
    const [search, setSearch] = useState("");
    const { setLoadingAction } = useGlobalContext();
-   const { directors, getDirectors } = useDirectorContext();
+   const { drivers, getDrivers } = useDriverContext();
    const { vehicle, showVehicle, dataList, setDataList } = useVehicleContext();
-   const { /* assignedVehicle, setLoanedVehicle, */ createLoanedVehicle } = useLoanedVehicleContext();
-
-   const handleClickOpen = () => {
-      setOpen(true);
-   };
+   const { /* loanedVehicle, setLoanedVehicle, */ createLoanedVehicle } = useLoanedVehicleContext();
+   const [openReason, setOpenReason] = useState(false);
+   const [showErrorReason, setShowErrorReason] = useState(false);
+   const [showErrorKm, setShowErrorKm] = useState(false);
+   const [formData, setFormData] = useState({
+      vehicle_id: 0,
+      assigned_vehicle_id: 0,
+      requesting_user_id: 0,
+      reason: "",
+      initial_km: 0,
+      loan_date: "",
+      full_name: ""
+   });
 
    const handleClose = () => {
       setOpen(false);
+   };
+   const handleCloseReason = () => {
+      setOpenReason(false);
    };
 
    function stringToColor(string) {
@@ -102,20 +113,42 @@ const ModalLoan = ({ open, setOpen }) => {
       );
    };
 
-   const handleClickDirector = (id, full_name) => {
-      // console.log("voy a asignarle el vehiculo ");
-      // console.log("voy a asignarle el vehiculo ", vehicle_id, "a ", director_id);
+   const handleClickDriver = (id, full_name) => {
+      setOpenReason(true);
+      setFormData({
+         ...formData,
+         vehicle_id: vehicle.id,
+         assigned_vehicle_id: vehicle.ass_folio,
+         reason: "",
+         initial_km: 0,
+         requesting_user_id: id,
+         full_name: full_name
+      });
+   };
+   const handleClickLoan = (e) => {
       try {
+         e.preventDefault();
+         if (formData.reason.length < 1) setShowErrorReason(true);
+         if (formData.initial_km < 0) setShowErrorKm(true);
+         if (showErrorReason) return;
+         if (showErrorKm) return;
+
+         setFormData({
+            ...formData,
+            loan_date: formatDatetimeToSQL(new Date())
+         });
+
          mySwal
-            .fire(QuestionAlertConfig(`Estas por asignar el vehículo con N° económico ${vehicle.stock_number} a ${full_name}`, "ASIGNAR", "CANCELAR", "info"))
+            .fire(QuestionAlertConfig(`Estas por prestar el vehículo con N° económico ${vehicle.stock_number} a ${formData.full_name}`, "PRESTAR", "CANCELAR", "info"))
             .then(async (result) => {
                if (result.isConfirmed) {
                   setLoadingAction(true);
                   // setLoanedVehicle({ user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) });
-                  const assignedVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
-                  // return console.log(assignedVehicle);
-                  const axiosResponse = await createLoanedVehicle(assignedVehicle);
+
+                  // return console.log(formData);
+                  const axiosResponse = await createLoanedVehicle(formData);
                   await showVehicle(vehicle.id);
+                  setOpenReason(false);
                   setOpen(false);
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -129,19 +162,19 @@ const ModalLoan = ({ open, setOpen }) => {
 
    const handleKeyUpSearchSuccess = async (e) => {
       try {
-         setDataList(directors);
+         setDataList(drivers);
          const value = e.target.value;
-         if (value.length == 0) return setDataList(directors);
-         const filter1 = directors.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
-         const filter2 = directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
-         const filter3 = directors.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
+         if (value.length == 0) return setDataList(drivers);
+         const filter1 = drivers.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
+         const filter2 = drivers.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
+         const filter3 = drivers.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
          const result = [];
          result.push(...filter1);
          result.push(...filter2);
          result.push(...filter3);
          const data = [...new Set(result)];
          setDataList(data);
-         // setDataList(directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase())));
+         // setDataList(drivers.filter((d) => d.department.toUpperCase().includes(value.toUpperCase())));
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -150,11 +183,11 @@ const ModalLoan = ({ open, setOpen }) => {
    };
 
    useEffect(() => {
-      // console.log("estoy en el modal", directors);
+      // console.log("estoy en el modal", drivers);
    }, [dataList]);
    useLayoutEffect(() => {
-      // console.log("estoy en el useLayoutEffect", directors);
-      getDirectors();
+      // console.log("estoy en el useLayoutEffect", drivers);
+      getDrivers();
    }, [dataList]);
 
    return (
@@ -162,6 +195,7 @@ const ModalLoan = ({ open, setOpen }) => {
          {/* <Button variant="outlined" onClick={handleClickOpen}>
             Slide in alert dialog
          </Button> */}
+
          <Dialog
             open={open}
             TransitionComponent={Transition}
@@ -172,14 +206,14 @@ const ModalLoan = ({ open, setOpen }) => {
          >
             <DialogTitle>
                <Typography variant="h3" component={"p"} textAlign={"center"}>
-                  ASIGNAR VEHÍCULO
+                  PRESTAR VEHÍCULO
                </Typography>
 
                <SearchInput
                   idName="search"
                   search={search}
                   setSearch={setSearch}
-                  placeholder={"Buscar director"}
+                  placeholder={"Buscar driver"}
                   titleTooltip={"Buscar por Departamento"}
                   handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
                   showOptions={false}
@@ -197,7 +231,7 @@ const ModalLoan = ({ open, setOpen }) => {
                                  full_name={obj.full_name}
                                  department={obj.department}
                                  email={obj.email}
-                                 handleClick={handleClickDirector}
+                                 handleClick={handleClickDriver}
                               />
                            );
                         })
@@ -209,6 +243,80 @@ const ModalLoan = ({ open, setOpen }) => {
             </DialogContent>
             <DialogActions>
                <Button onClick={handleClose}>Cerrar</Button>
+            </DialogActions>
+         </Dialog>
+
+         {/* FORMULARIO COMPLEMENTARIO */}
+         <Dialog
+            open={openReason}
+            TransitionComponent={Transition}
+            keepMounted
+            fullWidth
+            onClose={handleCloseReason}
+            aria-describedby="alert-dialog-slide-description"
+            sx={{ backgroundColor: "transparent" }}
+         >
+            <DialogTitle>
+               <Typography variant="h4" component={"p"} textAlign={"center"}>
+                  RAZÓN DEL PRESTAMO Y KILOMETRAJE
+               </Typography>
+            </DialogTitle>
+            <DialogContent sx={{ pb: 0 }}>
+               <form onSubmit={handleClickLoan}>
+                  <TextField
+                     id="reason"
+                     name="reason"
+                     label="Razón *"
+                     type="text"
+                     value={formData.reason}
+                     placeholder="Ingrese la razón del prestamo..."
+                     onChange={(e) => {
+                        setFormData({
+                           ...formData,
+                           reason: e.target.value
+                        });
+                        setShowErrorReason(false);
+                        if (e.target.value.length < 1) setShowErrorReason(true);
+                     }}
+                     // InputProps={{ }}
+                     multiline={true}
+                     fullWidth
+                     sx={{ mt: 1 }}
+                  />
+                  {showErrorReason && (
+                     <Typography color={"red"} variant="subtitle2">
+                        La razón es requerida.
+                     </Typography>
+                  )}
+                  <TextField
+                     id="initial_km"
+                     name="initial_km"
+                     label="Kilometraje *"
+                     type="number"
+                     value={formData.initial_km}
+                     placeholder="Ingrese el km actual de la unidad..."
+                     onChange={(e) => {
+                        setFormData({
+                           ...formData,
+                           initial_km: e.target.value
+                        });
+                        setShowErrorKm(false);
+                        if (Number(e.target.value) < 0) setShowErrorKm(true);
+                     }}
+                     InputProps={{ step: "01" }}
+                     fullWidth
+                     sx={{ mt: 3 }}
+                  />
+                  {showErrorKm && (
+                     <Typography color={"red"} variant="subtitle2">
+                        El Kilometraje es requerido.
+                     </Typography>
+                  )}
+                  <Button type="submit">ACEPTAR</Button>
+               </form>
+            </DialogContent>
+            <DialogActions sx={{ my: 0, pt: 0 }}>
+               <Button onClick={handleCloseReason}>Cerrar</Button>
             </DialogActions>
          </Dialog>
       </div>

@@ -38,6 +38,8 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { useDirectorContext } from "../../../context/DirectorContext";
 import ModalAssign from "./ModalAssign";
+import ModalLoan from "./ModalLoan";
+import { useDriverContext } from "../../../context/DriverContext";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -76,6 +78,7 @@ const ShowVehicleView = () => {
       useVehicleContext();
    const { vehiclePlates, setVehiclePlates, historyByVehicleId } = useVehiclePlateContext();
    const { directors, getDirectors } = useDirectorContext();
+   const { drivers, getDrivers } = useDriverContext();
 
    const theme = useTheme();
    const [search, setSearch] = useState("");
@@ -126,7 +129,7 @@ const ShowVehicleView = () => {
             setTimeout(async () => {
                const searchBy = searchType == "number" ? "stock_number" : "plates";
                const res = await showVehicleBy(searchBy, search);
-               console.log("res", res.result);
+               // console.log("res", res.result);
                setSearch("");
                setLoadingAction(false);
                if (!res.result) return Toast.Info(res.alert_title);
@@ -155,9 +158,17 @@ const ShowVehicleView = () => {
    };
 
    const handleClickAssign = () => {
+      setDataList([]);
       setOpenAssign(true);
       getDirectors();
       setDataList(directors);
+   };
+
+   const handleClickLoan = () => {
+      setDataList([]);
+      setOpenLoan(true);
+      getDrivers();
+      setDataList(drivers);
    };
 
    const handleClickDeliver = () => {
@@ -265,7 +276,7 @@ const ShowVehicleView = () => {
                         <Grid xs alignItems={"center"}>
                            <Tooltip title={"Prestar unidad"} placement="top" arrow>
                               <Box textAlign={"center"}>
-                                 <IconBtnLoan onClick={() => setOpenLoan(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                                 <IconBtnLoan onClick={handleClickLoan} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
                               </Box>
                            </Tooltip>
                         </Grid>
@@ -419,7 +430,7 @@ const ShowVehicleView = () => {
          <UserContextProvider>
             <ModalService open={openService} setOpen={setOpenService} stockNumber={vehicle ? vehicle.stock_number : 0} />
             <ModalAssign open={openAssign} setOpen={setOpenAssign} />
-            {/* <ModalAsig open={openAssign} setOpen={setOpenAssign} /> */}
+            <ModalLoan open={openLoan} setOpen={setOpenLoan} />
          </UserContextProvider>
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
          <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />
