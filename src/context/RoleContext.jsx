@@ -25,6 +25,7 @@ export default function RoleContextProvider({ children }) {
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [roles, setRoles] = useState([]);
+   const [rolesSelect, setRolesSelect] = useState([]);
    const [role, setRole] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
    const [openDialog, setOpenDialog] = useState(false);
@@ -68,7 +69,7 @@ export default function RoleContextProvider({ children }) {
          // console.log("el selectedDeRoles", axiosData);
          res.result.roles = axiosData.data.data.result;
          res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
-         setRoles(axiosData.data.data.result);
+         setRolesSelect(axiosData.data.data.result);
          // console.log("roles", roles);
 
          return res;
@@ -175,6 +176,8 @@ export default function RoleContextProvider({ children }) {
          value={{
             roles,
             role,
+            rolesSelect,
+            setRolesSelect,
             formData,
             resetFormData,
             resetRole,

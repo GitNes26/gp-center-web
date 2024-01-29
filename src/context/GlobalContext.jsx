@@ -27,17 +27,19 @@ export const GlobalContextProvider = ({ children }) => {
    const [openDialog, setOpenDialog] = useState(false);
    const [bgImage, setBgImage] = useState("none");
 
-   const toggleDrawer = (open) => (event) => {
-      try {
-         if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-            return;
+   const toggleDrawer =
+      (open, setOpenSwiper = null) =>
+      (event) => {
+         try {
+            if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+               return;
+            }
+            setOpenSwiper ? setOpenSwiper(open) : setOpenDialog(open);
+         } catch (error) {
+            console.log("Error en toggleDrawer:", error);
+            Toast.Error(error);
          }
-         setOpenDialog(open);
-      } catch (error) {
-         console.log("Error en toggleDrawer:", error);
-         Toast.Error(error);
-      }
-   };
+      };
 
    const setLoading = (show) => {
       if (show) {

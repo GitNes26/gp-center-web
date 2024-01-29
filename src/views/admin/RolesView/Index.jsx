@@ -6,19 +6,42 @@ import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../../context/AuthContext";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRoleContext } from "../../../context/RoleContext";
-import { Alert, AlertTitle, Typography } from "@mui/material";
+import { Alert, AlertTitle, SwipeableDrawer, Typography } from "@mui/material";
+
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
 import FormSelect from "./FormSelect";
+import { Box } from "@mui/system";
+import { makeStyles } from "@mui/styles";
+import MenusCards from "./MenusCards";
+
+const useStyles = makeStyles((theme) => ({
+   formSwiper: {
+      maxWidth: "75vw"
+   }
+
+   // Estilos para pantallas grandes (mayores o iguales a 600px)
+   // [theme.breakpoints.up('md')]: {
+   //    fontSize: '1.5em',
+   //  },
+
+   // Estilos para pantallas pequeñas (menores a 600px)
+   //  [theme.breakpoints.down('sm')]: {
+   //    fontSize: '1em',
+   //  },
+}));
 
 const RolesView = () => {
+   const classess = useStyles();
    // const { result } = useLoaderData();
-   const { setLoading } = useGlobalContext();
+   const { setLoading, toggleDrawer } = useGlobalContext();
    const { pluralName, role, roles, getRoles, getRolesSelectIndex } = useRoleContext();
+
+   const [openDialogTable, setOpenDialogTable] = useState(false);
 
    useEffect(() => {
       try {
@@ -40,20 +63,24 @@ const RolesView = () => {
 
          {/* <MainCard > */}
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
-            {pluralName.toUpperCase()}
+            {pluralName.toUpperCase() + " Y PERMISOS"}
          </Typography>
          {/* </MainCard> */}
          <Grid container spacing={2}>
             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-               {/* Rol */}
-               <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                  <FormSelect />
-               </Grid>
+               <FormSelect setOpenDialogTable={setOpenDialogTable} />
             </Grid>
-            <Grid xs={12} md={9} sx={{ mb: 3 }}>
-               <RoleDT />
+            <Grid xs={12} md={12} sx={{ mb: 3 }}>
+               <MenusCards />
             </Grid>
          </Grid>
+
+         <SwipeableDrawer anchor={"left"} open={openDialogTable} onClose={toggleDrawer(false, setOpenDialogTable)} onOpen={toggleDrawer(true, setOpenDialogTable)}>
+            <Box role="presentation" p={3} pt={5} className={classess.formSwiper} sx={{ maxHeight: "77.2vh", overflowY: "auto" }}>
+               <RoleDT />
+            </Box>
+         </SwipeableDrawer>
+
          <RoleForm />
       </>
    );

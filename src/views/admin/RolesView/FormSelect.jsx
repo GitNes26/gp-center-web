@@ -8,10 +8,26 @@ import { useRoleContext } from "../../../context/RoleContext";
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
 import { Button, ButtonGroup } from "@mui/material";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
 
-const FormSelect = () => {
-   const { singularName, roles, createRole, updateRole, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle, headerRoles } =
-      useRoleContext();
+const FormSelect = ({ setOpenDialogTable }) => {
+   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+   const {
+      singularName,
+      rolesSelect,
+      createRole,
+      updateRole,
+      formData,
+      setFormData,
+      showRole,
+      textBtnSubmit,
+      resetFormData,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle,
+      headerRoles
+   } = useRoleContext();
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -40,10 +56,9 @@ const FormSelect = () => {
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id) => {
+   const handleClickShowTable = (resetForm, setFieldValue, id) => {
       try {
-         resetForm();
-         setFieldValue("id", id);
+         setOpenDialogTable(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -62,11 +77,29 @@ const FormSelect = () => {
       }
    };
 
-   const handleCancel = (resetForm) => {
+   const handleClickEdit = async (id) => {
       try {
-         resetForm();
+         if (id < 1) return Toast.Info("No has seleccionado ningún rol.");
+         setLoadingAction(true);
+         setTextBtnSumbit("GUARDAR");
+         setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
+         await showRole(id);
+         setOpenDialog(true);
+         setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickAdd = () => {
+      try {
+         // resetRole();
          resetFormData();
-         // setOpenDialog(false);
+         // setFormData({ ...formData, rol: "" });
+         setOpenDialog(true);
+         setTextBtnSumbit("AGREGAR");
+         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -75,8 +108,7 @@ const FormSelect = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         // return console.log("values", values);
-         if (!isItem) values.belongs_to = 0; //es role padre
+         return console.log("values", values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createRole(values);
@@ -123,7 +155,23 @@ const FormSelect = () => {
          <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                  <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                  <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                     <Button type="reset" variant="outlined" color="secondary" size="large" sx={{ mt: 1 }} fullWidth onClick={() => handleClickShowTable()}>
+                        VER TODOS
+                     </Button>
+                  </Grid>
+                  <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                     <Button type="button" variant="outlined" color="info" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleClickEdit(values.id)}>
+                        EDITAR
+                     </Button>
+                  </Grid>
+                  <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                     <Button type="button" variant="outlined" color="success" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleClickAdd(values.id)}>
+                        AGREGAR
+                     </Button>
+                  </Grid>
+
+                  <Grid xs={12} sm={4} sx={{ mb: 1 }}>
                      <Select2Component
                         idName={"id"}
                         label={"Rol *"}
@@ -133,7 +181,7 @@ const FormSelect = () => {
                         setFormData={setFormData}
                         formDataLabel={"role"}
                         placeholder={"Selecciona una opción..."}
-                        options={roles}
+                        options={rolesSelect}
                         fullWidth={true}
                         handleChange={handleChange}
                         handleChangeValueSuccess={handleChangeRole}
@@ -144,36 +192,21 @@ const FormSelect = () => {
                         disabled={false}
                      />
                   </Grid>
-                  <LoadingButton
-                     type="submit"
-                     disabled={isSubmitting}
-                     loading={isSubmitting}
-                     // loadingPosition="start"
-                     variant="contained"
-                     fullWidth
-                     size="large"
-                  >
-                     {textBtnSubmit}
-                  </LoadingButton>
-                  <ButtonGroup variant="outlined" fullWidth>
-                     <Button
-                        type="reset"
-                        variant="outlined"
-                        color="secondary"
+                  <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                     <LoadingButton
+                        type="submit"
+                        disabled={isSubmitting}
+                        loading={isSubmitting}
+                        // loadingPosition="start"
+                        variant="contained"
                         fullWidth
                         size="large"
-                        sx={{ mt: 1, display: "none" }}
-                        onClick={() => handleReset(resetForm, setFieldValue, values.id)}
                      >
-                        LIMPIAR
-                     </Button>
-                     <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                        CANCELAR
-                     </Button>
-                  </ButtonGroup>
-                  <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
-                     setValues
-                  </Button>
+                        {" "}
+                        GUARDAR
+                        {/* {textBtnSubmit} */}
+                     </LoadingButton>
+                  </Grid>
                </Grid>
             )}
          </Formik>

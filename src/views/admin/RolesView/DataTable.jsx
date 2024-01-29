@@ -14,65 +14,17 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import { Box } from "@mui/system";
 import SwitchComponent from "../../../components/SwitchComponent";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import * as tablerIcons from "@tabler/icons";
 
 const RoleDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, role, roles, getRoles, showRole, deleteRole, DisEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle } = useRoleContext();
-   const globalFilterFields = ["icon", "role", "caption", "patern", "order", "url", "active", "created_at"];
+   const globalFilterFields = ["role", "description", "active", "created_at"];
 
    // #region BodysTemplate
-   const IconBodyTemplate = (obj) => {
-      // const Icon = React.createElement(obj.icon ? obj.icon : IconPointFilled);
-      const Icon = tablerIcons[`${obj.icon}`];
-      return (
-         <Box textAlign={"center"}>
-            {obj.icon && (
-               <>
-                  <Icon stroke={1.5} size="1.3rem" />
-                  <Typography variant="subtitle2">{obj.icon}</Typography>
-               </>
-            )}
-         </Box>
-      );
-   };
-   const RoleBodyTemplate = (obj) => (
-      <>
-         <Typography textAlign={"center"}>{obj.role}</Typography>
-         {obj.caption && (
-            <Typography textAlign={"center"} sx={{ fontStyle: "italic", fontSize: 12 }}>
-               {obj.caption}
-            </Typography>
-         )}
-      </>
-   );
-   const InfoBodyTemplate = (obj) => (
-      <>
-         {obj.belongs_to > 0 ? (
-            <Typography textAlign={"center"}>
-               Pertence a: <b>{obj.patern ?? "-"}</b>
-               <br />
-               Orden: <b>{obj.order ?? "-"}</b>
-               <br />
-               Path: <b>{obj.url ?? "-"}</b>
-               <br />
-            </Typography>
-         ) : (
-            <>
-               <Typography textAlign={"center"}>
-                  <b>{"***** MENÚ PADRE *****"}</b>
-               </Typography>
-               <Typography textAlign={"center"}>
-                  Orden: <b>{obj.order ?? "-"}</b>
-               </Typography>
-            </>
-         )}
-      </>
-   );
+   const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
+   const DescriptionBodyTemplate = (obj) => <Typography textAlign={"description"}>{obj.description}</Typography>;
 
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -84,9 +36,8 @@ const RoleDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filterField: null },
       { field: "role", header: "Role", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
-      { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null }
+      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
