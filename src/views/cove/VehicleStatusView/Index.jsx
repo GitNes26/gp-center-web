@@ -1,8 +1,5 @@
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-
-import MainCard from "../../../ui-component/cards/MainCard";
-import VehicleStatusForm from "../../../components/vehicleStatus/Form";
+import VehicleStatusDT from "./DataTable";
+import VehicleStatusForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
@@ -10,37 +7,15 @@ import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
 import { useVehicleStatusContext } from "../../../context/VehicleStatusContext";
-import { Button } from "@mui/material";
-import { AddCircleOutlineOutlined } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import VehicleStatusDT from "./VehicleStatusDT";
-
-const Item = styled(Paper)(({ theme }) => ({
-   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
-   ...theme.typography.body2,
-   padding: theme.spacing(1),
-   textAlign: "center",
-   color: theme.palette.text.secondary
-}));
 
 const VehicleStatusView = () => {
    // const { result } = useLoaderData();
    const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, vehicleStatus, getVehicleStatuss, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleStatusContext();
-
-   const handleClickAdd = () => {
-      try {
-         resetFormData();
-         setOpenDialog(true);
-         setTextBtnSumbit("AGREGAR");
-         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   const { singularName, pluralName, vehicleStatus, getVehicleStatuss, resetFormData, setTextBtnSumbit, setFormTitle } = useVehicleStatusContext();
 
    useEffect(() => {
       try {
@@ -50,7 +25,7 @@ const VehicleStatusView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, []);
+   }, [vehicleStatus]);
 
    return (
       <>
@@ -59,10 +34,11 @@ const VehicleStatusView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         {/* <MainCard> */}
-         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-         </Button>
+         {/* <MainCard > */}
+         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+            {pluralName.toUpperCase()}
+         </Typography>
+         {/* <DataTableComponent /> */}
          <VehicleStatusDT />
          {/* </MainCard> */}
 
@@ -74,10 +50,15 @@ const VehicleStatusView = () => {
 export const loaderIndexVehicleStatusView = async () => {
    try {
       const res = CorrectRes;
+      // const auth = JSON.parse(localStorage.getItem("auth"));
 
-      // const axiosRoles = await Axios.get("/roles/selectIndex");
+      // const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/`);
       // res.result.roles = axiosRoles.data.data.result;
       // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
+      // const axiosVehicleStatuss = await Axios.get("/vehicleStatuss/selectIndex");
+      // res.result.vehicleStatuss = axiosVehicleStatuss.data.data.result;
+      // res.result.vehicleStatuss.unshift({ id: 0, label: "Selecciona una opción..." });
+      // // console.log(res);
 
       return res;
    } catch (error) {

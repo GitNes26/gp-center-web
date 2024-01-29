@@ -53,7 +53,7 @@ export const loaderIndexAdministratorsView = async () => {
       // res.result.administrators = axiosData.data.data.result;
       const auth = JSON.parse(localStorage.getItem("auth"));
 
-      const axiosRoles = await Axios.get(`/roles/selectIndex/${auth.role_id}`);
+      const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/${auth.role_id}`);
       // console.log(axiosRoles.data.data);
       res.result.roles = axiosRoles.data.data.result;
       res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });

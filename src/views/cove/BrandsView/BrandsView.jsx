@@ -75,7 +75,7 @@ export const loaderIndexBrandsView = async () => {
    try {
       const res = CorrectRes;
 
-      // const axiosRoles = await Axios.get("/roles/selectIndex");
+      // const axiosRoles = await Axios.get("/roles/selectIndex/role_id");
       // res.result.roles = axiosRoles.data.data.result;
       // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
 

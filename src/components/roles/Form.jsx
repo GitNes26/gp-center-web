@@ -31,7 +31,7 @@ import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -232,16 +232,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    }, [formData]);
 
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const getCommunityByZip = async (zip, setFieldValue, community_id = null) => {
       try {
          setShowLoading(true);
@@ -357,7 +347,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            placeholder="mi@correo.com"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "email", false)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
                            // inputProps={{ maxLength: 2 }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -635,7 +625,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  placeholder="Ingrese tu(s) nombre(s)"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 onInput={(e) => handleInput(e, setFieldValue, "name", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -654,7 +644,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  placeholder="Ingrese tu primer apellido"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 onInput={(e) => handleInput(e, setFieldValue, "paternal_last_name", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -673,7 +663,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  placeholder="Ingrese tu segundo apellido"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 onInput={(e) => handleInput(e, setFieldValue, "maternal_last_name", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
                                  // InputProps={{ }}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
@@ -818,7 +808,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  onBlur={handleBlur}
                                  fullWidth
                                  // disabled={values.id == 0 ? false : true}
-                                 onInput={(e) => handleInput(e, setFieldValue, "street", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "street", true)}
                                  error={errors.street && touched.street}
                                  helperText={errors.street && touched.street && errors.street}
                               />
@@ -835,7 +825,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  fullWidth
-                                 onInput={(e) => handleInput(e, setFieldValue, "num_ext", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "num_ext", true)}
                                  // disabled={values.id == 0 ? false : true}
                                  error={errors.num_ext && touched.num_ext}
                                  helperText={errors.num_ext && touched.num_ext && errors.num_ext}
@@ -853,7 +843,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  onChange={handleChange}
                                  onBlur={handleBlur}
                                  fullWidth
-                                 onInput={(e) => handleInput(e, setFieldValue, "num_int", true)}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "num_int", true)}
                                  // disabled={values.id == 0 ? false : true}
                                  error={errors.num_int && touched.num_int}
                                  helperText={errors.num_int && touched.num_int && errors.num_int}

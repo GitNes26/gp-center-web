@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { formatToLowerCase, formatToUpperCase } from "../../../utils/Formats";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../../utils/Formats";
 import { useBrandContext } from "../../../context/BrandContext";
 import { useModelContext } from "../../../context/ModelContext";
 import { useVehicleStatusContext } from "../../../context/VehicleStatusContext";
@@ -256,16 +256,6 @@ const VehicleForm = () => {
       }
    }, [formData]);
 
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       // Toast.Error(`Error en Sección ${section}: ${msg}`);
       // console.log(indexInputRef);
@@ -325,7 +315,7 @@ const VehicleForm = () => {
                               handleBlur(e);
                               handleBlurStockNumber(e);
                            }}
-                           // onInput={(e) => handleInput(e, setFieldValue, "stock_number", true)}
+                           // onInput={(e) => handleInputFormik(e, setFieldValue, "stock_number", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -383,7 +373,7 @@ const VehicleForm = () => {
                               handleChangeYear(e, setFieldValue);
                            }}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "year", true)}
+                           // onInput={(e) => handleInputFormik(e, setFieldValue, "year", true)}
                            inputProps={{
                               maxLength: 4, // Limita la entrada a 4 caracteres
                               min: 1900, // Establece el valor mínimo permitido (puedes ajustarlo según tus necesidades)
@@ -446,7 +436,7 @@ const VehicleForm = () => {
                            placeholder="Inserte una breve descripción de la marca"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
+                           // onInput={(e) => handleInputFormik(e, setFieldValue, "description", false)}
                            inputProps={{ maxLength: 1500 }}
                            fullWidth
                            multiline

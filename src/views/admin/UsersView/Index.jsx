@@ -52,7 +52,7 @@ export const loaderIndexUsersView = async () => {
       const res = CorrectRes;
       const auth = JSON.parse(localStorage.getItem("auth"));
 
-      const axiosRoles = await Axios.get(`/roles/selectIndex/${auth.role_id}`);
+      const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/${auth.role_id}`);
       res.result.roles = axiosRoles.data.data.result;
       res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
       const axiosDepartments = await Axios.get("/departments/selectIndex");

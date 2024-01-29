@@ -3,7 +3,7 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "../layout/MainLayout";
 import Loadable from "../ui-component/Loadable";
-import UsersView, { loaderIndexUsersView } from "../views/admin/UsersView/UsersView";
+import UsersView, { loaderIndexUsersView } from "../views/admin/UsersView/Index";
 import UserContextProvider from "../context/UserContext";
 import { element } from "prop-types";
 import DepartmentContextProvider from "../context/DepartmentContext";
@@ -12,7 +12,7 @@ import BrandsView from "../views/cove/BrandsView/BrandsView";
 import ModelContextProvider from "../context/ModelContext";
 import ModelsView, { loaderIndexModelsView } from "../views/cove/ModelsView/ModelsView";
 import VehicleStatusContextProvider from "../context/VehicleStatusContext";
-import VehicleStatussView from "../views/cove/VehicleStatusView/VehicleStatusView";
+import VehicleStatusView from "../views/cove/VehicleStatusView/Index";
 import VehicleContextProvider from "../context/VehicleContext";
 import VehiclePlateContextProvider from "../context/VehiclePlateContext";
 import ServiceContextProvider from "../context/ServiceContext";
@@ -30,6 +30,8 @@ import DirectorsView from "../views/admin/DirectorsView/Index";
 import DriversView from "../views/admin/DriversView/Index";
 import DriverContextProvider from "../context/DriverContext";
 import LoanedVehicleContextProvider from "../context/LoanedVehicleContext";
+import MenusView from "../views/admin/MenusView/Index";
+import RolesView from "../views/admin/RolesView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -63,6 +65,26 @@ const MainRoutes = {
                </VehiclePlateContextProvider>
             </VehicleContextProvider>
          )
+      },
+      {
+         path: "menus",
+         element: (
+            <MenuContextProvider>
+               <MenusView />
+            </MenuContextProvider>
+         )
+         // loader: loaderIndex
+      },
+      {
+         path: "roles-y-permisos",
+         element: (
+            <RoleContextProvider>
+               <MenuContextProvider>
+                  <RolesView />
+               </MenuContextProvider>
+            </RoleContextProvider>
+         )
+         // loader: loaderIndex
       },
       {
          path: "usuarios",
@@ -158,7 +180,7 @@ const MainRoutes = {
                path: "requisiciones",
                element: (
                   <VehicleStatusContextProvider>
-                     <VehicleStatussView />
+                     <VehicleStatusView />
                   </VehicleStatusContextProvider>
                )
                // loader: loaderIndexModelsView
@@ -190,7 +212,7 @@ const MainRoutes = {
                path: "estatus-vehiculo",
                element: (
                   <VehicleStatusContextProvider>
-                     <VehicleStatussView />
+                     <VehicleStatusView />
                   </VehicleStatusContextProvider>
                )
                // loader: loaderIndexModelsView

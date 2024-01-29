@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { formatToLowerCase, formatToUpperCase } from "../../../utils/Formats";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../../utils/Formats";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -114,16 +114,6 @@ const DepartmentForm = () => {
       }
    }, [formData]);
 
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
       // Toast.Error(`Error en Sección ${section}: ${msg}`);
       // console.log(indexInputRef);
@@ -180,7 +170,7 @@ const DepartmentForm = () => {
                            placeholder="Ingrese el nombre del department"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "department", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -201,7 +191,7 @@ const DepartmentForm = () => {
                            placeholder="Inserte una breve descripción del department"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
+                           // onInput={(e) => handleInputFormik(e, setFieldValue, "description", false)}
                            inputProps={{ maxLength: 1500 }}
                            fullWidth
                            multiline

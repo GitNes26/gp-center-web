@@ -31,7 +31,7 @@ import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
 import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -145,16 +145,6 @@ const GenericForm = () => {
       }
    }, [formData, generic]);
 
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    // const options = [
    // 	{ label: "The Godfather", id: 1 },
    // 	{ label: "Pulp Fiction", id: 2 },
@@ -205,7 +195,7 @@ const GenericForm = () => {
                            placeholder="Ingrese el nombre de la marca"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "generic", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "generic", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -226,7 +216,7 @@ const GenericForm = () => {
                            placeholder="Inserte una breve descripción de la marca"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
+                           // onInput={(e) => handleInputFormik(e, setFieldValue, "description", false)}
                            inputProps={{ maxLength: 1500 }}
                            fullWidth
                            multiline

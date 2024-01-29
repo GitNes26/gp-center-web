@@ -52,9 +52,11 @@ const ModalLoan = ({ open, setOpen }) => {
 
    const handleClose = () => {
       setOpen(false);
+      setSearch("");
    };
    const handleCloseReason = () => {
       setOpenReason(false);
+      setFormData({ ...formData, reason: "", initial_km: 0 });
    };
 
    function stringToColor(string) {
@@ -122,7 +124,8 @@ const ModalLoan = ({ open, setOpen }) => {
          reason: "",
          initial_km: 0,
          requesting_user_id: id,
-         full_name: full_name
+         full_name: full_name,
+         loan_date: formatDatetimeToSQL(new Date())
       });
    };
    const handleClickLoan = (e) => {
@@ -152,6 +155,16 @@ const ModalLoan = ({ open, setOpen }) => {
                   setOpen(false);
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+                  setSearch("");
+                  setFormData({
+                     vehicle_id: 0,
+                     assigned_vehicle_id: 0,
+                     requesting_user_id: 0,
+                     reason: "",
+                     initial_km: 0,
+                     loan_date: "",
+                     full_name: ""
+                  });
                }
             });
       } catch (error) {
@@ -184,11 +197,11 @@ const ModalLoan = ({ open, setOpen }) => {
 
    useEffect(() => {
       // console.log("estoy en el modal", drivers);
-   }, [dataList]);
+   }, []);
    useLayoutEffect(() => {
       // console.log("estoy en el useLayoutEffect", drivers);
       getDrivers();
-   }, [dataList]);
+   }, []);
 
    return (
       <div>

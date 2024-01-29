@@ -2,28 +2,18 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Button,
-   FormControlLabel,
-   FormLabel,
-   Radio,
-   RadioGroup,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useState } from "react";
-import { useVehicleStatusContext } from "../../context/VehicleStatusContext";
+import { useVehicleStatusContext } from "../../../context/VehicleStatusContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import { formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../../utils/Formats";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -34,6 +24,10 @@ const VehicleStatusForm = () => {
       useVehicleStatusContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
+   // const inputsRef = useRef([]);
+   // const [doFocus, setdoFocus] = useState(false);
+   // const inputRefVehicleStatus = useRef(null);
+   // const inputRefDescription = useRef(null);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -122,17 +116,26 @@ const VehicleStatusForm = () => {
       }
    }, [formData]);
 
-   const handleInput = async (e, setFieldValue, input, toUpper = true) => {
-      try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         setFieldValue(input, newText);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
+      // Toast.Error(`Error en Sección ${section}: ${msg}`);
+      // console.log(indexInputRef);
+      // setFocusIn(indexInputRef);
+      // console.log(focusIn);
+      // setDoFocus(true);
+      // if (doFocus) {
+      //    if (inputsRef.current[focusIn]) {
+      //       console.log("hay focusssss", inputsRef.current[focusIn]);
+      //       inputsRef.current[focusIn].focus();
+      //       setDoFocus(false);
+      //    }
+      // }
+      // setdoFocus(true);
+      // setTimeout(() => {
+      //    if (doFocus) {
+      //       inputsRef.current[indexInputRef].focus();
+      //       setdoFocus(false);
+      //    }
+      // }, 500);
       if (formHelperText) {
          return (
             <FormHelperText error id="ht-disability_id">
@@ -153,7 +156,7 @@ const VehicleStatusForm = () => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>{" "}
+            </Typography>
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
@@ -169,7 +172,7 @@ const VehicleStatusForm = () => {
                            placeholder="Ingrese el estatus"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "vehicle_status", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "vehicle_status", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -190,7 +193,7 @@ const VehicleStatusForm = () => {
                            placeholder="Elija su color"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInput(e, setFieldValue, "bg_color", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "bg_color", true)}
                            // InputProps={{ }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
@@ -234,7 +237,7 @@ const VehicleStatusForm = () => {
                            placeholder="Inserte una breve descripción del estatus"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // onInput={(e) => handleInput(e, setFieldValue, "description", false)}
+                           // onInput={(e) => handleInputFormik(e, setFieldValue, "description", false)}
                            inputProps={{ maxLength: 1500 }}
                            fullWidth
                            multiline

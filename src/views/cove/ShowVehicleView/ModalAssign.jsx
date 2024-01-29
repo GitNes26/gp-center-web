@@ -49,9 +49,11 @@ const ModalAssign = ({ open, setOpen }) => {
 
    const handleClose = () => {
       setOpen(false);
+      setSearch("");
    };
    const handleCloseKm = () => {
       setOpenKm(false);
+      setFormData({ ...formData, km_assignment: 0 });
    };
 
    function stringToColor(string) {
@@ -115,11 +117,12 @@ const ModalAssign = ({ open, setOpen }) => {
          ...formData,
          user_id: id,
          vehicle_id: vehicle.id,
-         full_name: full_name
+         full_name: full_name,
+         date: formatDatetimeToSQL(new Date())
       });
       setOpenKm(true);
    };
-   const handleClickKm = (e) => {
+   const handleClickKm = async (e) => {
       try {
          e.preventDefault();
          if (formData.km_assignment < 0) setShowErrorKm(true);
@@ -144,6 +147,14 @@ const ModalAssign = ({ open, setOpen }) => {
                   setOpen(false);
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+                  setSearch("");
+                  setFormData({
+                     user_id: 0,
+                     vehicle_id: 0,
+                     km_assignment: 0,
+                     date: "",
+                     full_name: ""
+                  });
                }
             });
       } catch (error) {
@@ -176,11 +187,11 @@ const ModalAssign = ({ open, setOpen }) => {
 
    useEffect(() => {
       // console.log("estoy en el modal", directors);
-   }, [dataList]);
+   }, []);
    useLayoutEffect(() => {
       // console.log("estoy en el useLayoutEffect", directors);
       getDirectors();
-   }, [dataList]);
+   }, []);
 
    return (
       <div>
