@@ -24,6 +24,7 @@ import Select2Component from "../../../components/Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
+import axios from "axios";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -76,6 +77,19 @@ const DirectorForm = () => {
       try {
          // console.log("amanas", value2);
          const role_id = Number(value2.id);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleInputPayRoll = async (e) => {
+      try {
+         const value = e.target.value;
+         if (value.length < 5) return;
+         const axiosRH = axios;
+         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}/infraesctruturagobmxpalaciopeticioninsegura`);
+         console.log("employee", data.RESPONSE.recordset[0]);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -429,6 +443,7 @@ const DirectorForm = () => {
                            value={values.payroll_number}
                            placeholder="99999"
                            onChange={handleChange}
+                           onInput={handleInputPayRoll}
                            onBlur={handleBlur}
                            fullWidth
                            // inputProps={{ maxLength: 11 }}

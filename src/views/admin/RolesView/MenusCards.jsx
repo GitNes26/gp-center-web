@@ -1,56 +1,86 @@
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Card, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { Title } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
-   cardHeader: {},
-   cardChildren: { border: "1px solid black" }
+   cardHeader: { backgroundColor: "#525C6A" },
+   titleHeader: { color: "whitesmoke" },
+
+   cardChildren: { border: "2px solid black", backgroundColor: "#c2cddd" },
+   titleChildren: { color: "#1E2126" }
 }));
 
-const CardMenu = ({ title = "Servicios" }) => {
+const CardMenu = ({ title = "Servicios", id = 0 }) => {
    const classes = useStyles();
+
    return (
       <Card sx={{ p: 0 }} className={classes.cardChildren}>
-         <Grid xs={"auto"} sx={{ m: 0 }}>
-            <Typography variant="h4">
-               <FormControlLabel value={`read@${id}`} control={<Checkbox defaultChecked />} label={title} labelPlacement="left" sx={{ fontWeight: "bolder" }} />
+         <Grid xs={12} sx={{ m: 0 }}>
+            <Typography variant="h3" textAlign={"center"} className={classes.titleChildren}>
+               <FormControlLabel value={`read@${id}`} control={<Checkbox defaultChecked />} label={""} labelPlacement="left" sx={{ fontWeight: "bolder" }} />
+               {title}
             </Typography>
-            <FormControlLabel value={`read@${id}`} control={<Checkbox checked={true} />} label="Ver" labelPlacement="bottom" />
-            <FormControlLabel value={`create@${id}`} control={<Checkbox checked={true} />} label="Crear" labelPlacement="bottom" />
-            <FormControlLabel value={`update@${id}`} control={<Checkbox checked={true} />} label="Editar" labelPlacement="bottom" />
-            <FormControlLabel value={`delete@${id}`} control={<Checkbox checked={true} />} label="Eliminar" labelPlacement="bottom" />
+         </Grid>
+
+         <Grid container spacing={2} sx={{ backgroundColor: "white" }}>
+            <Grid xs={"auto"} sx={{ m: 0 }}>
+               <FormControlLabel value={`read@${id}`} control={<Checkbox defaultChecked={true} />} label="Ver" labelPlacement="bottom" />
+            </Grid>
+            <Grid xs={"auto"} sx={{ m: 0 }}>
+               <FormControlLabel value={`create@${id}`} control={<Checkbox defaultChecked={true} />} label="Crear" labelPlacement="bottom" />
+            </Grid>
+            <Grid xs={"auto"} sx={{ m: 0 }}>
+               <FormControlLabel value={`update@${id}`} control={<Checkbox defaultChecked={true} />} label="Editar" labelPlacement="bottom" />
+            </Grid>
          </Grid>
       </Card>
    );
 };
 
 const CardHeaderMenu = ({ title }) => {
+   const classes = useStyles();
+
    return (
-      <Card sx={{ p: 1 }}>
-         <Grid xs={12} sx={{ mb: 1 }}>
-            <Typography variant="h3">
-               {title.toUpperCase()}
-               <Checkbox defaultChecked={true} />
-            </Typography>
-         </Grid>
-         <Grid xs={12} sm={"auto"} sx={{ mb: 1 }}>
-            <CardMenu />
+      <Card sx={{ p: 1 }} className={classes.cardHeader}>
+         <Typography variant="h3" textAlign={"center"} className={classes.titleHeader}>
+            {title.toUpperCase()}
+            <Checkbox defaultChecked={true} />
+         </Typography>
+         <Grid container spacing={2} sx={{ backgroundColor: "white" }}>
+            <Grid xs={12} sx={{ mb: 1 }}>
+               <CardMenu />
+            </Grid>
+            <Grid xs={12} sx={{ mb: 1 }}>
+               <CardMenu />
+            </Grid>
+            <Grid xs={12} sx={{ mb: 1 }}>
+               <CardMenu />
+            </Grid>
          </Grid>
       </Card>
    );
 };
 
 const MenusCards = () => {
+   const classes = useStyles();
+
    return (
       <>
          <Typography variant="h2" color={"#1E2126"} mb={2} textAlign={"center"}>
             MENUS
             <Checkbox defaultChecked />
          </Typography>
-
-         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-            <CardHeaderMenu title={"taller"} />
+         <Grid container spacing={2}>
+            <Grid xs={12} md={6} sx={{ mb: 1 }}>
+               <CardHeaderMenu title={"Administración"} />
+            </Grid>
+            <Grid xs={12} md={6} sx={{ mb: 1 }}>
+               <CardHeaderMenu title={"Taller"} />
+            </Grid>
+            <Grid xs={12} md={6} sx={{ mb: 1 }}>
+               <CardHeaderMenu title={"CoVe"} />
+            </Grid>
          </Grid>
       </>
    );
