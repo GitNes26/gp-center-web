@@ -34,7 +34,7 @@ const Warning = (msg) => {
       confirmButtonColor: "#3e3e3e"
    });
 };
-const Question = (msg, confirmText, cancelText) => {
+const Question = (msg, confirmText = "<b>Si, eliminar!</b>", cancelText = "<b>No, cancelar!</b>") => {
    let res = null;
    withReactContent(Swal)
       .fire({
@@ -62,7 +62,7 @@ const Customizable = (msg, icon, showConfirmButton = false, timer = 1500) => {
    });
 };
 
-export const QuestionAlertConfig = (msg, confirmText, cancelText, icon = "question") => {
+export const QuestionAlertConfig = (msg, confirmText = "<b>Si, eliminar!</b>", cancelText = "<b>No, cancelar!</b>", icon = "question") => {
    return {
       icon: icon,
       html: `<h3>${msg}</h3>`,

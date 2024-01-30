@@ -32,17 +32,11 @@ export default function ModelContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-
-   const fillFormData = (values) => {
+   const resetModel = () => {
       try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.brand_id = values.brand_id;
-         newData.model = values.model;
-         newData.description = values.description;
-         setFormData(newData);
+         setModel(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en fillModel:", error);
          Toast.Error(error);
       }
    };
@@ -90,7 +84,6 @@ export default function ModelContextProvider({ children }) {
          res = axiosData.data.data;
          await setModel(res.result);
          setFormData(res.result);
-         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -167,6 +160,7 @@ export default function ModelContextProvider({ children }) {
             formData,
             setFormData,
             resetFormData,
+            resetModel,
             getModels,
             getModelsSelectIndex,
             showModel,

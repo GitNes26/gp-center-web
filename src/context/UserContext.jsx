@@ -143,7 +143,7 @@ export default function UserContextProvider({ children }) {
    const createUser = async (user) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/create/${user.role_id}`, user);
+         const axiosData = await Axios.post(`/users/create/role_id/${user.role_id}`, user);
          // console.log(axiosData);
          res = axiosData.data.data;
          getUsers();
@@ -160,7 +160,7 @@ export default function UserContextProvider({ children }) {
    const updateUser = async (user) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/users/update", user);
+         const axiosData = await Axios.post(`/users/update/role_id/${user.role_id}`, user);
          res = axiosData.data.data;
          getUsers();
       } catch (error) {

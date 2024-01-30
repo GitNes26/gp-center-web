@@ -10,7 +10,6 @@ import DepartmentContextProvider from "../context/DepartmentContext";
 import BrandContextProvider from "../context/BrandContext";
 import BrandsView from "../views/cove/BrandsView/BrandsView";
 import ModelContextProvider from "../context/ModelContext";
-import ModelsView, { loaderIndexModelsView } from "../views/cove/ModelsView/ModelsView";
 import VehicleStatusContextProvider from "../context/VehicleStatusContext";
 import VehicleStatusView from "../views/cove/VehicleStatusView/Index";
 import VehicleContextProvider from "../context/VehicleContext";
@@ -32,6 +31,7 @@ import DriverContextProvider from "../context/DriverContext";
 import LoanedVehicleContextProvider from "../context/LoanedVehicleContext";
 import MenusView from "../views/admin/MenusView/Index";
 import RolesView from "../views/admin/RolesView/Index";
+import ModelsView from "../views/cove/ModelsView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -173,8 +173,8 @@ const MainRoutes = {
                   <ServiceContextProvider>
                      <ServicesView />
                   </ServiceContextProvider>
-               ),
-               loader: loaderIndexModelsView
+               )
+               // loader: loaderIndexModelsView
             },
             {
                path: "requisiciones",
@@ -203,10 +203,12 @@ const MainRoutes = {
                path: "modelos",
                element: (
                   <ModelContextProvider>
-                     <ModelsView />
+                     <BrandContextProvider>
+                        <ModelsView />
+                     </BrandContextProvider>
                   </ModelContextProvider>
-               ),
-               loader: loaderIndexModelsView
+               )
+               // loader: loaderIndexModelsView
             },
             {
                path: "estatus-vehiculo",

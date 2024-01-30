@@ -34,16 +34,13 @@ export default function BrandContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-
-   const fillFormData = (values) => {
+   const resetBrand = () => {
       try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.brand = values.brand;
-         newData.img_path = values.img_path;
-         setFormData(newData);
+         setBrand(formDataInitialState);
+         setImgFile([]);
+         // setImagePreview(null);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetBrand:", error);
          Toast.Error(error);
       }
    };
@@ -92,7 +89,6 @@ export default function BrandContextProvider({ children }) {
          // await setBrand(res.result);
          setBrand(res.result);
          setFormData(res.result);
-         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -179,6 +175,7 @@ export default function BrandContextProvider({ children }) {
             formData,
             setFormData,
             resetFormData,
+            resetBrand,
             getBrands,
             getBrandsSelectIndex,
             showBrand,
