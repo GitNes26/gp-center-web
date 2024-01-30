@@ -1,8 +1,5 @@
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-
-import MainCard from "../../../ui-component/cards/MainCard";
-import BrandForm from "../../../components/brands/Form";
+import BrandDT from "./DataTable";
+import BrandForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
@@ -10,37 +7,15 @@ import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
 import { useBrandContext } from "../../../context/BrandContext";
-import { Button } from "@mui/material";
-import { AddCircleOutlineOutlined } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import BrandDT from "./BrandDT";
-
-const Item = styled(Paper)(({ theme }) => ({
-   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
-   ...theme.typography.body2,
-   padding: theme.spacing(1),
-   textAlign: "center",
-   color: theme.palette.text.secondary
-}));
 
 const BrandsView = () => {
    // const { result } = useLoaderData();
-   const { setLoading, setOpenDialog } = useGlobalContext();
-   const { singularName, brand, brands, getBrands, resetFormData, setTextBtnSumbit, setFormTitle } = useBrandContext();
-
-   const handleClickAdd = () => {
-      try {
-         resetFormData();
-         setOpenDialog(true);
-         setTextBtnSumbit("AGREGAR");
-         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   const { setLoading } = useGlobalContext();
+   const { pluralName, model, getBrands } = useBrandContext();
 
    useEffect(() => {
       try {
@@ -50,7 +25,7 @@ const BrandsView = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, [brand]);
+   }, [model]);
 
    return (
       <>
@@ -60,9 +35,9 @@ const BrandsView = () => {
          </Alert> */}
 
          {/* <MainCard > */}
-         <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
-            <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
-         </Button>
+         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+            {pluralName.toUpperCase()}
+         </Typography>
          <BrandDT />
          {/* </MainCard> */}
 
@@ -74,10 +49,15 @@ const BrandsView = () => {
 export const loaderIndexBrandsView = async () => {
    try {
       const res = CorrectRes;
+      // const auth = JSON.parse(localStorage.getItem("auth"));
 
-      // const axiosRoles = await Axios.get("/roles/selectIndex/role_id");
+      // const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/`);
       // res.result.roles = axiosRoles.data.data.result;
       // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
+      // const axiosBrands = await Axios.get("/models/selectIndex");
+      // res.result.models = axiosBrands.data.data.result;
+      // res.result.models.unshift({ id: 0, label: "Selecciona una opción..." });
+      // // console.log(res);
 
       return res;
    } catch (error) {

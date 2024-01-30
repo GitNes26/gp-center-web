@@ -63,7 +63,7 @@ const DepartmentDT = () => {
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
          { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-         { field: "created_at", header: "Miembro desde", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);
@@ -100,7 +100,7 @@ const DepartmentDT = () => {
       try {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
-               setLoadingAction(true); 
+               setLoadingAction(true);
                const axiosResponse = await deleteDepartment(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);

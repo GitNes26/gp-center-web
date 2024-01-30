@@ -2,45 +2,20 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Autocomplete,
-   Avatar,
-   Backdrop,
-   Button,
-   CircularProgress,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   Input,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useMemo, useRef, useState } from "react";
-import { useBrandContext } from "../../context/BrandContext";
+import { useState } from "react";
+import { useBrandContext } from "../../../context/BrandContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import Select2 from "react-select";
-import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../utils/password-strength";
-import axios from "axios";
-import InputFileComponent, { setObjImg } from "../Form/InputFileComponent";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../../utils/Formats";
+import Select2Component from "../../../components/Form/Select2Component";
+import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -52,8 +27,8 @@ const BrandForm = () => {
       createBrand,
       updateBrand,
       formData,
-      resetFormData,
       setFormData,
+      resetFormData,
       textBtnSubmit,
       setTextBtnSumbit,
       formTitle,
@@ -85,9 +60,9 @@ const BrandForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
+         // console.log(values);
          setLoadingAction(true);
          values.img_path = imgFile.length == 0 ? "" : imgFile[0].file;
-         // console.log(values);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createBrand(values);
          else axiosResponse = await updateBrand(values);
@@ -123,6 +98,7 @@ const BrandForm = () => {
    const handleModify = async (setValues, setFieldValue) => {
       try {
          setLoadingAction(true);
+         if (!formData.description) formData.description = "";
          setValues(formData);
          setObjImg(formData.img_path, setImgFile);
          setLoadingAction(false);
@@ -156,6 +132,36 @@ const BrandForm = () => {
       }
    }, [formData]);
 
+   const showErrorAndFocusInput = (indexInputRef, msg, formHelperText = false) => {
+      // Toast.Error(`Error en Sección ${section}: ${msg}`);
+      // console.log(indexInputRef);
+      // setFocusIn(indexInputRef);
+      // console.log(focusIn);
+      // setDoFocus(true);
+      // if (doFocus) {
+      //    if (inputsRef.current[focusIn]) {
+      //       console.log("hay focusssss", inputsRef.current[focusIn]);
+      //       inputsRef.current[focusIn].focus();
+      //       setDoFocus(false);
+      //    }
+      // }
+      // setdoFocus(true);
+      // setTimeout(() => {
+      //    if (doFocus) {
+      //       inputsRef.current[indexInputRef].focus();
+      //       setdoFocus(false);
+      //    }
+      // }, 500);
+      if (formHelperText) {
+         return (
+            <FormHelperText error id="ht-disability_id">
+               {msg}
+            </FormHelperText>
+         );
+      }
+      return msg;
+   };
+
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
@@ -166,7 +172,7 @@ const BrandForm = () => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>{" "}
+            </Typography>
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>

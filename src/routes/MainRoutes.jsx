@@ -8,7 +8,6 @@ import UserContextProvider from "../context/UserContext";
 import { element } from "prop-types";
 import DepartmentContextProvider from "../context/DepartmentContext";
 import BrandContextProvider from "../context/BrandContext";
-import BrandsView from "../views/cove/BrandsView/BrandsView";
 import ModelContextProvider from "../context/ModelContext";
 import VehicleStatusContextProvider from "../context/VehicleStatusContext";
 import VehicleStatusView from "../views/cove/VehicleStatusView/Index";
@@ -32,6 +31,7 @@ import LoanedVehicleContextProvider from "../context/LoanedVehicleContext";
 import MenusView from "../views/admin/MenusView/Index";
 import RolesView from "../views/admin/RolesView/Index";
 import ModelsView from "../views/cove/ModelsView/Index";
+import BrandsView from "../views/cove/BrandsView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
