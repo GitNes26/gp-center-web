@@ -2,20 +2,12 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Fragment, forwardRef, useEffect, useLayoutEffect, useState } from "react";
-import { ListItemButton, TextField } from "@mui/material";
-import SearchInput from "../../../components/SearchInput";
-import { useDriverContext } from "../../../context/DriverContext";
+import { forwardRef, useEffect, useLayoutEffect, useState } from "react";
+import { TextField } from "@mui/material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -30,7 +22,6 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 const ModalDeliver = ({ open, setOpen }) => {
-   // const [open, setOpen] = useState(false);
    const mySwal = withReactContent(Swal);
    const { setLoadingAction } = useGlobalContext();
    const { vehicle, showVehicle, dataList, setDataList } = useVehicleContext();

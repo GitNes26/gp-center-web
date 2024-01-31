@@ -299,7 +299,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, idService = null, tit
    useEffect(() => {
       if (stockNumber < 0) formData.stock_number = stockNumber;
       if (idService) handleShowService();
-      console.log(formData);
+      // console.log(formData);
       // console.log("vehicle", vehicle);
    }, [formData, vehicle]);
 

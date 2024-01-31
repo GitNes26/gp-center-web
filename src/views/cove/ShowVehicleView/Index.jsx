@@ -41,6 +41,7 @@ import ModalAssign from "./ModalAssign";
 import ModalLoan from "./ModalLoan";
 import { useDriverContext } from "../../../context/DriverContext";
 import ModalDeliver from "./ModalDeliver";
+import ModalReturnLoan from "./ModalReturnLoan";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -93,6 +94,7 @@ const ShowVehicleView = () => {
    const [openAssign, setOpenAssign] = useState(false);
    const [openLoan, setOpenLoan] = useState(false);
    const [openDeliver, setOpenDeliver] = useState(false);
+   const [openReturnLoan, setOpenReturnLoan] = useState(false);
 
    const handleClickViewPlates = async () => {
       try {
@@ -177,47 +179,8 @@ const ShowVehicleView = () => {
    const handleClickDeliver = () => {
       setOpenDeliver(true);
    };
-   // const Deliver = (id, full_name) => {
-   //    try {
-   //       mySwal
-   //          .fire(QuestionAlertConfig(`Estas por terminar la asignación del vehículo con N° económico ${vehicle.stock_number}`, "TERMINAR", "CANCELAR", "info"))
-   //          .then(async (result) => {
-   //             if (result.isConfirmed) {
-   //                setLoadingAction(true);
-   //                const deliveredVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
-   //                // return console.log(deliveredVehicle);
-   //                const axiosResponse = await createAssignedVehicle(deliveredVehicle);
-   //                await showVehicle(vehicle.id);
-   //                setLoadingAction(false);
-   //                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-   //             }
-   //          });
-   //    } catch (error) {
-   //       console.log(error);
-   //       Toast.Error(error);
-   //       setLoading(false);
-   //    }
-   // };
-   const handleClickLoanReturn = () => {
-      try {
-         mySwal
-            .fire(QuestionAlertConfig(`Estas por devolver el prestamo del vehículo con N° económico ${vehicle.stock_number}`, "DEVOLVER", "CANCELAR", "info"))
-            .then(async (result) => {
-               if (result.isConfirmed) {
-                  setLoadingAction(true);
-                  const deliveredVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
-                  // return console.log(deliveredVehicle);
-                  const axiosResponse = await createAssignedVehicle(deliveredVehicle);
-                  await showVehicle(vehicle.id);
-                  setLoadingAction(false);
-                  Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-               }
-            });
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-         setLoading(false);
-      }
+   const handleClickReturnLoan = () => {
+      setOpenReturnLoan(true);
    };
 
    useEffect(() => {
@@ -309,7 +272,7 @@ const ShowVehicleView = () => {
                         <Grid xs alignItems={"center"}>
                            {/* {auth.more_permissions.includes("devolver_unidad") && ( */}
                            {auth.role_id <= ROLE_DIRECTOR && (
-                              <Tooltip title={"Devolver unidad"} placement="top" arrow>
+                              <Tooltip title={"Devolver unidad"} placement="right" arrow>
                                  <Button
                                     variant="contained"
                                     color="error"
@@ -326,13 +289,13 @@ const ShowVehicleView = () => {
                               </Tooltip>
                            )}
                            {(auth.role_id <= ROLE_ADMIN || auth.role_id == ROLE_DRIVER) && (
-                              <Tooltip title={"Devolver prestamo"} placement="top" arrow>
+                              <Tooltip title={"Devolver prestamo"} placement="right" arrow>
                                  <Button
                                     variant="contained"
                                     color="error"
                                     fullWidth
                                     size="large"
-                                    onClick={handleClickLoanReturn}
+                                    onClick={handleClickReturnLoan}
                                     width={sizeBtns}
                                     height={sizeBtns}
                                     sx={{ fontWeight: "bolder" }}
@@ -478,6 +441,7 @@ const ShowVehicleView = () => {
             <ModalAssign open={openAssign} setOpen={setOpenAssign} />
             <ModalLoan open={openLoan} setOpen={setOpenLoan} />
             <ModalDeliver open={openDeliver} setOpen={setOpenDeliver} />
+            <ModalReturnLoan open={openReturnLoan} setOpen={setOpenReturnLoan} />
          </UserContextProvider>
          <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
          <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />

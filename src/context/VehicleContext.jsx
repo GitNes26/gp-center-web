@@ -106,7 +106,6 @@ export default function VehicleContextProvider({ children }) {
          // await setVehicle(res.result);
          setFormData(res.result);
          setVehicle(res.result);
-         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -127,7 +126,6 @@ export default function VehicleContextProvider({ children }) {
          // await setVehicle(res.result);
          // setFormData(res.result);
          setVehicle(res.result);
-         // fillFormData(res.result);
          // console.log(res);
 
          return res;

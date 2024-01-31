@@ -2,89 +2,72 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Fragment, forwardRef, useEffect, useLayoutEffect, useState } from "react";
-import { ListItemButton, TextField } from "@mui/material";
-import SearchInput from "../../../components/SearchInput";
-import { useDriverContext } from "../../../context/DriverContext";
+import { forwardRef, useEffect, useLayoutEffect, useState } from "react";
+import { TextField } from "@mui/material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import Toast from "../../../utils/Toast";
-import { useDeliveredVehicleContext } from "../../../context/DeliveredVehicleContext";
 import { formatDatetimeToSQL } from "../../../utils/Formats";
 import { useGlobalContext } from "../../../context/GlobalContext";
+import { useLoanedVehicleContext } from "../../../context/LoanedVehicleContext";
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ModalLoanDeliver = ({ open, setOpen }) => {
-   // const [open, setOpen] = useState(false);
+const ModalReturnLoan = ({ open, setOpen }) => {
    const mySwal = withReactContent(Swal);
    const { setLoadingAction } = useGlobalContext();
    const { vehicle, showVehicle, dataList, setDataList } = useVehicleContext();
-   const { /* loanedVehicle, setDeliveredVehicle, */ createDeliveredVehicle } = useDeliveredVehicleContext();
-   const [showErrorReason, setShowErrorReason] = useState(false);
+   const { /* loanedVehicle, setLoanedVehicle, */ returnLoan } = useLoanedVehicleContext();
    const [showErrorKm, setShowErrorKm] = useState(false);
    const [formData, setFormData] = useState({
-      accident_folio: 0,
       assigned_vehicle_id: 0,
-      reason: "",
-      date: "",
-      km_deliver: 0
+      delivery_km: 0,
+      delivery_date: ""
    });
 
    const handleClose = () => {
       setOpen(false);
-      setFormData({ ...formData, reason: "", km_deliver: 0 });
+      setFormData({ ...formData, delivery_km: 0 });
    };
 
    const handleSubmit = (e) => {
       try {
          e.preventDefault();
-         if (formData.reason.length < 1) setShowErrorReason(true);
-         if (formData.km_deliver < 0) setShowErrorKm(true);
-         if (showErrorReason) return;
+         if (formData.delivery_km < 0) setShowErrorKm(true);
          if (showErrorKm) return;
 
          setFormData({
             ...formData,
             assigned_vehicle_id: vehicle.ass_folio,
-            // full_name: full_name,
-            date: formatDatetimeToSQL(new Date())
+            delivery_date: formatDatetimeToSQL(new Date())
          });
          formData.assigned_vehicle_id = vehicle.ass_folio;
-         formData.date = formatDatetimeToSQL(new Date());
+         formData.delivery_date = formatDatetimeToSQL(new Date());
 
          mySwal
-            .fire(QuestionAlertConfig(`Estas por terminar la asignación el vehículo con N° económico ${vehicle.stock_number}`, "TERMINAR", "CANCELAR", "info"))
+            .fire(QuestionAlertConfig(`Estas por devolver el prestamo del vehículo con N° económico ${vehicle.stock_number}`, "DEVOLVER", "CANCELAR", "info"))
             .then(async (result) => {
                if (result.isConfirmed) {
                   setLoadingAction(true);
 
                   // return console.log(formData);
-                  const axiosResponse = await createDeliveredVehicle(formData);
+                  const axiosResponse = await returnLoan(formData);
                   await showVehicle(vehicle.id);
                   setOpen(false);
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
                   setFormData({
-                     accident_folio: 0,
                      assigned_vehicle_id: 0,
-                     reason: "",
-                     date: "",
-                     km_deliver: 0
+                     delivery_km: 0,
+                     delivery_date: ""
                   });
                }
             });
@@ -115,47 +98,22 @@ const ModalLoanDeliver = ({ open, setOpen }) => {
          >
             <DialogTitle>
                <Typography variant="h4" component={"p"} textAlign={"center"}>
-                  RAZÓN DE LA DEVOLUCION DE UNIDAD Y KILOMETRAJE
+                  KILOMETRAJE DE LA DEVOLUCION DEL PRESTAMO
                </Typography>
             </DialogTitle>
             <DialogContent sx={{ pb: 0 }}>
                <form onSubmit={handleSubmit}>
                   <TextField
-                     id="reason"
-                     name="reason"
-                     label="Razón *"
-                     type="text"
-                     value={formData.reason}
-                     placeholder="Ingrese la razón del prestamo..."
-                     onChange={(e) => {
-                        setFormData({
-                           ...formData,
-                           reason: e.target.value
-                        });
-                        setShowErrorReason(false);
-                        if (e.target.value.length < 1) setShowErrorReason(true);
-                     }}
-                     // InputProps={{ }}
-                     multiline={true}
-                     fullWidth
-                     sx={{ mt: 1 }}
-                  />
-                  {showErrorReason && (
-                     <Typography color={"red"} variant="subtitle2">
-                        La razón es requerida.
-                     </Typography>
-                  )}
-                  <TextField
-                     id="km_deliver"
-                     name="km_deliver"
+                     id="delivery_km"
+                     name="delivery_km"
                      label="Kilometraje *"
                      type="number"
-                     value={formData.km_deliver}
+                     value={formData.delivery_km}
                      placeholder="Ingrese el km actual de la unidad..."
                      onChange={(e) => {
                         setFormData({
                            ...formData,
-                           km_deliver: e.target.value
+                           delivery_km: e.target.value
                         });
                         setShowErrorKm(false);
                         if (Number(e.target.value) < 0) setShowErrorKm(true);
@@ -180,4 +138,4 @@ const ModalLoanDeliver = ({ open, setOpen }) => {
    );
 };
 
-export default ModalLoanDeliver;
+export default ModalReturnLoan;

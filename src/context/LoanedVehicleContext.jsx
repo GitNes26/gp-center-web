@@ -40,6 +40,22 @@ export default function LoanedVehicleContextProvider({ children }) {
       }
    };
 
+   const returnLoan = async (loanedVehicle) => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await Axios.post("/loanedVehicle/returnLoan", loanedVehicle);
+         res = axiosData.data.data;
+         getLoanedVehicles();
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+      return res;
+   };
+
    const getLoanedVehicles = async () => {
       try {
          const res = CorrectRes;
@@ -169,7 +185,8 @@ export default function LoanedVehicleContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            returnLoan
          }}
       >
          {children}
