@@ -30,7 +30,8 @@ const formDataInitialState = {
    zip: "",
    state: 0,
    city: 0,
-   colony: 0
+   colony: 0,
+   payroll_number_exist: false
 };
 const directorInitialState = {
    id: 0,
@@ -59,7 +60,8 @@ const directorInitialState = {
    zip: "",
    state: "Selecciona una opción...",
    city: "Selecciona una opción...",
-   colony: "Selecciona una opción..."
+   colony: "Selecciona una opción...",
+   payroll_number_exist: false
 };
 
 export default function DirectorContextProvider({ children }) {
@@ -113,12 +115,15 @@ export default function DirectorContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/directors/${id}`);
-         console.log("axiosData", axiosData);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          res.result.zip = "";
          res.result.state = "Selecciona una opción...";
          res.result.city = "Selecciona una opción...";
          res.result.colony = "Selecciona una opción...";
+         res.result.payroll_number_exist = true;
+         if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
+
          setDirector(res.result);
          setFormData(res.result);
          // console.log("showDirector", res);

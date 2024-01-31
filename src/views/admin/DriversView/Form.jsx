@@ -26,6 +26,7 @@ import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
 import { useDirectorContext } from "../../../context/DirectorContext";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
+import axios from "axios";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -104,6 +105,40 @@ const DriverForm = () => {
       } catch (error) {
          console.log(error);
          Toast.Error(error);
+      }
+   };
+
+   const handleInputPayRoll = async (e, setFieldValue, values) => {
+      try {
+         const value = e.target.value;
+         if (value.length < 5) return;
+         const axiosRH = axios;
+         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}/infraesctruturagobmxpalaciopeticioninsegura`);
+         // console.log("empleado", data.RESPONSE.recordset[0]);
+         if (data.RESPONSE.recordset[0]) {
+            const userFind = data.RESPONSE.recordset[0];
+            Toast.Success(`Número de nómina encontrado`);
+            await setFieldValue("name", userFind.nombreE);
+            await setFieldValue("paternal_last_name", userFind.apellidoP);
+            await setFieldValue("maternal_last_name", userFind.apellidoM);
+            await setFieldValue("payroll_number_exist", true);
+         } else {
+            Toast.Error(`El Número de nómina no fue encontrado`);
+            await setFieldValue("name", "");
+            await setFieldValue("paternal_last_name", "");
+            await setFieldValue("maternal_last_name", "");
+            await setFieldValue("payroll_number_exist", false);
+         }
+      } catch (error) {
+         console.log(error);
+         if (error.response.status !== 500) Toast.Error(error);
+         else {
+            Toast.Error(`El Número de nómina no fue encontrado`);
+            await setFieldValue("name", "");
+            await setFieldValue("paternal_last_name", "");
+            await setFieldValue("maternal_last_name", "");
+            await setFieldValue("payroll_number_exist", false);
+         }
       }
    };
 
@@ -224,6 +259,7 @@ const DriverForm = () => {
          license_number: Yup.string().trim().required("Número de licencia requerido"),
          license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
          payroll_number: Yup.number("Solo números"),
+         payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
          department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
          director_id: Yup.number().min(1, "Esta opción no es valida").required("Director requerido"),
 
@@ -238,7 +274,7 @@ const DriverForm = () => {
          zip: Yup.number("Solo numeros").required("Código Postal requerido"),
          state: Yup.string().trim().required("Estado requerido"),
          city: Yup.string().trim().required("Ciudad requerido"),
-         colony: Yup.string().trim().required("Colonia requerido")
+         colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida")
       });
       return validationSchema;
    };
@@ -475,6 +511,14 @@ const DriverForm = () => {
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
                      {/* Número de Nómina */}
+                     <Field
+                        id="payroll_number_exist"
+                        name="payroll_number_exist"
+                        type="hidden"
+                        value={values.payroll_number_exist}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                     />
                      <Grid xs={12} md={8} sx={{ mb: 1 }}>
                         <TextField
                            id="payroll_number"
@@ -484,33 +528,15 @@ const DriverForm = () => {
                            value={values.payroll_number}
                            placeholder="99999"
                            onChange={handleChange}
+                           onInput={(e) => handleInputPayRoll(e, setFieldValue, values)}
                            onBlur={handleBlur}
                            fullWidth
                            // inputProps={{ maxLength: 11 }}
-                           error={errors.payroll_number && touched.payroll_number}
-                           helperText={errors.payroll_number && touched.payroll_number && errors.payroll_number}
-                        />
-                     </Grid>
-                     {/* Director */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <Select2Component
-                           idName={"director_id"}
-                           label={"Director *"}
-                           valueLabel={values.director}
-                           values={values}
-                           formData={formData}
-                           setFormData={setFormData}
-                           formDataLabel={"director"}
-                           placeholder={"Selecciona una opción..."}
-                           options={directors}
-                           fullWidth={true}
-                           handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChangeRole}
-                           setValues={setValues}
-                           handleBlur={handleBlur}
-                           error={errors.director_id}
-                           touched={touched.director_id}
-                           disabled={false}
+                           error={(errors.payroll_number && touched.payroll_number) || (errors.payroll_number_exist && touched.payroll_number_exist)}
+                           helperText={
+                              (errors.payroll_number && touched.payroll_number && errors.payroll_number) ||
+                              (errors.payroll_number_exist && touched.payroll_number_exist && errors.payroll_number_exist)
+                           }
                         />
                      </Grid>
                      {/* Departameto */}
@@ -532,6 +558,28 @@ const DriverForm = () => {
                            handleBlur={handleBlur}
                            error={errors.department_id}
                            touched={touched.department_id}
+                           disabled={false}
+                        />
+                     </Grid>
+                     {/* Director */}
+                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Select2Component
+                           idName={"director_id"}
+                           label={"Director *"}
+                           valueLabel={values.director}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"director"}
+                           placeholder={"Selecciona una opción..."}
+                           options={directors}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.director_id}
+                           touched={touched.director_id}
                            disabled={false}
                         />
                      </Grid>

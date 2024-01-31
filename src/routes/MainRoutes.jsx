@@ -32,6 +32,7 @@ import MenusView from "../views/admin/MenusView/Index";
 import RolesView from "../views/admin/RolesView/Index";
 import ModelsView from "../views/cove/ModelsView/Index";
 import BrandsView from "../views/cove/BrandsView/Index";
+import DeliveredVehicleContextProvider from "../context/DeliveredVehicleContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -56,7 +57,9 @@ const MainRoutes = {
                         <AssignedVehicleContextProvider>
                            <DriverContextProvider>
                               <LoanedVehicleContextProvider>
-                                 <ShowVehicleView />
+                                 <DeliveredVehicleContextProvider>
+                                    <ShowVehicleView />
+                                 </DeliveredVehicleContextProvider>
                               </LoanedVehicleContextProvider>
                            </DriverContextProvider>
                         </AssignedVehicleContextProvider>

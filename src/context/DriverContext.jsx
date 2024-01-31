@@ -32,7 +32,8 @@ const formDataInitialState = {
    zip: "",
    state: 0,
    city: 0,
-   colony: 0
+   colony: 0,
+   payroll_number_exist: false
 };
 const driverInitialState = {
    id: 0,
@@ -63,7 +64,8 @@ const driverInitialState = {
    zip: "",
    state: "Selecciona una opción...",
    city: "Selecciona una opción...",
-   colony: "Selecciona una opción..."
+   colony: "Selecciona una opción...",
+   payroll_number_exist: false
 };
 
 export default function DriverContextProvider({ children }) {
@@ -123,6 +125,9 @@ export default function DriverContextProvider({ children }) {
          res.result.state = "Selecciona una opción...";
          res.result.city = "Selecciona una opción...";
          res.result.colony = "Selecciona una opción...";
+         res.result.payroll_number_exist = true;
+         if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
+
          setDriver(res.result);
          setFormData(res.result);
          // console.log("showDriver", res);
