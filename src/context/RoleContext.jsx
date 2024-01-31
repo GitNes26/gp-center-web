@@ -25,8 +25,9 @@ export default function RoleContextProvider({ children }) {
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [roles, setRoles] = useState([]);
-   const [rolesSelect, setRolesSelect] = useState([]);
    const [role, setRole] = useState(null);
+   const [roleSelect, setRoleSelect] = useState(formDataInitialState);
+   const [rolesSelect, setRolesSelect] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
    const [openDialog, setOpenDialog] = useState(false);
 
@@ -44,6 +45,14 @@ export default function RoleContextProvider({ children }) {
          console.log("Error en resetRole:", error);
       }
    };
+   const resetRoleSelect = () => {
+      try {
+         setRoleSelect(formDataInitialState);
+      } catch (error) {
+         console.log("Error en resetRoleSelect:", error);
+      }
+   };
+
    const getRoles = async () => {
       try {
          const res = CorrectRes;
@@ -89,6 +98,23 @@ export default function RoleContextProvider({ children }) {
          res = axiosData.data.data;
          setRole(res.result);
          setFormData(res.result);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
+   const showRoleSelect = async (id) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/roles/${id}`);
+         setOpenDialog(true);
+         res = axiosData.data.data;
+         setRoleSelect(res.result);
 
          return res;
       } catch (error) {
@@ -195,7 +221,11 @@ export default function RoleContextProvider({ children }) {
             formTitle,
             setFormTitle,
             singularName,
-            pluralName
+            pluralName,
+            roleSelect,
+            setRoleSelect,
+            resetRoleSelect,
+            showRoleSelect
          }}
       >
          {children}

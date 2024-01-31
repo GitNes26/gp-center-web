@@ -132,7 +132,7 @@ const RoleDT = () => {
       try {
          // console.log("cargar listado", roles);
          await roles.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.role} active={obj.active} />;

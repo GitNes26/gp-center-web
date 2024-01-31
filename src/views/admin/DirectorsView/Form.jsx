@@ -25,6 +25,7 @@ import InputsCommunityComponent, { getCommunity } from "../../../components/Form
 import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
 import axios from "axios";
+import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -67,11 +68,32 @@ const DirectorForm = () => {
       setDataColoniesComplete,
       cursorLoading
    } = useGlobalContext();
-   const { director, resetDirector, singularName, createDirector, updateDirector, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useDirectorContext();
+   const {
+      director,
+      resetDirector,
+      singularName,
+      createDirector,
+      updateDirector,
+      formData,
+      setFormData,
+      resetFormData,
+      textBtnSubmit,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle
+   } = useDirectorContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
+   const [imgLicense, setImgLicense] = useState([]);
+   const [imgAvatar, setImgAvatar] = useState([]);
+
+   const ResetForm = async (resetForm = null) => {
+      if (resetForm) await resetForm();
+      await resetFormData();
+      setImgAvatar([]);
+      setImgLicense([]);
+   };
 
    const handleChangeRole = (value2, setFieldValue) => {
       try {
@@ -114,7 +136,8 @@ const DirectorForm = () => {
          // console.log("formData", formData);
          // console.log("values", values);
          // values.community_id = values.colony_id;
-
+         values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
+         values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
          setFormData(values);
          setLoadingAction(true);
@@ -123,7 +146,7 @@ const DirectorForm = () => {
          else axiosResponse = await updateDirector(values);
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
-            resetForm();
+            ResetForm(resetForm);
             setStrength(0);
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -144,7 +167,7 @@ const DirectorForm = () => {
 
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
-         resetForm();
+         ResetForm(resetForm);
          resetDirector();
          director.role = "Selecciona una opción...";
          setStrength(0);
@@ -177,6 +200,8 @@ const DirectorForm = () => {
          }
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
+         setObjImg(formData.avatar, setImgAvatar);
+         setObjImg(formData.img_license, setImgLicense);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -186,7 +211,7 @@ const DirectorForm = () => {
 
    const handleCancel = (resetForm) => {
       try {
-         resetForm();
+         ResetForm(resetForm);
          resetDirector();
          director.role = "Selecciona una opción...";
          setStrength(0);
@@ -262,6 +287,19 @@ const DirectorForm = () => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                     {/* Foto de Perfil */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="avatar"
+                           label="Foto de Perfil"
+                           filePreviews={imgAvatar}
+                           setFilePreviews={setImgAvatar}
+                           error={errors.avatar}
+                           touched={touched.avatar}
+                           multiple={false}
+                           accept={"image/*"}
+                        />
+                     </Grid>
                      {/* Rol */}
                      {/* <Field id="role_id" name="role_id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
                      {/* Nombre de Usuario */}
@@ -427,6 +465,19 @@ const DirectorForm = () => {
                            touched={touched.license_due_date}
                            showErrorInput={null}
                            formData={formData}
+                        />
+                     </Grid>
+                     {/* Foto Licencia de Conducir */}
+                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <InputFileComponent
+                           idName="img_license"
+                           label="Foto Licencia de Conducir"
+                           filePreviews={imgLicense}
+                           setFilePreviews={setImgLicense}
+                           error={errors.img_license}
+                           touched={touched.img_license}
+                           multiple={false}
+                           accept={"image/*"}
                         />
                      </Grid>
                      {/* Divisor */}

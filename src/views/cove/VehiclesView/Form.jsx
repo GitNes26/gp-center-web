@@ -154,7 +154,7 @@ const VehicleForm = () => {
          if (values.id == 0) axiosResponse = await createVehicle(values);
          else axiosResponse = await updateVehicle(values);
          if (axiosResponse.status_code == 200) {
-            resetForm();
+            ResetForm(resetForm);
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
@@ -172,9 +172,9 @@ const VehicleForm = () => {
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id) => {
+   const handleReset = (ResetForm, setFieldValue, id) => {
       try {
-         resetForm();
+         ResetForm(resetForm);
          setFieldValue("id", id);
       } catch (error) {
          console.log(error);
@@ -211,7 +211,7 @@ const VehicleForm = () => {
 
    const handleCancel = (resetForm) => {
       try {
-         resetForm();
+         ResetForm(resetForm);
          setOpenDialog(false);
       } catch (error) {
          console.log(error);

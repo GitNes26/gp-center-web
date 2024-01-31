@@ -26,37 +26,24 @@ const FormSelect = ({ setOpenDialogTable }) => {
       setTextBtnSumbit,
       formTitle,
       setFormTitle,
-      headerRoles
+      roleSelect,
+      setRoleSelect,
+      showRoleSelect
    } = useRoleContext();
 
-   const handleChangeCheckAdd = (e) => {
+   const handleChangeRole = async (value2, setFieldValue) => {
       try {
-         const active = e.target.checked;
-         localStorage.setItem("checkAdd", active);
-         setCheckAdd(active);
-         setColorLabelcheck("");
-         if (!active) setColorLabelcheck("#ccc");
+         // console.log("amanas", value2);
+         if (value2.id < 1) return; //tal vez reiniciar los checks
+         const axiosResponse = await showRoleSelect(value2.id);
+         console.log(axiosResponse);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    };
 
-   const handleChangeRole = (value2, setFieldValue) => {
-      try {
-         console.log("amanas", value2);
-         // setIsAdmin(false);
-         // setIsGarage(false);
-         // const role_id = Number(value2.id);
-         // setIsAdmin(role_id <= 2 ? true : false);
-         // setIsGarage(role_id == 4 ? true : false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
-   const handleClickShowTable = (resetForm, setFieldValue, id) => {
+   const handleClickShowTable = () => {
       try {
          setOpenDialogTable(true);
       } catch (error) {
@@ -67,7 +54,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
 
    const handleModify = (setValues, setFieldValue) => {
       try {
-         handleChangeType(formData.type);
+         // fillCheckMenus()
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
          // console.log(formData);
@@ -125,8 +112,6 @@ const FormSelect = ({ setOpenDialogTable }) => {
          console.error(error);
          setErrors({ submit: error.message });
          setSubmitting(false);
-         // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
-         // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
       } finally {
          setSubmitting(false);
       }

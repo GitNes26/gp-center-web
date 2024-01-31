@@ -18,6 +18,7 @@ const formDataInitialState = {
    phone: "",
    license_number: "",
    license_due_date: "",
+   img_lincense: "",
    payroll_number: "",
    department_id: "",
    name: "",
@@ -47,6 +48,7 @@ const driverInitialState = {
    phone: "",
    license_number: "",
    license_due_date: "",
+   img_lincense: "",
    payroll_number: "",
    department_id: "",
    department: "Selecciona una opción...",
@@ -98,7 +100,7 @@ export default function DriverContextProvider({ children }) {
       try {
          const res = CorrectRes;
          const axiosData = await Axios.get(`/drivers`);
-         console.log("getDrivers", axiosData);
+         // console.log("getDrivers", axiosData);
          res.result.drivers = axiosData.data.data.result;
          setDrivers(axiosData.data.data.result);
 
@@ -115,7 +117,7 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.get(`/drivers/${id}`);
-         console.log(axiosData);
+         // console.log(axiosData);
          res = axiosData.data.data;
          res.result.zip = "";
          res.result.state = "Selecciona una opción...";
@@ -138,7 +140,11 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/create/5`, driver);
-         const axiosData = await Axios.post(`/users/create/role_id/6`, driver);
+         const axiosData = await Axios.post(`/users/create/role_id/6`, driver, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          // console.log(axiosData);
          res = axiosData.data.data;
          getDrivers();
@@ -156,7 +162,11 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/update/${driver.user_id}`, driver);
-         const axiosData = await Axios.post(`/users/update/role_id/6`, driver);
+         const axiosData = await Axios.post(`/users/update/role_id/6`, driver, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          res = axiosData.data.data;
          getDrivers();
       } catch (error) {

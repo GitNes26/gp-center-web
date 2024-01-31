@@ -21,6 +21,8 @@ import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { useDirectorContext } from "../../../context/DirectorContext";
+import { Box } from "@mui/system";
+import { Avatar } from "@mui/material";
 
 const DriverDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
@@ -30,6 +32,12 @@ const DriverDT = () => {
    const globalFilterFields = ["username", "email", "department", "director", "director"];
 
    // #region BodysTemplate
+   const AvatarBodyTemplate = (obj) => (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+         <Avatar sx={{ width: 56, height: 56 }} src={obj.avatar !== null ? `${import.meta.env.VITE_HOST}/${obj.avatar}` : ""} alt={obj.full_name} />
+      </Box>
+      // <Box textAlign={"center"}>{<img alt="Foto de Perfil" src={`${import.meta.env.VITE_HOST}/${obj.avatar}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
+   );
    const DriverBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
@@ -44,6 +52,7 @@ const DriverDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
+      { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
       { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: DriverBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
@@ -118,9 +127,9 @@ const DriverDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         console.log("cargar listado", drivers);
+         // console.log("cargar listado", drivers);
          await drivers.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} />;

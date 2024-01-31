@@ -58,7 +58,7 @@ const MenusCards = () => {
 
    const CardHeaderMenu = ({ id = 0, title = "", children = [] }) => {
       return (
-         <Card sx={{ p: 0 }} className={classes.cardHeader}>
+         <Card sx={{ p: 1 }} className={classes.cardHeader}>
             <Box textAlign={"center"} mb={1}>
                <FormControlLabel
                   value={`menu@${id}`}
@@ -72,21 +72,20 @@ const MenusCards = () => {
                />
             </Box>
 
-            {/* <Grid container spacing={2} sx={{ backgroundColor: "white" }}> */}
-            <Masonry columns={2} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0 }}>
+            <Grid container spacing={2} sx={{ backgroundColor: "white" }}>
                {children.map((m) => (
-                  <CardMenu key={`CMC_${m.id}`} id={m.id} title={m.title} />
+                  <Grid xs={12} sx={{ mb: 1 }}>
+                     <CardMenu key={`CMC_${m.id}`} id={m.id} title={m.title} />
+                  </Grid>
                ))}
-            </Masonry>
-
-            {/* </Grid> */}
+            </Grid>
          </Card>
       );
    };
 
-   // useEffect(() => {
-   //    console.log("menus para permisos", menus);
-   // }, []);
+   useEffect(() => {
+      console.log("menus para permisos", menus);
+   }, []);
 
    return (
       <>
@@ -102,12 +101,16 @@ const MenusCards = () => {
                labelPlacement="start"
             />
          </Box>
+         {/* <Grid container spacing={2}> */}
          <Box sx={{ width: "100%", height: "60vh", overflowY: "auto" }}>
             <Masonry columns={3} spacing={2}>
                {menus.map((m) => (
-                  <CardHeaderMenu key={`CM_${m.id}`} id={m.id} title={m.title} children={m.children} />
+                  <Grid key={m.id} xs={12} md={6} sx={{ mb: 1 }}>
+                     <CardHeaderMenu key={`CM_${m.id}`} id={m.id} title={m.title} children={m.children} />
+                  </Grid>
                ))}
             </Masonry>
+            {/* </Grid> */}
          </Box>
       </>
    );

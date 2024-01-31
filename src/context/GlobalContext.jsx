@@ -13,7 +13,10 @@ export const gpcText = "#1455CB";
 
 export const ROLE_SUPER_ADMIN = 1;
 export const ROLE_ADMIN = 2;
-export const ROLE_MA = 3;
+export const ROLE_ALMACEN = 3;
+export const ROLE_MECHANIC = 4;
+export const ROLE_DIRECTOR = 5;
+export const ROLE_DRIVER = 6;
 
 export const GlobalContext = createContext();
 

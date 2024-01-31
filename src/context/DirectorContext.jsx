@@ -16,6 +16,7 @@ const formDataInitialState = {
    phone: "",
    license_number: "",
    license_due_date: "",
+   img_lincense: "",
    payroll_number: "",
    department_id: "",
    name: "",
@@ -43,6 +44,7 @@ const directorInitialState = {
    phone: "",
    license_number: "",
    license_due_date: "",
+   img_lincense: "",
    payroll_number: "",
    department_id: "",
    department: "Selecciona una opción...",
@@ -153,7 +155,11 @@ export default function DirectorContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/create/5`, director);
-         const axiosData = await Axios.post(`/users/create/role_id/5`, director);
+         const axiosData = await Axios.post(`/users/create/role_id/5`, director, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          // console.log(axiosData);
          res = axiosData.data.data;
          getDirectors();
@@ -172,7 +178,11 @@ export default function DirectorContextProvider({ children }) {
       try {
          // const axiosData = await Axios.post("/directors/update", director);
          // const axiosData = await Axios.post(`/users/update/${director.user_id}`, director);
-         const axiosData = await Axios.post(`/users/update/role_id/5`, director);
+         const axiosData = await Axios.post(`/users/update/role_id/5`, director, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          res = axiosData.data.data;
          getDirectors();
       } catch (error) {

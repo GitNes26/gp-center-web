@@ -33,6 +33,7 @@ export default function MenuContextProvider({ children }) {
    const [formData, setFormData] = useState(formDataInitialState);
    const [menuItems, setMenuItems] = useState({ items: [] });
    const [headerMenus, setHeaderMenus] = useState([]);
+   const [permissionsByMenu, setPermissionsByMenu] = useState([]);
 
    const resetFormData = () => {
       try {
@@ -134,7 +135,7 @@ export default function MenuContextProvider({ children }) {
          }
       } catch (error) {
          if (error.response.status === 401) {
-            console.log("no AUUUUTH!");
+            // console.log("no AUUUUTH!");
             localStorage.removeItem("token");
             localStorage.removeItem("auth");
             const token = localStorage.getItem("token") || null;
@@ -187,14 +188,45 @@ export default function MenuContextProvider({ children }) {
    };
    // #region CRUD
 
-   const getMenus = async () => {
+   const getMenus = async (getItems = false) => {
       try {
          // setMenu([]);
          const res = CorrectRes;
          const axiosData = await Axios.get(`/menus`);
          res.result.menus = axiosData.data.data.result;
          // console.log(res.result);
-         setMenus(axiosData.data.data.result);
+
+         if (getItems) {
+            let _headerMenus = [];
+            _headerMenus = res.result.menus.filter((menu) => menu.belongs_to == 0);
+            const items = [];
+
+            await _headerMenus.map((hm) => {
+               let _childrenMenus = [];
+               const item = {
+                  id: hm.id,
+                  title: hm.menu,
+                  // caption: hm.caption,
+                  // type: hm.type,
+                  children: []
+               };
+
+               _childrenMenus = res.result.menus.filter((chm) => chm.belongs_to == hm.id);
+               _childrenMenus.map((iCh) => {
+                  const child = {
+                     id: iCh.id,
+                     title: iCh.menu
+                     // type: iCh.type,
+                     // url: iCh.url,
+                     // icon: tablerIcons[`${iCh.icon}`]
+                  };
+                  item.children.push(child);
+               });
+               items.push(item);
+            });
+            // console.log("los items", items);
+            setMenus(items);
+         } else setMenus(axiosData.data.data.result);
          // console.log("menus", menus);
          showMyMenus();
          return res;
@@ -330,7 +362,9 @@ export default function MenuContextProvider({ children }) {
             DisEnableMenu,
             headerMenus,
             setHeaderMenus,
-            getHeaderMenusSelectIndex
+            getHeaderMenusSelectIndex,
+            permissionsByMenu,
+            setPermissionsByMenu
          }}
       >
          {children}

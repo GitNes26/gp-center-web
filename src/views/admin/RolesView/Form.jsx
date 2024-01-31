@@ -26,11 +26,10 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const RoleForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
-   const { singularName, roles, createRole, updateRole, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle, headerRoles } =
+   const { singularName, roles, createRole, updateRole, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle } =
       useRoleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   const [isItem, setIsItem] = useState(false);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -45,15 +44,9 @@ const RoleForm = () => {
       }
    };
 
-   const handleChangeType = (type) => {
-      // console.log("handleChangeType - type", type);
-      setIsItem(type === "item" ? true : false);
-   };
-
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          // return console.log("values", values);
-         if (!isItem) values.belongs_to = 0; //es role padre
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createRole(values);
@@ -89,7 +82,6 @@ const RoleForm = () => {
 
    const handleModify = (setValues, setFieldValue) => {
       try {
-         handleChangeType(formData.type);
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
          // console.log(formData);
@@ -103,29 +95,16 @@ const RoleForm = () => {
       try {
          resetForm();
          resetFormData();
-         // setOpenDialog(false);
+         setOpenDialog(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    };
 
-   const validationSchemas = () => {
-      let validationSchema = Yup.object().shape({
-         role: Yup.string().trim().required("Menú requerido"),
-         // caption: Yup.string().trim().required("Leyenda requerida"),
-         order: Yup.number().required("Orden requerido")
-      });
-      if (isItem)
-         validationSchema = Yup.object().shape({
-            role: Yup.string().trim().required("Menú requerido"),
-            belongs_to: Yup.number().min(1, "Esta opción no es valida").required("Pertenencia requerida"),
-            url: Yup.string().trim().required("URL requerido"),
-            icon: Yup.string().trim().required("Icono requerido"),
-            order: Yup.number().required("Orden requerido")
-         });
-      return validationSchema;
-   };
+   const validationSchema = Yup.object().shape({
+      role: Yup.string().trim().required("Rol requerido")
+   });
 
    useEffect(() => {
       try {
@@ -135,7 +114,7 @@ const RoleForm = () => {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData, isItem]);
+   }, [formData]);
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
@@ -149,7 +128,8 @@ const RoleForm = () => {
                      label="Seguir Agregando"
                   />
                </Typography>
-               <Formik initialValues={formData} validationSchema={validationSchemas} onSubmit={onSubmit}>
+
+               <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                   {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                      <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />

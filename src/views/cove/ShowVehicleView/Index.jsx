@@ -4,7 +4,7 @@ import Paper from "@mui/material/Paper";
 import MainCard from "../../../ui-component/cards/MainCard";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { Axios } from "../../../context/AuthContext";
+import { Axios, useAuthContext } from "../../../context/AuthContext";
 
 import { useEffect, useState } from "react";
 import { useVehicleContext } from "../../../context/VehicleContext";
@@ -13,7 +13,7 @@ import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_ADMIN, ROLE_DIRECTOR, ROLE_DRIVER, useGlobalContext } from "../../../context/GlobalContext";
 // import bgGarage from "../../assets/images/bg-primary.jpg";
 // import bgPrimary from "../../assets/images/fondo menú.jpg";
 // import bgPlatform from "../../../assets/images/bg-auto.jpg";
@@ -71,6 +71,7 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 const sizeBtns = 150;
 
 const ShowVehicleView = () => {
+   const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
 
    const { setLoading, setLoadingAction, setOpenDialog, setBgImage } = useGlobalContext();
@@ -174,11 +175,10 @@ const ShowVehicleView = () => {
    const handleClickDeliver = () => {
       try {
          mySwal
-            .fire(QuestionAlertConfig(`Estas por devolver el vehículo con N° económico ${vehicle.stock_number}`, "DEVOLVER", "CANCELAR", "info"))
+            .fire(QuestionAlertConfig(`Estas por terminar la asignación del vehículo con N° económico ${vehicle.stock_number}`, "TERMINAR", "CANCELAR", "info"))
             .then(async (result) => {
                if (result.isConfirmed) {
                   setLoadingAction(true);
-                  // setAssignedVehicle({ user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) });
                   const deliveredVehicle = { user_id: id, vehicle_id: vehicle.id, date: formatDatetimeToSQL(new Date()) };
                   // return console.log(deliveredVehicle);
                   const axiosResponse = await createAssignedVehicle(deliveredVehicle);
@@ -281,21 +281,42 @@ const ShowVehicleView = () => {
                            </Tooltip>
                         </Grid>
                         <Grid xs alignItems={"center"}>
-                           <Tooltip title={"Devolver unidad"} placement="top" arrow>
-                              <Button
-                                 variant="contained"
-                                 color="error"
-                                 fullWidth
-                                 size="large"
-                                 onClick={handleClickDeliver}
-                                 width={sizeBtns}
-                                 height={sizeBtns}
-                                 sx={{ fontWeight: "bolder" }}
-                                 className={"btn-action"}
-                              >
-                                 DEVOLVER UNIDAD
-                              </Button>
-                           </Tooltip>
+                           {/* {auth.more_permissions.includes("devolver_unidad") && ( */}
+                           {auth.role_id <= ROLE_DIRECTOR && (
+                              <Tooltip title={"Devolver unidad"} placement="top" arrow>
+                                 <Button
+                                    variant="contained"
+                                    color="error"
+                                    fullWidth
+                                    size="large"
+                                    onClick={handleClickDeliver}
+                                    width={sizeBtns}
+                                    height={sizeBtns}
+                                    sx={{ fontWeight: "bolder" }}
+                                    className={"btn-action"}
+                                 >
+                                    DEVOLVER UNIDAD
+                                 </Button>
+                              </Tooltip>
+                           )}
+                           {auth.role_id <= ROLE_ADMIN ||
+                              (auth.role_id == ROLE_DRIVER && (
+                                 <Tooltip title={"Devolver prestamo"} placement="top" arrow>
+                                    <Button
+                                       variant="contained"
+                                       color="error"
+                                       fullWidth
+                                       size="large"
+                                       onClick={handleClickLoanReturn}
+                                       width={sizeBtns}
+                                       height={sizeBtns}
+                                       sx={{ fontWeight: "bolder" }}
+                                       className={"btn-action"}
+                                    >
+                                       DEVOLVER PRESTAMO
+                                    </Button>
+                                 </Tooltip>
+                              ))}
                         </Grid>
                         {/* </Grid> */}
                      </Grid>

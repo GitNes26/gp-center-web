@@ -91,7 +91,7 @@ const AdministratorForm = ({ dataRoles }) => {
          else axiosResponse = await updateAdministrator(values);
          // console.log(axiosResponse);
          if (axiosResponse.status_code == 200) {
-            console.log("limpiar");
+            // console.log("limpiar");
             await resetForm();
             resetAdministrator();
             setStrength(0);
@@ -102,7 +102,7 @@ const AdministratorForm = ({ dataRoles }) => {
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
-         console.log("formData", formData);
+         // console.log("formData", formData);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });

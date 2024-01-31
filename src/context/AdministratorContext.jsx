@@ -124,7 +124,7 @@ export default function AdministratorContextProvider({ children }) {
    const createAdministrator = async (administrator) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/create/2`, administrator);
+         const axiosData = await Axios.post(`/users/create/role_id/2`, administrator);
          // console.log(axiosData);
          res = axiosData.data.data;
          getAdministrators();
@@ -141,7 +141,7 @@ export default function AdministratorContextProvider({ children }) {
    const updateAdministrator = async (administrator) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/users/update", administrator);
+         const axiosData = await Axios.post("/users/update/role_id/2", administrator);
          res = axiosData.data.data;
          getAdministrators();
       } catch (error) {

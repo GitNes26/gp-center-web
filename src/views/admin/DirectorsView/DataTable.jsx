@@ -20,6 +20,8 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
+import { Box } from "@mui/system";
+import { Avatar } from "@mui/material";
 
 const DirectorDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
@@ -28,6 +30,12 @@ const DirectorDT = () => {
    const globalFilterFields = ["username", "email", "department"];
 
    // #region BodysTemplate
+   const AvatarBodyTemplate = (obj) => (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+         <Avatar sx={{ width: 56, height: 56 }} src={obj.avatar !== null ? `${import.meta.env.VITE_HOST}/${obj.avatar}` : ""} alt={obj.full_name} />
+      </Box>
+      // <Box textAlign={"center"}>{<img alt="Foto de Perfil" src={`${import.meta.env.VITE_HOST}/${obj.avatar}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
+   );
    const DirectorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
@@ -41,6 +49,7 @@ const DirectorDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
+      { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
       { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },

@@ -18,6 +18,7 @@ import FormSelect from "./FormSelect";
 import { Box } from "@mui/system";
 import { makeStyles } from "@mui/styles";
 import MenusCards from "./MenusCards";
+import { useMenuContext } from "../../../context/MenuContext";
 
 const useStyles = makeStyles((theme) => ({
    formSwiper: {
@@ -39,7 +40,8 @@ const RolesView = () => {
    const classess = useStyles();
    // const { result } = useLoaderData();
    const { setLoading, toggleDrawer } = useGlobalContext();
-   const { pluralName, role, roles, getRoles, getRolesSelectIndex } = useRoleContext();
+   const { pluralName, role, roles, getRoles, roleSelect, getRolesSelectIndex } = useRoleContext();
+   const { getMenus } = useMenuContext();
 
    const [openDialogTable, setOpenDialogTable] = useState(false);
 
@@ -48,6 +50,7 @@ const RolesView = () => {
          setLoading(true);
          getRoles();
          getRolesSelectIndex();
+         getMenus(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
