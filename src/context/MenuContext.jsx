@@ -16,6 +16,7 @@ const formDataInitialState = {
    icon: "",
    order: "",
    show_counter: false,
+   more_permissions: "",
 
    patern: ""
 };
