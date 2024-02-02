@@ -28,6 +28,7 @@ const ModalReturnLoan = ({ open, setOpen }) => {
    const { /* loanedVehicle, setLoanedVehicle, */ returnLoan } = useLoanedVehicleContext();
    const [showErrorKm, setShowErrorKm] = useState(false);
    const [formData, setFormData] = useState({
+      vehicle_id: 0,
       assigned_vehicle_id: 0,
       delivery_km: 0,
       delivery_date: ""
@@ -38,7 +39,7 @@ const ModalReturnLoan = ({ open, setOpen }) => {
       setFormData({ ...formData, delivery_km: 0 });
    };
 
-   const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
       try {
          e.preventDefault();
          if (formData.delivery_km < 0) setShowErrorKm(true);
@@ -46,9 +47,11 @@ const ModalReturnLoan = ({ open, setOpen }) => {
 
          setFormData({
             ...formData,
+            vehicle_id: vehicle.id,
             assigned_vehicle_id: vehicle.ass_folio,
             delivery_date: formatDatetimeToSQL(new Date())
          });
+         formData.vehicle_id = vehicle.id;
          formData.assigned_vehicle_id = vehicle.ass_folio;
          formData.delivery_date = formatDatetimeToSQL(new Date());
 
@@ -65,6 +68,7 @@ const ModalReturnLoan = ({ open, setOpen }) => {
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
                   setFormData({
+                     vehicle_id: 0,
                      assigned_vehicle_id: 0,
                      delivery_km: 0,
                      delivery_date: ""

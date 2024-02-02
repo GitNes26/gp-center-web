@@ -248,27 +248,33 @@ const ShowVehicleView = () => {
                   <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         {/* <Grid container spacing={3}> */}
-                        <Grid xs alignItems={"center"}>
-                           <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
-                              <Box textAlign={"center"}>
-                                 <IconBtnService onClick={() => setOpenService(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                              </Box>
-                           </Tooltip>
-                        </Grid>
-                        <Grid xs alignItems={"center"}>
-                           <Tooltip title={"Asignar unidad"} placement="top" arrow>
-                              <Box textAlign={"center"}>
-                                 <IconBtnAssign onClick={handleClickAssign} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                              </Box>
-                           </Tooltip>
-                        </Grid>
-                        <Grid xs alignItems={"center"}>
-                           <Tooltip title={"Prestar unidad"} placement="top" arrow>
-                              <Box textAlign={"center"}>
-                                 <IconBtnLoan onClick={handleClickLoan} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
-                              </Box>
-                           </Tooltip>
-                        </Grid>
+                        {auth.role_id <= ROLE_ADMIN && (
+                           <Grid xs alignItems={"center"}>
+                              <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
+                                 <Box textAlign={"center"}>
+                                    <IconBtnService onClick={() => setOpenService(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                                 </Box>
+                              </Tooltip>
+                           </Grid>
+                        )}
+                        {auth.role_id <= ROLE_ADMIN && (
+                           <Grid xs alignItems={"center"}>
+                              <Tooltip title={"Asignar unidad"} placement="top" arrow>
+                                 <Box textAlign={"center"}>
+                                    <IconBtnAssign onClick={handleClickAssign} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                                 </Box>
+                              </Tooltip>
+                           </Grid>
+                        )}
+                        {(auth.role_id <= ROLE_ADMIN || auth.role_id === ROLE_DIRECTOR) && (
+                           <Grid xs alignItems={"center"}>
+                              <Tooltip title={"Prestar unidad"} placement="top" arrow>
+                                 <Box textAlign={"center"}>
+                                    <IconBtnLoan onClick={handleClickLoan} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
+                                 </Box>
+                              </Tooltip>
+                           </Grid>
+                        )}
                         <Grid xs alignItems={"center"}>
                            {/* {auth.more_permissions.includes("devolver_unidad") && ( */}
                            {auth.role_id <= ROLE_DIRECTOR && (

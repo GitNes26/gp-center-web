@@ -29,6 +29,7 @@ const ModalDeliver = ({ open, setOpen }) => {
    const [showErrorReason, setShowErrorReason] = useState(false);
    const [showErrorKm, setShowErrorKm] = useState(false);
    const [formData, setFormData] = useState({
+      vehicle_id: 0,
       accident_folio: 0,
       assigned_vehicle_id: 0,
       reason: "",
@@ -51,10 +52,12 @@ const ModalDeliver = ({ open, setOpen }) => {
 
          setFormData({
             ...formData,
+            vehicle_id: vehicle.id,
             assigned_vehicle_id: vehicle.ass_folio,
             // full_name: full_name,
             date: formatDatetimeToSQL(new Date())
          });
+         formData.vehicle_id = vehicle.id;
          formData.assigned_vehicle_id = vehicle.ass_folio;
          formData.date = formatDatetimeToSQL(new Date());
 
@@ -71,6 +74,7 @@ const ModalDeliver = ({ open, setOpen }) => {
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
                   setFormData({
+                     vehicle_id: 0,
                      accident_folio: 0,
                      assigned_vehicle_id: 0,
                      reason: "",
