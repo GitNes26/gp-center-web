@@ -101,7 +101,8 @@ export default function DataTableComponent({
    btnsExport = true,
    showGridlines = false,
    btnDeleteMultiple = false,
-   handleClickDeleteMultipleContinue
+   handleClickDeleteMultipleContinue,
+   scrollHeight = "67vh"
 }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
@@ -409,7 +410,7 @@ export default function DataTableComponent({
                loading={loading}
                filters={filters}
                scrollable={true}
-               scrollHeight="67vh"
+               scrollHeight={scrollHeight}
                globalFilter={globalFilterValue}
                globalFilterFields={globalFilterFields}
                filterDisplay={headerFilters ? "row" : "menu"}

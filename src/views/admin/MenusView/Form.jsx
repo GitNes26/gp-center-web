@@ -273,6 +273,26 @@ const MenuForm = () => {
                                  </a>
                               </small>
                            </Grid>
+                           {/* Otros Permisos */}
+                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                              <TextField
+                                 id="others_permissions"
+                                 name="others_permissions"
+                                 label="Ingrese los permisos especiales *"
+                                 type="text"
+                                 value={values.others_permissions}
+                                 placeholder="Otros Permisos"
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "others_permissions", true)}
+                                 fullWidth
+                                 error={errors.others_permissions && touched.others_permissions}
+                                 helperText={errors.others_permissions && touched.others_permissions && errors.others_permissions}
+                              />
+                              <small style={{ fontStyle: "italic" }}>
+                                 Los permisos seran separados por el caracter "<b>|</b>" que se encuentra a la izquierda de la tecla con el N° 1
+                              </small>
+                           </Grid>
                         </>
                      )}
 
