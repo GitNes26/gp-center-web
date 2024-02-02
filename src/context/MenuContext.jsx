@@ -16,7 +16,7 @@ const formDataInitialState = {
    icon: "",
    order: "",
    show_counter: false,
-   more_permissions: "",
+   others_permissions: "",
 
    patern: ""
 };
@@ -214,9 +214,11 @@ export default function MenuContextProvider({ children }) {
 
                _childrenMenus = res.result.menus.filter((chm) => chm.belongs_to == hm.id);
                _childrenMenus.map((iCh) => {
+                  let others_permissions = iCh.others_permissions == null ? [] : iCh.others_permissions.split("|");
                   const child = {
                      id: iCh.id,
-                     title: iCh.menu
+                     title: iCh.menu,
+                     others_permissions: others_permissions
                      // type: iCh.type,
                      // url: iCh.url,
                      // icon: tablerIcons[`${iCh.icon}`]
@@ -225,7 +227,7 @@ export default function MenuContextProvider({ children }) {
                });
                items.push(item);
             });
-            // console.log("los items", items);
+            console.log("los items", items);
             setMenus(items);
          } else setMenus(axiosData.data.data.result);
          // console.log("menus", menus);

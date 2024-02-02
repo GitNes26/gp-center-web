@@ -60,7 +60,7 @@ export default function RoleContextProvider({ children }) {
          res.result.roles = axiosData.data.data.result;
          setRoles(axiosData.data.data.result);
          // console.log("roles", roles);
-
+         showRoleSelect(auth.role_id);
          return res;
       } catch (error) {
          const res = ErrorRes;
@@ -110,6 +110,7 @@ export default function RoleContextProvider({ children }) {
 
    const showRoleSelect = async (id) => {
       try {
+         console.log("showRoleSelect");
          let res = CorrectRes;
          const axiosData = await Axios.get(`/roles/${id}`);
          setOpenDialog(true);

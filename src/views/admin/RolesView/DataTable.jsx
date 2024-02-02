@@ -106,11 +106,11 @@ const RoleDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
+            {/* <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
-            </Tooltip>
+            </Tooltip> */}
             {/* <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />

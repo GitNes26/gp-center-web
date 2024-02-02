@@ -25,7 +25,7 @@ const MenusCards = () => {
    const [headerMenus, setHeaderMenus] = useState([]);
    const [childrenMenus, setChildrenMenus] = useState([]);
 
-   const CardMenu = ({ id = 0, title = "" }) => {
+   const CardMenu = ({ id = 0, title = "", others_permissions = [] }) => {
       return (
          <Card sx={{ p: 0 }} className={classes.cardChildren}>
             <Grid xs={12} sx={{ m: 0 }}>
@@ -41,17 +41,23 @@ const MenusCards = () => {
                />
             </Grid>
 
-            <Grid container spacing={2} sx={{ backgroundColor: "white" }}>
-               <Grid xs={"auto"} sx={{ m: 0 }}>
-                  <FormControlLabel value={`read@${id}`} control={<Checkbox defaultChecked={true} />} label="Ver" labelPlacement="bottom" />
-               </Grid>
-               <Grid xs={"auto"} sx={{ m: 0 }}>
-                  <FormControlLabel value={`create@${id}`} control={<Checkbox defaultChecked={true} />} label="Crear" labelPlacement="bottom" />
-               </Grid>
-               <Grid xs={"auto"} sx={{ m: 0 }}>
-                  <FormControlLabel value={`update@${id}`} control={<Checkbox defaultChecked={true} />} label="Editar" labelPlacement="bottom" />
-               </Grid>
-            </Grid>
+            <Masonry columns={4} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0, textAlign: "center" }}>
+               {/* <Grid container spacing={2} sx={{ backgroundColor: "white" }}> */}
+               <FormControlLabel value={`read@${id}`} control={<Checkbox defaultChecked={true} />} label="Ver" labelPlacement="bottom" />
+               <FormControlLabel value={`create@${id}`} control={<Checkbox defaultChecked={true} />} label="Crear" labelPlacement="bottom" />
+               <FormControlLabel value={`update@${id}`} control={<Checkbox defaultChecked={true} />} label="Editar" labelPlacement="bottom" />
+               <FormControlLabel value={`delete@${id}`} control={<Checkbox defaultChecked={true} />} label="Eliminar" labelPlacement="bottom" />
+               {others_permissions.map((op, opIndex) => (
+                  <FormControlLabel
+                     key={`COP_${id}_${opIndex}`}
+                     value={`${op}`}
+                     control={<Checkbox defaultChecked={true} />}
+                     label={op.split("@").reverse()[0]}
+                     labelPlacement="bottom"
+                  />
+               ))}
+               {/* </Grid> */}
+            </Masonry>
          </Card>
       );
    };
@@ -73,9 +79,9 @@ const MenusCards = () => {
             </Box>
 
             {/* <Grid container spacing={2} sx={{ backgroundColor: "white" }}> */}
-            <Masonry columns={2} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0 }}>
+            <Masonry columns={children.length == 1 ? 1 : 2} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0 }}>
                {children.map((m) => (
-                  <CardMenu key={`CMC_${m.id}`} id={m.id} title={m.title} />
+                  <CardMenu key={`CMC_${m.id}`} id={m.id} title={m.title} others_permissions={m.others_permissions} />
                ))}
             </Masonry>
 
