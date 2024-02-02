@@ -245,7 +245,10 @@ const DirectorForm = () => {
 
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
-         username: Yup.string().trim().required("Nombre de usario requerido"),
+         username: Yup.string()
+            .trim()
+            .matches(/^[^@]*$/, 'No se permite el carácter "@"')
+            .required("Nombre de usario requerido"),
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
          // role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
@@ -270,7 +273,7 @@ const DirectorForm = () => {
          zip: Yup.number("Solo numeros").required("Código Postal requerido"),
          state: Yup.string().trim().required("Estado requerido"),
          city: Yup.string().trim().required("Ciudad requerido"),
-         colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida"),
+         colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida")
       });
       return validationSchema;
    };

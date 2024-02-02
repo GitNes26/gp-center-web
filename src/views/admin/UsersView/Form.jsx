@@ -85,6 +85,18 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
+   // const handleChangeUser = (e) => {
+   //    // Validar si el carácter "@" está presente antes de actualizar el estado
+   //    if (!e.target.value.includes("@")) {
+   //       formik.handleChange(e);
+   //    }
+   // };
+   // const handleInputUsername = (e) => {
+
+   //    // if (e.key === "@") return;
+   //    // const value = e.target.value;
+   // };
+
    const handleChangeCheckAdd = (e) => {
       try {
          const active = e.target.checked;
@@ -192,7 +204,10 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
-         username: Yup.string().trim().required("Nombre de usario requerido"),
+         username: Yup.string()
+            .trim()
+            .matches(/^[^@]*$/, 'No se permite el carácter "@"')
+            .required("Nombre de usario requerido"),
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
          role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
@@ -220,14 +235,20 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       });
       if (isAdmin)
          validationSchema = Yup.object().shape({
-            username: Yup.string().trim().required("Nombre de usario requerido"),
+            username: Yup.string()
+               .trim()
+               .matches(/^[^@]*$/, 'No se permite el carácter "@"')
+               .required("Nombre de usario requerido"),
             email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
             password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
             role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
          });
       else if (isGarage)
          validationSchema = Yup.object().shape({
-            username: Yup.string().trim().required("Nombre de usario requerido"),
+            username: Yup.string()
+               .trim()
+               .matches(/^[^@]*$/, 'No se permite el carácter "@"')
+               .required("Nombre de usario requerido"),
             email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
             password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
             role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
@@ -307,6 +328,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            type="text"
                            value={values.username}
                            placeholder="Ingrese su nombre de usuario"
+                           // onKeyDown={handleInputUsername}
                            onChange={handleChange}
                            onBlur={handleBlur}
                            // InputProps={{ }}

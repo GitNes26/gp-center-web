@@ -36,10 +36,17 @@ export default function AuthContextProvider({ children }) {
    const login = async ({ email, password }) => {
       setAuth(null);
       try {
-         const { data } = await Axios.post(`/login`, {
+         let postData = {
             email,
             password
-         });
+         };
+         if (!email.includes("@"))
+            postData = {
+               username: email,
+               password
+            };
+         // return console.log(postData);
+         const { data } = await Axios.post(`/login`, postData);
          // console.log("data", data);
 
          if (data.data.result.token === null) sAlert.Customizable(data.data.alert_text, data.data.alert_icon, true, false);
