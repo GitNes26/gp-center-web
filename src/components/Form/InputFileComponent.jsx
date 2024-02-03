@@ -6,6 +6,120 @@ import Toast from "../../utils/Toast";
 import { Field } from "formik";
 import { useDropzone } from "react-dropzone";
 
+// #region ESTILOS
+// /* CONTENEDOR DE IMAGENES */
+// .dropzone-container {
+//    display: flex;
+//    flex-direction: column;
+//    align-items: center;
+//    gap: 1rem;
+//    width: 100%;
+// }
+
+// .dropzone {
+//    border: 5px dashed #1455cb;
+//    border-radius: 14px;
+//    padding: 0.5rem;
+//    text-align: center;
+//    cursor: pointer;
+//    width: 100%;
+//    transition: all 0.3s ease-in-out;
+// }
+// .dropzone:hover {
+//    border: 5px solid #1455cb;
+//    background-color: #e9ecefb9;
+// }
+
+// .dropzone p {
+//    font-size: 1rem;
+// }
+
+// .file-preview {
+//    display: flex;
+//    flex-wrap: wrap;
+//    justify-content: center;
+//    /* flex-direction: column; */
+//    gap: 15px;
+//    background-color: #e9ecef;
+//    border-radius: 12px;
+//    max-width: 100%;
+//    overflow-x: auto;
+//    /* margin-top: 5px; */
+//    /* overflow-y: scroll; */
+//    max-height: 350px;
+// }
+// .file-preview .preview-img {
+//    max-width: 100px;
+//    max-height: 100px;
+//    object-fit: cover;
+//    /* border: 1px solid #ddd; */
+// }
+// .file-preview .preview-pdf {
+//    margin-top: 18px;
+//    /* max-width: 100px;
+//    max-height: 100px;
+//    */
+//    object-fit: cover;
+//    /* border: 1px solid #ddd; */
+// }
+
+// .preview-item {
+//    position: relative;
+//    width: 95%; /*150px;*/
+//    text-align: center;
+// }
+
+// .progress-bar {
+//    width: 100%;
+//    height: 10px;
+//    background-color: #ddd;
+// }
+
+// .progress-bar-fill {
+//    height: 100%;
+//    background-color: #007bff;
+// }
+
+// .remove-button {
+//    position: absolute;
+//    width: 100%;
+//    height: 100%;
+//    top: 0%;
+//    right: 0%;
+//    background-color: transparent;
+//    color: transparent; /* Color del icono de eliminar */
+//    border: none;
+//    border-radius: 12px;
+//    font-weight: bolder;
+//    cursor: pointer;
+//    font-size: 20px;
+//    transition: all 0.3s ease-in-out;
+// }
+
+// .remove-button:hover {
+//    background-color: #777777a1; /* Color de fondo al pasar el ratón */
+//    color: #e9ecef; /* Color del icono de eliminar al pasar el ratón */
+// }
+
+// .remove-pdf-button {
+//    position: absolute;
+//    width: 100%;
+//    /* height: 100%; */
+//    top: 0%;
+//    right: 0%;
+//    background-color: rgb(139, 19, 19);
+//    color: whitesmoke; /* Color del icono de eliminar */
+//    border: none;
+//    border-radius: 12px 12px 0 0;
+//    margin-bottom: 100px;
+//    font-weight: bolder;
+//    cursor: pointer;
+//    font-size: 25px;
+//    transition: all 0.3s ease-in-out;
+// }
+// /* CONTENEDOR DE IMAGENES */
+// #endregion
+
 export const setObjImg = (img, setImg) => {
    const imgObj = {
       file: {
@@ -17,6 +131,7 @@ export const setObjImg = (img, setImg) => {
 };
 
 /**
+ * const [imgPreview, setImgPreview] = useState([]);
  * 
  * <InputFileComponent
       idName="img_path"
