@@ -22,8 +22,10 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const DirectorDT = () => {
+   const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, director, directors, getDirectors, showDirector, deleteDirector, resetFormData, resetDirector, setTextBtnSumbit, setFormTitle } =
       useDirectorContext();
@@ -106,16 +108,20 @@ const DirectorDT = () => {
    const ButtonsAction = ({ id, user_id, name }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
-                  <IconDelete />
-               </Button>
-            </Tooltip>
+            {auth.permissions.update && (
+               <Tooltip title={`Editar ${singularName}`} placement="top">
+                  <Button color="info" onClick={() => handleClickEdit(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.delete && (
+               <Tooltip title={`Eliminar ${singularName}`} placement="top">
+                  <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
+                     <IconDelete />
+                  </Button>
+               </Tooltip>
+            )}
          </ButtonGroup>
       );
    };
@@ -152,6 +158,21 @@ const DirectorDT = () => {
          headerFilters={false}
          handleClickAdd={handleClickAdd}
          refreshTable={getDirectors}
+         btnAdd={auth.permissions.create}
+         showGridlines={false}
+         btnsExport={true}
+         rowEdit={false}
+         // handleClickDeleteContinue={handleClickDeleteContinue}
+         // ELIMINAR MULTIPLES REGISTROS
+         btnDeleteMultiple={false}
+         // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+         // PARA HACER FORMULARIO EN LA TABLA
+         // AGREGAR
+         // createData={createVehicle}
+         // newRow={newRow}
+         // EDITAR
+         // setData={setVehicles}
+         // updateData={updateVehicle}
       />
    );
 };

@@ -120,22 +120,48 @@ export default function AuthContextProvider({ children }) {
          // console.log("auth.read", auth.read);
          // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
          const currentPath = location.hash.split("#").reverse()[0];
+         const dataPost = { url: currentPath };
+         let menu = null;
+         const { data } = await Axios.post(`/menus/getIdByUrl`, dataPost);
+         menu = data.data.result;
+         let pagesRead;
+         let idPage;
+         if (menu !== null) {
+            if (auth.read === undefined) return logout(401);
+            pagesRead = auth.read.split(",");
+            // console.log(menu.id);
+            idPage = menu.id.toString();
+            // console.log(pagesRead);
+         }
+
          // console.log("currentPath", currentPath);
          let permission = false; // tengo permiso para estar en esta pagina?
          let validatePermissions = false; // voy a validar el permiso??? es decir, si estoy auth y no tengo en "read"=todas
+         const permissions = {
+            read: false,
+            create: false,
+            update: false,
+            delete: false,
+            more_permissions: []
+         };
+         // console.log("QUE TRA DE PERMISOS EL AUTH - 1", auth);
          if (auth.read !== "todas") validatePermissions = true;
          if (currentPath === "/admin") validatePermissions = false;
 
+         permissions.read = auth.read === "todas" ? true : auth.read.split(",").includes(idPage) ? true : false;
+         permissions.create = auth.create === "todas" ? true : auth.create === null ? false : auth.create.split(",").includes(idPage) ? true : false;
+         permissions.update = auth.update === "todas" ? true : auth.update === null ? false : auth.update.split(",").includes(idPage) ? true : false;
+         permissions.delete = auth.delete === "todas" ? true : auth.delete === null ? false : auth.delete.split(",").includes(idPage) ? true : false;
+         permissions.more_permissions = auth.more_permissions === "todas" ? ["todas"] : auth.more_permissions === null ? [] : auth.more_permissions.split("|");
+
+         // PASAR PERMISOS AL AUTH
+         auth.permissions = permissions;
+         // console.log("QUE TRA DE PERMISOS EL AUTH - 2", auth);
+
          if (validatePermissions) {
-            const dataPost = { url: currentPath };
-            const { data } = await Axios.post(`/menus/getIdByUrl`, dataPost);
             // console.log("data/getIdByUrl", data);
-            if (data.data.result !== null) {
+            if (menu !== null) {
                if (auth.read === undefined) return logout(401);
-               const pagesRead = auth.read.split(",");
-               // console.log(data.data.result.id);
-               const idPage = data.data.result.id.toString();
-               // console.log(pagesRead);
                permission = pagesRead.includes(idPage) ? true : false;
             }
          } else {
