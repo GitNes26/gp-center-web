@@ -24,7 +24,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
       setFormData,
       showRole,
       textBtnSubmit,
-      resetFormData,
+      resetRoleSelect,
       setTextBtnSumbit,
       formTitle,
       setFormTitle,
@@ -57,9 +57,9 @@ const FormSelect = ({ setOpenDialogTable }) => {
    const handleModify = (setValues, setFieldValue) => {
       try {
          // fillCheckMenus()
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-         // console.log(formData);
+         if (roleSelect.description) roleSelect.description == null && (roleSelect.description = "");
+         setValues(roleSelect);
+         // console.log(roleSelect);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -84,8 +84,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
    const handleClickAdd = () => {
       try {
          // resetRole();
-         resetFormData();
-         // setFormData({ ...formData, rol: "" });
+         resetRoleSelect();
+         // setFormData({ ...roleSelect, rol: "" });
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -103,7 +103,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
          if (values.id == 0) axiosResponse = await createRole(values);
          else axiosResponse = await updateRole(values);
          resetForm();
-         resetFormData();
+         resetRoleSelect();
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          setSubmitting(false);
@@ -130,16 +130,16 @@ const FormSelect = ({ setOpenDialogTable }) => {
    useEffect(() => {
       try {
          const btnModify = document.getElementById("btnModify");
-         if (btnModify != null && formData.id > 0) btnModify.click();
+         if (btnModify != null && roleSelect.id > 0) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData]);
+   }, [roleSelect]);
 
    return (
       <>
-         <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
+         <Formik initialValues={roleSelect} validationSchema={validationSchema} onSubmit={onSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                   <Grid xs={12} sm={2} sx={{ mb: 1 }}>
@@ -168,8 +168,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
                         label={"Rol *"}
                         valueLabel={values.role}
                         values={values}
-                        formData={formData}
-                        setFormData={setFormData}
+                        formData={roleSelect}
+                        setFormData={setRoleSelect}
                         formDataLabel={"role"}
                         placeholder={"Selecciona una opción..."}
                         options={rolesSelect}
