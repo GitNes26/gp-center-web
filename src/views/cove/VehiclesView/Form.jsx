@@ -2,7 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Divider, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
+import { Button, Divider, FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormHelperText } from "@mui/material";
@@ -229,6 +229,7 @@ const VehicleForm = () => {
          .required("Año del modelo requerido"),
       registration_date: Yup.date("Fecha invalida").required("Fecha de registro requerida"),
       vehicle_status_id: Yup.number("Esta opción no es valida").required("Nombre de la marca requerido"),
+      acceptable_license_type: Yup.string().trim().required("Tipos de licencia requeridos "),
 
       serial_number: Yup.string().trim().required("Número de Serie requerido"),
 
@@ -446,6 +447,26 @@ const VehicleForm = () => {
                            error={errors.description && touched.description}
                            helperText={errors.description && touched.description && errors.description}
                         />
+                     </Grid>
+                     {/* Tipo de Licencia */}
+                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        <Tooltip title="Tipos de licencia que pueden manejar ésta unidad. Si es más de un tipo, separar por coma; Ej. A,C...">
+                           <TextField
+                              id="acceptable_license_type"
+                              name="acceptable_license_type"
+                              label="Tipo de Licencia Aceptables*"
+                              type="text"
+                              value={values.acceptable_license_type}
+                              placeholder="A | B | C | A,C"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "acceptable_license_type", true)}
+                              fullWidth
+                              inputProps={{ maxLength: 10 }}
+                              error={errors.acceptable_license_type && touched.acceptable_license_type}
+                              helperText={errors.acceptable_license_type && touched.acceptable_license_type && errors.acceptable_license_type}
+                           />
+                        </Tooltip>
                      </Grid>
 
                      {/* Imagen PREVIEW del vehículo */}

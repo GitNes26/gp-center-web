@@ -119,12 +119,14 @@ const DirectorForm = () => {
             await setFieldValue("paternal_last_name", userFind.apellidoP);
             await setFieldValue("maternal_last_name", userFind.apellidoM);
             await setFieldValue("payroll_number_exist", true);
+            await setFieldValue("department", userFind.departamento);
          } else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
             await setFieldValue("paternal_last_name", "");
             await setFieldValue("maternal_last_name", "");
             await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("department", "");
          }
       } catch (error) {
          console.log(error);
@@ -135,6 +137,7 @@ const DirectorForm = () => {
             await setFieldValue("paternal_last_name", "");
             await setFieldValue("maternal_last_name", "");
             await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("department", "");
          }
       }
    };
@@ -257,10 +260,12 @@ const DirectorForm = () => {
             .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
             .required("Número telefónico requerido"),
          license_number: Yup.string().trim().required("Número de licencia requerido"),
+         license_type: Yup.string().trim().required("Tipo de licencia requerido"),
          license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
          payroll_number: Yup.number("Solo números"),
          payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
-         department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
+         // department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
+         department: Yup.string().trim().required("Departamento requerido"),
 
          name: Yup.string().trim().required("Nombre(s) requerido"),
          paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
@@ -338,7 +343,7 @@ const DirectorForm = () => {
                            placeholder="Ingrese su nombre de usuario"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           // InputProps={{ }}
+                           // InputProps={{}}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
                            error={errors.username && touched.username}
@@ -460,7 +465,7 @@ const DirectorForm = () => {
                         />
                      </Grid>
                      {/* Numero de Licencia */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
                         <TextField
                            id="license_number"
                            name="license_number"
@@ -476,8 +481,26 @@ const DirectorForm = () => {
                            helperText={errors.license_number && touched.license_number && errors.license_number}
                         />
                      </Grid>
+                     {/* Tipo de Licencia */}
+                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        <TextField
+                           id="license_type"
+                           name="license_type"
+                           label="Tipo de Licencia *"
+                           type="text"
+                           value={values.license_type}
+                           placeholder="A | B | C"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "license_type", true)}
+                           fullWidth
+                           inputProps={{ maxLength: 1 }}
+                           error={errors.license_type && touched.license_type}
+                           helperText={errors.license_type && touched.license_type && errors.license_type}
+                        />
+                     </Grid>
                      {/* Fecha de Vencimiento */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                     <Grid xs={12} md={4} sx={{ mb: 3 }}>
                         <DatePickerComponent
                            idName={"license_due_date"}
                            label={"Fecha de Vencimiento *"}
@@ -541,7 +564,23 @@ const DirectorForm = () => {
                      </Grid>
                      {/* Departameto */}
                      <Grid xs={12} md={8} sx={{ mb: 1 }}>
-                        <Select2Component
+                        <TextField
+                           id="department"
+                           name="department"
+                           label="Departamento *"
+                           type="text"
+                           value={values.department}
+                           placeholder="Ingresa tu departamento"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
+                           InputProps={{ disabled: true }}
+                           fullWidth
+                           // disabled={values.id == 0 ? false : true}
+                           error={errors.department && touched.department}
+                           helperText={errors.department && touched.department && errors.department}
+                        />
+                        {/* <Select2Component
                            idName={"department_id"}
                            label={"Departameto *"}
                            valueLabel={values.department}
@@ -559,12 +598,12 @@ const DirectorForm = () => {
                            error={errors.department_id}
                            touched={touched.department_id}
                            disabled={false}
-                        />
+                        /> */}
                      </Grid>
                      {/* Divisor */}
-                     <Grid xs={12}>
+                     {/* <Grid xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                     </Grid>
+                     </Grid> */}
 
                      {/* Nombre */}
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
@@ -578,7 +617,7 @@ const DirectorForm = () => {
                            onChange={handleChange}
                            onBlur={handleBlur}
                            onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
-                           // InputProps={{ }}
+                           InputProps={{ disabled: true }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
                            error={errors.name && touched.name}
@@ -597,7 +636,7 @@ const DirectorForm = () => {
                            onChange={handleChange}
                            onBlur={handleBlur}
                            onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
-                           // InputProps={{ }}
+                           InputProps={{ disabled: true }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
                            error={errors.paternal_last_name && touched.paternal_last_name}
@@ -616,7 +655,7 @@ const DirectorForm = () => {
                            onChange={handleChange}
                            onBlur={handleBlur}
                            onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
-                           // InputProps={{ }}
+                           InputProps={{ disabled: true }}
                            fullWidth
                            // disabled={values.id == 0 ? false : true}
                            error={errors.maternal_last_name && touched.maternal_last_name}

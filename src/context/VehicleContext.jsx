@@ -17,6 +17,7 @@ const formDataInitialState = {
    vehicle_status_id: 0,
    vehicle_status: "Selecciona una opción...",
    description: "",
+   acceptable_license_type: "",
 
    img_preview: "",
    img_right: "",
