@@ -26,11 +26,12 @@ export default function AuthContextProvider({ children }) {
          });
          // console.log("el data register:", data);
          if (data.data.status_code == 200) sAlert.Success(data.data.alert_text, 2500);
+         return data.data;
       } catch (error) {
          console.log(error);
          sAlert.Error("Parece que hay un error 🤔, intenta más tarde");
+         return error;
       }
-      return data.data;
    };
 
    const login = async ({ email, password }) => {
@@ -170,6 +171,7 @@ export default function AuthContextProvider({ children }) {
          }
          // console.log("el permission", permission);
          if (permission) setPermissionRead(permission);
+         localStorage.setItem("auth", JSON.stringify(auth));
          // console.log("el permissionRead", permissionRead);
          // console.log(location.hash.split("/"));
          if (!permission && location.hash.split("/").length < 3) {
