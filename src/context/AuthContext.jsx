@@ -171,7 +171,10 @@ export default function AuthContextProvider({ children }) {
          // console.log("el permission", permission);
          if (permission) setPermissionRead(permission);
          // console.log("el permissionRead", permissionRead);
-         if (!permission) window.location.hash = "/admin";
+         // console.log(location.hash.split("/"));
+         if (!permission && location.hash.split("/").length < 3) {
+            window.location.hash = "/admin";
+         }
 
          // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
       } catch (error) {
