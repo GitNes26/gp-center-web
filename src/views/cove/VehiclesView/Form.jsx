@@ -48,6 +48,7 @@ const VehicleForm = () => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
    const [changePlates, setChangePlates] = useState(false);
+   const [visibleSerialNumber, setVisibleSerialNumber] = useState(true);
    const [dataModels, setDataModels] = useState([]);
    const [modifying, setModifying] = useState(false);
    const [imgPreview, setImgPreview] = useState([]);
@@ -133,6 +134,15 @@ const VehicleForm = () => {
 
       if (inputValue.length > 4) inputValue = inputValue.slice(0, 4);
       setFieldValue("year", inputValue);
+   };
+
+   const handleChangeVisibleSerialNumber = (e, setFieldValue) => {
+      const check = e.target.checked;
+      console.log("check", check);
+
+      setFieldValue("visible_serial_number", check);
+      setVisibleSerialNumber(check);
+      console.log("setVisibleSerialNumber", visibleSerialNumber);
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
@@ -448,13 +458,13 @@ const VehicleForm = () => {
                            helperText={errors.description && touched.description && errors.description}
                         />
                      </Grid>
-                     {/* Tipo de Licencia */}
+                     {/* Tipos de Licencia Aceptables */}
                      <Grid xs={12} md={12} sx={{ mb: 1 }}>
                         <Tooltip title="Tipos de licencia que pueden manejar ésta unidad. Si es más de un tipo, separar por coma; Ej. A,C...">
                            <TextField
                               id="acceptable_license_type"
                               name="acceptable_license_type"
-                              label="Tipo de Licencia Aceptables*"
+                              label="Tipos de Licencia Aceptables *"
                               type="text"
                               value={values.acceptable_license_type}
                               placeholder="A | B | C | A,C"
@@ -541,7 +551,7 @@ const VehicleForm = () => {
                      </Grid>
 
                      {/* Número de Serie */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={12} sx={{ mb: -2 }}>
                         <TextField
                            id="serial_number"
                            name="serial_number"
@@ -560,20 +570,31 @@ const VehicleForm = () => {
                            helperText={errors.serial_number && touched.serial_number && errors.serial_number}
                         />
                      </Grid>
-                     {/* Evidencia de Número de Serie */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_serial_number"
-                           label="Evidencia del Número de Serie"
-                           value={values.img_serial_number}
-                           filePreviews={imgSerialNumber}
-                           setFilePreviews={setImgSerialNumber}
-                           error={errors.img_serial_number}
-                           touched={touched.img_serial_number}
-                           multiple={false}
-                           accept={"image/*"}
+                     {/* Switch para replaquear */}
+                     <Grid xs={12} md={12} sx={{ mb: 0 }}>
+                        <FormControlLabel
+                           control={<Switch />}
+                           label="Evidencia de Número de Serie Visible en la Unidad?"
+                           checked={visibleSerialNumber}
+                           onChange={(e) => handleChangeVisibleSerialNumber(e, setFieldValue)}
                         />
                      </Grid>
+                     {/* Evidencia de Número de Serie */}
+                     {visibleSerialNumber && (
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_serial_number"
+                              label="Evidencia del Número de Serie"
+                              value={values.img_serial_number}
+                              filePreviews={imgSerialNumber}
+                              setFilePreviews={setImgSerialNumber}
+                              error={errors.img_serial_number}
+                              touched={touched.img_serial_number}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+                     )}
 
                      {/* Separador */}
                      <Grid xs={12}>

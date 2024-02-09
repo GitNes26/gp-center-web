@@ -163,6 +163,20 @@ const DirectorForm = () => {
          values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
          values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
+
+         if (
+            values.img_license == null ||
+            values.img_license == "null" ||
+            values.img_license == "" ||
+            values.img_license.name == "" ||
+            values.img_license.name == null ||
+            values.img_license.name == "null" ||
+            values.img_license.name == "undefined" ||
+            values.img_license.name == "[object Object]"
+         )
+            return Toast.Error("La foto de la licencia es requerida");
+         // return console.log("values", values.img_license);
+
          setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
@@ -262,6 +276,7 @@ const DirectorForm = () => {
          license_number: Yup.string().trim().required("Número de licencia requerido"),
          license_type: Yup.string().trim().required("Tipo de licencia requerido"),
          license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
+         // imgLicense: Yup.mixed().required("Debe seleccionar un archivo"),
          payroll_number: Yup.number("Solo números"),
          payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
          // department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
@@ -269,16 +284,16 @@ const DirectorForm = () => {
 
          name: Yup.string().trim().required("Nombre(s) requerido"),
          paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
+         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
          // community_id:  Yup.number().trim().required("Comunidad requerida"),
-         street: Yup.string().trim().required("Calle/Av. requerida"),
-         num_ext: Yup.string().trim().required("Número exterior requerido"),
-         // num_int: Yup.string().trim().required("Número interior requerido"),
+         // street: Yup.string().trim().required("Calle/Av. requerida"),
+         // num_ext: Yup.string().trim().required("Número exterior requerido"),
+         // // num_int: Yup.string().trim().required("Número interior requerido"),
 
-         zip: Yup.number("Solo numeros").required("Código Postal requerido"),
-         state: Yup.string().trim().required("Estado requerido"),
-         city: Yup.string().trim().required("Ciudad requerido"),
-         colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida")
+         // zip: Yup.number("Solo numeros").required("Código Postal requerido"),
+         // state: Yup.string().trim().required("Estado requerido"),
+         // city: Yup.string().trim().required("Ciudad requerido"),
+         // colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida")
       });
       return validationSchema;
    };
@@ -519,7 +534,7 @@ const DirectorForm = () => {
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_license"
-                           label="Foto Licencia de Conducir"
+                           label="Foto Licencia de Conducir *"
                            filePreviews={imgLicense}
                            setFilePreviews={setImgLicense}
                            error={errors.img_license}
@@ -663,7 +678,7 @@ const DirectorForm = () => {
                         />
                      </Grid>
                      {/* Divisor */}
-                     <Grid xs={12}>
+                     {/* <Grid xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 
@@ -677,7 +692,7 @@ const DirectorForm = () => {
                         handleBlur={handleBlur}
                         errors={errors}
                         touched={touched}
-                     />
+                     /> */}
 
                      <LoadingButton
                         type="submit"

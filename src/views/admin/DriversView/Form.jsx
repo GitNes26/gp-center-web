@@ -116,7 +116,7 @@ const DriverForm = () => {
          if (value.length < 5) return;
          const axiosRH = axios;
          const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}/infraesctruturagobmxpalaciopeticioninsegura`);
-         console.log("empleado", data.RESPONSE.recordset[0]);
+         // console.log("empleado", data.RESPONSE.recordset[0]);
          if (data.RESPONSE.recordset[0]) {
             const userFind = data.RESPONSE.recordset[0];
             if (auth.role_id === 5 && auth.department != userFind.departamento) {
@@ -177,6 +177,20 @@ const DriverForm = () => {
          values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
          values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
+
+         if (
+            values.img_license == null ||
+            values.img_license == "null" ||
+            values.img_license == "" ||
+            values.img_license.name == "" ||
+            values.img_license.name == null ||
+            values.img_license.name == "null" ||
+            values.img_license.name == "undefined" ||
+            values.img_license.name == "[object Object]"
+         )
+            return Toast.Error("La foto de la licencia es requerida");
+         // return console.log("values", values.img_license);
+
          setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
@@ -284,16 +298,16 @@ const DriverForm = () => {
 
          name: Yup.string().trim().required("Nombre(s) requerido"),
          paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
+         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
          // community_id:  Yup.number().trim().required("Comunidad requerida"),
-         street: Yup.string().trim().required("Calle/Av. requerida"),
-         num_ext: Yup.string().trim().required("Número exterior requerido"),
-         // num_int: Yup.string().trim().required("Número interior requerido"),
+         // street: Yup.string().trim().required("Calle/Av. requerida"),
+         // num_ext: Yup.string().trim().required("Número exterior requerido"),
+         // // num_int: Yup.string().trim().required("Número interior requerido"),
 
-         zip: Yup.number("Solo numeros").required("Código Postal requerido"),
-         state: Yup.string().trim().required("Estado requerido"),
-         city: Yup.string().trim().required("Ciudad requerido"),
-         colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida")
+         // zip: Yup.number("Solo numeros").required("Código Postal requerido"),
+         // state: Yup.string().trim().required("Estado requerido"),
+         // city: Yup.string().trim().required("Ciudad requerido"),
+         // colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida")
       });
       return validationSchema;
    };
@@ -614,28 +628,6 @@ const DriverForm = () => {
                            disabled={false}
                         /> */}
                      </Grid>
-                     {/* Director */}
-                     {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <Select2Component
-                           idName={"director_id"}
-                           label={"Director *"}
-                           valueLabel={values.director}
-                           values={values}
-                           formData={formData}
-                           setFormData={setFormData}
-                           formDataLabel={"director"}
-                           placeholder={"Selecciona una opción..."}
-                           options={directors}
-                           fullWidth={true}
-                           handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChangeRole}
-                           setValues={setValues}
-                           handleBlur={handleBlur}
-                           error={errors.director_id}
-                           touched={touched.director_id}
-                           disabled={false}
-                        />
-                     </Grid> */}
                      {/* Divisor */}
                      {/* <Grid xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
@@ -699,7 +691,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Divisor */}
-                     <Grid xs={12}>
+                     {/* <Grid xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 
@@ -713,7 +705,7 @@ const DriverForm = () => {
                         handleBlur={handleBlur}
                         errors={errors}
                         touched={touched}
-                     />
+                     /> */}
 
                      <LoadingButton
                         type="submit"

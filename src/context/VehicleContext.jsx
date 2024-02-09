@@ -27,6 +27,7 @@ const formDataInitialState = {
 
    serial_number: "",
    img_serial_number: "",
+   visible_serial_number: true,
 
    circulation_card: "",
    img_circulation_card: "",
