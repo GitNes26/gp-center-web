@@ -307,7 +307,7 @@ const VehicleForm = () => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>{" "}
+            </Typography>
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>

@@ -28,6 +28,7 @@ import { useDirectorContext } from "../../../context/DirectorContext";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 import axios from "axios";
 import { useAuthContext } from "../../../context/AuthContext";
+import { validateImageRequired } from "../../../utils/Validations";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -178,17 +179,7 @@ const DriverForm = () => {
          values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
 
-         if (
-            values.img_license == null ||
-            values.img_license == "null" ||
-            values.img_license == "" ||
-            values.img_license.name == "" ||
-            values.img_license.name == null ||
-            values.img_license.name == "null" ||
-            values.img_license.name == "undefined" ||
-            values.img_license.name == "[object Object]"
-         )
-            return Toast.Error("La foto de la licencia es requerida");
+         if (!validateImageRequired(values.img_license, "La foto de la licencia es requerida")) return;
          // return console.log("values", values.img_license);
 
          setFormData(values);
@@ -548,7 +539,7 @@ const DriverForm = () => {
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_license"
-                           label="Foto Licencia de Conducir"
+                           label="Foto Licencia de Conducir *"
                            filePreviews={imgLicense}
                            setFilePreviews={setImgLicense}
                            error={errors.img_license}

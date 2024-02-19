@@ -26,6 +26,7 @@ import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
 import axios from "axios";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
+import { validateImageRequired } from "../../../utils/Validations";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -164,17 +165,8 @@ const DirectorForm = () => {
          values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
 
-         if (
-            values.img_license == null ||
-            values.img_license == "null" ||
-            values.img_license == "" ||
-            values.img_license.name == "" ||
-            values.img_license.name == null ||
-            values.img_license.name == "null" ||
-            values.img_license.name == "undefined" ||
-            values.img_license.name == "[object Object]"
-         )
-            return Toast.Error("La foto de la licencia es requerida");
+         if (!validateImageRequired(values.img_license, "La foto de la licencia es requerida")) return;
+
          // return console.log("values", values.img_license);
 
          setFormData(values);

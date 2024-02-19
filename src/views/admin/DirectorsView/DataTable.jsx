@@ -23,13 +23,14 @@ import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
+import { formatPhone } from "../../../utils/Formats";
 
 const DirectorDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, director, directors, getDirectors, showDirector, deleteDirector, resetFormData, resetDirector, setTextBtnSumbit, setFormTitle } =
       useDirectorContext();
-   const globalFilterFields = ["username", "email", "department"];
+   const globalFilterFields = ["payroll_number", "username", "email", "phone", "license_number", "department"];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -38,10 +39,17 @@ const DirectorDT = () => {
       </Box>
       // <Box textAlign={"center"}>{<img alt="Foto de Perfil" src={`${import.meta.env.VITE_HOST}/${obj.avatar}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
    );
+   const PayRollBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} fontWeight={"bolder"}>
+         {obj.payroll_number}
+      </Typography>
+   );
    const DirectorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
+   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
+   const LicenseBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.license_number}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
-   const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
+   // const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
@@ -52,8 +60,11 @@ const DirectorDT = () => {
 
    const columns = [
       { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
+      { field: "payroll_number", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filterField: null },
       { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
+      { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
+      { field: "license_number", header: "No. Licencia", sortable: true, functionEdit: null, body: LicenseBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
       // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }

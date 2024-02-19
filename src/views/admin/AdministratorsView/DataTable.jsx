@@ -20,7 +20,7 @@ import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalConte
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
-import { formatDatetime } from "../../../utils/Formats";
+import { formatDatetime, formatPhone } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import SwitchComponent from "../../../components/SwitchComponent";
 
@@ -40,11 +40,13 @@ const AdministratorDT = () => {
       setTextBtnSumbit,
       setFormTitle
    } = useAdministratorContext();
-   const globalFilterFields = ["username", "email", "role", "active", "created_at"];
+   const globalFilterFields = ["username", "email", "phone", "role", "active", "created_at"];
 
    // #region BodysTemplate
    const AdministratorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
+   // const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
+   // const InfoBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.}</Typography>;
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -58,6 +60,7 @@ const AdministratorDT = () => {
    const columns = [
       { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: AdministratorBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
+      // { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
       { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
