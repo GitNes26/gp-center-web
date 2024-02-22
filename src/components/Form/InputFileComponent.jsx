@@ -323,7 +323,7 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                            </aside>
                         </div>
                         <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px" }}>
-                           Tamaño maximo del archivo soportado: <b>2.5MB MAX.</b>
+                           Tamaño maximo del archivo soportado: <b>1MB MAX.</b>
                         </small>
                      </div>
                      {touched && error && (

@@ -191,7 +191,7 @@ export default function AuthContextProvider({ children }) {
             password,
             new_password
          };
-         console.log(postData);
+         // console.log(postData);
          const { data } = await Axios.post(`/users/changePasswordAuth`, postData);
          // console.log("el data register:", data);
          if (data.data.status_code == 200 && data.data.alert_icon == "success") sAlert.Success(data.data.alert_text, null);
