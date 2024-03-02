@@ -120,6 +120,8 @@ const MenuForm = () => {
          validationSchema = Yup.object().shape({
             menu: Yup.string().trim().required("Menú requerido"),
             belongs_to: Yup.number().min(1, "Esta opción no es valida").required("Pertenencia requerida"),
+            patern: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Pertenencia requerida"),
+
             url: Yup.string().trim().required("URL requerido"),
             icon: Yup.string().trim().required("Icono requerido"),
             order: Yup.number().required("Orden requerido")
@@ -223,7 +225,7 @@ const MenuForm = () => {
                                  idName={"belongs_to"}
                                  label={"Pertenezco a *"}
                                  valueLabel={values.patern}
-                                 formDataLabel={"belongs_to"}
+                                 formDataLabel={"patern"}
                                  placeholder={"Selecciona una opción..."}
                                  options={headerMenus}
                                  fullWidth={true}
@@ -284,13 +286,15 @@ const MenuForm = () => {
                                  placeholder="Otros Permisos"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
+                                 multiline={true}
+                                 rows={5}
                                  // onInput={(e) => handleInputFormik(e, setFieldValue, "others_permissions", true)}
                                  fullWidth
                                  error={errors.others_permissions && touched.others_permissions}
                                  helperText={errors.others_permissions && touched.others_permissions && errors.others_permissions}
                               />
                               <small style={{ fontStyle: "italic" }}>
-                                 Los permisos seran separados por el caracter "<b>|</b>" que se encuentra a la izquierda de la tecla con el N° 1
+                                 Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "ID@Nombre Del Permiso"
                               </small>
                            </Grid>
                         </>

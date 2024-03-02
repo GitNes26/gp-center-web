@@ -24,8 +24,28 @@ const MenusCards = () => {
    const { menus, setMenus, getMenus } = useMenuContext();
    const [headerMenus, setHeaderMenus] = useState([]);
    const [childrenMenus, setChildrenMenus] = useState([]);
+   const [checkMaster, setCheckMaster] = useState(false);
+   const [checksModules, setChecksModules] = useState([]);
+   const [checksPages, setChecksPages] = useState([]);
+   const [checksPermissions, setChecksPermissions] = useState([]);
+   const [checks, setChecks] = useState([]);
 
-   const CardMenu = ({ id = 0, title = "" }) => {
+   const handleChangeCheckMaster = (e) => {
+      console.log("cambio", e.isTrusted);
+      // setCheckMaster(!checkMaster);
+      const newChecks = checks.map((check) => ({ ...check, isChecked: !checkMaster }));
+      setChecks(newChecks);
+      setCheckMaster(!checkMaster);
+   };
+
+   const handleCheckboxChange = (value) => {
+      const newChecks = checks.map((check) => (check.value === value ? { ...check, isChecked: !check.isChecked } : check));
+      setChecks(newChecks);
+
+      // Aquí puedes realizar lógica adicional si es necesario.
+   };
+
+   const CardMenu = ({ id = 0, title = "", others_permissions = [], isChecked }) => {
       return (
          <Card sx={{ p: 0 }} className={classes.cardChildren}>
             <Grid xs={12} sx={{ m: 0 }}>
@@ -41,28 +61,58 @@ const MenusCards = () => {
                />
             </Grid>
 
-            <Grid container spacing={2} sx={{ backgroundColor: "white" }}>
-               <Grid xs={"auto"} sx={{ m: 0 }}>
-                  <FormControlLabel value={`read@${id}`} control={<Checkbox defaultChecked={true} />} label="Ver" labelPlacement="bottom" />
-               </Grid>
-               <Grid xs={"auto"} sx={{ m: 0 }}>
-                  <FormControlLabel value={`create@${id}`} control={<Checkbox defaultChecked={true} />} label="Crear" labelPlacement="bottom" />
-               </Grid>
-               <Grid xs={"auto"} sx={{ m: 0 }}>
-                  <FormControlLabel value={`update@${id}`} control={<Checkbox defaultChecked={true} />} label="Editar" labelPlacement="bottom" />
-               </Grid>
-            </Grid>
+            <Masonry columns={4} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0, textAlign: "center" }}>
+               {/* <Grid container spacing={2} sx={{ backgroundColor: "white" }}> */}
+               <FormControlLabel
+                  value={`read@${id}`}
+                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  label="Ver"
+                  labelPlacement="bottom"
+               />
+               <FormControlLabel
+                  value={`create@${id}`}
+                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  label="Crear"
+                  labelPlacement="bottom"
+               />
+               <FormControlLabel
+                  value={`update@${id}`}
+                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  label="Editar"
+                  labelPlacement="bottom"
+               />
+               <FormControlLabel
+                  value={`delete@${id}`}
+                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  label="Eliminar"
+                  labelPlacement="bottom"
+               />
+               {others_permissions.map((op, opIndex) => (
+                  <FormControlLabel
+                     key={`COP_${id}_${opIndex}`}
+                     value={`${op}`}
+                     control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                     label={op.split("@").reverse()[0]}
+                     labelPlacement="bottom"
+                     // isChecked={checks.some((check) => check.value === op && check.isChecked)}
+                  />
+               ))}
+               {/* </Grid> */}
+            </Masonry>
          </Card>
       );
    };
 
-   const CardHeaderMenu = ({ id = 0, title = "", children = [] }) => {
+   const CardHeaderMenu = ({ id = 0, title = "", children = [], isChecked }) => {
+      // const _checksModules = [...checksModules];
+      // console.log(_checksModules);
+      // setChecksModules(_checksModules);
       return (
-         <Card sx={{ p: 1 }} className={classes.cardHeader}>
+         <Card sx={{ p: 0 }} className={classes.cardHeader}>
             <Box textAlign={"center"} mb={1}>
                <FormControlLabel
                   value={`menu@${id}`}
-                  control={<Checkbox defaultChecked />}
+                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
                   label={
                      <Typography variant="h3" className={classes.titleHeader}>
                         {title.toUpperCase()}
@@ -72,27 +122,32 @@ const MenusCards = () => {
                />
             </Box>
 
-            <Grid container spacing={2} sx={{ backgroundColor: "white" }}>
+            <Masonry columns={children.length == 1 ? 1 : 2} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0 }}>
                {children.map((m) => (
-                  <Grid xs={12} sx={{ mb: 1 }}>
-                     <CardMenu key={`CMC_${m.id}`} id={m.id} title={m.title} />
-                  </Grid>
+                  <CardMenu
+                     key={`CMC_${m.id}`}
+                     id={m.id}
+                     title={m.title}
+                     others_permissions={m.others_permissions}
+                     isChecked={checks.some((check) => check.value === 1 && check.isChecked)}
+                  />
                ))}
-            </Grid>
+            </Masonry>
          </Card>
       );
    };
 
    useEffect(() => {
-      console.log("menus para permisos", menus);
-   }, []);
+      // console.log("menus para permisos", menus);
+      console.log("checks para permisos", checks);
+   }, [checks]);
 
    return (
       <>
          <Box textAlign={"center"} mb={2}>
             <FormControlLabel
                value={`todas`}
-               control={<Checkbox defaultChecked />}
+               control={<Checkbox checked={checkMaster} onChange={handleChangeCheckMaster} />}
                label={
                   <Typography variant="h1" className={classes.title}>
                      {"MENUS"}
@@ -101,16 +156,18 @@ const MenusCards = () => {
                labelPlacement="start"
             />
          </Box>
-         {/* <Grid container spacing={2}> */}
          <Box sx={{ width: "100%", height: "60vh", overflowY: "auto" }}>
             <Masonry columns={3} spacing={2}>
                {menus.map((m) => (
-                  <Grid key={m.id} xs={12} md={6} sx={{ mb: 1 }}>
-                     <CardHeaderMenu key={`CM_${m.id}`} id={m.id} title={m.title} children={m.children} />
-                  </Grid>
+                  <CardHeaderMenu
+                     key={`CM_${m.id}`}
+                     id={m.id}
+                     title={m.title}
+                     children={m.children}
+                     isChecked={checks.some((check) => check.value === m.id && check.isChecked)}
+                  />
                ))}
             </Masonry>
-            {/* </Grid> */}
          </Box>
       </>
    );

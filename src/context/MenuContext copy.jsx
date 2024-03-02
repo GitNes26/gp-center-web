@@ -35,7 +35,6 @@ export default function MenuContextProvider({ children }) {
    const [menuItems, setMenuItems] = useState({ items: [] });
    const [headerMenus, setHeaderMenus] = useState([]);
    const [permissionsByMenu, setPermissionsByMenu] = useState([]);
-   const [checkMenus, setCheckMenus] = useState([]);
 
    const resetFormData = () => {
       try {
@@ -45,7 +44,6 @@ export default function MenuContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-
    const resetMenu = () => {
       try {
          setMenu(formDataInitialState);
@@ -60,10 +58,11 @@ export default function MenuContextProvider({ children }) {
          // setMenu([]);
          let res = CorrectRes;
          const axiosData = await Axios.post(`/menus/getIdByUrl`, dataPost);
-         // console.log("axiosData", axiosData);
+         console.log("axiosData", axiosData);
 
          res = axiosData.data.data;
          // console.log(res);
+
          return res;
       } catch (error) {
          console.log(error);
@@ -200,7 +199,6 @@ export default function MenuContextProvider({ children }) {
 
          if (getItems) {
             let _headerMenus = [];
-            let _checkMenus = []; // #permisos
             _headerMenus = res.result.menus.filter((menu) => menu.belongs_to == 0);
             const items = [];
 
@@ -214,24 +212,9 @@ export default function MenuContextProvider({ children }) {
                   children: []
                };
 
-               // #permisos
-               _checkMenus.push({
-                  id: hm.id,
-                  isChecked: false,
-                  permissions: {
-                     read: false,
-                     create: false,
-                     update: false,
-                     delete: false,
-                     more_permissions: []
-                  }
-               });
-               // #permisos
-
                _childrenMenus = res.result.menus.filter((chm) => chm.belongs_to == hm.id);
                _childrenMenus.map((iCh) => {
-                  let others_permissions = iCh.others_permissions == null ? [] : iCh.others_permissions.split(",");
-                  others_permissions = others_permissions.map((op) => op.trim());
+                  let others_permissions = iCh.others_permissions == null ? [] : iCh.others_permissions.split("|");
                   const child = {
                      id: iCh.id,
                      title: iCh.menu,
@@ -241,27 +224,11 @@ export default function MenuContextProvider({ children }) {
                      // icon: tablerIcons[`${iCh.icon}`]
                   };
                   item.children.push(child);
-
-                  // #permisos
-                  _checkMenus.push({
-                     id: iCh.id,
-                     isChecked: false,
-                     permissions: {
-                        read: false,
-                        create: false,
-                        update: false,
-                        delete: false,
-                        more_permissions: []
-                     }
-                  });
-                  // #permisos
                });
                items.push(item);
             });
-            // console.log("los items", items);
+            console.log("los items", items);
             setMenus(items);
-            setCheckMenus(_checkMenus);
-            // console.log("los checkMenus", checkMenus);
          } else setMenus(axiosData.data.data.result);
          // console.log("menus", menus);
          showMyMenus();
@@ -282,6 +249,7 @@ export default function MenuContextProvider({ children }) {
          // await setMenu(res.result);
          setFormData(res.result);
          setMenu(res.result);
+         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -302,6 +270,7 @@ export default function MenuContextProvider({ children }) {
          // await setMenu(res.result);
          // setFormData(res.result);
          setMenu(res.result);
+         // fillFormData(res.result);
          // console.log(res);
 
          return res;
@@ -398,9 +367,7 @@ export default function MenuContextProvider({ children }) {
             setHeaderMenus,
             getHeaderMenusSelectIndex,
             permissionsByMenu,
-            setPermissionsByMenu,
-            checkMenus,
-            setCheckMenus
+            setPermissionsByMenu
          }}
       >
          {children}

@@ -17,41 +17,85 @@ const useStyles = makeStyles((theme) => ({
    cardChildren: { border: "1px solid #c2cddd", backgroundColor: "#c2cddd" },
    titleChildren: { color: "#1E2126" }
 }));
-
+// const checkMenus = {};
 const MenusCards = () => {
    const classes = useStyles();
    const { roleSelect, setRoleSelect, showRoleSelect } = useRoleContext();
-   const { menus, setMenus, getMenus } = useMenuContext();
+   const { menus, setMenus, getMenus, checkMenus, setCheckMenus } = useMenuContext();
    const [headerMenus, setHeaderMenus] = useState([]);
    const [childrenMenus, setChildrenMenus] = useState([]);
    const [checkMaster, setCheckMaster] = useState(false);
    const [checksModules, setChecksModules] = useState([]);
    const [checksPages, setChecksPages] = useState([]);
    const [checksPermissions, setChecksPermissions] = useState([]);
-   const [checks, setChecks] = useState([]);
+   // const [checks, setChecks] = useState([]);
 
    const handleChangeCheckMaster = (e) => {
-      console.log("cambio", e.isTrusted);
-      // setCheckMaster(!checkMaster);
-      const newChecks = checks.map((check) => ({ ...check, isChecked: !checkMaster }));
-      setChecks(newChecks);
+      // console.log("cambio", e.target.checked);
+      const isChecked = e.target.checked;
+      const _checkMenus = checkMenus.map((check) => {
+         check.isChecked = isChecked;
+         check.permissions = isChecked
+            ? { read: true, create: true, update: true, delete: true, more_permissions: ["todas"] }
+            : { read: false, create: false, update: false, delete: false, more_permissions: [] };
+         // check.permissions = isChecked ? ["todas"] : [];
+         return check;
+      });
       setCheckMaster(!checkMaster);
+      setCheckMenus(_checkMenus);
+      // console.log("checkMaster", checkMaster);
    };
 
-   const handleCheckboxChange = (value) => {
-      const newChecks = checks.map((check) => (check.value === value ? { ...check, isChecked: !check.isChecked } : check));
-      setChecks(newChecks);
+   const handleCheckboxChange = (target) => {
+      const id = target.value.split("@")[0];
+      let value = target.value.split("@")[1];
+      if (!["menu", "read", "create", "update", "delete"].includes(value)) value = target.value;
+      const isChecked = target.checked;
+      // console.log("handleCheckboxChange()->id", id);
+      // console.log("handleCheckboxChange()->value", value);
+      // console.log("handleCheckboxChange()->isChecked", isChecked);
+      let _checkMenus = [...checkMenus];
+      // console.log("_checkMenus", _checkMenus);
+      _checkMenus = _checkMenus.map((check) => {
+         if (Number(check.id) === Number(id)) {
+            check.isChecked = isChecked;
+            // if (!["menu"].includes(value)) {
+            // if (!check.permissions.includes(value)) check.permissions.push(value);
+            if (value === "menu") check.permissions.read = isChecked;
+            if (value === "read") check.permissions.read = isChecked;
+            if (value === "create") check.permissions.create = isChecked;
+            if (value === "update") check.permissions.update = isChecked;
+            if (value === "delete") check.permissions.delete = isChecked;
+            // }
+            if (!["read", "create", "update", "delete", "menu"].includes(value)) {
+               if (isChecked) {
+                  if (!check.permissions.more_permissions.includes(value)) check.permissions.more_permissions.push(value);
+               } else {
+                  // console.log("quitar permiso:", value);
+                  // console.log("check.permissions.more_permissions", check.permissions.more_permissions);
+                  // if (check.permissions.more_permissions == ["todas"]) console.log("tiene todsa");
+                  const new_more_permissions = check.permissions.more_permissions.filter((permission) => permission !== value);
+                  check.permissions.more_permissions = new_more_permissions;
+               }
+            }
+         }
+         return check;
+      });
+      // console.log("_checkMenus", _checkMenus);
+      setCheckMenus(_checkMenus);
 
-      // Aquí puedes realizar lógica adicional si es necesario.
+      // console.log("checkMenus", checkMenus);
    };
 
    const CardMenu = ({ id = 0, title = "", others_permissions = [], isChecked }) => {
+      // console.log("others_permissions", others_permissions);
       return (
          <Card sx={{ p: 0 }} className={classes.cardChildren}>
             <Grid xs={12} sx={{ m: 0 }}>
                <FormControlLabel
-                  value={`read@${id}`}
-                  control={<Checkbox defaultChecked />}
+                  value={`${id}@read`}
+                  id={`${id}@read`}
+                  control={<Checkbox defaultChecked={isChecked} onChange={(e) => handleCheckboxChange(e.target)} />}
                   label={
                      <Typography variant="h3" className={classes.titleChildren}>
                         {title}
@@ -60,30 +104,52 @@ const MenusCards = () => {
                   labelPlacement="start"
                />
             </Grid>
-
-            <Masonry columns={4} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0, textAlign: "center" }}>
-               {/* <Grid container spacing={2} sx={{ backgroundColor: "white" }}> */}
+            <Masonry columns={others_permissions.length == 0 ? 4 : 3} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0, textAlign: "center" }}>
                <FormControlLabel
-                  value={`read@${id}`}
-                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  value={`${id}@read`}
+                  id={`${id}@read`}
+                  control={
+                     <Checkbox
+                        defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.read)}
+                        onChange={(e) => handleCheckboxChange(e.target)}
+                     />
+                  }
                   label="Ver"
                   labelPlacement="bottom"
                />
                <FormControlLabel
-                  value={`create@${id}`}
-                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  value={`${id}@create`}
+                  id={`${id}@create`}
+                  control={
+                     <Checkbox
+                        defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.create)}
+                        onChange={(e) => handleCheckboxChange(e.target)}
+                     />
+                  }
                   label="Crear"
                   labelPlacement="bottom"
                />
                <FormControlLabel
-                  value={`update@${id}`}
-                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  value={`${id}@update`}
+                  id={`${id}@update`}
+                  control={
+                     <Checkbox
+                        defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.update)}
+                        onChange={(e) => handleCheckboxChange(e.target)}
+                     />
+                  }
                   label="Editar"
                   labelPlacement="bottom"
                />
                <FormControlLabel
-                  value={`delete@${id}`}
-                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  value={`${id}@delete`}
+                  id={`${id}@delete`}
+                  control={
+                     <Checkbox
+                        defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.delete)}
+                        onChange={(e) => handleCheckboxChange(e.target)}
+                     />
+                  }
                   label="Eliminar"
                   labelPlacement="bottom"
                />
@@ -91,13 +157,20 @@ const MenusCards = () => {
                   <FormControlLabel
                      key={`COP_${id}_${opIndex}`}
                      value={`${op}`}
-                     control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
-                     label={op.split("@").reverse()[0]}
+                     id={`${op}`}
+                     control={
+                        <Checkbox
+                           defaultChecked={checkMenus.some(
+                              (check) =>
+                                 check.id === id && (check.permissions.more_permissions.includes(`${op}`) || check.permissions.more_permissions.includes("todas"))
+                           )}
+                           onChange={(e) => handleCheckboxChange(e.target)}
+                        />
+                     }
+                     label={op.split("@")[1]}
                      labelPlacement="bottom"
-                     // isChecked={checks.some((check) => check.value === op && check.isChecked)}
                   />
                ))}
-               {/* </Grid> */}
             </Masonry>
          </Card>
       );
@@ -111,8 +184,9 @@ const MenusCards = () => {
          <Card sx={{ p: 0 }} className={classes.cardHeader}>
             <Box textAlign={"center"} mb={1}>
                <FormControlLabel
-                  value={`menu@${id}`}
-                  control={<Checkbox checked={isChecked} onChange={() => handleCheckboxChange(value)} />}
+                  value={`${id}@menu`}
+                  id={`${id}@menu`}
+                  control={<Checkbox defaultChecked={isChecked} onChange={(e) => handleCheckboxChange(e.target)} />}
                   label={
                      <Typography variant="h3" className={classes.titleHeader}>
                         {title.toUpperCase()}
@@ -129,7 +203,7 @@ const MenusCards = () => {
                      id={m.id}
                      title={m.title}
                      others_permissions={m.others_permissions}
-                     isChecked={checks.some((check) => check.value === 1 && check.isChecked)}
+                     isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
                   />
                ))}
             </Masonry>
@@ -139,8 +213,9 @@ const MenusCards = () => {
 
    useEffect(() => {
       // console.log("menus para permisos", menus);
-      console.log("checks para permisos", checks);
-   }, [checks]);
+      // console.log("checks para permisos", checkMenus);
+      // console.log(menus);
+   }, []);
 
    return (
       <>
@@ -164,7 +239,8 @@ const MenusCards = () => {
                      id={m.id}
                      title={m.title}
                      children={m.children}
-                     isChecked={checks.some((check) => check.value === m.id && check.isChecked)}
+                     // isChecked={checks.map((check) => index == m.id && !check)}
+                     isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
                   />
                ))}
             </Masonry>
