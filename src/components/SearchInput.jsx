@@ -59,6 +59,7 @@ const SearchInput = ({
    placeholder,
    handleKeyUpSearchSuccess,
    showOptions = true,
+   // ref = null,
    ...prop
 }) => {
    const theme = useTheme();
@@ -105,6 +106,7 @@ const SearchInput = ({
                   aria-describedby={`${search}-helper-text`}
                   inputProps={{ "aria-label": "weight" }}
                   sx={{}}
+                  // // ref={ref}
                   {...prop}
                />
             </Tooltip>

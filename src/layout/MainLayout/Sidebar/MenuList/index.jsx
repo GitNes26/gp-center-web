@@ -12,12 +12,12 @@ import { useMenuContext } from "../../../../context/MenuContext";
 
 const MenuList = () => {
    const { auth } = useAuthContext();
-   const { menuItems, showMyMenus } = useMenuContext();
+   const { menus, menuItems, showMyMenus } = useMenuContext();
    // console.log(auth);
    useEffect(() => {
       // console.log("el useEffect de MenuList", menuItems);
       showMyMenus();
-   }, [auth]);
+   }, [auth, menus]);
 
    const navItems = menuItems.items.map((item) => {
       switch (item.type) {

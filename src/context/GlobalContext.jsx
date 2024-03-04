@@ -1,7 +1,8 @@
 import { useSnackbar } from "notistack";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, forwardRef, useContext, useEffect, useState } from "react";
 import Toast from "../utils/Toast";
 import axios from "axios";
+import { Slide } from "@mui/material";
 
 //mis colores
 export const gpcLight = "#E9ECEF";
@@ -19,6 +20,11 @@ export const ROLE_DIRECTOR = 5;
 export const ROLE_DRIVER = 6;
 
 export const GlobalContext = createContext();
+
+export const TransitionSlide = (direction = "up") =>
+   forwardRef(function Transition(props, ref) {
+      return <Slide direction={direction} ref={ref} {...props} />;
+   });
 
 export const GlobalContextProvider = ({ children }) => {
    // const [loadLogo, setLoadLogo] = useState(true);

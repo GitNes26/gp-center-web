@@ -33,6 +33,8 @@ import RolesView from "../views/admin/RolesView/Index";
 import ModelsView from "../views/cove/ModelsView/Index";
 import BrandsView from "../views/cove/BrandsView/Index";
 import DeliveredVehicleContextProvider from "../context/DeliveredVehicleContext";
+import VouchersView from "../views/cove/VouchersView/Index";
+import VoucherContextProvider from "../context/VoucherContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -49,6 +51,7 @@ const MainRoutes = {
    children: [
       {
          index: true,
+         path: ":stock_number?",
          element: (
             <VehicleContextProvider>
                <VehiclePlateContextProvider>
@@ -236,6 +239,15 @@ const MainRoutes = {
                   </VehicleContextProvider>
                )
                // loader: loaderIndexVehiclesView
+            },
+            {
+               path: "vales",
+               element: (
+                  <VoucherContextProvider>
+                     <VouchersView />
+                  </VoucherContextProvider>
+               )
+               // loader: loaderIndexModelsView
             }
          ]
       }

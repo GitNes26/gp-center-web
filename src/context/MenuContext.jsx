@@ -319,6 +319,7 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.post("/menus/create", menu);
          res = axiosData.data.data;
          getMenus();
+         showMyMenus();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -335,6 +336,7 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.post(`/menus/update/${menu.id}`, menu);
          res = axiosData.data.data;
          getMenus();
+         showMyMenus();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -351,6 +353,7 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.post(`/menus/destroy/${id}`);
          // console.log("deleteMenu() axiosData", axiosData.data);
          getMenus();
+         showMyMenus();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;

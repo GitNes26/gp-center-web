@@ -24,6 +24,7 @@ import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { Box } from "@mui/system";
+import { Link } from "react-router-dom";
 
 const VehicleDT = () => {
    const { auth } = useAuthContext();
@@ -67,9 +68,11 @@ const VehicleDT = () => {
       </Typography>
    );
    const StockNumberBodyTemplate = (obj) => (
-      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.stock_number}
-      </Typography>
+      <Tooltip title="Click para ver esta unidad en el buscador principal">
+         <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+            <Link to={`/admin/${obj.stock_number}`}>{obj.stock_number}</Link>
+         </Typography>
+      </Tooltip>
    );
    const PlatesBodyTemplate = (obj) => (
       <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>

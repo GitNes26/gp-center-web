@@ -6,7 +6,7 @@ import MainCard from "../../../ui-component/cards/MainCard";
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { Axios, useAuthContext } from "../../../context/AuthContext";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import { Avatar, Button, Card, CardContent, Chip, Grow, List, ListItem, ListItemIcon, OutlinedInput, Tooltip, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -42,6 +42,8 @@ import ModalLoan from "./ModalLoan";
 import { useDriverContext } from "../../../context/DriverContext";
 import ModalDeliver from "./ModalDeliver";
 import ModalReturnLoan from "./ModalReturnLoan";
+import { useParams } from "react-router-dom";
+import { eventEnterKeyUp } from "../../../utils/Events";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -73,6 +75,9 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 const sizeBtns = 150;
 
 const ShowVehicleView = () => {
+   const { stock_number } = useParams();
+   const searchRef = useRef(null);
+
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
 
@@ -188,12 +193,23 @@ const ShowVehicleView = () => {
          // setLoading(true);
          setBgImage("bgGarage");
          setLoading(false);
-         document.querySelector("#search").focus();
+         const inputSearch = document.querySelector("#search");
+         inputSearch.focus();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    }, [vehicle, vehiclePlates]);
+   useLayoutEffect(() => {
+      const inputSearch = document.querySelector("#search");
+      inputSearch.focus();
+      if (stock_number) {
+         setSearch(stock_number);
+         setTimeout(() => {
+            inputSearch.dispatchEvent(eventEnterKeyUp);
+         }, 500);
+      }
+   }, []);
 
    return (
       <>
@@ -232,6 +248,7 @@ const ShowVehicleView = () => {
                      ]}
                      onInput={(e) => handleInputStringCase(e, setSearch, true)}
                      handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
+                     // ref={searchRef}
                   />
                   {/* <Box
                         sx={{
