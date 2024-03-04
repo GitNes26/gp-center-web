@@ -307,6 +307,7 @@ const VoucherForm = ({ open, setOpen }) => {
    }, [formData]);
 
    return (
+      <div>En proceso...</div>
       // <DialogComponent open={open} setOpen={setOpen} title={singularName}>
       //    <Box role="presentation" p={3} pt={5} className="form">
       //       <Typography variant="h2" mb={3}>

@@ -70,7 +70,9 @@ const VehicleDT = () => {
    const StockNumberBodyTemplate = (obj) => (
       <Tooltip title="Click para ver esta unidad en el buscador principal">
          <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-            <Link to={`/admin/${obj.stock_number}`}>{obj.stock_number}</Link>
+            <Link to={`/admin/${obj.stock_number}`} target="_blank">
+               {obj.stock_number}
+            </Link>
          </Typography>
       </Tooltip>
    );
