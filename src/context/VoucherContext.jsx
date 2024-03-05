@@ -5,37 +5,6 @@ import Toast from "../utils/Toast";
 
 const VoucherContext = createContext();
 
-const formDataInitialState = {
-   id: 0,
-   user_id: 0,
-   username: "",
-   email: "",
-   password: "",
-   role_id: 0,
-   avatar: "",
-   phone: "",
-   license_number: "",
-   license_type: "",
-   license_due_date: "",
-   img_lincense: "",
-   payroll_number: "",
-   // department_id: "",
-   // department: "Selecciona una opción...",
-   department: "",
-   name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
-   community_id: 0,
-   street: "",
-   num_ext: "",
-   num_int: "",
-
-   zip: "",
-   state: 0,
-   city: 0,
-   colony: 0,
-   payroll_number_exist: false
-};
 const voucherInitialState = {
    id: 0,
    user_id: 0,
@@ -72,19 +41,19 @@ const voucherInitialState = {
 export default function VoucherContextProvider({ children }) {
    const { auth } = useAuthContext();
 
-   const singularName = "Voucher"; //Escribirlo siempre letra Capital
-   const pluralName = "Voucheres"; //Escribirlo siempre letra Capital
+   const singularName = "Vale"; //Escribirlo siempre letra Capital
+   const pluralName = "Vales"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [voucher, setVoucher] = useState(voucherInitialState);
    const [vouchers, setVouchers] = useState([]);
-   const [formData, setFormData] = useState(formDataInitialState);
+   const [formData, setFormData] = useState(voucherInitialState);
 
    const resetFormData = () => {
       try {
-         setFormData(formDataInitialState);
+         setFormData(voucherInitialState);
       } catch (error) {
          console.log("Error en resetFormData:", error);
          Toast.Error(error);

@@ -40,7 +40,7 @@ const VouchersView = () => {
             {pluralName.toUpperCase()}
          </Typography>
          {/* <DataTableComponent /> */}
-         <VoucherDT />
+         <VoucherDT setOpen={setOpenForm} />
          {/* </MainCard> */}
 
          <VoucherForm open={openForm} setOpen={setOpenForm} />

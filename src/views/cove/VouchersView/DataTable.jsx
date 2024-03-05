@@ -25,7 +25,7 @@ import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatPhone } from "../../../utils/Formats";
 
-const VoucherDT = () => {
+const VoucherDT = ({ setOpen }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, voucher, vouchers, getVouchers, showVoucher, deleteVoucher, resetFormData, resetVoucher, setTextBtnSumbit, setFormTitle } =
@@ -170,6 +170,8 @@ const VoucherDT = () => {
          handleClickAdd={handleClickAdd}
          refreshTable={getVouchers}
          btnAdd={auth.permissions.create}
+         titleBtnAdd="SOLICITAR VALE"
+         setOpen={setOpen}
          showGridlines={false}
          btnsExport={true}
          rowEdit={false}

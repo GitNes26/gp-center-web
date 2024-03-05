@@ -97,6 +97,8 @@ export default function DataTableComponent({
    updateData,
    refreshTable,
    btnAdd = true,
+   titleBtnAdd = null,
+   setOpen = null,
    newRow = null,
    btnsExport = true,
    showGridlines = false,
@@ -372,9 +374,9 @@ export default function DataTableComponent({
                startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
                size="large"
                disabled={updating}
-               onClick={() => (rowEdit ? addRow() : handleClickAdd())}
+               onClick={() => (rowEdit ? addRow() : setOpen ? setOpen(true) : handleClickAdd())}
             >
-               AGREGAR
+               {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
             </Button>
          )}
       </Box>
