@@ -73,7 +73,7 @@ const MenusCards = () => {
                } else {
                   // console.log("quitar permiso:", value);
                   // console.log("check.permissions.more_permissions", check.permissions.more_permissions);
-                  // if (check.permissions.more_permissions == ["todas"]) console.log("tiene todsa");
+                  // if (check.permissions.more_permissions == ["todas"]) console.log("tiene todas");
                   const new_more_permissions = check.permissions.more_permissions.filter((permission) => permission !== value);
                   check.permissions.more_permissions = new_more_permissions;
                }
