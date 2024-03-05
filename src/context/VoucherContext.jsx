@@ -8,34 +8,21 @@ const VoucherContext = createContext();
 const voucherInitialState = {
    id: 0,
    user_id: 0,
-   username: "",
-   email: "",
-   password: "",
-   role_id: 0,
-   role: "Selecciona una opción...",
-   avatar: "",
-   phone: "",
-   license_number: "",
-   license_type: "",
-   license_due_date: "",
-   img_lincense: "",
+   foliated_vouchers: "",
+   stock_number: "",
+   vehicle_plates: "",
+
    payroll_number: "",
-   // department_id: "",
-   // department: "Selecciona una opción...",
    department: "",
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
-   community_id: 0,
-   street: "",
-   num_ext: "",
-   num_int: "",
+   phone: "",
+   payroll_number_exist: false,
 
-   zip: "",
-   state: "Selecciona una opción...",
-   city: "Selecciona una opción...",
-   colony: "Selecciona una opción...",
-   payroll_number_exist: false
+   activity: "",
+   voucher_status: "",
+   quantity: ""
 };
 
 export default function VoucherContextProvider({ children }) {
@@ -91,12 +78,8 @@ export default function VoucherContextProvider({ children }) {
          const axiosData = await Axios.get(`/vouchers/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
-         res.result.zip = "";
-         res.result.state = "Selecciona una opción...";
-         res.result.city = "Selecciona una opción...";
-         res.result.colony = "Selecciona una opción...";
-         res.result.payroll_number_exist = true;
-         if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
+         // res.result.payroll_number_exist = true;
+         // if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
 
          setVoucher(res.result);
          setFormData(res.result);
@@ -133,12 +116,7 @@ export default function VoucherContextProvider({ children }) {
    const createVoucher = async (voucher) => {
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post(`/users/create/5`, voucher);
-         const axiosData = await Axios.post(`/users/create/role_id/5`, voucher, {
-            headers: {
-               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
-            }
-         });
+         const axiosData = await Axios.post(`/vouchers/create`, voucher);
          // console.log(axiosData);
          res = axiosData.data.data;
          getVouchers();
@@ -155,13 +133,25 @@ export default function VoucherContextProvider({ children }) {
    const updateVoucher = async (voucher) => {
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post("/vouchers/update", voucher);
-         // const axiosData = await Axios.post(`/users/update/${voucher.user_id}`, voucher);
-         const axiosData = await Axios.post(`/users/update/role_id/5`, voucher, {
-            headers: {
-               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
-            }
-         });
+         const axiosData = await Axios.post(`/vouchers/update/${voucher.user_id}`, voucher);
+
+         res = axiosData.data.data;
+         getVouchers();
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+      return res;
+   };
+
+   const updateStatus = async (voucher) => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await Axios.get(`/vouchers/updateStatus/id/${voucher.user_id}/voucher_status/${voucher.voucher_status}`);
+
          res = axiosData.data.data;
          getVouchers();
       } catch (error) {
@@ -177,7 +167,7 @@ export default function VoucherContextProvider({ children }) {
    const deleteVoucher = async (user_id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/users/destroy/${user_id}`);
+         const axiosData = await Axios.post(`/vouchers/destroy/${user_id}`);
          // console.log("deleteVoucher() axiosData", axiosData.data);
          getVouchers();
          res = axiosData.data.data;
@@ -215,6 +205,7 @@ export default function VoucherContextProvider({ children }) {
             getVouchersSelectIndex,
             createVoucher,
             updateVoucher,
+            updateStatus,
             deleteVoucher,
             textBtnSubmit,
             setTextBtnSumbit,

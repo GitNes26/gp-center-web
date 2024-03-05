@@ -30,7 +30,7 @@ const VoucherDT = ({ setOpen }) => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, voucher, vouchers, getVouchers, showVoucher, deleteVoucher, resetFormData, resetVoucher, setTextBtnSumbit, setFormTitle } =
       useVoucherContext();
-   const globalFilterFields = ["payroll_number", "username", "email", "phone", "license_number", "department"];
+   const globalFilterFields = ["id", "payroll_number", "username", "email", "phone", "license_number", "department"];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -39,16 +39,36 @@ const VoucherDT = ({ setOpen }) => {
       </Box>
       // <Box textAlign={"center"}>{<img alt="Foto de Perfil" src={`${import.meta.env.VITE_HOST}/${obj.avatar}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
    );
-   const PayRollBodyTemplate = (obj) => (
+   const IdBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"bolder"}>
-         {obj.payroll_number}
+         {obj.id}
+      </Typography>
+   );
+   const FoliatedVouchersBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} fontWeight={"bolder"}>
+         {obj.foliated_vouchers}
+      </Typography>
+   );
+   const StockNumberBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} fontWeight={"normal"}>
+         N° Económico: <b>{obj.stock_number}</b> <br />
+         Placas: <b>{obj.vehicle_plates}</b>
+      </Typography>
+   );
+   const ApplicantBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} fontWeight={"normal"}>
+         N° Nómina: <b>{obj.payroll_number}</b> <br />
+         Nombre:
+         <b>
+            {obj.name} {obj.paternal_last_name} {obj.maternal_last_name}
+         </b>
       </Typography>
    );
    const VoucherBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
-   const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
    const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
-   const LicenseBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.license_number}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
+   const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity}</Typography>;
+   const QuantityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.quantity}</Typography>;
    // const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -59,13 +79,16 @@ const VoucherDT = ({ setOpen }) => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
-      { field: "payroll_number", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filterField: null },
-      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: VoucherBodyTemplate, filterField: null },
-      { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
+      // { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
+      { field: "id", header: "ID", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },
+      { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
+      { field: "stock_number", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
+
+      { field: "payroll_number", header: "Solicitante", sortable: true, functionEdit: null, body: ApplicantBodyTemplate, filterField: null },
       { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
-      { field: "license_number", header: "No. Licencia", sortable: true, functionEdit: null, body: LicenseBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
+      { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filterField: null },
+      { field: "quantity", header: "Cantidad de vales", sortable: true, functionEdit: null, body: QuantityBodyTemplate, filterField: null },
       // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
    ];

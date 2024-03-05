@@ -244,7 +244,9 @@ const MainRoutes = {
                path: "vales",
                element: (
                   <VoucherContextProvider>
-                     <VouchersView />
+                     <VehicleContextProvider>
+                        <VouchersView />
+                     </VehicleContextProvider>
                   </VoucherContextProvider>
                )
                // loader: loaderIndexModelsView
