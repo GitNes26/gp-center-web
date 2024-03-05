@@ -35,13 +35,10 @@ const VouchersView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         {/* <MainCard > */}
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
-         {/* <DataTableComponent /> */}
          <VoucherDT setOpen={setOpenForm} />
-         {/* </MainCard> */}
 
          <VoucherForm open={openForm} setOpen={setOpenForm} />
       </>

@@ -7,10 +7,11 @@ const VoucherContext = createContext();
 
 const voucherInitialState = {
    id: 0,
-   user_id: 0,
+   requested_by: 0,
    foliated_vouchers: "",
    stock_number: "",
    vehicle_plates: "",
+   requested_amount: 0,
 
    payroll_number: "",
    department: "",
@@ -22,7 +23,13 @@ const voucherInitialState = {
 
    activity: "",
    voucher_status: "",
-   quantity: ""
+
+   approved_by: null,
+   approved_amount: null,
+   approved_at: null,
+   canceled_by: null,
+   canceled_comments: null,
+   canceled_at: null
 };
 
 export default function VoucherContextProvider({ children }) {
@@ -61,7 +68,7 @@ export default function VoucherContextProvider({ children }) {
          const axiosData = await Axios.get(`/vouchers`);
          res.result.vouchers = axiosData.data.data.result;
          setVouchers(axiosData.data.data.result);
-         // console.log("vouchers", vouchers);
+         console.log("vouchers", vouchers);
 
          return res;
       } catch (error) {
@@ -150,7 +157,7 @@ export default function VoucherContextProvider({ children }) {
    const updateStatus = async (voucher) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.get(`/vouchers/updateStatus/id/${voucher.user_id}/voucher_status/${voucher.voucher_status}`);
+         const axiosData = await Axios.post(`/vouchers/updateStatus/id/${voucher.user_id}/voucher_status/${voucher.voucher_status}`, voucher);
 
          res = axiosData.data.data;
          getVouchers();

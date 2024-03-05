@@ -24,13 +24,28 @@ import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatPhone } from "../../../utils/Formats";
+import { IconProgressCheck } from "@tabler/icons-react";
 
 const VoucherDT = ({ setOpen }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, voucher, vouchers, getVouchers, showVoucher, deleteVoucher, resetFormData, resetVoucher, setTextBtnSumbit, setFormTitle } =
       useVoucherContext();
-   const globalFilterFields = ["id", "payroll_number", "username", "email", "phone", "license_number", "department"];
+   const globalFilterFields = [
+      "id",
+      "foliated_vouchers",
+      "stock_number",
+      "vehicle_plates",
+      "payroll_number",
+      "name",
+      "paternal_last_name",
+      "maternal_last_name",
+      "phone",
+      "department",
+      "activity",
+      "quantity",
+      "voucher_status"
+   ];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -55,7 +70,7 @@ const VoucherDT = ({ setOpen }) => {
          Placas: <b>{obj.vehicle_plates}</b>
       </Typography>
    );
-   const ApplicantBodyTemplate = (obj) => (
+   const RequestedByBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"normal"}>
          N° Nómina: <b>{obj.payroll_number}</b> <br />
          Nombre:
@@ -64,12 +79,11 @@ const VoucherDT = ({ setOpen }) => {
          </b>
       </Typography>
    );
-   const VoucherBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
    const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity}</Typography>;
    const QuantityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.quantity}</Typography>;
-   // const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
+   const StatusBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.voucher_status}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
@@ -84,12 +98,12 @@ const VoucherDT = ({ setOpen }) => {
       { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
       { field: "stock_number", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
 
-      { field: "payroll_number", header: "Solicitante", sortable: true, functionEdit: null, body: ApplicantBodyTemplate, filterField: null },
+      { field: "payroll_number", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filterField: null },
       { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
       { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filterField: null },
       { field: "quantity", header: "Cantidad de vales", sortable: true, functionEdit: null, body: QuantityBodyTemplate, filterField: null },
-      // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
+      { field: "voucher_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
    ];
 
@@ -103,6 +117,20 @@ const VoucherDT = ({ setOpen }) => {
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickAssign = async (id) => {
+      try {
+         setLoadingAction(true);
+         setTextBtnSumbit("APROBAR");
+         setFormTitle(`ASIGNAR FOLIOS Y APROBAR ${singularName.toUpperCase()}`);
+         await showVoucher(id);
+         setOpenDialog(true);
+         setLoadingAction(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -142,6 +170,13 @@ const VoucherDT = ({ setOpen }) => {
    const ButtonsAction = ({ id, user_id, name }) => {
       return (
          <ButtonGroup variant="outlined">
+            {auth.permissions.update && (
+               <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
+                  <Button color="dark" onClick={() => handleClickAssign(id)}>
+                     <IconProgressCheck />
+                  </Button>
+               </Tooltip>
+            )}
             {auth.permissions.update && (
                <Tooltip title={`Editar ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>

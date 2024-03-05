@@ -178,9 +178,10 @@ const VoucherForm = ({ open, setOpen }) => {
          // console.log("values", values);
 
          if (values.id < 1) {
-            values.user_id = auth.id;
+            values.requested_by = auth.id;
             values.voucher_status = "ALTA";
          }
+         
          values.quantity = 1;
          if (values.foliated_vouchers.includes("-")) {
             const range = values.foliated_vouchers.split("-");
@@ -200,6 +201,8 @@ const VoucherForm = ({ open, setOpen }) => {
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         console.log(checkAdd);
+         console.log(axiosResponse.status_code);
          if (!checkAdd && axiosResponse.status_code == 200) setOpen(false);
       } catch (error) {
          console.error(error);
@@ -247,12 +250,13 @@ const VoucherForm = ({ open, setOpen }) => {
 
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
-         foliated_vouchers: Yup.string().trim().required("Vales Foliados requeridos"),
+         foliated_vouchers: auth.permissions.more_permissions.includes("22@Aprobar") && Yup.number("Solo números").min(0, "Mínimo"),
+         approved_amount: auth.permissions.more_permissions.includes("22@Aprobar") && Yup.string().trim().required("Vales Foliados requeridos"),
          vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
-
+         requested_amount: Yup.number("Solo números").min(0, "Mínimo"),
          payroll_number: Yup.number("Solo números"),
          // payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
-         department: Yup.string().trim().required("Departamento requerido"),
+         // department: Yup.string().trim().required("Departamento requerido"),
          name: Yup.string().trim().required("Nombre(s) requerido"),
          paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
          maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
@@ -332,28 +336,61 @@ const VoucherForm = ({ open, setOpen }) => {
                      <Grid container spacing={2}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
 
-                        {/* Vales Foliados */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                           <Tooltip title="En caso de poner más de un folio, ingresarlos como si fuera un rango de folios, con guion medio; ej. 1-6">
-                              <TextField
-                                 id="foliated_vouchers"
-                                 name="foliated_vouchers"
-                                 label="Vales Foliados *"
-                                 type="text"
-                                 value={values.foliated_vouchers}
-                                 placeholder="1-6"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 // InputProps={{}}
-                                 fullWidth
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.foliated_vouchers && touched.foliated_vouchers}
-                                 helperText={errors.foliated_vouchers && touched.foliated_vouchers && errors.foliated_vouchers}
-                              />
-                           </Tooltip>
-                        </Grid>
+                        {auth.permissions.more_permissions.includes("22@Aprobar") && (
+                           <>
+                              {/* Divisor */}
+                              <Grid xs={12}>
+                                 <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
+                                    APARTADO DE QUIEN APRUEBA
+                                 </Divider>
+                              </Grid>
+                              {/* Vales Foliados */}
+                              <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                                 <Tooltip title="En caso de poner más de un folio, ingresarlos como si fuera un rango de folios, con guion medio; ej. 1-6">
+                                    <TextField
+                                       id="foliated_vouchers"
+                                       name="foliated_vouchers"
+                                       label="Vales Foliados *"
+                                       type="text"
+                                       value={values.foliated_vouchers}
+                                       placeholder="1-6"
+                                       onChange={handleChange}
+                                       onBlur={handleBlur}
+                                       // InputProps={{}}
+                                       fullWidth
+                                       // disabled={values.id == 0 ? false : true}
+                                       error={errors.foliated_vouchers && touched.foliated_vouchers}
+                                       helperText={errors.foliated_vouchers && touched.foliated_vouchers && errors.foliated_vouchers}
+                                    />
+                                 </Tooltip>
+                              </Grid>
+                              {/* Cantidad de Vales Aprobados */}
+                              <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                                 <TextField
+                                    id="approved_amount"
+                                    name="approved_amount"
+                                    label="Cantidad de Vales Aprobados *"
+                                    type="number"
+                                    value={values.approved_amount}
+                                    placeholder="0"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "approved_amount", true)}
+                                    inputProps={{ min: 0 }}
+                                    fullWidth
+                                    // disabled={values.id == 0 ? false : true}
+                                    error={errors.approved_amount && touched.approved_amount}
+                                    helperText={errors.approved_amount && touched.approved_amount && errors.approved_amount}
+                                 />
+                              </Grid>
+                              {/* Divisor */}
+                              <Grid xs={12}>
+                                 <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}></Divider>
+                              </Grid>
+                           </>
+                        )}
                         {/* N° Económico */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="stock_number"
                               name="stock_number"
@@ -375,14 +412,14 @@ const VoucherForm = ({ open, setOpen }) => {
                            />
                         </Grid>
                         {/* Placas del Vehículo */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="vehicle_plates"
                               name="vehicle_plates"
                               label="Placas del Vehículo *"
                               type="text"
                               value={values.vehicle_plates}
-                              placeholder="xxx-00-00"
+                              placeholder="XXX-00-00"
                               onChange={handleChange}
                               onBlur={handleBlur}
                               onInput={(e) => handleInputFormik(e, setFieldValue, "vehicle_plates", true)}
@@ -391,6 +428,25 @@ const VoucherForm = ({ open, setOpen }) => {
                               // disabled={values.id == 0 ? false : true}
                               error={errors.vehicle_plates && touched.vehicle_plates}
                               helperText={errors.vehicle_plates && touched.vehicle_plates && errors.vehicle_plates}
+                           />
+                        </Grid>
+                        {/* Cantidad de Vales Solicitados */}
+                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                           <TextField
+                              id="requested_amount"
+                              name="requested_amount"
+                              label="Cantidad de Vales Solicitados *"
+                              type="number"
+                              value={values.requested_amount}
+                              placeholder="0"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "requested_amount", true)}
+                              inputProps={{ min: 0 }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.requested_amount && touched.requested_amount}
+                              helperText={errors.requested_amount && touched.requested_amount && errors.requested_amount}
                            />
                         </Grid>
 
