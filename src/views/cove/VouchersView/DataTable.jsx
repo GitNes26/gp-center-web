@@ -7,7 +7,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
+import { Button, ButtonGroup, Chip, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
@@ -23,14 +23,31 @@ import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
-import { formatPhone } from "../../../utils/Formats";
+import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils/Formats";
 import { IconProgressCheck } from "@tabler/icons-react";
+import { IconBan } from "@tabler/icons";
 
 const VoucherDT = ({ setOpen }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, pluralName, voucher, vouchers, getVouchers, showVoucher, deleteVoucher, resetFormData, resetVoucher, setTextBtnSumbit, setFormTitle } =
-      useVoucherContext();
+   const {
+      singularName,
+      pluralName,
+      formData,
+      setFormData,
+      voucher,
+      vouchers,
+      getVouchers,
+      showVoucher,
+      deleteVoucher,
+      resetFormData,
+      resetVoucher,
+      setTextBtnSumbit,
+      setFormTitle,
+      setInAprobation,
+      setInEdit,
+      updateStatus
+   } = useVoucherContext();
    const globalFilterFields = [
       "id",
       "foliated_vouchers",
@@ -43,8 +60,11 @@ const VoucherDT = ({ setOpen }) => {
       "phone",
       "department",
       "activity",
-      "quantity",
-      "voucher_status"
+      "requested_amount",
+      "voucher_status",
+      "approved_amount",
+      "approved_by",
+      "approved_at"
    ];
 
    // #region BodysTemplate
@@ -70,20 +90,48 @@ const VoucherDT = ({ setOpen }) => {
          Placas: <b>{obj.vehicle_plates}</b>
       </Typography>
    );
-   const RequestedByBodyTemplate = (obj) => (
-      <Typography textAlign={"center"} fontWeight={"normal"}>
-         N° Nómina: <b>{obj.payroll_number}</b> <br />
-         Nombre:
-         <b>
-            {obj.name} {obj.paternal_last_name} {obj.maternal_last_name}
-         </b>
-      </Typography>
-   );
-   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
+   const RequestedByBodyTemplate = (obj) => {
+      const full_name = `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name}`;
+      return (
+         <Typography textAlign={"center"} fontWeight={"normal"}>
+            N° Nómina: <b>{obj.payroll_number}</b> <br />
+            Nombre: <b>{full_name}</b> <br />
+            Tel: <b>{formatPhone(obj.phone)}</b>
+         </Typography>
+      );
+   };
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
    const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity}</Typography>;
-   const QuantityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.quantity}</Typography>;
-   const StatusBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.voucher_status}</Typography>;
+   const RequestAmountBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_amount}</Typography>;
+   const AprovedAmountBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         Cantidad: <b>{obj.approved_amount ?? 0}</b> <br />
+         Por: <b>{obj.approved_by ?? "-"}</b> <br />
+         El: <b>{formatDatetime(obj.approved_at, true)}</b>
+      </Typography>
+   );
+   const StatusBodyTemplate = (obj) => {
+      const bgColor = obj.voucher_status === "ALTA" ? "blue" : obj.voucher_status === "APROBADA" ? "green" : "red"; //red CANCELADO
+      return (
+         <Box textAlign={"center"}>
+            <Chip
+               sx={{
+                  height: "25px",
+                  "& .MuiChip-label": {
+                     display: "block",
+                     whiteSpace: "normal"
+                  },
+                  // borderRadius: "5px",
+                  fontSize: "16px",
+                  fontWeight: "bolder",
+                  color: "#F3F3F3",
+                  backgroundColor: bgColor
+               }}
+               label={obj.voucher_status}
+            />
+         </Box>
+      );
+   };
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
@@ -95,14 +143,14 @@ const VoucherDT = ({ setOpen }) => {
    const columns = [
       // { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
       { field: "id", header: "ID", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },
-      { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
       { field: "stock_number", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
 
       { field: "payroll_number", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filterField: null },
-      { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
       { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filterField: null },
-      { field: "quantity", header: "Cantidad de vales", sortable: true, functionEdit: null, body: QuantityBodyTemplate, filterField: null },
+      { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filterField: null },
+      { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedAmountBodyTemplate, filterField: null },
+      { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
       { field: "voucher_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
    ];
@@ -112,9 +160,13 @@ const VoucherDT = ({ setOpen }) => {
    const handleClickAdd = () => {
       try {
          resetVoucher();
-         voucher.role = "Selecciona una opción...";
          resetFormData();
          setOpenDialog(true);
+         setInAprobation(false);
+         setTimeout(() => {
+            setInAprobation(false);
+            setOpen(true);
+         }, 500);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
@@ -129,8 +181,31 @@ const VoucherDT = ({ setOpen }) => {
          setTextBtnSumbit("APROBAR");
          setFormTitle(`ASIGNAR FOLIOS Y APROBAR ${singularName.toUpperCase()}`);
          await showVoucher(id);
+         setInAprobation(true);
          setOpenDialog(true);
          setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickCancel = async (id, name) => {
+      try {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de cancelar el vale #${name}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
+            if (result.isConfirmed) {
+               setLoadingAction(true);
+               const voucher = {
+                  id: id,
+                  voucher_status: "CANCELADA",
+                  canceled_by: auth.id,
+                  canceled_at: formatDatetimeToSQL(new Date())
+               };
+               const axiosResponse = await updateStatus(voucher);
+               setLoadingAction(false);
+               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            }
+         });
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -142,6 +217,7 @@ const VoucherDT = ({ setOpen }) => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
+         setInEdit(true);
          await showVoucher(id);
          setOpenDialog(true);
          setLoadingAction(false);
@@ -153,7 +229,7 @@ const VoucherDT = ({ setOpen }) => {
 
    const handleClickDelete = async (id, name) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar el vale #${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
                const axiosResponse = await deleteVoucher(id);
@@ -167,13 +243,20 @@ const VoucherDT = ({ setOpen }) => {
       }
    };
 
-   const ButtonsAction = ({ id, user_id, name }) => {
+   const ButtonsAction = ({ id, user_id, name, obj }) => {
       return (
          <ButtonGroup variant="outlined">
-            {auth.permissions.update && (
+            {auth.permissions.more_permissions.includes("22@Aprobar") && obj.voucher_status === "ALTA" && (
                <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
                   <Button color="dark" onClick={() => handleClickAssign(id)}>
                      <IconProgressCheck />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes("22@Cancelar") && obj.voucher_status === "ALTA" && (
+               <Tooltip title={`Cancelar ${singularName}`} placement="top">
+                  <Button color="error" onClick={() => handleClickCancel(id, name)}>
+                     <IconBan />
                   </Button>
                </Tooltip>
             )}
@@ -186,7 +269,7 @@ const VoucherDT = ({ setOpen }) => {
             )}
             {auth.permissions.delete && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
-                  <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
+                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
                      <IconDelete />
                   </Button>
                </Tooltip>
@@ -203,7 +286,7 @@ const VoucherDT = ({ setOpen }) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} />;
+            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.id} obj={obj} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(vouchers[0]));
@@ -229,7 +312,7 @@ const VoucherDT = ({ setOpen }) => {
          refreshTable={getVouchers}
          btnAdd={auth.permissions.create}
          titleBtnAdd="SOLICITAR VALE"
-         setOpen={setOpen}
+         setOpen={false}
          showGridlines={false}
          btnsExport={true}
          rowEdit={false}

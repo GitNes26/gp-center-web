@@ -21,17 +21,16 @@ const useStyles = makeStyles((theme) => ({
 const MenusCards = () => {
    const classes = useStyles();
    const { roleSelect, setRoleSelect, showRoleSelect } = useRoleContext();
-   const { menus, setMenus, getMenus, checkMenus, setCheckMenus } = useMenuContext();
+   const { menus, setMenus, getMenus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
    const [headerMenus, setHeaderMenus] = useState([]);
    const [childrenMenus, setChildrenMenus] = useState([]);
-   const [checkMaster, setCheckMaster] = useState(false);
    const [checksModules, setChecksModules] = useState([]);
    const [checksPages, setChecksPages] = useState([]);
    const [checksPermissions, setChecksPermissions] = useState([]);
    // const [checks, setChecks] = useState([]);
 
    const handleChangeCheckMaster = (e) => {
-      // console.log("cambio", e.target.checked);
+      console.log("cambio", e.target.checked);
       const isChecked = e.target.checked;
       const _checkMenus = checkMenus.map((check) => {
          check.isChecked = isChecked;

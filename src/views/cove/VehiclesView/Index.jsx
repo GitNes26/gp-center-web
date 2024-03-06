@@ -29,7 +29,7 @@ const VehiclesView = () => {
          getVehicles();
          getBrandsSelectIndex();
          // getModelsSelectIndex();
-         getVehicleStatussSelectIndex();
+         getVehicleStatussSelectIndex(["ASIGNADO", "PRESTADO", "EN SERVICIO"]);
       } catch (error) {
          console.log(error);
          Toast.Error(error);

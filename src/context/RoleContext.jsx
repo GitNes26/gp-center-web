@@ -59,7 +59,7 @@ export default function RoleContextProvider({ children }) {
          const axiosData = await Axios.post("/roles/updatePermissions", role);
          res = axiosData.data.data;
          // getRoles();
-         validateAccessPage(); // actualizar permisos en el auth
+         if (auth.role_id == role.id) validateAccessPage(true); // actualizar permisos en el auth
          return res;
       } catch (error) {
          res = ErrorRes;

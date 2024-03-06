@@ -224,16 +224,20 @@ const VehicleDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(id, name)}>
-                  <IconDelete />
-               </Button>
-            </Tooltip>
+            {auth.permissions.update && (
+               <Tooltip title={`Editar ${singularName}`} placement="top">
+                  <Button color="info" onClick={() => handleClickEdit(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.delete && (
+               <Tooltip title={`Eliminar ${singularName}`} placement="top">
+                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
+                     <IconDelete />
+                  </Button>
+               </Tooltip>
+            )}
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickdisEnable(id, name, active)} sx={{}}>
@@ -277,7 +281,7 @@ const VehicleDT = () => {
          headerFilters={false}
          handleClickAdd={handleClickAdd}
          refreshTable={getVehicles}
-         btnAdd={true}
+         btnAdd={auth.permissions.create}
          showGridlines={false}
          btnsExport={true}
          rowEdit={false}

@@ -35,6 +35,7 @@ export default function MenuContextProvider({ children }) {
    const [menuItems, setMenuItems] = useState({ items: [] });
    const [headerMenus, setHeaderMenus] = useState([]);
    const [permissionsByMenu, setPermissionsByMenu] = useState([]);
+   const [checkMaster, setCheckMaster] = useState(false);
    const [checkMenus, setCheckMenus] = useState([]);
 
    const resetFormData = () => {
@@ -402,6 +403,8 @@ export default function MenuContextProvider({ children }) {
             getHeaderMenusSelectIndex,
             permissionsByMenu,
             setPermissionsByMenu,
+            checkMaster,
+            setCheckMaster,
             checkMenus,
             setCheckMenus
          }}

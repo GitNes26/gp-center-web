@@ -55,6 +55,8 @@ export const loaderIndexUsersView = async () => {
       const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/${auth.role_id}`);
       res.result.roles = axiosRoles.data.data.result;
       res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
+      res.result.roles = res.result.roles.filter((r) => ![3, 4, 5, 6].includes(r.id));
+
       const axiosDepartments = await Axios.get("/departments/selectIndex");
       res.result.departments = axiosDepartments.data.data.result;
       res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });

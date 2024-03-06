@@ -265,27 +265,27 @@ const ShowVehicleView = () => {
                   <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
                      <Grid xs={12} md={12} sx={{ mb: 2 }}>
                         {/* <Grid container spacing={3}> */}
-                        {auth.role_id <= ROLE_ADMIN && (
+                        {auth.permissions.more_permissions.includes("2@Solicitar Servicio") && (
                            <Grid xs alignItems={"center"}>
-                              <Tooltip title={"Dar Servicio a esta unidad"} placement="top" arrow>
+                              <Tooltip title={"Dar Servicio a este vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
                                     <IconBtnService onClick={() => setOpenService(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
                                  </Box>
                               </Tooltip>
                            </Grid>
                         )}
-                        {auth.role_id <= ROLE_ADMIN && (
+                        {auth.permissions.more_permissions.includes("2@Asignar Vehículo") && (
                            <Grid xs alignItems={"center"}>
-                              <Tooltip title={"Asignar unidad"} placement="top" arrow>
+                              <Tooltip title={"Asignar vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
                                     <IconBtnAssign onClick={handleClickAssign} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
                                  </Box>
                               </Tooltip>
                            </Grid>
                         )}
-                        {(auth.role_id <= ROLE_ADMIN || auth.role_id === ROLE_DIRECTOR) && (
+                        {auth.permissions.more_permissions.includes("2@Prestar Vehículo") && (
                            <Grid xs alignItems={"center"}>
-                              <Tooltip title={"Prestar unidad"} placement="top" arrow>
+                              <Tooltip title={"Prestar vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
                                     <IconBtnLoan onClick={handleClickLoan} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
                                  </Box>
@@ -293,9 +293,8 @@ const ShowVehicleView = () => {
                            </Grid>
                         )}
                         <Grid xs alignItems={"center"}>
-                           {/* {auth.more_permissions.includes("devolver_unidad") && ( */}
-                           {auth.role_id <= ROLE_DIRECTOR && (
-                              <Tooltip title={"Devolver unidad"} placement="right" arrow>
+                           {auth.permissions.more_permissions.includes("2@Devolver Vehículo") && (
+                              <Tooltip title={"Devolver Vehículo"} placement="right" arrow>
                                  <Button
                                     variant="contained"
                                     color="error"
@@ -307,12 +306,12 @@ const ShowVehicleView = () => {
                                     sx={{ fontWeight: "bolder" }}
                                     className={"btn-action"}
                                  >
-                                    DEVOLVER UNIDAD
+                                    DEVOLVER VEHÍCULO
                                  </Button>
                               </Tooltip>
                            )}
-                           {(auth.role_id <= ROLE_ADMIN || auth.role_id == ROLE_DRIVER) && (
-                              <Tooltip title={"Devolver prestamo"} placement="right" arrow>
+                           {auth.permissions.more_permissions.includes("2@Devolver Préstamo") && (
+                              <Tooltip title={"Devolver préstamo"} placement="right" arrow>
                                  <Button
                                     variant="contained"
                                     color="error"
@@ -324,7 +323,7 @@ const ShowVehicleView = () => {
                                     sx={{ fontWeight: "bolder" }}
                                     className={"btn-action"}
                                  >
-                                    DEVOLVER PRESTAMO
+                                    DEVOLVER PRÉSTAMO
                                  </Button>
                               </Tooltip>
                            )}

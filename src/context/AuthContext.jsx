@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import sAlert from "../utils/sAlert";
+import { CorrectRes } from "../utils/Response";
 
 export const AuthContext = createContext();
 
@@ -113,15 +114,18 @@ export default function AuthContextProvider({ children }) {
       }
    };
 
-   const validateAccessPage = async () => {
+   const validateAccessPage = async (updateAuth = false) => {
       // console.log("validateAccessPage->el auth", auth);
       try {
+         // console.log("auth.antes", auth);
          if (auth === null) {
             // console.log("al login");
             window.location.hash = "/login";
             return;
          }
-         // console.log("auth.read", auth.read);
+         if (updateAuth) await updatePermissionsAuth(auth.id);
+
+         // console.log("auth.despues", auth);
          // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
          const currentPath = location.hash.split("#").reverse()[0];
          const dataPost = { url: currentPath };
@@ -223,6 +227,33 @@ export default function AuthContextProvider({ children }) {
          console.log(error);
          sAlert.Error("Parece que hay un error, intenta más tarde");
          return error;
+      }
+   };
+
+   const updatePermissionsAuth = async (id) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/users/${id}`);
+         res = axiosData.data.data;
+         res.result.permissions = {
+            read: auth.permissions.read,
+            create: auth.permissions.create,
+            update: auth.permissions.update,
+            delete: auth.permissions.delete,
+            more_permissions: auth.permissions.more_permissions
+         };
+         // console.log(res);
+         localStorage.setItem("auth", JSON.stringify(res.result));
+         // setAuth(data.data.result.auth);
+         setAuth(JSON.parse(localStorage.getItem("auth")));
+
+         return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+         return res;
       }
    };
 

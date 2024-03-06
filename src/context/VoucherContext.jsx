@@ -24,12 +24,12 @@ const voucherInitialState = {
    activity: "",
    voucher_status: "",
 
-   approved_by: null,
-   approved_amount: null,
-   approved_at: null,
-   canceled_by: null,
-   canceled_comments: null,
-   canceled_at: null
+   approved_by: "",
+   approved_amount: 0,
+   approved_at: "",
+   canceled_by: "",
+   canceled_comments: "",
+   canceled_at: ""
 };
 
 export default function VoucherContextProvider({ children }) {
@@ -44,6 +44,9 @@ export default function VoucherContextProvider({ children }) {
    const [voucher, setVoucher] = useState(voucherInitialState);
    const [vouchers, setVouchers] = useState([]);
    const [formData, setFormData] = useState(voucherInitialState);
+
+   const [inAprobation, setInAprobation] = useState(false);
+   const [inEdit, setInEdit] = useState(false);
 
    const resetFormData = () => {
       try {
@@ -68,7 +71,7 @@ export default function VoucherContextProvider({ children }) {
          const axiosData = await Axios.get(`/vouchers`);
          res.result.vouchers = axiosData.data.data.result;
          setVouchers(axiosData.data.data.result);
-         console.log("vouchers", vouchers);
+         // console.log("vouchers", vouchers);
 
          return res;
       } catch (error) {
@@ -157,7 +160,7 @@ export default function VoucherContextProvider({ children }) {
    const updateStatus = async (voucher) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/vouchers/updateStatus/id/${voucher.user_id}/voucher_status/${voucher.voucher_status}`, voucher);
+         const axiosData = await Axios.post(`/vouchers/updateStatus/id/${voucher.id}/voucher_status/${voucher.voucher_status}`, voucher);
 
          res = axiosData.data.data;
          getVouchers();
@@ -217,7 +220,11 @@ export default function VoucherContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            inAprobation,
+            inEdit,
+            setInEdit,
+            setInAprobation
          }}
       >
          {children}

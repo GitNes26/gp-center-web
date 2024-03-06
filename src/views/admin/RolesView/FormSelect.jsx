@@ -34,9 +34,10 @@ const FormSelect = ({ setOpenDialogTable }) => {
       showRoleSelect,
       updatePermissions
    } = useRoleContext();
-   const { menus, checkMenus, setCheckMenus } = useMenuContext();
+   const { menus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
 
    const resetCheckMenus = () => {
+      setCheckMaster(false);
       const resetCheck = checkMenus.map((check) => {
          check.isChecked = false;
          check.permissions = { read: false, create: false, update: false, delete: false, more_permissions: [] };
@@ -175,7 +176,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          // console.log("values", values);
-         // console.log("checkMenus", checkMenus);
+         // console.log("checkMenus", checkMenus); 
          if (values.id < 1) return Toast.Info("Selecciona un Role");
          setLoadingAction(true);
          values.read = [];
@@ -209,6 +210,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
          else values.delete = values.delete.join();
          // if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
          // else
+         // console.log(values.more_permissions);
          values.more_permissions = values.more_permissions.join();
          // console.log("valuesFinal", values);
          // return;

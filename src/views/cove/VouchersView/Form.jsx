@@ -29,7 +29,7 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { TransitionSlide, gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
-import { handleInputFormik } from "../../../utils/Formats";
+import { formatDatetimeToSQL, handleInputFormik } from "../../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -84,7 +84,12 @@ const VoucherForm = ({ open, setOpen }) => {
       textBtnSubmit,
       setTextBtnSumbit,
       formTitle,
-      setFormTitle
+      setFormTitle,
+      inAprobation,
+      setInAprobation,
+      inEdit,
+      setInEdit,
+      updateStatus
    } = useVoucherContext();
    const { showVehicleBy } = useVehicleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
@@ -172,6 +177,16 @@ const VoucherForm = ({ open, setOpen }) => {
       }
    };
 
+   const handleBlurFoliatedVouchers = (e, setFieldValue, values) => {
+      const foliated_vouchers = e.target.value;
+      let approved_amount = 1;
+      if (foliated_vouchers.includes("-")) {
+         const range = foliated_vouchers.split("-");
+         approved_amount = Number(range[1]) - Number(range[0]) + 1;
+      }
+      setFieldValue("approved_amount", approved_amount);
+   };
+
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
          // console.log("formData", formData);
@@ -181,17 +196,20 @@ const VoucherForm = ({ open, setOpen }) => {
             values.requested_by = auth.id;
             values.voucher_status = "ALTA";
          }
-         
-         values.quantity = 1;
-         if (values.foliated_vouchers.includes("-")) {
-            const range = values.foliated_vouchers.split("-");
-            values.quantity = Number(range[1]) - Number(range[0]) + 1;
-         }
+
          setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createVoucher(values);
-         else axiosResponse = await updateVoucher(values);
+         if (inAprobation) {
+            values.voucher_status = "APROBADA";
+            values.approved_by = auth.id;
+            values.approved_at = formatDatetimeToSQL(new Date());
+            // return console.log("values", values);
+            axiosResponse = await updateStatus(values);
+         } else {
+            if (values.id == 0) axiosResponse = await createVoucher(values);
+            else axiosResponse = await updateVoucher(values);
+         }
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
             ResetForm(resetForm);
@@ -201,9 +219,15 @@ const VoucherForm = ({ open, setOpen }) => {
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         console.log(checkAdd);
-         console.log(axiosResponse.status_code);
-         if (!checkAdd && axiosResponse.status_code == 200) setOpen(false);
+         // console.log(checkAdd);
+         // console.log(axiosResponse.status_code);
+         if (!checkAdd && axiosResponse.status_code == 200) {
+            console.log("a cerrar");
+            setOpen(false);
+            setTimeout(() => {
+               setOpen(false);
+            }, 500);
+         }
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
@@ -242,6 +266,11 @@ const VoucherForm = ({ open, setOpen }) => {
          ResetForm(resetForm);
          resetVoucher();
          setOpen(false);
+         setInAprobation(false);
+         setInEdit(false);
+         setTimeout(() => {
+            setOpen(false);
+         }, 500);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -250,8 +279,8 @@ const VoucherForm = ({ open, setOpen }) => {
 
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
-         foliated_vouchers: auth.permissions.more_permissions.includes("22@Aprobar") && Yup.number("Solo números").min(0, "Mínimo"),
-         approved_amount: auth.permissions.more_permissions.includes("22@Aprobar") && Yup.string().trim().required("Vales Foliados requeridos"),
+         foliated_vouchers: inAprobation && Yup.string().trim().required("Vales Foliados requeridos"),
+         approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
          vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
          requested_amount: Yup.number("Solo números").min(0, "Mínimo"),
          payroll_number: Yup.number("Solo números"),
@@ -336,7 +365,7 @@ const VoucherForm = ({ open, setOpen }) => {
                      <Grid container spacing={2}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
 
-                        {auth.permissions.more_permissions.includes("22@Aprobar") && (
+                        {(inAprobation || inEdit) && (
                            <>
                               {/* Divisor */}
                               <Grid xs={12}>
@@ -345,7 +374,7 @@ const VoucherForm = ({ open, setOpen }) => {
                                  </Divider>
                               </Grid>
                               {/* Vales Foliados */}
-                              <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
                                  <Tooltip title="En caso de poner más de un folio, ingresarlos como si fuera un rango de folios, con guion medio; ej. 1-6">
                                     <TextField
                                        id="foliated_vouchers"
@@ -355,7 +384,10 @@ const VoucherForm = ({ open, setOpen }) => {
                                        value={values.foliated_vouchers}
                                        placeholder="1-6"
                                        onChange={handleChange}
-                                       onBlur={handleBlur}
+                                       onBlur={(e) => {
+                                          handleBlur(e);
+                                          handleBlurFoliatedVouchers(e, setFieldValue, values);
+                                       }}
                                        // InputProps={{}}
                                        fullWidth
                                        // disabled={values.id == 0 ? false : true}
@@ -365,7 +397,7 @@ const VoucherForm = ({ open, setOpen }) => {
                                  </Tooltip>
                               </Grid>
                               {/* Cantidad de Vales Aprobados */}
-                              <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                              <Grid xs={12} md={6} sx={{ mb: 1 }}>
                                  <TextField
                                     id="approved_amount"
                                     name="approved_amount"
@@ -383,12 +415,14 @@ const VoucherForm = ({ open, setOpen }) => {
                                     helperText={errors.approved_amount && touched.approved_amount && errors.approved_amount}
                                  />
                               </Grid>
-                              {/* Divisor */}
-                              <Grid xs={12}>
-                                 <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}></Divider>
-                              </Grid>
                            </>
                         )}
+                        {/* Divisor */}
+                        <Grid xs={12}>
+                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
+                              SOLICITUD
+                           </Divider>
+                        </Grid>
                         {/* N° Económico */}
                         <Grid xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
@@ -406,7 +440,7 @@ const VoucherForm = ({ open, setOpen }) => {
                               onInput={(e) => handleInputFormik(e, setFieldValue, "stock_number", false)}
                               // inputProps={{ maxLength: 2 }}
                               fullWidth
-                              // disabled={values.id == 0 ? false : true}
+                              disabled={inAprobation}
                               error={errors.stock_number && touched.stock_number}
                               helperText={errors.stock_number && touched.stock_number && errors.stock_number}
                            />
@@ -425,7 +459,7 @@ const VoucherForm = ({ open, setOpen }) => {
                               onInput={(e) => handleInputFormik(e, setFieldValue, "vehicle_plates", true)}
                               // inputProps={{ maxLength: 2 }}
                               fullWidth
-                              // disabled={values.id == 0 ? false : true}
+                              disabled={inAprobation}
                               error={errors.vehicle_plates && touched.vehicle_plates}
                               helperText={errors.vehicle_plates && touched.vehicle_plates && errors.vehicle_plates}
                            />
@@ -444,7 +478,7 @@ const VoucherForm = ({ open, setOpen }) => {
                               onInput={(e) => handleInputFormik(e, setFieldValue, "requested_amount", true)}
                               inputProps={{ min: 0 }}
                               fullWidth
-                              // disabled={values.id == 0 ? false : true}
+                              disabled={inAprobation}
                               error={errors.requested_amount && touched.requested_amount}
                               helperText={errors.requested_amount && touched.requested_amount && errors.requested_amount}
                            />
@@ -477,6 +511,7 @@ const VoucherForm = ({ open, setOpen }) => {
                               onInput={(e) => handleInputPayRoll(e, setFieldValue, values)}
                               onBlur={handleBlur}
                               fullWidth
+                              disabled={inAprobation}
                               // inputProps={{ maxLength: 11 }}
                               error={errors.payroll_number && touched.payroll_number}
                               helperText={errors.payroll_number && touched.payroll_number && errors.payroll_number}
@@ -575,15 +610,11 @@ const VoucherForm = ({ open, setOpen }) => {
                               onChange={handleChange}
                               onBlur={handleBlur}
                               fullWidth
+                              disabled={inAprobation}
                               inputProps={{ maxLength: 10 }}
                               error={errors.phone && touched.phone}
                               helperText={errors.phone && touched.phone && errors.phone}
                            />
-                        </Grid>
-
-                        {/* Divisor */}
-                        <Grid xs={12}>
-                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                         </Grid>
                         {/* Actividad */}
                         <Grid xs={12} md={12} sx={{ mb: 1 }}>
@@ -596,28 +627,16 @@ const VoucherForm = ({ open, setOpen }) => {
                               placeholder="actividad..."
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "activity", false)}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "activity", false)}
                               // inputProps={{ maxLength: 2 }}
                               fullWidth
                               multiline
                               rows={3}
-                              // disabled={values.id == 0 ? false : true}
+                              disabled={inAprobation}
                               error={errors.activity && touched.activity}
                               helperText={errors.activity && touched.activity && errors.activity}
                            />
                         </Grid>
-
-                        {/*<InputsCommunityComponent
-                        formData={formData}
-                        setFormData={setFormData}
-                        values={values}
-                        setValues={setValues}
-                        setFieldValue={setFieldValue}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        errors={errors}
-                        touched={touched}
-                     /> */}
                      </Grid>
                   </Box>
                </DialogContent>

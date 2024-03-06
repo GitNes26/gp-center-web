@@ -58,14 +58,16 @@ export default function VehicleStatusContextProvider({ children }) {
       }
    };
 
-   const getVehicleStatussSelectIndex = async () => {
+   const getVehicleStatussSelectIndex = async (notIncludes = null) => {
       try {
          const res = CorrectRes;
          const axiosData = await Axios.get(`/vehicleStatus/selectIndex`);
          // console.log("el selectedDeVehicleStatuss", axiosData);
          res.result.vehicleStatuss = axiosData.data.data.result;
          res.result.vehicleStatuss.unshift({ id: 0, label: "Selecciona una opción..." });
-         setVehicleStatuss(axiosData.data.data.result);
+         if (notIncludes) res.result.vehicleStatuss = res.result.vehicleStatuss.filter((vs) => !notIncludes.includes(vs.label));
+
+         setVehicleStatuss(res.result.vehicleStatuss);
          // console.log("vehicleStatus", vehicleStatus);
 
          return res;

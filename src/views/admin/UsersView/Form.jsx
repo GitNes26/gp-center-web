@@ -67,18 +67,18 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const { user, resetUser, singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   const [isAdmin, setIsAdmin] = useState(false);
+   const [isAdmin, setIsAdmin] = useState(true);
    const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
    const handleChangeRole = (value2, setFieldValue) => {
       try {
          // console.log("amanas", value2);
-         setIsAdmin(false);
-         setIsGarage(false);
+         setIsAdmin(true); //false
+         // setIsGarage(false);
          const role_id = Number(value2.id);
-         setIsAdmin(role_id <= 2 ? true : false);
-         setIsGarage(role_id == 4 ? true : false);
+         // setIsAdmin(role_id <= 2 ? true : false);
+         // setIsGarage(role_id == 4 ? true : false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -180,8 +180,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          }
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
-         setIsAdmin(formData.role_id <= 2 ? true : false);
-         setIsGarage(formData.role_id == 4 ? true : false);
+         // setIsAdmin(formData.role_id <= 2 ? true : false);
+         // setIsGarage(formData.role_id == 4 ? true : false);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -210,56 +210,65 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
             .required("Nombre de usario requerido"),
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
-         phone: Yup.string()
-            .trim()
-            .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
-            .required("Número telefónico requerido"),
-         license_number: Yup.string().trim().required("Número de licencia requerido"),
-         license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
-         payroll_number: Yup.number("Solo números"),
-         department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
-
-         name: Yup.string().trim().required("Nombre(s) requerido"),
-         paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
-         // community_id:  Yup.number().trim().required("Comunidad requerida"),
-         street: Yup.string().trim().required("Calle/Av. requerida"),
-         num_ext: Yup.string().trim().required("Número exterior requerido"),
-         // num_int: Yup.string().trim().required("Número interior requerido"),
-
-         zip: Yup.number("Solo numeros").required("Código Postal requerido"),
-         state: Yup.string().trim().required("Estado requerido"),
-         city: Yup.string().trim().required("Ciudad requerido"),
-         colony: Yup.string().trim().required("Colonia requerido")
+         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
       });
-      if (isAdmin)
-         validationSchema = Yup.object().shape({
-            username: Yup.string()
-               .trim()
-               .matches(/^[^@]*$/, 'No se permite el carácter "@"')
-               .required("Nombre de usario requerido"),
-            email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-            password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-            role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
-         });
-      else if (isGarage)
-         validationSchema = Yup.object().shape({
-            username: Yup.string()
-               .trim()
-               .matches(/^[^@]*$/, 'No se permite el carácter "@"')
-               .required("Nombre de usario requerido"),
-            email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-            password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-            role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
-            phone: Yup.string()
-               .trim()
-               .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
-               .required("Número telefónico requerido"),
-            name: Yup.string().trim().required("Nombre(s) requerido"),
-            paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-            maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
-         });
+      // let validationSchema = Yup.object().shape({
+      //    username: Yup.string()
+      //       .trim()
+      //       .matches(/^[^@]*$/, 'No se permite el carácter "@"')
+      //       .required("Nombre de usario requerido"),
+      //    email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
+      //    password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+      //    role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
+      //    phone: Yup.string()
+      //       .trim()
+      //       .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
+      //       .required("Número telefónico requerido"),
+      //    license_number: Yup.string().trim().required("Número de licencia requerido"),
+      //    license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
+      //    payroll_number: Yup.number("Solo números"),
+      //    department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
+
+      //    name: Yup.string().trim().required("Nombre(s) requerido"),
+      //    paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
+      //    maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
+      //    // community_id:  Yup.number().trim().required("Comunidad requerida"),
+      //    street: Yup.string().trim().required("Calle/Av. requerida"),
+      //    num_ext: Yup.string().trim().required("Número exterior requerido"),
+      //    // num_int: Yup.string().trim().required("Número interior requerido"),
+
+      //    zip: Yup.number("Solo numeros").required("Código Postal requerido"),
+      //    state: Yup.string().trim().required("Estado requerido"),
+      //    city: Yup.string().trim().required("Ciudad requerido"),
+      //    colony: Yup.string().trim().required("Colonia requerido")
+      // });
+      // if (isAdmin)
+      //    validationSchema = Yup.object().shape({
+      //       username: Yup.string()
+      //          .trim()
+      //          .matches(/^[^@]*$/, 'No se permite el carácter "@"')
+      //          .required("Nombre de usario requerido"),
+      //       email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
+      //       password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+      //       role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
+      //    });
+      // else if (isGarage)
+      //    validationSchema = Yup.object().shape({
+      //       username: Yup.string()
+      //          .trim()
+      //          .matches(/^[^@]*$/, 'No se permite el carácter "@"')
+      //          .required("Nombre de usario requerido"),
+      //       email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
+      //       password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+      //       role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
+      //       phone: Yup.string()
+      //          .trim()
+      //          .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
+      //          .required("Número telefónico requerido"),
+      //       name: Yup.string().trim().required("Nombre(s) requerido"),
+      //       paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
+      //       maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
+      //    });
       return validationSchema;
    };
 
