@@ -9,7 +9,7 @@ const voucherInitialState = {
    id: 0,
    requested_by: 0,
    foliated_vouchers: "",
-   stock_number: "",
+   vehicle: "",
    vehicle_plates: "",
    requested_amount: 0,
 

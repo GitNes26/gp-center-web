@@ -51,7 +51,7 @@ const VoucherDT = ({ setOpen }) => {
    const globalFilterFields = [
       "id",
       "foliated_vouchers",
-      "stock_number",
+      "vehicle",
       "vehicle_plates",
       "payroll_number",
       "name",
@@ -86,7 +86,7 @@ const VoucherDT = ({ setOpen }) => {
    );
    const StockNumberBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"normal"}>
-         N° Económico: <b>{obj.stock_number}</b> <br />
+         <b>{obj.vehicle ?? "---"}</b> <br />
          Placas: <b>{obj.vehicle_plates}</b>
       </Typography>
    );
@@ -139,11 +139,11 @@ const VoucherDT = ({ setOpen }) => {
    );
 
    // #endregion BodysTemplate
-
+   
    const columns = [
       // { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
       { field: "id", header: "ID", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },
-      { field: "stock_number", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
+      { field: "vehicle", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
 
       { field: "payroll_number", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },

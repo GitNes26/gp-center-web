@@ -44,6 +44,9 @@ import { validateImageRequired } from "../../../utils/Validations";
 import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import { useAuthContext } from "../../../context/AuthContext";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 // import DialogComponent from "../../../components/DialogComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -96,6 +99,8 @@ const VoucherForm = ({ open, setOpen }) => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
    const [worker, setWorker] = useState(true);
+   const [approveLess, setApproveLess] = useState(false);
+   const mySwal = withReactContent(Swal);
 
    const handleClose = () => {
       setOpen(false);
@@ -185,6 +190,13 @@ const VoucherForm = ({ open, setOpen }) => {
          approved_amount = Number(range[1]) - Number(range[0]) + 1;
       }
       setFieldValue("approved_amount", approved_amount);
+      if (approved_amount > values.requested_amount) Toast.Warning("¡¡CUIDADO!! Estás asignando más vales de los solicitados");
+      else if (approved_amount < values.requested_amount) {
+         console.log("aqui andamos");
+         sAlert.Warning(`ESTÁS POR ASIGNAR MENOS DE LOS VALES SOLICITADOS: <br/><br/>
+         Asignados: <b>${values.approved_amount}<b/> <br/>
+         Solicitados: <b>${values.requested_amount}<b/>`);
+      }
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
@@ -205,6 +217,7 @@ const VoucherForm = ({ open, setOpen }) => {
             values.approved_by = auth.id;
             values.approved_at = formatDatetimeToSQL(new Date());
             // return console.log("values", values);
+            if (values.approved_amount > values.requested_amount) return sAlert.Warning("NO PUEDES ASIGNAR MÁS DE LOS VALES SOLICITADOS");
             axiosResponse = await updateStatus(values);
          } else {
             if (values.id == 0) axiosResponse = await createVoucher(values);
@@ -370,7 +383,7 @@ const VoucherForm = ({ open, setOpen }) => {
                               {/* Divisor */}
                               <Grid xs={12}>
                                  <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
-                                    APARTADO DE QUIEN APRUEBA
+                                    ASIGNAR FOLIOS
                                  </Divider>
                               </Grid>
                               {/* Vales Foliados */}
@@ -386,7 +399,7 @@ const VoucherForm = ({ open, setOpen }) => {
                                        onChange={handleChange}
                                        onBlur={(e) => {
                                           handleBlur(e);
-                                          handleBlurFoliatedVouchers(e, setFieldValue, values);
+                                          handleBlurFoliatedVouchers(e, setFieldValue, values, setSubmitting);
                                        }}
                                        // InputProps={{}}
                                        fullWidth
@@ -410,7 +423,7 @@ const VoucherForm = ({ open, setOpen }) => {
                                     onInput={(e) => handleInputFormik(e, setFieldValue, "approved_amount", true)}
                                     inputProps={{ min: 0 }}
                                     fullWidth
-                                    // disabled={values.id == 0 ? false : true}
+                                    disabled={!inEdit}
                                     error={errors.approved_amount && touched.approved_amount}
                                     helperText={errors.approved_amount && touched.approved_amount && errors.approved_amount}
                                  />
@@ -423,26 +436,26 @@ const VoucherForm = ({ open, setOpen }) => {
                               SOLICITUD
                            </Divider>
                         </Grid>
-                        {/* N° Económico */}
+                        {/* Vehículo */}
                         <Grid xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
-                              id="stock_number"
-                              name="stock_number"
-                              label="N° Económico"
-                              type="number"
-                              value={values.stock_number}
-                              placeholder="1"
+                              id="vehicle"
+                              name="vehicle"
+                              label="Vehículo"
+                              type="text"
+                              value={values.vehicle}
+                              placeholder="FORD - FIESTA"
                               onChange={handleChange}
                               onBlur={(e) => {
                                  handleBlur(e);
-                                 handleBlurStockNumber(e, setFieldValue, values);
+                                 // handleBlurStockNumber(e, setFieldValue, values);
                               }}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "stock_number", false)}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "vehicle", false)}
                               // inputProps={{ maxLength: 2 }}
                               fullWidth
                               disabled={inAprobation}
-                              error={errors.stock_number && touched.stock_number}
-                              helperText={errors.stock_number && touched.stock_number && errors.stock_number}
+                              error={errors.vehicle && touched.vehicle}
+                              helperText={errors.vehicle && touched.vehicle && errors.vehicle}
                            />
                         </Grid>
                         {/* Placas del Vehículo */}
