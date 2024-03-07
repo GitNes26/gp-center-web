@@ -240,7 +240,7 @@ export default function AuthContextProvider({ children }) {
             create: auth.permissions.create,
             update: auth.permissions.update,
             delete: auth.permissions.delete,
-            more_permissions: auth.permissions.more_permissions
+            more_permissions: auth.permissions.more_permissions ?? []
          };
          // console.log(res);
          localStorage.setItem("auth", JSON.stringify(res.result));
