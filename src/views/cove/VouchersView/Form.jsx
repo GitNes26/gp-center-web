@@ -192,7 +192,6 @@ const VoucherForm = ({ open, setOpen }) => {
       setFieldValue("approved_amount", approved_amount);
       if (approved_amount > values.requested_amount) Toast.Warning("¡¡CUIDADO!! Estás asignando más vales de los solicitados");
       else if (approved_amount < values.requested_amount) {
-         console.log("aqui andamos");
          sAlert.Warning(`ESTÁS POR ASIGNAR MENOS DE LOS VALES SOLICITADOS: <br/><br/>
          Asignados: <b>${values.approved_amount}<b/> <br/>
          Solicitados: <b>${values.requested_amount}<b/>`);
@@ -235,7 +234,6 @@ const VoucherForm = ({ open, setOpen }) => {
          // console.log(checkAdd);
          // console.log(axiosResponse.status_code);
          if (!checkAdd && axiosResponse.status_code == 200) {
-            console.log("a cerrar");
             setOpen(false);
             setTimeout(() => {
                setOpen(false);
