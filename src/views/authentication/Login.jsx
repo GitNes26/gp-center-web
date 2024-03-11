@@ -36,7 +36,7 @@ const Login = () => {
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
 
    return auth ? (
-      <Navigate to={"/admin"} />
+      <Navigate to={auth.page_index} />
    ) : (
       <>
          {/* <div id="particles-js" className="bg-index"></div> */}

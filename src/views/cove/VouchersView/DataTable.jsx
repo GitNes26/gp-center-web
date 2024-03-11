@@ -64,6 +64,7 @@ const VoucherDT = ({ setOpen }) => {
       "voucher_status",
       "approved_amount",
       "approved_by",
+      "username_approved",
       "approved_at"
    ];
 
@@ -106,7 +107,7 @@ const VoucherDT = ({ setOpen }) => {
    const AprovedAmountBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          Cantidad: <b>{obj.approved_amount ?? 0}</b> <br />
-         Por: <b>{obj.approved_by ?? "-"}</b> <br />
+         Por: <b>{obj.username_approved ?? "-"}</b> <br />
          El: <b>{formatDatetime(obj.approved_at, true)}</b>
       </Typography>
    );
@@ -139,7 +140,7 @@ const VoucherDT = ({ setOpen }) => {
    );
 
    // #endregion BodysTemplate
-   
+
    const columns = [
       // { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
       { field: "id", header: "ID", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },

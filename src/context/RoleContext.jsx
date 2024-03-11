@@ -13,6 +13,7 @@ const formDataInitialState = {
    update: "",
    delete: "",
    more_permissions: "",
+   page_index: "",
    active: true
 };
 

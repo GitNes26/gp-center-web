@@ -184,6 +184,7 @@ const VoucherForm = ({ open, setOpen }) => {
 
    const handleBlurFoliatedVouchers = (e, setFieldValue, values) => {
       const foliated_vouchers = e.target.value;
+      if (foliated_vouchers.length < 1) return Toast.Info("No has asignado ningún folio.");
       let approved_amount = 1;
       if (foliated_vouchers.includes("-")) {
          const range = foliated_vouchers.split("-");
@@ -448,7 +449,7 @@ const VoucherForm = ({ open, setOpen }) => {
                                  handleBlur(e);
                                  // handleBlurStockNumber(e, setFieldValue, values);
                               }}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "vehicle", false)}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "vehicle", true)}
                               // inputProps={{ maxLength: 2 }}
                               fullWidth
                               disabled={inAprobation}

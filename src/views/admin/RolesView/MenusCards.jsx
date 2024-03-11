@@ -103,7 +103,7 @@ const MenusCards = () => {
                   labelPlacement="start"
                />
             </Grid>
-            <Masonry columns={others_permissions.length == 0 ? 4 : 3} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0, textAlign: "center" }}>
+            <Masonry columns={3} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0, textAlign: "center" }}>
                <FormControlLabel
                   value={`${id}@read`}
                   id={`${id}@read`}

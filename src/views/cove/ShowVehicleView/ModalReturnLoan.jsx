@@ -27,23 +27,27 @@ const ModalReturnLoan = ({ open, setOpen }) => {
    const { vehicle, showVehicle, dataList, setDataList } = useVehicleContext();
    const { /* loanedVehicle, setLoanedVehicle, */ returnLoan } = useLoanedVehicleContext();
    const [showErrorKm, setShowErrorKm] = useState(false);
+   const [showErrorComments, setShowErrorComments] = useState(false);
    const [formData, setFormData] = useState({
       vehicle_id: 0,
       assigned_vehicle_id: 0,
       delivery_km: 0,
+      delivery_comments: "",
       delivery_date: ""
    });
 
    const handleClose = () => {
       setOpen(false);
-      setFormData({ ...formData, delivery_km: 0 });
+      setFormData({ ...formData, delivery_km: 0, delivery_comments: "" });
    };
 
    const handleSubmit = async (e) => {
       try {
          e.preventDefault();
          if (formData.delivery_km < 0) setShowErrorKm(true);
+         if (formData.delivery_km < 0) setShowErrorComments(true);
          if (showErrorKm) return;
+         if (showErrorComments) return;
 
          setFormData({
             ...formData,
@@ -71,6 +75,7 @@ const ModalReturnLoan = ({ open, setOpen }) => {
                      vehicle_id: 0,
                      assigned_vehicle_id: 0,
                      delivery_km: 0,
+                     delivery_comments: "",
                      delivery_date: ""
                   });
                }
@@ -102,7 +107,7 @@ const ModalReturnLoan = ({ open, setOpen }) => {
          >
             <DialogTitle>
                <Typography variant="h4" component={"p"} textAlign={"center"}>
-                  KILOMETRAJE DE LA DEVOLUCION DEL PRESTAMO
+                  KILOMETRAJE Y COMENTARIOS DE LA DEVOLUCIÓN DEL PRESTAMO
                </Typography>
             </DialogTitle>
             <DialogContent sx={{ pb: 0 }}>
@@ -129,6 +134,30 @@ const ModalReturnLoan = ({ open, setOpen }) => {
                   {showErrorKm && (
                      <Typography color={"red"} variant="subtitle2">
                         El Kilometraje es requerido.
+                     </Typography>
+                  )}
+                  <TextField
+                     id="delivery_comments"
+                     name="delivery_comments"
+                     label="Comentarios *"
+                     type="text"
+                     value={formData.delivery_comments}
+                     placeholder="Ingrese comentarios..."
+                     onChange={(e) => {
+                        setFormData({
+                           ...formData,
+                           delivery_comments: e.target.value
+                        });
+                        setShowErrorComments(false);
+                        if (Number(e.target.value.length) < 0) setShowErrorComments(true);
+                     }}
+                     InputProps={{ step: "01" }}
+                     fullWidth
+                     sx={{ mt: 3 }}
+                  />
+                  {showErrorKm && (
+                     <Typography color={"red"} variant="subtitle2">
+                        Los comentarios son requeridos.
                      </Typography>
                   )}
                   <Button type="submit">ACEPTAR</Button>
