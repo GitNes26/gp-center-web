@@ -227,7 +227,7 @@ export default function AuthContextProvider({ children }) {
          // console.log("el permissionRead", permissionRead);
          // console.log(location.hash.split("/"));
          if (!permission) {
-            // console.log("sigue entrando");
+            console.log("sigue entrando");
             if (location.hash.split("/").length <= 3) {
                // console.log("y tengo menos de 3 slash");
                window.location.hash = auth.page_index;
