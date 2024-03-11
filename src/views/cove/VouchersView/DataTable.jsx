@@ -11,7 +11,7 @@ import { Button, ButtonGroup, Chip, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import { useVoucherContext } from "../../../context/VoucherContext";
+import VoucherContextProvider, { useVoucherContext } from "../../../context/VoucherContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -26,6 +26,7 @@ import { useAuthContext } from "../../../context/AuthContext";
 import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils/Formats";
 import { IconProgressCheck } from "@tabler/icons-react";
 import { IconBan } from "@tabler/icons";
+import ModalCancelComments from "./ModalCancelComments";
 
 const VoucherDT = ({ setOpen }) => {
    const { auth } = useAuthContext();
@@ -36,6 +37,7 @@ const VoucherDT = ({ setOpen }) => {
       formData,
       setFormData,
       voucher,
+      setVoucher,
       vouchers,
       getVouchers,
       showVoucher,
@@ -67,6 +69,7 @@ const VoucherDT = ({ setOpen }) => {
       "username_approved",
       "approved_at"
    ];
+   const [openModalCancel, setOpenModalCancel] = useState(false);
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -191,22 +194,10 @@ const VoucherDT = ({ setOpen }) => {
       }
    };
 
-   const handleClickCancel = async (id, name) => {
+   const handleClickCancel = async (id, obj) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de cancelar el vale #${name}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
-            if (result.isConfirmed) {
-               setLoadingAction(true);
-               const voucher = {
-                  id: id,
-                  voucher_status: "CANCELADA",
-                  canceled_by: auth.id,
-                  canceled_at: formatDatetimeToSQL(new Date())
-               };
-               const axiosResponse = await updateStatus(voucher);
-               setLoadingAction(false);
-               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-            }
-         });
+         await setVoucher(obj);
+         setOpenModalCancel(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -256,7 +247,7 @@ const VoucherDT = ({ setOpen }) => {
             )}
             {auth.permissions.more_permissions.includes("22@Cancelar") && obj.voucher_status === "ALTA" && (
                <Tooltip title={`Cancelar ${singularName}`} placement="top">
-                  <Button color="error" onClick={() => handleClickCancel(id, name)}>
+                  <Button color="error" onClick={() => handleClickCancel(id, obj)}>
                      <IconBan />
                   </Button>
                </Tooltip>
@@ -302,33 +293,38 @@ const VoucherDT = ({ setOpen }) => {
 
    useEffect(() => {
       setLoading(false);
-   }, []);
+   }, [voucher]);
    return (
-      <DataTableComponent
-         columns={columns}
-         data={data}
-         globalFilterFields={globalFilterFields}
-         headerFilters={false}
-         handleClickAdd={handleClickAdd}
-         refreshTable={getVouchers}
-         btnAdd={auth.permissions.create}
-         titleBtnAdd="SOLICITAR VALE"
-         setOpen={false}
-         showGridlines={false}
-         btnsExport={true}
-         rowEdit={false}
-         // handleClickDeleteContinue={handleClickDeleteContinue}
-         // ELIMINAR MULTIPLES REGISTROS
-         btnDeleteMultiple={false}
-         // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
-         // PARA HACER FORMULARIO EN LA TABLA
-         // AGREGAR
-         // createData={createVehicle}
-         // newRow={newRow}
-         // EDITAR
-         // setData={setVehicles}
-         // updateData={updateVehicle}
-      />
+      <>
+         <DataTableComponent
+            columns={columns}
+            data={data}
+            globalFilterFields={globalFilterFields}
+            headerFilters={false}
+            handleClickAdd={handleClickAdd}
+            refreshTable={getVouchers}
+            btnAdd={auth.permissions.create}
+            titleBtnAdd="SOLICITAR VALE"
+            setOpen={false}
+            showGridlines={false}
+            btnsExport={true}
+            rowEdit={false}
+            // handleClickDeleteContinue={handleClickDeleteContinue}
+            // ELIMINAR MULTIPLES REGISTROS
+            btnDeleteMultiple={false}
+            // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+            // PARA HACER FORMULARIO EN LA TABLA
+            // AGREGAR
+            // createData={createVehicle}
+            // newRow={newRow}
+            // EDITAR
+            // setData={setVehicles}
+            // updateData={updateVehicle}
+         />
+         <VoucherContextProvider>
+            <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} />
+         </VoucherContextProvider>
+      </>
    );
 };
 export default VoucherDT;

@@ -45,7 +45,7 @@ const ModalReturnLoan = ({ open, setOpen }) => {
       try {
          e.preventDefault();
          if (formData.delivery_km < 0) setShowErrorKm(true);
-         if (formData.delivery_km < 0) setShowErrorComments(true);
+         if (formData.delivery_comments < 0) setShowErrorComments(true);
          if (showErrorKm) return;
          if (showErrorComments) return;
 
