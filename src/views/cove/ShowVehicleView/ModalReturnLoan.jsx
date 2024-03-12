@@ -149,7 +149,7 @@ const ModalReturnLoan = ({ open, setOpen }) => {
                            delivery_comments: e.target.value
                         });
                         setShowErrorComments(false);
-                        if (Number(e.target.value.length) < 0) setShowErrorComments(true);
+                        if (Number(e.target.value.length) <= 0) setShowErrorComments(true);
                      }}
                      InputProps={{ step: "01" }}
                      fullWidth

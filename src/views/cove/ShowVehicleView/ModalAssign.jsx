@@ -168,9 +168,9 @@ const ModalAssign = ({ open, setOpen }) => {
          setDataList(directors);
          const value = e.target.value;
          if (value.length == 0) return setDataList(directors);
-         const filter1 = directors.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
-         const filter2 = directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
-         const filter3 = directors.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
+         const filter1 = await directors.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
+         const filter2 = await directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
+         const filter3 = await directors.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
          const result = [];
          result.push(...filter1);
          result.push(...filter2);

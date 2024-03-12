@@ -58,7 +58,7 @@ import * as Yup from "yup";
 import { strengthColor, strengthIndicator } from "../../../../utils/password-strength";
 import { useGlobalContext } from "../../../../context/GlobalContext";
 import { LoadingButton } from "@mui/lab";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Title, Visibility, VisibilityOff } from "@mui/icons-material";
 // import { logout } from "../../../../config/firebase";
 
 // ==============================|| PROFILE MENU ||============================== //
@@ -292,7 +292,11 @@ const ProfileSection = () => {
                   color="inherit"
                />
             }
-            label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
+            label={
+               <Typography justifyItems={"center"}>
+                  {authUser.username} <IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />
+               </Typography>
+            }
             variant="outlined"
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}

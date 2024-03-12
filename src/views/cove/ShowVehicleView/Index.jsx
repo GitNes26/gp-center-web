@@ -235,7 +235,7 @@ const ShowVehicleView = () => {
          >
             <Grid container spacing={2}>
                {/* PRIMER COLUMNA */}
-               <Grid xs={12} md={3} sx={{ mb: 2 }}>
+               <Grid xs={12} md={3} sx={{ mb: 0 }}>
                   <SearchInput
                      idName={"search"}
                      search={search}
@@ -263,7 +263,7 @@ const ShowVehicleView = () => {
                         }}
                      > */}
                   <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid xs={12} md={12} spacing={2} sx={{ mb: 0, pb: 0, height: "66vh", overflowY: "auto", scrollbarWidth: "none" }}>
                         {/* <Grid container spacing={3}> */}
                         {auth.permissions.more_permissions.includes("2@Solicitar Servicio") && (
                            <Grid xs alignItems={"center"}>
@@ -409,7 +409,13 @@ const ShowVehicleView = () => {
                            <Card>
                               <ComponentItem
                                  title="Asignado a"
-                                 icon={<IconUserPentagon />}
+                                 icon={
+                                    vehicle.dir_avatar === null ? (
+                                       <IconUserPentagon />
+                                    ) : (
+                                       <Avatar alt={vehicle.dir_username} src={`${import.meta.env.VITE_HOST}/${vehicle.dir_avatar}`} />
+                                    )
+                                 }
                                  text={
                                     <Typography variant="h4" component={"span"}>
                                        ASIGNADO A: {vehicle.dir_username}
@@ -418,7 +424,13 @@ const ShowVehicleView = () => {
                               />
                               <ComponentItem
                                  title="Prestado a"
-                                 icon={<IconAB2 />}
+                                 icon={
+                                    vehicle.dri_username === null ? (
+                                       <IconAB2 />
+                                    ) : (
+                                       <Avatar alt={vehicle.dri_username} src={`${import.meta.env.VITE_HOST}/${vehicle.dri_avatar}`} />
+                                    )
+                                 }
                                  text={
                                     <Typography variant="h4" component={"span"}>
                                        PRESTADO A: {vehicle.dri_username}

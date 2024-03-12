@@ -11,12 +11,16 @@ import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import VoucherDT from "./DataTable";
+import ModalCancelComments from "./ModalCancelComments";
+import ModalShowRequest from "./ModalShowRequest";
 
 const VouchersView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, voucher, getVouchers } = useVoucherContext();
    const [openForm, setOpenForm] = useState(false);
+   const [openModalShowRequest, setOpenModalShowRequest] = useState(false);
+   const [openModalCancel, setOpenModalCancel] = useState(false);
 
    useEffect(() => {
       try {
@@ -38,9 +42,12 @@ const VouchersView = () => {
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
-         <VoucherDT setOpen={setOpenForm} />
+         <VoucherDT setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} />
 
-         <VoucherForm open={openForm} setOpen={setOpenForm} />
+         <VoucherForm open={openForm} setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} />
+
+         <ModalShowRequest open={openModalShowRequest} setOpen={setOpenModalShowRequest} />
+         <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} />
       </>
    );
 };

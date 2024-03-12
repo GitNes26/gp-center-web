@@ -178,9 +178,9 @@ const ModalLoan = ({ open, setOpen }) => {
          setDataList(drivers);
          const value = e.target.value;
          if (value.length == 0) return setDataList(drivers);
-         const filter1 = drivers.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
-         const filter2 = drivers.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
-         const filter3 = drivers.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
+         const filter1 = await drivers.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
+         const filter2 = await drivers.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
+         const filter3 = await drivers.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
          const result = [];
          result.push(...filter1);
          result.push(...filter2);

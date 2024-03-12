@@ -128,7 +128,7 @@ const ModalDeliver = ({ open, setOpen }) => {
                            reason: e.target.value
                         });
                         setShowErrorReason(false);
-                        if (e.target.value.length < 1) setShowErrorReason(true);
+                        if (e.target.value.length <= 0) setShowErrorReason(true);
                      }}
                      // InputProps={{ }}
                      multiline={true}

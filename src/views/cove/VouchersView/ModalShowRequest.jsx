@@ -16,12 +16,14 @@ import { formatDatetimeToSQL } from "../../../utils/Formats";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useVoucherContext } from "../../../context/VoucherContext";
 import { useAuthContext } from "../../../context/AuthContext";
+import { PDFViewer } from "@react-pdf/renderer";
+import { RequestPDF } from "../../../components/RequestPDF";
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ModalCancelComments = ({ open, setOpen }) => {
+const ModalShowRequest = ({ open, setOpen }) => {
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
    const { setLoadingAction } = useGlobalContext();
@@ -103,42 +105,13 @@ const ModalCancelComments = ({ open, setOpen }) => {
          >
             <DialogTitle>
                <Typography variant="h4" component={"p"} textAlign={"center"}>
-                  MOTIVO DE CANCELACIÓN
+                  SOLICITUD
                </Typography>
             </DialogTitle>
             <DialogContent sx={{ pb: 0 }}>
-               <form onSubmit={handleSubmit}>
-                  <TextField
-                     id="canceled_comments"
-                     name="canceled_comments"
-                     label="Comentarios de cancelación *"
-                     type="text"
-                     value={formData.canceled_comments}
-                     placeholder="Ingrese comentarios..."
-                     onChange={(e) => {
-                        setFormData({
-                           ...formData,
-                           canceled_comments: e.target.value
-                        });
-                        setShowErrorComments(false);
-                        if (Number(e.target.value.length) <= 0) setShowErrorComments(true);
-                     }}
-                     onBlur={(e) => {
-                        console.log("Number(e.target.value.length)", Number(e.target.value.length));
-                        setShowErrorComments(false);
-                        if (Number(e.target.value.length) <= 0) setShowErrorComments(true);
-                     }}
-                     InputProps={{ step: "01" }}
-                     fullWidth
-                     sx={{ mt: 3 }}
-                  />
-                  {showErrorComments && (
-                     <Typography color={"red"} variant="subtitle2">
-                        Los comentarios son requeridos.
-                     </Typography>
-                  )}
-                  <Button type="submit">ACEPTAR</Button>
-               </form>
+               <PDFViewer>
+                  <RequestPDF />
+               </PDFViewer>
             </DialogContent>
             <DialogActions sx={{ my: 0, pt: 0 }}>
                <Button onClick={handleClose}>Cerrar</Button>
@@ -148,4 +121,4 @@ const ModalCancelComments = ({ open, setOpen }) => {
    );
 };
 
-export default ModalCancelComments;
+export default ModalShowRequest;

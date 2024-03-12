@@ -25,10 +25,10 @@ import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils/Formats";
 import { IconProgressCheck } from "@tabler/icons-react";
-import { IconBan } from "@tabler/icons";
+import { IconBan, IconEye } from "@tabler/icons";
 import ModalCancelComments from "./ModalCancelComments";
 
-const VoucherDT = ({ setOpen }) => {
+const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
@@ -47,8 +47,7 @@ const VoucherDT = ({ setOpen }) => {
       setTextBtnSumbit,
       setFormTitle,
       setInAprobation,
-      setInEdit,
-      updateStatus
+      setInEdit
    } = useVoucherContext();
    const globalFilterFields = [
       "id",
@@ -67,9 +66,13 @@ const VoucherDT = ({ setOpen }) => {
       "approved_amount",
       "approved_by",
       "username_approved",
-      "approved_at"
+      "approved_at",
+      "canceled_by",
+      "username_canceled",
+      "canceled_at",
+      "canceled_comments",
+      "created_at"
    ];
-   const [openModalCancel, setOpenModalCancel] = useState(false);
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -106,12 +109,24 @@ const VoucherDT = ({ setOpen }) => {
    };
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
    const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity}</Typography>;
-   const RequestAmountBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_amount}</Typography>;
-   const AprovedAmountBodyTemplate = (obj) => (
+   const RequestAmountBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} fontWeight={"bolder"}>
+         {obj.requested_amount}
+      </Typography>
+   );
+   const RequestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at, true)}</Typography>;
+   const AprovedBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          Cantidad: <b>{obj.approved_amount ?? 0}</b> <br />
          Por: <b>{obj.username_approved ?? "-"}</b> <br />
          El: <b>{formatDatetime(obj.approved_at, true)}</b>
+      </Typography>
+   );
+   const CanceledBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         Por: <b>{obj.username_canceled ?? "-"}</b> <br />
+         El: <b>{formatDatetime(obj.canceled_at, true)}</b>
+         <p>{obj.canceled_comments}</p>
       </Typography>
    );
    const StatusBodyTemplate = (obj) => {
@@ -153,8 +168,11 @@ const VoucherDT = ({ setOpen }) => {
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
       { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filterField: null },
       { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filterField: null },
-      { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedAmountBodyTemplate, filterField: null },
+      { field: "created_at", header: "Solicitado", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filterField: null },
+      { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedBodyTemplate, filterField: null },
       { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
+      { field: "canceled_amount", header: "Cancelados", sortable: true, functionEdit: null, body: CanceledBodyTemplate, filterField: null },
+
       { field: "voucher_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
    ];
@@ -188,6 +206,16 @@ const VoucherDT = ({ setOpen }) => {
          setInAprobation(true);
          setOpenDialog(true);
          setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickShow = async (id, obj) => {
+      try {
+         await setVoucher(obj);
+         setOpenModalRequest(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -238,9 +266,14 @@ const VoucherDT = ({ setOpen }) => {
    const ButtonsAction = ({ id, user_id, name, obj }) => {
       return (
          <ButtonGroup variant="outlined">
+            <Tooltip title={`Ver ${singularName}`} placement="top">
+               <Button color="dark" onClick={() => handleClickShow(id, obj)}>
+                  <IconEye />
+               </Button>
+            </Tooltip>
             {auth.permissions.more_permissions.includes("22@Aprobar") && obj.voucher_status === "ALTA" && (
                <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
-                  <Button color="dark" onClick={() => handleClickAssign(id)}>
+                  <Button color="error" onClick={() => handleClickAssign(id)}>
                      <IconProgressCheck />
                   </Button>
                </Tooltip>
@@ -321,9 +354,8 @@ const VoucherDT = ({ setOpen }) => {
             // setData={setVehicles}
             // updateData={updateVehicle}
          />
-         <VoucherContextProvider>
-            <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} />
-         </VoucherContextProvider>
+         {/* <VoucherContextProvider>
+         </VoucherContextProvider> */}
       </>
    );
 };
