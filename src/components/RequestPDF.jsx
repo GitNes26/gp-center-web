@@ -1,11 +1,26 @@
 // import logo from '../../assets/images/logo-gpd.png';
-import { Document, Page, StyleSheet, View } from "@react-pdf/renderer";
+import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import backgroundImage from "../assets/images/Oficio.jpg";
-// import firmademo from "../../assets/images/FirmaDemo.png";
+import firmademo from "../assets/images/FirmaDemo.png";
+
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+
+import Typography from "@mui/material/Typography";
+import { cloneElement, forwardRef, useEffect, useLayoutEffect, useState } from "react";
+import { IconButton, Toolbar, Tooltip } from "@mui/material";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import { PDFViewer } from "@react-pdf/renderer";
+import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
+import { useAuthContext } from "../context/AuthContext";
+import { gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
 
 //#region FUENTES
 Font.register({
-   family: "Roboto-bold",
+   family: "Roboto-Bold",
    src: "/src/assets/fonts/Roboto-Bold.ttf"
 });
 
@@ -26,7 +41,7 @@ Font.register({
 //#endregion
 
 // Crear estilos
-const styles = StyleSheet.create({
+export const stylesPDF = StyleSheet.create({
    body: {
       paddingTop: 35,
       paddingBottom: 65,
@@ -62,12 +77,12 @@ const styles = StyleSheet.create({
    subtitle: {
       fontSize: 18,
       margin: 12,
-      fontFamily: "Roboto-bold"
+      fontFamily: "Roboto-Bold"
    },
    title: {
       fontSize: 18,
       textAlign: "center",
-      fontFamily: "Roboto-bold"
+      fontFamily: "Roboto-Bold"
    },
    author: {
       fontSize: 12,
@@ -77,11 +92,11 @@ const styles = StyleSheet.create({
    division: {
       fontSize: 15,
       textAlign: "center",
-      fontFamily: "Roboto-bold",
+      fontFamily: "Roboto-Bold",
       textDecoration: "underline"
    },
    apartado: {
-      fontFamily: "Roboto-bold",
+      fontFamily: "Roboto-Bold",
       fontSize: 15
    },
    text: {
@@ -110,29 +125,82 @@ const styles = StyleSheet.create({
       // height: 540,
       width: "90%"
    },
-   firmacontainer: {
+
+   folioDate: {
+      fontFamily: "Roboto-Bold",
+      fontSize: 12,
+      textAlign: "right"
+   },
+   dataTitlesLeft: {
+      fontSize: 12,
+      fontFamily: "Roboto-Bold",
+      fontWeight: "bold",
+      textAlign: "left",
+      marginBottom: 15
+   },
+   dataTitlesRigth: {
+      fontSize: 12,
+      fontFamily: "Roboto-Bold",
+      fontWeight: "bold",
+      textAlign: "right",
+      marginBottom: 15
+   },
+   messageBody: {
+      fontFamily: "Roboto-Regular",
+      fontSize: 12,
+      height: 300,
+      textAlign: "justify",
+      lineHeight: "1.5px"
+      // marginBottom: 1
+      // paddingHorizontal: 35
+   },
+   bolder: { fontFamily: "Roboto-Bold" },
+   regular: { fontFamily: "Roboto-Regular" },
+   italic: { fontFamily: "Roboto-Italic" },
+   letterSpace: {
+      letterSpacing: 5
+   },
+   p: {
+      marginVertical: 10
+   },
+   center: { marginHorizontal: "auto" },
+   textCenter: {
+      textAlign: "center"
+   },
+   row: {
+      display: "flex",
+      flexDirection: "row"
+   },
+   column: {
+      flexDirection: "column"
+   },
+   table: {
+      border: "2px solid black",
+      flexDirection: "row",
+      marginVertical: 5,
+      padding: 0
+      // textAlign: "center"
+   },
+   cell: {
+      border: "1px solid black",
+      flexWrap: "wrap",
       textAlign: "center",
-      fontSize: 13,
+      justifyContent: "center",
+      padding: 5,
+      margin: "-.5 0 0 -0.5"
+   },
+   firmContainer: {
+      fontFamily: "Roboto-Bold",
+      textAlign: "center",
+      fontSize: 14,
       height: 150,
       fontWeight: "heavy",
       marginLeft: 30
    },
-   cuerpomensaje: {
-      fontSize: 11,
-      height: 300,
-      textAlign: "justify",
-      paddingHorizontal: 35
-   },
    firma: {
-      width: "70%",
-      left: "60"
-   },
-   foliofecha: {
-      fontSize: 12,
-      textAlign: "right"
-   },
-   departamento: {
-      fontSize: 12
+      width: "200px",
+      left: "50%",
+      transform: "translateX(-50%)"
    }
 
    // textContent: {
@@ -140,90 +208,151 @@ const styles = StyleSheet.create({
    //     lineHeight: 1.5,
    // }
 });
+const formDataInitial = {
+   folioInt: "",
+   date: "--/--/----",
+   directorFrom: "",
+   departmentFrom: "",
+   directorTo: "",
+   departmentTo: "",
+   workstationFirm: "",
+   imgFirm: firmademo,
+   directorFirm: ""
+};
 
 // Componente que representa el documento OficioPDF
-export const RequestPDF = ({ formData }) => {
+export const RequestPDF = ({ children, watermark = "Departamento Emisor", formData = formDataInitial }) => {
    return (
       <Document>
-         {/* <Page size="A4" style={styles.body} wrap>
+         {/* <Page size="A4" style={stylesPDF.body} wrap>
                 
             </Page> */}
-         <Page size="LETTER" style={styles.page} wrap>
-            {/* <View style={styles.pageBody}> */}
-            <View style={styles.viewBgImage}>
-               <Text style={styles.header} fixed>
-                  ~ Secretaría Particular ~
+         <Page size="LETTER" style={stylesPDF.page} wrap>
+            {/* <View style={stylesPDF.pageBody}> */}
+            <View style={stylesPDF.viewBgImage}>
+               <Text style={stylesPDF.header} fixed>
+                  ~ {watermark} ~
                </Text>
-               <Image style={styles.image2} src={backgroundImage} />
+               <Image style={stylesPDF.image2} src={backgroundImage} />
             </View>
-            <View style={styles.viewContainer}>
-               {/* <Image style={styles.image} src={logo}></Image> */}
-               {/* <Text style={styles.title}>Solicitud Ciudadana</Text>
-                    <Text style={styles.author}>Sec. Particular</Text>
+            <View style={stylesPDF.viewContainer}>
+               {/* <Image style={stylesPDF.image} src={logo}></Image> */}
+               {/* <Text style={stylesPDF.title}>Solicitud Ciudadana</Text>
+                    <Text style={stylesPDF.author}>Sec. Particular</Text>
                     <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-                        <Text style={styles.author}><Text style={{ fontFamily: 'Roboto-bold', textDecoration: 'underline' }}>Fecha de Solicitud:</Text> {formData.fecha_solicitud}</Text>
-                        <Text style={styles.author}><Text style={{ fontFamily: 'Roboto-bold', textDecoration: 'underline' }}>Folio:</Text> {formData.id}</Text>
+                        <Text style={stylesPDF.author}><Text style={{ fontFamily: 'Roboto-Bold', textDecoration: 'underline' }}>Fecha de Solicitud:</Text> {"formData.fecha_solicitud"}</Text>
+                        <Text style={stylesPDF.author}><Text style={{ fontFamily: 'Roboto-Bold', textDecoration: 'underline' }}>Folio:</Text> {"formData.id"}</Text>
                     </View> */}
 
-               <View style={styles.foliofecha}>
-                  <Text style={{ fontFamily: "Roboto-bold" }}>{formData.folio}</Text>
-                  <Text style={{ fontFamily: "Roboto-Regular" }}>Gómez Palacio, Dgo., {formData.fecha_solicitud}</Text>
+               <View style={stylesPDF.folioDate}>
+                  <Text>{formData.folio}</Text>
+                  <Text style={{ fontFamily: "Roboto-Regular" }}>Gómez Palacio, Dgo., {formData.date}</Text>
                </View>
 
-               <View style={styles.departamento}>
-                  <Text style={{ fontFamily: "Roboto-bold" }}>{formData.director}</Text>
-                  <Text style={{ fontFamily: "Roboto-bold", marginBottom: 15 }}>{formData.department}</Text>
-                  <Text style={{ fontFamily: "Roboto-bold", marginBottom: 15 }}>P R E S E N T E.- </Text>
-                  <Text style={{ fontFamily: "Roboto-Regular", marginBottom: 15 }}>
-                     Me permito enviar a la consideración del área a su cargo, el siguiente apunte recibido en el Despacho de la Presidenta Municipal Juana Leticia
-                     Herrera Ale, como sigue:{" "}
-                  </Text>
+               <View style={stylesPDF.dataTitlesLeft}>
+                  <Text>{formData.directorFrom}</Text>
+                  <Text>{formData.departmentFrom}</Text>
+                  <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
                </View>
 
-               <View style={{ flexDirection: "row", marginBottom: 20 }}>
-                  <Text style={{ fontFamily: "Roboto-bold", fontSize: 12, marginRight: 15 }}>Remite:</Text>
-                  <View style={{ flexDirection: "column" }}>
-                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>Folio: {formData.id}</Text>
-                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>
-                        Nombre: {formData.nombre} {formData.app} {formData.apm}
-                     </Text>
-                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>Empresa: {formData.cargo}</Text>
-                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>Teléfono: {formData.telefono}</Text>
-                  </View>
+               <View style={stylesPDF.dataTitlesRigth}>
+                  <Text>CON ATENCIÓN A:</Text>
+                  <Text>{formData.directorTo}</Text>
+                  <Text>{formData.departmentTo}</Text>
                </View>
 
-               <View style={{ flexDirection: "row" }}>
-                  <Text style={{ fontFamily: "Roboto-bold", fontSize: 12, marginRight: 15 }}>Asunto:</Text>
-                  <View style={{ flexDirection: "column", width: 600 }}>
-                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{formData.observaciones}</Text>
-                  </View>
-               </View>
+               {/* CUERPO DEL MENSAJE */}
+               <View style={stylesPDF.messageBody}>{children}</View>
+               {/* CUERPO DEL MENSAJE */}
 
-               <View style={{ marginTop: 50 }}>
-                  <Text style={{ fontFamily: "Roboto-bold", fontSize: 12 }}>Instrucción:</Text>
-                  <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{formData.tipo_documento}</Text>
-               </View>
-
-               <View style={{ marginTop: 50, flexDirection: "row" }}>
-                  <Text style={{ fontFamily: "Roboto-bold", fontSize: 12, marginRight: 20 }}>Requiere respuesta:</Text>
-                  <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>SI</Text>
-               </View>
-
-               <View>
-                  <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, marginBottom: 12 }}>Sin otro particular, agradeciendo la atención al presente.</Text>
-               </View>
-
-               <View style={styles.firmacontainer}>
-                  <Text style={{ fontFamily: "Roboto-bold", fontSize: 16 }}>A T E N T A M E N T E: </Text>
-                  <Text style={{ fontFamily: "Roboto-bold", fontSize: 14 }}>COORDINADORA DE SECRETARÍA PARTICULAR </Text>
-                  <Image style={styles.firma} src={firmademo} />
+               <View style={stylesPDF.firmContainer}>
+                  <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
+                  <Text>{formData.workstationFirm}</Text>
+                  <Image style={stylesPDF.firma} src={formData.imgFirm} />
                   <Text>______________________________________</Text>
-                  <Text style={{ fontFamily: "Roboto-bold", fontSize: 14 }}>C.P. VERÓNICA BEERNAERT VANEGAS </Text>
+                  <Text>{formData.directorFirm} </Text>
                </View>
             </View>
-            <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
+
+            <Text style={stylesPDF.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
             {/* </View> */}
          </Page>
       </Document>
+   );
+};
+
+const Transition = forwardRef(function Transition(props, ref) {
+   return <Slide direction="down" ref={ref} {...props} />;
+});
+export const ModalFormatPDF = ({ children, open, setOpen, formTitle = "titulo", watermark = "Departamento Emisor", formData }) => {
+   const { auth } = useAuthContext();
+   const mySwal = withReactContent(Swal);
+   const [fullScreenDialog, setFullScreenDialog] = useState(false);
+   const { setLoadingAction } = useGlobalContext();
+
+   const handleClose = () => {
+      setOpen(false);
+   };
+
+   useEffect(() => {
+      // console.log("estoy en el modal", voucher);
+   }, []);
+   useLayoutEffect(() => {
+      // console.log("estoy en el useLayoutEffect", drivers);
+   }, []);
+
+   return (
+      <div>
+         <Dialog
+            open={open}
+            TransitionComponent={Transition}
+            maxWidth={"lg"}
+            keepMounted
+            fullWidth
+            onClose={handleClose}
+            aria-describedby="alert-dialog-slide-description"
+            sx={{ backgroundColor: "transparent" }}
+            fullScreen={fullScreenDialog}
+         >
+            <DialogTitle my={0} py={0} sx={{ backgroundColor: gpcDark, color: gpcLight }}>
+               <Toolbar sx={{ py: 0 }}>
+                  <Typography variant="h2" my={0} py={0} color={gpcLight} sx={{ ml: 2, flex: 1, py: 0, pt: 0, pb: 0, padding: "0px 24px !important" }}>
+                     {formTitle}
+                  </Typography>
+                  {/* <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
+                  {"title"}
+               </Typography> */}
+                  {/* <Tooltip title={`Exportar Reporte a PDF`} placement="top">
+                  <IconButton color="inherit" onClick={() => downloadPDF("reportPaper")}>
+                     <IconFileTypePdf color="red" />
+                  </IconButton>
+               </Tooltip>
+               <Tooltip title={`Imprimir Reporte`} placement="top">
+                  <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
+                     <IconPrinter />
+                  </IconButton>
+               </Tooltip> */}
+                  <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
+                     <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
+                        {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
+                     </IconButton>
+                  </Tooltip>
+                  <Tooltip title={`Cerrar ventana`} placement="top">
+                     <IconButton edge="end" color="inherit" onClick={() => setOpen(false)} aria-label="close">
+                        <IconX />
+                     </IconButton>
+                  </Tooltip>
+               </Toolbar>
+            </DialogTitle>
+            <DialogContent sx={{ pb: 0, height: "90vh" }}>
+               <PDFViewer width={"100%"} height={"99%"}>
+                  <RequestPDF>
+                     {children}
+                     {/* {cloneElement(children, { watermark, formData })} */}
+                  </RequestPDF>
+               </PDFViewer>
+            </DialogContent>
+         </Dialog>
+      </div>
    );
 };

@@ -13,6 +13,8 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import VoucherDT from "./DataTable";
 import ModalCancelComments from "./ModalCancelComments";
 import ModalShowRequest from "./ModalShowRequest";
+import { ModalFormatPDF } from "../../../components/RequestPDF";
+import ModalContentPDF from "./ModalShowRequest";
 
 const VouchersView = () => {
    // const { result } = useLoaderData();
@@ -42,11 +44,12 @@ const VouchersView = () => {
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
-         <VoucherDT setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} />
+         <VoucherDT setOpen={setOpenForm} setOpenModalRequest={setOpenModalShowRequest} setOpenModalCancel={setOpenModalCancel} />
 
          <VoucherForm open={openForm} setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} />
 
-         <ModalShowRequest open={openModalShowRequest} setOpen={setOpenModalShowRequest} />
+         {/* <ModalShowRequest open={openModalShowRequest} setOpen={setOpenModalShowRequest} /> */}
+         <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} />
          <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} />
       </>
    );

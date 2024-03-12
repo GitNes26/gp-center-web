@@ -7,82 +7,36 @@ import Slide from "@mui/material/Slide";
 
 import Typography from "@mui/material/Typography";
 import { forwardRef, useEffect, useLayoutEffect, useState } from "react";
-import { TextField } from "@mui/material";
+import { FormControlLabel, IconButton, Switch, TextField, Toolbar, Tooltip } from "@mui/material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { formatDatetimeToSQL } from "../../../utils/Formats";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
 import { useVoucherContext } from "../../../context/VoucherContext";
 import { useAuthContext } from "../../../context/AuthContext";
-import { PDFViewer } from "@react-pdf/renderer";
-import { RequestPDF } from "../../../components/RequestPDF";
+import { PDFViewer, Text, View } from "@react-pdf/renderer";
+import { ModalFormatPDF, RequestPDF, stylesPDF } from "../../../components/RequestPDF";
+import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ModalShowRequest = ({ open, setOpen }) => {
+const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    const { auth } = useAuthContext();
-   const mySwal = withReactContent(Swal);
-   const { setLoadingAction } = useGlobalContext();
-   const { voucher, updateStatus } = useVoucherContext();
-   const [showErrorComments, setShowErrorComments] = useState(false);
-   const [formData, setFormData] = useState({
-      id: 0,
-      voucher_status: "CANCELADA",
-      canceled_by: auth.id,
-      canceled_comments: "",
-      canceled_at: ""
+   const [formData, setFormDAta] = useState({
+      folioInt: "",
+      date: "--/--/----",
+      directorFrom: "C. ING. RODRIGO DE LA TORRE VALLE",
+      departmentFrom: "OFICIAL MAYOR",
+      directorTo: "LIC. MAURICIO GUERRERO FELIX",
+      departmentTo: " JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
+      workstationFirm: "JEFE DE DEPARTAMENTO DE SERVICIOS GENERALES",
+      // imgFirm: firmademo,
+      directorFirm: "C. FERNANDO ANTONIO LAVIN GONZALEZ"
    });
-
-   const handleClose = () => {
-      setOpen(false);
-      setFormData({ ...formData, id: 0, voucher_status: "CANCELADA", canceled_by: auth.id, canceled_comments: "", canceled_at: "" });
-   };
-
-   const handleSubmit = async (e) => {
-      try {
-         e.preventDefault();
-         if (formData.canceled_comments.length <= 0) return setShowErrorComments(true);
-         if (!showErrorComments) {
-            setFormData({
-               ...formData,
-               id: voucher.id,
-               voucher_status: "CANCELADA",
-               canceled_by: auth.id,
-               canceled_at: formatDatetimeToSQL(new Date())
-            });
-            formData.id = voucher.id;
-            formData.voucher_status = "CANCELADA";
-            formData.canceled_by = auth.id;
-            formData.canceled_at = formatDatetimeToSQL(new Date());
-
-            mySwal.fire(QuestionAlertConfig(`Estas seguro de CANCELAR el vale #${voucher.id}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
-               if (result.isConfirmed) {
-                  setLoadingAction(true);
-
-                  // return console.log(formData);
-                  const axiosResponse = await updateStatus(formData);
-                  setOpen(false);
-                  setLoadingAction(false);
-                  Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-                  setFormData({
-                     id: 0,
-                     voucher_status: "CANCELADA",
-                     canceled_by: auth.id,
-                     canceled_comments: "",
-                     canceled_at: ""
-                  });
-               }
-            });
-         }
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
 
    useEffect(() => {
       // console.log("estoy en el modal", voucher);
@@ -92,33 +46,35 @@ const ModalShowRequest = ({ open, setOpen }) => {
    }, []);
 
    return (
-      <div>
-         {/* FORMULARIO COMPLEMENTARIO */}
-         <Dialog
-            open={open}
-            TransitionComponent={Transition}
-            keepMounted
-            fullWidth
-            onClose={handleClose}
-            aria-describedby="alert-dialog-slide-description"
-            sx={{ backgroundColor: "transparent" }}
-         >
-            <DialogTitle>
-               <Typography variant="h4" component={"p"} textAlign={"center"}>
-                  SOLICITUD
-               </Typography>
-            </DialogTitle>
-            <DialogContent sx={{ pb: 0 }}>
-               <PDFViewer>
-                  <RequestPDF />
-               </PDFViewer>
-            </DialogContent>
-            <DialogActions sx={{ my: 0, pt: 0 }}>
-               <Button onClick={handleClose}>Cerrar</Button>
-            </DialogActions>
-         </Dialog>
-      </div>
+      <ModalFormatPDF open={open} setOpen={setOpen} formTitle={"ALGUN TITULO"} formData={formData}>
+         <Text style={stylesPDF.p}>
+            En virtud del desempeño de las actividades dentro de este Departamento de Servicios Generales, se realizan diferentes diligencias relativas a visitar a
+            todos los centros foráneos para la supervisión del personal, así como ir constantemente a la bodega general de Tepepan; Las cuales son efectuadas en
+            vehículos particulares debido a que no se cuenta con suficientes vehículos oficiales, motivo por el cual se tiene justificado solicitar vales semanales de
+            gasolina, para los siguientes vehículos.
+         </Text>
+         <View style={[stylesPDF.table, stylesPDF.center]}>
+            <View style={stylesPDF.column}>
+               <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VEHÍCULO</Text>
+               <Text style={stylesPDF.cell}>FORD - FIESTA 2022</Text>
+            </View>
+            <View style={stylesPDF.column}>
+               <Text style={[stylesPDF.cell, stylesPDF.bolder]}>PALCAS</Text>
+               <Text style={stylesPDF.cell}>FRS-05-00</Text>
+            </View>
+            <View style={stylesPDF.column}>
+               <Text style={[stylesPDF.cell, stylesPDF.bolder]}>EMPLEADO</Text>
+               <Text style={stylesPDF.cell}>TRABAJADOR 1</Text>
+            </View>
+            <View style={stylesPDF.column}>
+               <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>
+               <Text style={stylesPDF.cell}>9999</Text>
+            </View>
+         </View>
+
+         <Text style={stylesPDF.p}>Sin más por el momento me despido de usted quedando a sus órdenes para cualquier duda o aclaración.</Text>
+      </ModalFormatPDF>
    );
 };
 
-export default ModalShowRequest;
+export default ModalContentPDF;
