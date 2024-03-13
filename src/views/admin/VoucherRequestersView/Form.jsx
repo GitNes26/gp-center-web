@@ -8,7 +8,7 @@ import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useState } from "react";
-import { useDirectorContext } from "../../../context/DirectorContext";
+import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
@@ -31,7 +31,7 @@ import { validateImageRequired } from "../../../utils/Validations";
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const DirectorForm = () => {
+const VoucherRequesterForm = () => {
    // const { departments } = useDepartmentContext();
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
@@ -70,11 +70,11 @@ const DirectorForm = () => {
       cursorLoading
    } = useGlobalContext();
    const {
-      director,
-      resetDirector,
+      voucherRequester,
+      resetVoucherRequester,
       singularName,
-      createDirector,
-      updateDirector,
+      createVoucherRequester,
+      updateVoucherRequester,
       formData,
       setFormData,
       resetFormData,
@@ -82,11 +82,10 @@ const DirectorForm = () => {
       setTextBtnSumbit,
       formTitle,
       setFormTitle
-   } = useDirectorContext();
+   } = useVoucherRequesterContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
-   const [imgLicense, setImgLicense] = useState([]);
    const [imgFirm, setImgFirm] = useState([]);
    const [imgAvatar, setImgAvatar] = useState([]);
 
@@ -94,7 +93,6 @@ const DirectorForm = () => {
       if (resetForm) await resetForm();
       await resetFormData();
       setImgAvatar([]);
-      setImgLicense([]);
       setImgFirm([]);
    };
 
@@ -164,19 +162,17 @@ const DirectorForm = () => {
          // console.log("values", values);
          // values.community_id = values.colony_id;
          values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
-         values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
          values.img_firm = imgFirm.length == 0 ? "" : imgFirm[0].file;
-         values.num_int = values.num_int === "" ? "S/N" : values.num_int;
 
-         if (!validateImageRequired(values.img_license, "La foto de la licencia es requerida")) return;
+         if (!validateImageRequired(values.img_firm, "La foto de la firma es requerida")) return;
 
-         // return console.log("values", values.img_license);
+         // return console.log("values", values);
 
          setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDirector(values);
-         else axiosResponse = await updateDirector(values);
+         if (values.id == 0) axiosResponse = await createVoucherRequester(values);
+         else axiosResponse = await updateVoucherRequester(values);
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
             ResetForm(resetForm);
@@ -201,8 +197,8 @@ const DirectorForm = () => {
    const handleReset = (resetForm, setFieldValue, id) => {
       try {
          ResetForm(resetForm);
-         resetDirector();
-         director.role = "Selecciona una opción...";
+         resetVoucherRequester();
+         voucherRequester.role = "Selecciona una opción...";
          setStrength(0);
          setFieldValue("id", id);
       } catch (error) {
@@ -213,7 +209,6 @@ const DirectorForm = () => {
 
    const handleModify = async (values, setValues, setFieldValue) => {
       try {
-         console.log(formData);
          if (formData.community_id > 0) {
             // // setShowLoading(true);
             // getCommunity(
@@ -235,7 +230,6 @@ const DirectorForm = () => {
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
          setObjImg(formData.avatar, setImgAvatar);
-         setObjImg(formData.img_license, setImgLicense);
          setObjImg(formData.img_firm, setImgFirm);
          setLoadingAction(false);
       } catch (error) {
@@ -247,8 +241,8 @@ const DirectorForm = () => {
    const handleCancel = (resetForm) => {
       try {
          ResetForm(resetForm);
-         resetDirector();
-         director.role = "Selecciona una opción...";
+         resetVoucherRequester();
+         voucherRequester.role = "Selecciona una opción...";
          setStrength(0);
          setOpenDialog(false);
       } catch (error) {
@@ -270,27 +264,15 @@ const DirectorForm = () => {
             .trim()
             .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
             .required("Número telefónico requerido"),
-         license_number: Yup.string().trim().required("Número de licencia requerido"),
-         license_type: Yup.string().trim().required("Tipo de licencia requerido"),
-         license_due_date: Yup.date().required("Fecha de vencimiento requerida"),
-         // imgLicense: Yup.mixed().required("Debe seleccionar un archivo"),
          payroll_number: Yup.number("Solo números"),
          payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
          // department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
          department: Yup.string().trim().required("Departamento requerido"),
+         // img_firm: Yup.mixed().required("Debe seleccionar un archivo"),
 
          name: Yup.string().trim().required("Nombre(s) requerido"),
          paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
          maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
-         // community_id:  Yup.number().trim().required("Comunidad requerida"),
-         // street: Yup.string().trim().required("Calle/Av. requerida"),
-         // num_ext: Yup.string().trim().required("Número exterior requerido"),
-         // // num_int: Yup.string().trim().required("Número interior requerido"),
-
-         // zip: Yup.number("Solo numeros").required("Código Postal requerido"),
-         // state: Yup.string().trim().required("Estado requerido"),
-         // city: Yup.string().trim().required("Ciudad requerido"),
-         // colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida")
       });
       return validationSchema;
    };
@@ -477,70 +459,6 @@ const DirectorForm = () => {
                               helperText={errors.phone && touched.phone && errors.phone}
                            />
                         </Grid>
-                        {/* Numero de Licencia */}
-                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
-                           <TextField
-                              id="license_number"
-                              name="license_number"
-                              label="Número de Licencia *"
-                              type="text"
-                              value={values.license_number}
-                              placeholder="99999999999"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              fullWidth
-                              inputProps={{ maxLength: 11 }}
-                              error={errors.license_number && touched.license_number}
-                              helperText={errors.license_number && touched.license_number && errors.license_number}
-                           />
-                        </Grid>
-                        {/* Tipo de Licencia */}
-                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
-                           <TextField
-                              id="license_type"
-                              name="license_type"
-                              label="Tipo de Licencia *"
-                              type="text"
-                              value={values.license_type}
-                              placeholder="A | B | C"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "license_type", true)}
-                              fullWidth
-                              inputProps={{ maxLength: 1 }}
-                              error={errors.license_type && touched.license_type}
-                              helperText={errors.license_type && touched.license_type && errors.license_type}
-                           />
-                        </Grid>
-                        {/* Fecha de Vencimiento */}
-                        <Grid xs={12} md={4} sx={{ mb: 3 }}>
-                           <DatePickerComponent
-                              idName={"license_due_date"}
-                              label={"Fecha de Vencimiento *"}
-                              format={"DD/MM/YYYY"}
-                              value={values.license_due_date}
-                              setFieldValue={setFieldValue}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.license_due_date}
-                              touched={touched.license_due_date}
-                              showErrorInput={null}
-                              formData={formData}
-                           />
-                        </Grid>
-                        {/* Foto Licencia de Conducir */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                           <InputFileComponent
-                              idName="img_license"
-                              label="Foto Licencia de Conducir *"
-                              filePreviews={imgLicense}
-                              setFilePreviews={setImgLicense}
-                              error={errors.img_license}
-                              touched={touched.img_license}
-                              multiple={false}
-                              accept={"image/*"}
-                           />
-                        </Grid>
                         {/* Foto Firma */}
                         <Grid xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
@@ -688,8 +606,10 @@ const DirectorForm = () => {
                               helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
                            />
                         </Grid>
-                        {/* Divisor */}
-                        {/* <Grid xs={12}>
+                     </Grid>
+
+                     {/* Divisor */}
+                     {/* <Grid xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 
@@ -704,7 +624,6 @@ const DirectorForm = () => {
                         errors={errors}
                         touched={touched}
                      /> */}
-                     </Grid>
 
                      <LoadingButton
                         type="submit"
@@ -750,4 +669,4 @@ const DirectorForm = () => {
       </SwipeableDrawer>
    );
 };
-export default DirectorForm;
+export default VoucherRequesterForm;

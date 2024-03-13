@@ -1,37 +1,34 @@
-import DriverForm from "./Form";
+import VoucherRequesterForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
 import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
-import { useDriverContext } from "../../../context/DriverContext";
+import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
 import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import DriverDT from "./DataTable";
-// import { useDepartmentContext } from "../../../context/DepartmentContext";
-import { useDirectorContext } from "../../../context/DirectorContext";
+import VoucherRequesterDT from "./DataTable";
+import { useDepartmentContext } from "../../../context/DepartmentContext";
 
-const DriversView = () => {
+const VoucherRequestersView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, driver, getDrivers } = useDriverContext();
+   const { pluralName, voucherRequester, getVoucherRequesters } = useVoucherRequesterContext();
    // const { getDepartmentsSelectIndex } = useDepartmentContext();
-   const { getDirectorsSelectIndex } = useDirectorContext();
 
    useEffect(() => {
       try {
          setLoading(true);
-         getDrivers();
+         getVoucherRequesters();
          // getDepartmentsSelectIndex();
-         getDirectorsSelectIndex();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [driver]);
+   }, [voucherRequester]);
 
    return (
       <>
@@ -45,15 +42,15 @@ const DriversView = () => {
             {pluralName.toUpperCase()}
          </Typography>
          {/* <DataTableComponent /> */}
-         <DriverDT />
+         <VoucherRequesterDT />
          {/* </MainCard> */}
 
-         <DriverForm />
+         <VoucherRequesterForm />
       </>
    );
 };
 
-export const loaderIndexDriversView = async () => {
+export const loaderIndexVoucherRequestersView = async () => {
    try {
       const res = CorrectRes;
       // const auth = JSON.parse(localStorage.getItem("auth"));
@@ -77,4 +74,4 @@ export const loaderIndexDriversView = async () => {
    }
 };
 
-export default DriversView;
+export default VoucherRequestersView;

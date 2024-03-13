@@ -199,121 +199,123 @@ const AdministratorForm = ({ dataRoles }) => {
             <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Nombre de Usuario */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="username"
-                           name="username"
-                           label="Nombre de usuario *"
-                           type="text"
-                           value={values.username}
-                           placeholder="Ingrese su nombre de usuario"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "username", true)}
-                           // InputProps={{ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.username && touched.username}
-                           helperText={errors.username && touched.username && errors.username}
-                        />
-                     </Grid>
-                     {/* Correo Electronico */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <TextField
-                           id="email"
-                           name="email"
-                           label="Correo Electrónico *"
-                           type="email"
-                           value={values.email}
-                           placeholder="mi@correo.com"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
-                           // inputProps={{ maxLength: 2 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.email && touched.email}
-                           helperText={errors.email && touched.email && errors.email}
-                        />
-                     </Grid>
-
-                     {/* Switch para mostrar el cambiar contraseña */}
-                     {checkedShowSwitchPassword && (
-                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
-                           <FormControlLabel
-                              control={<Switch />}
-                              label="Cambiar Contraseña"
-                              checked={newPasswordChecked}
-                              onChange={() => setNewPasswordChecked(!newPasswordChecked)}
+                     <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
+                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                        {/* Nombre de Usuario */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="username"
+                              name="username"
+                              label="Nombre de usuario *"
+                              type="text"
+                              value={values.username}
+                              placeholder="Ingrese su nombre de usuario"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "username", true)}
+                              // InputProps={{ }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.username && touched.username}
+                              helperText={errors.username && touched.username && errors.username}
                            />
                         </Grid>
-                     )}
-                     {/* Contraseña */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
-                           <InputLabel htmlFor="password">Contraseña *</InputLabel>
-                           <OutlinedInput
-                              id="password"
-                              name="password"
-                              label="Contraseña *"
-                              type={showPassword ? "text" : "password"}
-                              value={values.password}
-                              placeholder="Ingrese su contraseña, minimo 6 dígitos"
+                        {/* Correo Electronico */}
+                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <TextField
+                              id="email"
+                              name="email"
+                              label="Correo Electrónico *"
+                              type="email"
+                              value={values.email}
+                              placeholder="mi@correo.com"
+                              onChange={handleChange}
                               onBlur={handleBlur}
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 changePassword(e.target.value);
-                              }}
-                              endAdornment={
-                                 <InputAdornment position="end">
-                                    <IconButton
-                                       aria-label="toggle password visibility"
-                                       onClick={handleClickShowPassword}
-                                       onMouseDown={handleMouseDownPassword}
-                                       edge="end"
-                                       size="large"
-                                    >
-                                       {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                 </InputAdornment>
-                              }
-                              inputProps={{}}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
+                              // inputProps={{ maxLength: 2 }}
                               fullWidth
-                              disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
                               // disabled={values.id == 0 ? false : true}
-                              error={errors.password && touched.password}
+                              error={errors.email && touched.email}
+                              helperText={errors.email && touched.email && errors.email}
                            />
-                           {touched.password && errors.password && (
-                              <FormHelperText error id="ht-password">
-                                 {errors.password}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                        {strength !== 0 && (
-                           <FormControl fullWidth>
-                              <Box sx={{ mb: 2 }}>
-                                 <Grid container spacing={2} alignItems="center">
-                                    <Grid>
-                                       <Box
-                                          style={{ backgroundColor: level?.color }}
-                                          sx={{
-                                             width: 85,
-                                             height: 8,
-                                             borderRadius: "7px"
-                                          }}
-                                       />
-                                    </Grid>
-                                    <Grid>
-                                       <Typography variant="subtitle1" fontSize="0.75rem">
-                                          {level?.label}
-                                       </Typography>
-                                    </Grid>
-                                 </Grid>
-                              </Box>
-                           </FormControl>
+                        </Grid>
+
+                        {/* Switch para mostrar el cambiar contraseña */}
+                        {checkedShowSwitchPassword && (
+                           <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                              <FormControlLabel
+                                 control={<Switch />}
+                                 label="Cambiar Contraseña"
+                                 checked={newPasswordChecked}
+                                 onChange={() => setNewPasswordChecked(!newPasswordChecked)}
+                              />
+                           </Grid>
                         )}
+                        {/* Contraseña */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
+                              <InputLabel htmlFor="password">Contraseña *</InputLabel>
+                              <OutlinedInput
+                                 id="password"
+                                 name="password"
+                                 label="Contraseña *"
+                                 type={showPassword ? "text" : "password"}
+                                 value={values.password}
+                                 placeholder="Ingrese su contraseña, minimo 6 dígitos"
+                                 onBlur={handleBlur}
+                                 onChange={(e) => {
+                                    handleChange(e);
+                                    changePassword(e.target.value);
+                                 }}
+                                 endAdornment={
+                                    <InputAdornment position="end">
+                                       <IconButton
+                                          aria-label="toggle password visibility"
+                                          onClick={handleClickShowPassword}
+                                          onMouseDown={handleMouseDownPassword}
+                                          edge="end"
+                                          size="large"
+                                       >
+                                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                                       </IconButton>
+                                    </InputAdornment>
+                                 }
+                                 inputProps={{}}
+                                 fullWidth
+                                 disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
+                                 // disabled={values.id == 0 ? false : true}
+                                 error={errors.password && touched.password}
+                              />
+                              {touched.password && errors.password && (
+                                 <FormHelperText error id="ht-password">
+                                    {errors.password}
+                                 </FormHelperText>
+                              )}
+                           </FormControl>
+                           {strength !== 0 && (
+                              <FormControl fullWidth>
+                                 <Box sx={{ mb: 2 }}>
+                                    <Grid container spacing={2} alignItems="center">
+                                       <Grid>
+                                          <Box
+                                             style={{ backgroundColor: level?.color }}
+                                             sx={{
+                                                width: 85,
+                                                height: 8,
+                                                borderRadius: "7px"
+                                             }}
+                                          />
+                                       </Grid>
+                                       <Grid>
+                                          <Typography variant="subtitle1" fontSize="0.75rem">
+                                             {level?.label}
+                                          </Typography>
+                                       </Grid>
+                                    </Grid>
+                                 </Box>
+                              </FormControl>
+                           )}
+                        </Grid>
                      </Grid>
 
                      <LoadingButton

@@ -311,431 +311,433 @@ const VehicleForm = () => {
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* N° Económico */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="stock_number"
-                           name="stock_number"
-                           label="N° Económico *"
-                           type="text"
-                           value={values.stock_number}
-                           placeholder="Ingrese el número de inventario"
-                           onChange={handleChange}
-                           onBlur={(e) => {
-                              handleBlur(e);
-                              handleBlurStockNumber(e);
-                           }}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "stock_number", true)}
-                           // InputProps={{ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[0] = el)}
-                           // inputRef={inputRefVehicle}
-                           error={errors.stock_number && touched.stock_number}
-                           helperText={errors.stock_number && touched.stock_number && errors.stock_number}
-                        />
-                     </Grid>
-                     {/* Marca */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <Select2Component
-                           idName={"brand_id"}
-                           label={"Marca *"}
-                           valueLabel={values.brand}
-                           formDataLabel={"brand"}
-                           placeholder={"Selecciona una opción..."}
-                           options={brands}
-                           fullWidth={true}
-                           handleChangeValueSuccess={handleChangeBrands}
-                           handleBlur={handleBlur}
-                           error={errors.brand_id}
-                           touched={touched.brand_id}
-                           disabled={false}
-                        />
-                     </Grid>
-                     {/* Modelo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <Select2Component
-                           idName={"model_id"}
-                           label={"Modelo *"}
-                           valueLabel={values.model}
-                           formDataLabel={"model"}
-                           placeholder={"Selecciona una opción..."}
-                           options={dataModels}
-                           fullWidth={true}
-                           // handleChangeValueSuccess={handleChangeBrands}
-                           handleBlur={handleBlur}
-                           error={errors.model_id}
-                           touched={touched.model_id}
-                           disabled={dataModels.length < 2 ? true : false}
-                        />
-                     </Grid>
-                     {/* Año */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="year"
-                           name="year"
-                           label="Año *"
-                           type="number"
-                           value={values.year}
-                           placeholder="Ingrese el año del modelo (YYYY)"
-                           onChange={(e) => {
-                              handleChange(e);
-                              handleChangeYear(e, setFieldValue);
-                           }}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "year", true)}
-                           inputProps={{
-                              maxLength: 4, // Limita la entrada a 4 caracteres
-                              min: 1900, // Establece el valor mínimo permitido (puedes ajustarlo según tus necesidades)
-                              max: new Date().getFullYear() + 1
-                           }}
-                           // inputProps={{ maxLength: 4, pattern: /^[0-9]{4}$/ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[0] = el)}
-                           // inputRef={inputRefVehicle}
-                           error={errors.year && touched.year}
-                           helperText={errors.year && touched.year && errors.year}
-                        />
-                     </Grid>
-                     {/* Fecha de Registro */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <DatePickerComponent
-                           idName={"registration_date"}
-                           label={"Fecha de Registro *"}
-                           format={"DD/MM/YYYY"}
-                           value={values.registration_date}
-                           setFieldValue={setFieldValue}
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           error={errors.registration_date}
-                           touched={touched.registration_date}
-                           showErrorInput={null}
-                        />
-                     </Grid>
-                     {/* Estatus */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <Select2Component
-                           idName={"vehicle_status_id"}
-                           label={"Estatus del Vehículo *"}
-                           valueLabel={values.vehicle_status}
-                           values={values}
-                           formData={formData}
-                           setFormData={setFormData}
-                           formDataLabel={"vehicle_status"}
-                           placeholder={"Selecciona una opción..."}
-                           options={vehicleStatuss}
-                           fullWidth={true}
-                           handleChange={handleChange}
-                           // handleChangeValueSuccess={handleChangeRole}
-                           setValues={setValues}
-                           handleBlur={handleBlur}
-                           error={errors.vehicle_status_id}
-                           touched={touched.vehicle_status_id}
-                           disabled={false}
-                        />
-                     </Grid>
-                     {/* Descripcion */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="description"
-                           name="description"
-                           label="Descripción"
-                           type="text"
-                           value={values.description}
-                           placeholder="Inserte una breve descripción de la marca"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "description", false)}
-                           inputProps={{ maxLength: 1500 }}
-                           fullWidth
-                           multiline
-                           rows={3}
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.description && touched.description}
-                           helperText={errors.description && touched.description && errors.description}
-                        />
-                     </Grid>
-                     {/* Tipos de Licencia Aceptables */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                        <Tooltip title="Tipos de licencia que pueden manejar ésta unidad. Si es más de un tipo, separar por coma; Ej. A,C...">
+                     <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
+                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                        {/* N° Económico */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
-                              id="acceptable_license_type"
-                              name="acceptable_license_type"
-                              label="Tipos de Licencia Aceptables *"
+                              id="stock_number"
+                              name="stock_number"
+                              label="N° Económico *"
                               type="text"
-                              value={values.acceptable_license_type}
-                              placeholder="A | B | C | A,C"
+                              value={values.stock_number}
+                              placeholder="Ingrese el número de inventario"
+                              onChange={handleChange}
+                              onBlur={(e) => {
+                                 handleBlur(e);
+                                 handleBlurStockNumber(e);
+                              }}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "stock_number", true)}
+                              // InputProps={{ }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[0] = el)}
+                              // inputRef={inputRefVehicle}
+                              error={errors.stock_number && touched.stock_number}
+                              helperText={errors.stock_number && touched.stock_number && errors.stock_number}
+                           />
+                        </Grid>
+                        {/* Marca */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <Select2Component
+                              idName={"brand_id"}
+                              label={"Marca *"}
+                              valueLabel={values.brand}
+                              formDataLabel={"brand"}
+                              placeholder={"Selecciona una opción..."}
+                              options={brands}
+                              fullWidth={true}
+                              handleChangeValueSuccess={handleChangeBrands}
+                              handleBlur={handleBlur}
+                              error={errors.brand_id}
+                              touched={touched.brand_id}
+                              disabled={false}
+                           />
+                        </Grid>
+                        {/* Modelo */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <Select2Component
+                              idName={"model_id"}
+                              label={"Modelo *"}
+                              valueLabel={values.model}
+                              formDataLabel={"model"}
+                              placeholder={"Selecciona una opción..."}
+                              options={dataModels}
+                              fullWidth={true}
+                              // handleChangeValueSuccess={handleChangeBrands}
+                              handleBlur={handleBlur}
+                              error={errors.model_id}
+                              touched={touched.model_id}
+                              disabled={dataModels.length < 2 ? true : false}
+                           />
+                        </Grid>
+                        {/* Año */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="year"
+                              name="year"
+                              label="Año *"
+                              type="number"
+                              value={values.year}
+                              placeholder="Ingrese el año del modelo (YYYY)"
+                              onChange={(e) => {
+                                 handleChange(e);
+                                 handleChangeYear(e, setFieldValue);
+                              }}
+                              onBlur={handleBlur}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "year", true)}
+                              inputProps={{
+                                 maxLength: 4, // Limita la entrada a 4 caracteres
+                                 min: 1900, // Establece el valor mínimo permitido (puedes ajustarlo según tus necesidades)
+                                 max: new Date().getFullYear() + 1
+                              }}
+                              // inputProps={{ maxLength: 4, pattern: /^[0-9]{4}$/ }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[0] = el)}
+                              // inputRef={inputRefVehicle}
+                              error={errors.year && touched.year}
+                              helperText={errors.year && touched.year && errors.year}
+                           />
+                        </Grid>
+                        {/* Fecha de Registro */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <DatePickerComponent
+                              idName={"registration_date"}
+                              label={"Fecha de Registro *"}
+                              format={"DD/MM/YYYY"}
+                              value={values.registration_date}
+                              setFieldValue={setFieldValue}
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "acceptable_license_type", true)}
-                              fullWidth
-                              inputProps={{ maxLength: 10 }}
-                              error={errors.acceptable_license_type && touched.acceptable_license_type}
-                              helperText={errors.acceptable_license_type && touched.acceptable_license_type && errors.acceptable_license_type}
+                              error={errors.registration_date}
+                              touched={touched.registration_date}
+                              showErrorInput={null}
                            />
-                        </Tooltip>
-                     </Grid>
+                        </Grid>
+                        {/* Estatus */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <Select2Component
+                              idName={"vehicle_status_id"}
+                              label={"Estatus del Vehículo *"}
+                              valueLabel={values.vehicle_status}
+                              values={values}
+                              formData={formData}
+                              setFormData={setFormData}
+                              formDataLabel={"vehicle_status"}
+                              placeholder={"Selecciona una opción..."}
+                              options={vehicleStatuss}
+                              fullWidth={true}
+                              handleChange={handleChange}
+                              // handleChangeValueSuccess={handleChangeRole}
+                              setValues={setValues}
+                              handleBlur={handleBlur}
+                              error={errors.vehicle_status_id}
+                              touched={touched.vehicle_status_id}
+                              disabled={false}
+                           />
+                        </Grid>
+                        {/* Descripcion */}
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <TextField
+                              id="description"
+                              name="description"
+                              label="Descripción"
+                              type="text"
+                              value={values.description}
+                              placeholder="Inserte una breve descripción de la marca"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "description", false)}
+                              inputProps={{ maxLength: 1500 }}
+                              fullWidth
+                              multiline
+                              rows={3}
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[1] = el)}
+                              error={errors.description && touched.description}
+                              helperText={errors.description && touched.description && errors.description}
+                           />
+                        </Grid>
+                        {/* Tipos de Licencia Aceptables */}
+                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                           <Tooltip title="Tipos de licencia que pueden manejar ésta unidad. Si es más de un tipo, separar por coma; Ej. A,C...">
+                              <TextField
+                                 id="acceptable_license_type"
+                                 name="acceptable_license_type"
+                                 label="Tipos de Licencia Aceptables *"
+                                 type="text"
+                                 value={values.acceptable_license_type}
+                                 placeholder="A | B | C | A,C"
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "acceptable_license_type", true)}
+                                 fullWidth
+                                 inputProps={{ maxLength: 10 }}
+                                 error={errors.acceptable_license_type && touched.acceptable_license_type}
+                                 helperText={errors.acceptable_license_type && touched.acceptable_license_type && errors.acceptable_license_type}
+                              />
+                           </Tooltip>
+                        </Grid>
 
-                     {/* Imagen PREVIEW del vehículo */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_preview"
-                           label="Foto PREVIEW del vehículo"
-                           filePreviews={imgPreview}
-                           setFilePreviews={setImgPreview}
-                           error={errors.img_preview}
-                           touched={touched.img_preview}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-                     {/* Imagen L. DERECHO del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_right"
-                           label="Foto L. DERECHO del vehículo"
-                           filePreviews={imgRight}
-                           setFilePreviews={setImgRight}
-                           error={errors.img_right}
-                           touched={touched.img_right}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-                     {/* Imagen TRASERA del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_back"
-                           label="Foto TRASERA del vehículo"
-                           filePreviews={imgBack}
-                           setFilePreviews={setImgBack}
-                           error={errors.img_back}
-                           touched={touched.img_back}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-                     {/* Imagen L. IZQUIERDO del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_left"
-                           label="Foto L. IZQUIERDO del vehículo"
-                           filePreviews={imgLeft}
-                           setFilePreviews={setImgLeft}
-                           error={errors.img_left}
-                           touched={touched.img_left}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-                     {/* Imagen FRONTAL del vehículo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_front"
-                           label="Foto FRONTAL del vehículo"
-                           filePreviews={imgFront}
-                           setFilePreviews={setImgFront}
-                           error={errors.img_front}
-                           touched={touched.img_front}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-
-                     {/* Separador */}
-                     <Grid xs={12}>
-                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                     </Grid>
-
-                     {/* Número de Serie */}
-                     <Grid xs={12} md={12} sx={{ mb: -2 }}>
-                        <TextField
-                           id="serial_number"
-                           name="serial_number"
-                           label="Número de Serie *"
-                           type="text"
-                           value={values.serial_number}
-                           placeholder="Inserte el número de serie"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "serial_number", true)}
-                           // inputProps={{ maxLength: 9 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.serial_number && touched.serial_number}
-                           helperText={errors.serial_number && touched.serial_number && errors.serial_number}
-                        />
-                     </Grid>
-                     {/* Switch para replaquear */}
-                     <Grid xs={12} md={12} sx={{ mb: 0 }}>
-                        <FormControlLabel
-                           control={<Switch />}
-                           label="Evidencia de Número de Serie Visible en la Unidad?"
-                           checked={visibleSerialNumber}
-                           onChange={(e) => handleChangeVisibleSerialNumber(e, setFieldValue)}
-                        />
-                     </Grid>
-                     {/* Evidencia de Número de Serie */}
-                     {visibleSerialNumber && (
+                        {/* Imagen PREVIEW del vehículo */}
                         <Grid xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
-                              idName="img_serial_number"
-                              label="Evidencia del Número de Serie"
-                              value={values.img_serial_number}
-                              filePreviews={imgSerialNumber}
-                              setFilePreviews={setImgSerialNumber}
-                              error={errors.img_serial_number}
-                              touched={touched.img_serial_number}
+                              idName="img_preview"
+                              label="Foto PREVIEW del vehículo"
+                              filePreviews={imgPreview}
+                              setFilePreviews={setImgPreview}
+                              error={errors.img_preview}
+                              touched={touched.img_preview}
                               multiple={false}
                               accept={"image/*"}
                            />
                         </Grid>
-                     )}
-
-                     {/* Separador */}
-                     <Grid xs={12}>
-                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                     </Grid>
-
-                     {/* N° Tarjeta de Circulación */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="circulation_card"
-                           name="circulation_card"
-                           label="N° Tarjeta de Circulación *"
-                           type="text"
-                           value={values.circulation_card}
-                           placeholder="Inserte el número de tarjeta de circulación"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "circulation_card", true)}
-                           // inputProps={{ maxLength: 9 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.circulation_card && touched.circulation_card}
-                           helperText={errors.circulation_card && touched.circulation_card && errors.circulation_card}
-                        />
-                     </Grid>
-                     {/* Tarjeta de Circulación */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_circulation_card"
-                           label="Tarjeta de circulación"
-                           value={values.img_circulation_card}
-                           filePreviews={imgCirculationCard}
-                           setFilePreviews={setImgCirculationCard}
-                           error={errors.img_circulation_card}
-                           touched={touched.img_circulation_card}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-
-                     {/* Separador */}
-                     <Grid xs={12}>
-                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                     </Grid>
-
-                     {/* N° Póliza de Seguro */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="insurance_policy"
-                           name="insurance_policy"
-                           label="N° Póliza de Seguro"
-                           type="text"
-                           value={values.insurance_policy}
-                           placeholder="Inserte el número de póliza del seguro"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "insurance_policy", true)}
-                           // inputProps={{ maxLength: 9 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.insurance_policy && touched.insurance_policy}
-                           helperText={errors.insurance_policy && touched.insurance_policy && errors.insurance_policy}
-                        />
-                     </Grid>
-                     {/* Poliza de Seguro */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_insurance_policy"
-                           label="Póliza de Seguro"
-                           value={values.img_insurance_policy}
-                           filePreviews={imgInsurancePolicy}
-                           setFilePreviews={setImgInsurancePolicy}
-                           error={errors.img_insurance_policy}
-                           touched={touched.img_insurance_policy}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-
-                     {/* Separador */}
-                     <Grid xs={12}>
-                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                     </Grid>
-
-                     {/* Switch para replaquear */}
-                     {formData.id > 0 && (
-                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
-                           <FormControlLabel control={<Switch />} label="Replaquear" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
+                        {/* Imagen L. DERECHO del vehículo */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_right"
+                              label="Foto L. DERECHO del vehículo"
+                              filePreviews={imgRight}
+                              setFilePreviews={setImgRight}
+                              error={errors.img_right}
+                              touched={touched.img_right}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
                         </Grid>
-                     )}
-                     {/* Placas */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="plates"
-                           name="plates"
-                           label="Placas"
-                           type="text"
-                           value={values.plates}
-                           placeholder="Inserte las placas del vehículo"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "plates", true)}
-                           inputProps={{ maxLength: 9 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.plates && touched.plates}
-                           helperText={errors.plates && touched.plates && errors.plates}
-                        />
-                     </Grid>
-                     {/* Fecha de Plaqueo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <DatePickerComponent
-                           idName={"initial_date"}
-                           label={"Fecha de Plaqueo *"}
-                           format={"DD/MM/YYYY"}
-                           value={values.initial_date}
-                           setFieldValue={setFieldValue}
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           error={errors.initial_date}
-                           touched={touched.initial_date}
-                           showErrorInput={null}
-                        />
-                     </Grid>
-                     {/* Fecha Expiracion de Placas */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <DatePickerComponent
-                           idName={"due_date"}
-                           label={"Fecha Expiración de Placas *"}
-                           format={"DD/MM/YYYY"}
-                           value={values.due_date}
-                           setFieldValue={setFieldValue}
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           error={errors.due_date}
-                           touched={touched.due_date}
-                           showErrorInput={null}
-                        />
+                        {/* Imagen TRASERA del vehículo */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_back"
+                              label="Foto TRASERA del vehículo"
+                              filePreviews={imgBack}
+                              setFilePreviews={setImgBack}
+                              error={errors.img_back}
+                              touched={touched.img_back}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+                        {/* Imagen L. IZQUIERDO del vehículo */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_left"
+                              label="Foto L. IZQUIERDO del vehículo"
+                              filePreviews={imgLeft}
+                              setFilePreviews={setImgLeft}
+                              error={errors.img_left}
+                              touched={touched.img_left}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+                        {/* Imagen FRONTAL del vehículo */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_front"
+                              label="Foto FRONTAL del vehículo"
+                              filePreviews={imgFront}
+                              setFilePreviews={setImgFront}
+                              error={errors.img_front}
+                              touched={touched.img_front}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+
+                        {/* Separador */}
+                        <Grid xs={12}>
+                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                        </Grid>
+
+                        {/* Número de Serie */}
+                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                           <TextField
+                              id="serial_number"
+                              name="serial_number"
+                              label="Número de Serie *"
+                              type="text"
+                              value={values.serial_number}
+                              placeholder="Inserte el número de serie"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "serial_number", true)}
+                              // inputProps={{ maxLength: 9 }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[1] = el)}
+                              error={errors.serial_number && touched.serial_number}
+                              helperText={errors.serial_number && touched.serial_number && errors.serial_number}
+                           />
+                        </Grid>
+                        {/* Switch para replaquear */}
+                        <Grid xs={12} md={12} sx={{ mb: 0 }}>
+                           <FormControlLabel
+                              control={<Switch />}
+                              label="Evidencia de Número de Serie Visible en la Unidad?"
+                              checked={visibleSerialNumber}
+                              onChange={(e) => handleChangeVisibleSerialNumber(e, setFieldValue)}
+                           />
+                        </Grid>
+                        {/* Evidencia de Número de Serie */}
+                        {visibleSerialNumber && (
+                           <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                              <InputFileComponent
+                                 idName="img_serial_number"
+                                 label="Evidencia del Número de Serie"
+                                 value={values.img_serial_number}
+                                 filePreviews={imgSerialNumber}
+                                 setFilePreviews={setImgSerialNumber}
+                                 error={errors.img_serial_number}
+                                 touched={touched.img_serial_number}
+                                 multiple={false}
+                                 accept={"image/*"}
+                              />
+                           </Grid>
+                        )}
+
+                        {/* Separador */}
+                        <Grid xs={12}>
+                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                        </Grid>
+
+                        {/* N° Tarjeta de Circulación */}
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <TextField
+                              id="circulation_card"
+                              name="circulation_card"
+                              label="N° Tarjeta de Circulación *"
+                              type="text"
+                              value={values.circulation_card}
+                              placeholder="Inserte el número de tarjeta de circulación"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "circulation_card", true)}
+                              // inputProps={{ maxLength: 9 }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[1] = el)}
+                              error={errors.circulation_card && touched.circulation_card}
+                              helperText={errors.circulation_card && touched.circulation_card && errors.circulation_card}
+                           />
+                        </Grid>
+                        {/* Tarjeta de Circulación */}
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_circulation_card"
+                              label="Tarjeta de circulación"
+                              value={values.img_circulation_card}
+                              filePreviews={imgCirculationCard}
+                              setFilePreviews={setImgCirculationCard}
+                              error={errors.img_circulation_card}
+                              touched={touched.img_circulation_card}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+
+                        {/* Separador */}
+                        <Grid xs={12}>
+                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                        </Grid>
+
+                        {/* N° Póliza de Seguro */}
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <TextField
+                              id="insurance_policy"
+                              name="insurance_policy"
+                              label="N° Póliza de Seguro"
+                              type="text"
+                              value={values.insurance_policy}
+                              placeholder="Inserte el número de póliza del seguro"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "insurance_policy", true)}
+                              // inputProps={{ maxLength: 9 }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[1] = el)}
+                              error={errors.insurance_policy && touched.insurance_policy}
+                              helperText={errors.insurance_policy && touched.insurance_policy && errors.insurance_policy}
+                           />
+                        </Grid>
+                        {/* Poliza de Seguro */}
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_insurance_policy"
+                              label="Póliza de Seguro"
+                              value={values.img_insurance_policy}
+                              filePreviews={imgInsurancePolicy}
+                              setFilePreviews={setImgInsurancePolicy}
+                              error={errors.img_insurance_policy}
+                              touched={touched.img_insurance_policy}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+
+                        {/* Separador */}
+                        <Grid xs={12}>
+                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                        </Grid>
+
+                        {/* Switch para replaquear */}
+                        {formData.id > 0 && (
+                           <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                              <FormControlLabel control={<Switch />} label="Replaquear" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
+                           </Grid>
+                        )}
+                        {/* Placas */}
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <TextField
+                              id="plates"
+                              name="plates"
+                              label="Placas"
+                              type="text"
+                              value={values.plates}
+                              placeholder="Inserte las placas del vehículo"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "plates", true)}
+                              inputProps={{ maxLength: 9 }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[1] = el)}
+                              error={errors.plates && touched.plates}
+                              helperText={errors.plates && touched.plates && errors.plates}
+                           />
+                        </Grid>
+                        {/* Fecha de Plaqueo */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <DatePickerComponent
+                              idName={"initial_date"}
+                              label={"Fecha de Plaqueo *"}
+                              format={"DD/MM/YYYY"}
+                              value={values.initial_date}
+                              setFieldValue={setFieldValue}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={errors.initial_date}
+                              touched={touched.initial_date}
+                              showErrorInput={null}
+                           />
+                        </Grid>
+                        {/* Fecha Expiracion de Placas */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <DatePickerComponent
+                              idName={"due_date"}
+                              label={"Fecha Expiración de Placas *"}
+                              format={"DD/MM/YYYY"}
+                              value={values.due_date}
+                              setFieldValue={setFieldValue}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={errors.due_date}
+                              touched={touched.due_date}
+                              showErrorInput={null}
+                           />
+                        </Grid>
                      </Grid>
 
                      <LoadingButton

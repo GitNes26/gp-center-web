@@ -35,7 +35,7 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const DriverForm = () => {
    const { auth } = useAuthContext();
-   const { departments } = useDepartmentContext();
+   // const { departments } = useDepartmentContext();
    const { directors } = useDirectorContext();
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
@@ -224,22 +224,22 @@ const DriverForm = () => {
    const handleModify = async (values, setValues, setFieldValue) => {
       try {
          if (formData.community_id > 0) {
-            // setShowLoading(true);
-            getCommunity(
-               formData.zip,
-               setFieldValue,
-               formData.community_id,
-               formData,
-               setFormData,
-               setDisabledState,
-               setDisabledCity,
-               setDisabledColony,
-               setShowLoading,
-               setDataStates,
-               setDataCities,
-               setDataColonies,
-               setDataColoniesComplete
-            );
+            // // setShowLoading(true);
+            // getCommunity(
+            //    formData.zip,
+            //    setFieldValue,
+            //    formData.community_id,
+            //    formData,
+            //    setFormData,
+            //    setDisabledState,
+            //    setDisabledCity,
+            //    setDisabledColony,
+            //    setShowLoading,
+            //    setDataStates,
+            //    setDataCities,
+            //    setDataColonies,
+            //    setDataColoniesComplete
+            // );
          }
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);

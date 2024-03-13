@@ -96,6 +96,7 @@ const ModalCancelComments = ({ open, setOpen }) => {
             open={open}
             TransitionComponent={Transition}
             keepMounted
+            maxWidth={"sm"}
             fullWidth
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
@@ -113,6 +114,8 @@ const ModalCancelComments = ({ open, setOpen }) => {
                      name="canceled_comments"
                      label="Comentarios de cancelación *"
                      type="text"
+                     multiline
+                     rows={5}
                      value={formData.canceled_comments}
                      placeholder="Ingrese comentarios..."
                      onChange={(e) => {
@@ -124,7 +127,6 @@ const ModalCancelComments = ({ open, setOpen }) => {
                         if (Number(e.target.value.length) <= 0) setShowErrorComments(true);
                      }}
                      onBlur={(e) => {
-                        console.log("Number(e.target.value.length)", Number(e.target.value.length));
                         setShowErrorComments(false);
                         if (Number(e.target.value.length) <= 0) setShowErrorComments(true);
                      }}

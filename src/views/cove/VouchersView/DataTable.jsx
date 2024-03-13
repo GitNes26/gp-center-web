@@ -72,7 +72,8 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       "username_canceled",
       "canceled_at",
       "canceled_comments",
-      "created_at"
+      "created_at",
+      "creditor_fullname"
    ];
 
    // #region BodysTemplate
@@ -264,7 +265,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    const ButtonsAction = ({ id, user_id, name, obj }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Ver ${singularName}`} placement="top">
+            <Tooltip title={`Ver Oficio #${id}`} placement="top">
                <Button color="dark" onClick={() => handleClickShow(id, obj)}>
                   <IconEye />
                </Button>

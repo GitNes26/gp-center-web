@@ -121,7 +121,7 @@ import { useDropzone } from "react-dropzone";
 // #endregion
 
 export const setObjImg = (img, setImg) => {
-   if (img == "") return setImg([]);
+   if (img == "" || img == undefined) return setImg([]);
    // console.log("setObjImg --> ", img, " <--");
    const imgObj = {
       file: {

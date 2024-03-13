@@ -3,7 +3,7 @@ import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
-const DirectorContext = createContext();
+const VoucherRequesterContext = createContext();
 
 const formDataInitialState = {
    id: 0,
@@ -14,10 +14,6 @@ const formDataInitialState = {
    role_id: 0,
    avatar: "",
    phone: "",
-   license_number: "",
-   license_type: "",
-   license_due_date: "",
-   img_lincense: "",
    payroll_number: "",
    // department_id: "",
    // department: "Selecciona una opción...",
@@ -26,18 +22,9 @@ const formDataInitialState = {
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
-   community_id: 0,
-   street: "",
-   num_ext: "",
-   num_int: "",
-
-   zip: "",
-   state: 0,
-   city: 0,
-   colony: 0,
    payroll_number_exist: false
 };
-const directorInitialState = {
+const voucherRequesterInitialState = {
    id: 0,
    user_id: 0,
    username: "",
@@ -47,10 +34,6 @@ const directorInitialState = {
    role: "Selecciona una opción...",
    avatar: "",
    phone: "",
-   license_number: "",
-   license_type: "",
-   license_due_date: "",
-   img_lincense: "",
    payroll_number: "",
    // department_id: "",
    // department: "Selecciona una opción...",
@@ -59,29 +42,20 @@ const directorInitialState = {
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
-   community_id: 0,
-   street: "",
-   num_ext: "",
-   num_int: "",
-
-   zip: "",
-   state: "Selecciona una opción...",
-   city: "Selecciona una opción...",
-   colony: "Selecciona una opción...",
    payroll_number_exist: false
 };
 
-export default function DirectorContextProvider({ children }) {
+export default function VoucherRequesterContextProvider({ children }) {
    const { auth } = useAuthContext();
 
-   const singularName = "Director"; //Escribirlo siempre letra Capital
-   const pluralName = "Directores"; //Escribirlo siempre letra Capital
+   const singularName = "Solicitador de Vales"; //Escribirlo siempre letra Capital
+   const pluralName = "Solicitadores de Vales"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [director, setDirector] = useState(directorInitialState);
-   const [directors, setDirectors] = useState([]);
+   const [voucherRequester, setVoucherRequester] = useState(voucherRequesterInitialState);
+   const [voucherRequesters, setVoucherRequesters] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
@@ -92,22 +66,22 @@ export default function DirectorContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-   const resetDirector = () => {
+   const resetVoucherRequester = () => {
       try {
-         setDirector(directorInitialState);
+         setVoucherRequester(voucherRequesterInitialState);
       } catch (error) {
-         console.log("Error en resetDirector:", error);
+         console.log("Error en resetVoucherRequester:", error);
          Toast.Error(error);
       }
    };
 
-   const getDirectors = async () => {
+   const getVoucherRequesters = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/directors`);
-         res.result.directors = axiosData.data.data.result;
-         setDirectors(axiosData.data.data.result);
-         // console.log("directors", directors);
+         const axiosData = await Axios.get(`/voucherRequesters`);
+         res.result.voucherRequesters = axiosData.data.data.result;
+         setVoucherRequesters(axiosData.data.data.result);
+         // console.log("voucherRequesters", voucherRequesters);
 
          return res;
       } catch (error) {
@@ -118,10 +92,10 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const showDirector = async (id) => {
+   const showVoucherRequester = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/directors/${id}`);
+         const axiosData = await Axios.get(`/voucherRequesters/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          res.result.zip = "";
@@ -131,9 +105,9 @@ export default function DirectorContextProvider({ children }) {
          res.result.payroll_number_exist = true;
          if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
 
-         setDirector(res.result);
+         setVoucherRequester(res.result);
          setFormData(res.result);
-         // console.log("showDirector", res);
+         // console.log("showVoucherRequester", res);
 
          return res;
       } catch (error) {
@@ -144,15 +118,15 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const getDirectorsSelectIndex = async () => {
+   const getVoucherRequestersSelectIndex = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/directors/selectIndex`);
+         const axiosData = await Axios.get(`/voucherRequesters/selectIndex`);
          // console.log("el selectedDeRoles", axiosData);
-         res.result.directors = axiosData.data.data.result;
-         res.result.directors.unshift({ id: 0, label: "Selecciona una opción..." });
-         setDirectors(axiosData.data.data.result);
-         // console.log("directors", directors);
+         res.result.voucherRequesters = axiosData.data.data.result;
+         res.result.voucherRequesters.unshift({ id: 0, label: "Selecciona una opción..." });
+         setVoucherRequesters(axiosData.data.data.result);
+         // console.log("voucherRequesters", voucherRequesters);
 
          return res;
       } catch (error) {
@@ -163,18 +137,18 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const createDirector = async (director) => {
+   const createVoucherRequester = async (voucherRequester) => {
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post(`/users/create/5`, director);
-         const axiosData = await Axios.post(`/users/create/role_id/5`, director, {
+         // const axiosData = await Axios.post(`/users/create/5`, voucherRequester);
+         const axiosData = await Axios.post(`/users/create/role_id/8`, voucherRequester, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
          });
          // console.log(axiosData);
          res = axiosData.data.data;
-         getDirectors();
+         getVoucherRequesters();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -185,18 +159,18 @@ export default function DirectorContextProvider({ children }) {
       return res;
    };
 
-   const updateDirector = async (director) => {
+   const updateVoucherRequester = async (voucherRequester) => {
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post("/directors/update", director);
-         // const axiosData = await Axios.post(`/users/update/${director.user_id}`, director);
-         const axiosData = await Axios.post(`/users/update/role_id/5`, director, {
+         // const axiosData = await Axios.post("/voucherRequesters/update", voucherRequester);
+         // const axiosData = await Axios.post(`/users/update/${voucherRequester.user_id}`, voucherRequester);
+         const axiosData = await Axios.post(`/users/update/role_id/8`, voucherRequester, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
          });
          res = axiosData.data.data;
-         getDirectors();
+         getVoucherRequesters();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -207,12 +181,12 @@ export default function DirectorContextProvider({ children }) {
       return res;
    };
 
-   const deleteDirector = async (user_id) => {
+   const deleteVoucherRequester = async (user_id) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/users/destroy/${user_id}`);
-         // console.log("deleteDirector() axiosData", axiosData.data);
-         getDirectors();
+         // console.log("deleteVoucherRequester() axiosData", axiosData.data);
+         getVoucherRequesters();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -226,29 +200,29 @@ export default function DirectorContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de DirectorContext");
-   //    getDirectors();
+   //    console.log("el useEffect de VoucherRequesterContext");
+   //    getVoucherRequesters();
    // });
 
    return (
-      <DirectorContext.Provider
+      <VoucherRequesterContext.Provider
          value={{
             singularName,
             pluralName,
-            directors,
-            setDirectors,
-            director,
-            setDirector,
-            resetDirector,
+            voucherRequesters,
+            setVoucherRequesters,
+            voucherRequester,
+            setVoucherRequester,
+            resetVoucherRequester,
             formData,
             setFormData,
             resetFormData,
-            getDirectors,
-            showDirector,
-            getDirectorsSelectIndex,
-            createDirector,
-            updateDirector,
-            deleteDirector,
+            getVoucherRequesters,
+            showVoucherRequester,
+            getVoucherRequestersSelectIndex,
+            createVoucherRequester,
+            updateVoucherRequester,
+            deleteVoucherRequester,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
@@ -256,7 +230,7 @@ export default function DirectorContextProvider({ children }) {
          }}
       >
          {children}
-      </DirectorContext.Provider>
+      </VoucherRequesterContext.Provider>
    );
 }
-export const useDirectorContext = () => useContext(DirectorContext);
+export const useVoucherRequesterContext = () => useContext(VoucherRequesterContext);

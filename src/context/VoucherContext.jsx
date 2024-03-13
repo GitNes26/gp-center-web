@@ -12,6 +12,8 @@ const voucherInitialState = {
    vehicle: "",
    vehicle_plates: "",
    requested_amount: 0,
+   workstation: "",
+   img_firm: "",
 
    payroll_number: "",
    department: "",
@@ -29,7 +31,9 @@ const voucherInitialState = {
    approved_at: "",
    canceled_by: "",
    canceled_comments: "",
-   canceled_at: ""
+   canceled_at: "",
+
+   creditor_fullname: ""
 };
 
 export default function VoucherContextProvider({ children }) {

@@ -16,39 +16,40 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    const [formData, setFormData] = useState({
       folio: "",
       date: "--/--/----",
-      directorFrom: "C. ING. RODRIGO DE LA TORRE VALLE",
-      departmentFrom: "OFICIAL MAYOR",
-      directorTo: "LIC. MAURICIO GUERRERO FELIX",
-      departmentTo: " JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
+      directorFrom: "LIC. MAURICIO GUERRERO FELIX",
+      departmentFrom: "JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
+      directorTo: "C. ING. RODRIGO DE LA TORRE VALLE",
+      departmentTo: "OFICIAL MAYOR",
       workstationFirm: "JEFE DE DEPARTAMENTO DE SERVICIOS GENERALES",
       imgFirm: null,
       directorFirm: "C. FERNANDO ANTONIO LAVIN GONZALEZ"
    });
 
    useEffect(() => {
-      console.log("estoy en el modal", voucher);
+      // console.log("estoy en el modal", voucher);
    }, []);
    useLayoutEffect(() => {
-      // console.log("estoy en el useLayoutEffect", drivers);
+      console.log("estoy en el useLayoutEffect", voucher);
       formData.folio = voucher.id;
       formData.date = voucher.created_at;
+      formData.workstationFirm = voucher.workstation;
+      formData.imgFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
+      formData.directorFirm = voucher.requested_role_id === 7 ? "LIC. MAURICIO GUERRERO FELIX" : voucher.requested_fullname;
+      console.log("estoy en el useLayoutEffect final", formData);
    }, [voucher]);
 
    return (
-      <ModalPDF open={open} setOpen={setOpen} formTitle={"SOLICITUD DE VALES"} watermark={"Control Vehícular"} formData={formData}>
-         <Text style={stylesPDF.p}>
-            {voucher.activity ??
-               "En virtud del desempeño de las actividades dentro de este Departamento de Servicios Generales, se realizan diferentes diligencias relativas a visitar a todos los centros foráneos para la supervisión del personal, así como ir constantemente a la bodega general de Tepepan; Las cuales son efectuadas en vehículos particulares debido a que no se cuenta con suficientes vehículos oficiales, motivo por el cual se tiene justificado solicitar vales semanales de gasolina, para los siguientes vehículos."}
-         </Text>
+      <ModalPDF open={open} setOpen={setOpen} formTitle={"OFICIO DE VALES"} watermark={"Control Vehícular"} formData={formData}>
+         <Text style={stylesPDF.p}>{voucher.activity}</Text>
          <View style={[stylesPDF.table, stylesPDF.center]}>
             <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}>CANTIDAD</Text>
-               <Text style={stylesPDF.cell}>{voucher.approved_amount ?? "-"}</Text>
+               <Text style={stylesPDF.cell}>{voucher.requested_amount ?? "-"}</Text>
             </View>
-            <View style={stylesPDF.column}>
+            {/* <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VALES</Text>
                <Text style={stylesPDF.cell}>{voucher.foliated_vouchers ?? "-"}</Text>
-            </View>
+            </View> */}
             <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VEHÍCULO</Text>
                <Text style={stylesPDF.cell}>{voucher.vehicle}</Text>
@@ -59,7 +60,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
             </View>
             <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}>EMPLEADO</Text>
-               <Text style={stylesPDF.cell}>{voucher.requested_fullname}</Text>
+               <Text style={stylesPDF.cell}>{voucher.creditor_fullname}</Text>
             </View>
             <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>

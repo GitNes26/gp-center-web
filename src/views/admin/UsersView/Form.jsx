@@ -159,24 +159,24 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    const handleModify = async (values, setValues, setFieldValue) => {
       try {
          if (formData.community_id > 0) {
-            // setShowLoading(true);
+            // // setShowLoading(true);
 
-            getCommunity(
-               formData.zip,
-               setFieldValue,
-               formData.community_id,
-               formData,
-               values,
-               setFormData,
-               setDisabledState,
-               setDisabledCity,
-               setDisabledColony,
-               setShowLoading,
-               setDataStates,
-               setDataCities,
-               setDataColonies,
-               setDataColoniesComplete
-            );
+            // getCommunity(
+            //    formData.zip,
+            //    setFieldValue,
+            //    formData.community_id,
+            //    formData,
+            //    values,
+            //    setFormData,
+            //    setDisabledState,
+            //    setDisabledCity,
+            //    setDisabledColony,
+            //    setShowLoading,
+            //    setDataStates,
+            //    setDataCities,
+            //    setDataColonies,
+            //    setDataColoniesComplete
+            // );
          }
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);

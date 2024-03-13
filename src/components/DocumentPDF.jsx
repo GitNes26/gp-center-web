@@ -191,6 +191,7 @@ export const stylesPDF = StyleSheet.create({
    cell: {
       border: "1px solid black",
       flexWrap: "wrap",
+      fontSize: 10,
       textAlign: "center",
       justifyContent: "center",
       padding: 5,
@@ -209,6 +210,15 @@ export const stylesPDF = StyleSheet.create({
       left: "50%",
       transform: "translateX(-100%)",
       marginBottom: -10
+   },
+   upperCase: {
+      textTransform: "uppercase"
+   },
+   lowerCase: {
+      textTransform: "lowercase"
+   },
+   capitalizeCase: {
+      textTransform: "capitalize"
    }
 
    // textContent: {
@@ -255,20 +265,20 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                     </View> */}
 
                <View style={stylesPDF.folioDate}>
-                  <Text>{formData.folio}</Text>
+                  <Text>Folio: #{formData.folio}</Text>
                   <Text style={{ fontFamily: "Roboto-Regular" }}>Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false) : "--/--/----"}</Text>
                </View>
 
                <View style={stylesPDF.dataTitlesLeft}>
-                  <Text>{formData.directorFrom}</Text>
-                  <Text>{formData.departmentFrom}</Text>
+                  <Text style={stylesPDF.upperCase}>{formData.directorFrom}</Text>
+                  <Text style={stylesPDF.upperCase}>{formData.departmentFrom}</Text>
                   <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
                </View>
 
                <View style={stylesPDF.dataTitlesRigth}>
                   <Text>CON ATENCIÓN A:</Text>
-                  <Text>{formData.directorTo}</Text>
-                  <Text>{formData.departmentTo}</Text>
+                  <Text style={stylesPDF.upperCase}>{formData.directorTo}</Text>
+                  <Text style={stylesPDF.upperCase}>{formData.departmentTo}</Text>
                </View>
 
                {/* CUERPO DEL MENSAJE */}
@@ -277,10 +287,10 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
 
                <View style={stylesPDF.firmContainer}>
                   <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
-                  <Text>{formData.workstationFirm}</Text>
+                  <Text style={stylesPDF.upperCase}>{formData.workstationFirm}</Text>
                   <Image style={stylesPDF.firma} src={formData.imgFirm ?? formDataInitial.imgFirm} />
                   <Text>______________________________________</Text>
-                  <Text>{formData.directorFirm} </Text>
+                  <Text style={stylesPDF.upperCase}>{formData.directorFirm} </Text>
                </View>
             </View>
 
