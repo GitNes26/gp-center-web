@@ -20,24 +20,29 @@ import { useAuthContext } from "../context/AuthContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
 import { formatDatetime } from "../utils/Formats";
 
+import RobotoBold from "../assets/fonts/Roboto-Bold.ttf";
+import RobotoRegular from "../assets/fonts/Roboto-Regular.ttf";
+import RobotoItalic from "../assets/fonts/Roboto-Italic.ttf";
+import ProtestRiot from "../assets/fonts/ProtestRiot-Regular.ttf";
+
 //#region FUENTES
 Font.register({
    family: "Roboto-Bold",
-   src: "/src/assets/fonts/Roboto-Bold.ttf"
+   src: RobotoBold
 });
 
 Font.register({
    family: "Roboto-Regular",
-   src: "/src/assets/fonts/Roboto-Regular.ttf"
+   src: RobotoRegular
 });
 Font.register({
    family: "Roboto-Italic",
-   src: "/src/assets/fonts/Roboto-Italic.ttf"
+   src: RobotoItalic
 });
 
 Font.register({
    family: "Protest-Riot",
-   src: "/src/assets/fonts/ProtestRiot-Regular.ttf"
+   src: ProtestRiot
 });
 
 //#endregion
@@ -251,9 +256,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
 
                <View style={stylesPDF.folioDate}>
                   <Text>{formData.folio}</Text>
-                  <Text style={{ fontFamily: "Roboto-Regular" }}>
-                     Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false, "LL") : "--/--/----"}
-                  </Text>
+                  <Text style={{ fontFamily: "Roboto-Regular" }}>Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false) : "--/--/----"}</Text>
                </View>
 
                <View style={stylesPDF.dataTitlesLeft}>
