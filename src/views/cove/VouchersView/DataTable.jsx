@@ -58,6 +58,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       "name",
       "paternal_last_name",
       "maternal_last_name",
+      "requested_fullname",
       "phone",
       "department",
       "activity",
@@ -97,16 +98,13 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
          Placas: <b>{obj.vehicle_plates}</b>
       </Typography>
    );
-   const RequestedByBodyTemplate = (obj) => {
-      const full_name = `${obj.name} ${obj.paternal_last_name} ${obj.maternal_last_name}`;
-      return (
-         <Typography textAlign={"center"} fontWeight={"normal"}>
-            N° Nómina: <b>{obj.payroll_number}</b> <br />
-            Nombre: <b>{full_name}</b> <br />
-            Tel: <b>{formatPhone(obj.phone)}</b>
-         </Typography>
-      );
-   };
+   const RequestedByBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} fontWeight={"normal"}>
+         N° Nómina: <b>{obj.payroll_number}</b> <br />
+         Nombre: <b>{obj.requested_fullname}</b> <br />
+         Tel: <b>{formatPhone(obj.phone)}</b>
+      </Typography>
+   );
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
    const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity}</Typography>;
    const RequestAmountBodyTemplate = (obj) => (

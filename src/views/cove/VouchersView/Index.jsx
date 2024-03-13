@@ -12,9 +12,7 @@ import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import VoucherDT from "./DataTable";
 import ModalCancelComments from "./ModalCancelComments";
-import ModalShowRequest from "./ModalShowRequest";
-import { ModalFormatPDF } from "../../../components/RequestPDF";
-import ModalContentPDF from "./ModalShowRequest";
+import ModalContentPDF from "./ModalContentPDF";
 
 const VouchersView = () => {
    // const { result } = useLoaderData();

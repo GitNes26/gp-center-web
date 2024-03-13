@@ -1,6 +1,6 @@
 import moment from "moment";
 import Toast from "./Toast";
-moment.locale("es");
+moment.locale("es-mx");
 
 //#region /** FECHAS - FORMATEADO */
 function validateRangeDates(action, input_initial_date, input_final_date) {
@@ -42,7 +42,9 @@ function binaryDateTimeFormat(the_date) {
    return datetime;
 }
 
-export function formatDatetime(the_date, long_format = true) {
+export function formatDatetime(the_date, long_format = true, format = null) {
+   moment.locale("es-mx");
+
    if (the_date == null) return "Sin Fecha";
    let date = new Date(the_date);
    let datetime;
@@ -57,7 +59,9 @@ export function formatDatetime(the_date, long_format = true) {
 
    date = new Date(the_date);
    const formato = long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY";
-   return (datetime = moment(date).format(formato));
+   return (datetime = moment(date)
+      .locale("es-mx")
+      .format(format ? format : formato));
    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(date);
 }
 

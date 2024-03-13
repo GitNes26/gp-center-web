@@ -2,6 +2,7 @@
 import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import backgroundImage from "../assets/images/Oficio.jpg";
 import firmademo from "../assets/images/FirmaDemo.png";
+import sinFirma from "../assets/images/sinFirma.png";
 
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -17,6 +18,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 import { useAuthContext } from "../context/AuthContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
+import { formatDatetime } from "../utils/Formats";
 
 //#region FUENTES
 Font.register({
@@ -40,7 +42,7 @@ Font.register({
 
 //#endregion
 
-// Crear estilos
+//#region ESTILOS
 export const stylesPDF = StyleSheet.create({
    body: {
       paddingTop: 35,
@@ -106,7 +108,7 @@ export const stylesPDF = StyleSheet.create({
    pageBody: {
       position: "relative"
    },
-   image2: {
+   bgImage: {
       width: "100%",
       height: "100%"
    },
@@ -200,7 +202,8 @@ export const stylesPDF = StyleSheet.create({
    firma: {
       width: "200px",
       left: "50%",
-      transform: "translateX(-50%)"
+      transform: "translateX(-100%)",
+      marginBottom: -10
    }
 
    // textContent: {
@@ -208,20 +211,22 @@ export const stylesPDF = StyleSheet.create({
    //     lineHeight: 1.5,
    // }
 });
+//#endregion ESTILOS
+
 const formDataInitial = {
-   folioInt: "",
-   date: "--/--/----",
+   folio: "",
+   date: null,
    directorFrom: "",
    departmentFrom: "",
    directorTo: "",
    departmentTo: "",
    workstationFirm: "",
-   imgFirm: firmademo,
+   imgFirm: sinFirma,
    directorFirm: ""
 };
 
 // Componente que representa el documento OficioPDF
-export const RequestPDF = ({ children, watermark = "Departamento Emisor", formData = formDataInitial }) => {
+export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formData = { formDataInitial } }) => {
    return (
       <Document>
          {/* <Page size="A4" style={stylesPDF.body} wrap>
@@ -233,7 +238,7 @@ export const RequestPDF = ({ children, watermark = "Departamento Emisor", formDa
                <Text style={stylesPDF.header} fixed>
                   ~ {watermark} ~
                </Text>
-               <Image style={stylesPDF.image2} src={backgroundImage} />
+               <Image style={stylesPDF.bgImage} src={backgroundImage} />
             </View>
             <View style={stylesPDF.viewContainer}>
                {/* <Image style={stylesPDF.image} src={logo}></Image> */}
@@ -246,7 +251,9 @@ export const RequestPDF = ({ children, watermark = "Departamento Emisor", formDa
 
                <View style={stylesPDF.folioDate}>
                   <Text>{formData.folio}</Text>
-                  <Text style={{ fontFamily: "Roboto-Regular" }}>Gómez Palacio, Dgo., {formData.date}</Text>
+                  <Text style={{ fontFamily: "Roboto-Regular" }}>
+                     Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false, "LL") : "--/--/----"}
+                  </Text>
                </View>
 
                <View style={stylesPDF.dataTitlesLeft}>
@@ -268,7 +275,7 @@ export const RequestPDF = ({ children, watermark = "Departamento Emisor", formDa
                <View style={stylesPDF.firmContainer}>
                   <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
                   <Text>{formData.workstationFirm}</Text>
-                  <Image style={stylesPDF.firma} src={formData.imgFirm} />
+                  <Image style={stylesPDF.firma} src={formData.imgFirm ?? formDataInitial.imgFirm} />
                   <Text>______________________________________</Text>
                   <Text>{formData.directorFirm} </Text>
                </View>
@@ -284,7 +291,7 @@ export const RequestPDF = ({ children, watermark = "Departamento Emisor", formDa
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="down" ref={ref} {...props} />;
 });
-export const ModalFormatPDF = ({ children, open, setOpen, formTitle = "titulo", watermark = "Departamento Emisor", formData }) => {
+export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, formData }) => {
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
@@ -346,10 +353,9 @@ export const ModalFormatPDF = ({ children, open, setOpen, formTitle = "titulo", 
             </DialogTitle>
             <DialogContent sx={{ pb: 0, height: "90vh" }}>
                <PDFViewer width={"100%"} height={"99%"}>
-                  <RequestPDF>
+                  <DocumentPDF watermark={watermark} formData={formData}>
                      {children}
-                     {/* {cloneElement(children, { watermark, formData })} */}
-                  </RequestPDF>
+                  </DocumentPDF>
                </PDFViewer>
             </DialogContent>
          </Dialog>
