@@ -1,3 +1,24 @@
+/**
+ * PARA INSTALAR
+ * npm i @react-pdf/renderer --save --legacy-peer-deps
+ *
+ * PASSAR ARCHIVOS
+ * import RobotoBold from "../assets/fonts/Roboto-Bold.ttf";
+ * import RobotoRegular from "../assets/fonts/Roboto-Regular.ttf";
+ * import RobotoItalic from "../assets/fonts/Roboto-Italic.ttf";
+ * import ProtestRiot from "../assets/fonts/ProtestRiot-Regular.ttf";
+ *
+ * SI NO SE CUENTA CON LOS SIGUEINTES...
+ * INSTALAR
+ * @tabler/icons
+ * sweetalert2
+ * sweetalert2-react-content
+ *
+ * PEDIR
+ * import backgroundImage from "../assets/images/Oficio.jpg";
+ * import sinFirma from "../assets/images/sinFirma.png";
+ */
+
 // import logo from '../../assets/images/logo-gpd.png';
 import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import backgroundImage from "../assets/images/Oficio.jpg";

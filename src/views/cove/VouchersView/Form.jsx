@@ -194,7 +194,7 @@ const VoucherForm = ({ open, setOpen }) => {
       if (approved_amount > values.requested_amount) Toast.Warning("¡¡CUIDADO!! Estás asignando más vales de los solicitados");
       else if (approved_amount < values.requested_amount) {
          sAlert.Warning(`ESTÁS POR ASIGNAR MENOS DE LOS VALES SOLICITADOS: <br/><br/>
-         Asignados: <b>${values.approved_amount}<b/> <br/>
+         Asignados: <b>${approved_amount}<b/> <br/>
          Solicitados: <b>${values.requested_amount}<b/>`);
       }
    };
