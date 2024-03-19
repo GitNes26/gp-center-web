@@ -291,7 +291,8 @@ const VoucherForm = ({ open, setOpen }) => {
 
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
-         internal_folio: inAprobation && Yup.string().trim().required("Folio Interno requeridos"),
+         internal_folio: Yup.string().trim().required("Folio Interno requeridos"),
+         letter_vouchers: inAprobation && Yup.string().trim().required("Prefijo requerida"),
          foliated_vouchers: inAprobation && Yup.string().trim().required("Vales Foliados requeridos"),
          // approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
          // vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
@@ -386,6 +387,30 @@ const VoucherForm = ({ open, setOpen }) => {
                                     ASIGNAR FOLIOS
                                  </Divider>
                               </Grid>
+                              {/* Letra Vale */}
+                              <Grid xs={12} md={2} sx={{ mb: 2 }}>
+                                 <Tooltip title="Ingresa el prefijo del vale para control interno; S=SIMSA | C=CARGO GAS">
+                                    <TextField
+                                       id="letter_vouchers"
+                                       name="letter_vouchers"
+                                       label="Prefijo Vale *"
+                                       type="text"
+                                       value={values.letter_vouchers}
+                                       placeholder="S | C"
+                                       onChange={handleChange}
+                                       onBlur={(e) => {
+                                          handleBlur(e);
+                                          handleBlurFoliatedVouchers(e, setFieldValue, values, setSubmitting);
+                                       }}
+                                       onInput={(e) => handleInputFormik(e, setFieldValue, "letter_vouchers", true)}
+                                       inputProps={{ maxLength: 1 }}
+                                       fullWidth
+                                       // disabled={values.id == 0 ? false : true}
+                                       error={errors.letter_vouchers && touched.letter_vouchers}
+                                       helperText={errors.letter_vouchers && touched.letter_vouchers && errors.letter_vouchers}
+                                    />
+                                 </Tooltip>
+                              </Grid>
                               {/* Vales Foliados */}
                               <Grid xs={12} md={6} sx={{ mb: 2 }}>
                                  <Tooltip title="En caso de poner más de un folio, ingresarlos como si fuera un rango de folios, con guion medio; ej. 1-6">
@@ -410,7 +435,7 @@ const VoucherForm = ({ open, setOpen }) => {
                                  </Tooltip>
                               </Grid>
                               {/* Cantidad de Vales Aprobados */}
-                              <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                              <Grid xs={12} md={4} sx={{ mb: 1 }}>
                                  <TextField
                                     id="approved_amount"
                                     name="approved_amount"
@@ -453,7 +478,7 @@ const VoucherForm = ({ open, setOpen }) => {
                               onInput={(e) => handleInputFormik(e, setFieldValue, "internal_folio", true)}
                               // InputProps={{}}
                               fullWidth
-                              // disabled={values.id == 0 ? false : true}
+                              disabled={inAprobation}
                               error={errors.internal_folio && touched.internal_folio}
                               helperText={errors.internal_folio && touched.internal_folio && errors.internal_folio}
                            />
