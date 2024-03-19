@@ -37,6 +37,7 @@ import VouchersView from "../views/cove/VouchersView/Index";
 import VoucherContextProvider from "../context/VoucherContext";
 import VoucherRequestersView from "../views/admin/VoucherRequestersView/Index";
 import VoucherRequesterContextProvider from "../context/VoucherRequesterContext";
+import VoucherDetailContextProvider from "../context/VoucherDetailContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -253,7 +254,9 @@ const MainRoutes = {
                element: (
                   <VoucherContextProvider>
                      <VehicleContextProvider>
-                        <VouchersView />
+                        <VoucherDetailContextProvider>
+                           <VouchersView />
+                        </VoucherDetailContextProvider>
                      </VehicleContextProvider>
                   </VoucherContextProvider>
                )

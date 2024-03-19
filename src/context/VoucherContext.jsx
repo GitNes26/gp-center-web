@@ -11,19 +11,19 @@ const voucherInitialState = {
    internal_folio: "",
    letter_folio: "",
    foliated_vouchers: "",
-   vehicle: "",
-   vehicle_plates: "",
-   requested_amount: 0,
+   // vehicle: "",
+   // vehicle_plates: "",
+   // requested_amount: 0,
    workstation: "",
    img_firm: "",
 
-   payroll_number: "",
-   department: "",
-   name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
-   phone: "",
-   payroll_number_exist: false,
+   // payroll_number: "",
+   // department: "",
+   // name: "",
+   // paternal_last_name: "",
+   // maternal_last_name: "",
+   // phone: "",
+   // payroll_number_exist: false,
 
    activity: "",
    voucher_status: "",
@@ -47,7 +47,7 @@ export default function VoucherContextProvider({ children }) {
    const pluralName = "Vales"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
-   const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
+   const [textBtnSubmit, setTextBtnSumbit] = useState("CREAR VALE");
 
    const [voucher, setVoucher] = useState(voucherInitialState);
    const [vouchers, setVouchers] = useState([]);
@@ -168,7 +168,7 @@ export default function VoucherContextProvider({ children }) {
    const updateVoucher = async (voucher) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/vouchers/update/${voucher.user_id}`, voucher);
+         const axiosData = await Axios.post(`/vouchers/update/${voucher.id}`, voucher);
 
          res = axiosData.data.data;
          getVouchers();

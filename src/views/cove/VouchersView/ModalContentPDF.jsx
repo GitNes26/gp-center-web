@@ -15,6 +15,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    const { voucher } = useVoucherContext();
    const [formData, setFormData] = useState({
       folio: "",
+      internal_folio: "",
       date: "--/--/----",
       directorFrom: "LIC. MAURICIO GUERRERO FELIX",
       departmentFrom: "JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
@@ -31,6 +32,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    useLayoutEffect(() => {
       console.log("estoy en el useLayoutEffect", voucher);
       formData.folio = voucher.id;
+      formData.internal_folio = voucher.internal_folio;
       formData.date = voucher.created_at;
       formData.workstationFirm = voucher.workstation;
       formData.imgFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;

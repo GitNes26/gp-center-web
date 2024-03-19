@@ -376,7 +376,7 @@ export default function DataTableComponent({
                disabled={updating}
                onClick={() => (rowEdit ? addRow() : setOpen ? setOpen(true) : handleClickAdd())}
             >
-               {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
+               {titleBtnAdd ? titleBtnAdd : "CREAR VALE"}
             </Button>
          )}
       </Box>

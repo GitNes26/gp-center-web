@@ -27,6 +27,7 @@ import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils
 import { IconProgressCheck } from "@tabler/icons-react";
 import { IconBan, IconEye } from "@tabler/icons";
 import ModalCancelComments from "./ModalCancelComments";
+import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 
 const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    const { auth } = useAuthContext();
@@ -50,8 +51,11 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       setInEdit,
       seenVoucher
    } = useVoucherContext();
+   const { getIndexByVoucher, voucherId, setVoucherId } = useVoucherDetailContext();
    const globalFilterFields = [
       "id",
+      "internal_folio",
+      "letter_folio",
       "foliated_vouchers",
       "vehicle",
       "vehicle_plates",
@@ -60,10 +64,11 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       "paternal_last_name",
       "maternal_last_name",
       "requested_fullname",
-      "phone",
-      "department",
+      "requested_department",
+      "requested_payroll_number",
+      "requested_phone",
       "activity",
-      "requested_amount",
+      // "requested_amount",
       "voucher_status",
       "approved_amount",
       "approved_by",
@@ -92,9 +97,14 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
          {obj.id}
       </Typography>
    );
+   const InternalFolioBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} fontWeight={"bolder"}>
+         {obj.internal_folio}
+      </Typography>
+   );
    const FoliatedVouchersBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"bolder"}>
-         {obj.foliated_vouchers}
+         {obj.letter_folio} - {obj.foliated_vouchers}
       </Typography>
    );
    const StockNumberBodyTemplate = (obj) => (
@@ -105,12 +115,12 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    );
    const RequestedByBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"normal"}>
-         N° Nómina: <b>{obj.payroll_number}</b> <br />
+         N° Nómina: <b>{obj.requested_payroll_number}</b> <br />
          Nombre: <b>{obj.requested_fullname}</b> <br />
-         Tel: <b>{obj.phone && formatPhone(obj.phone)}</b>
+         Tel: <b>{obj.requested_phone && formatPhone(obj.requested_phone)}</b>
       </Typography>
    );
-   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
+   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_department}</Typography>;
    const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity}</Typography>;
    const RequestAmountBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"bolder"}>
@@ -139,7 +149,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       </Typography>
    );
    const StatusBodyTemplate = (obj) => {
-      const bgColor = obj.voucher_status === "ALTA" ? "blue" : obj.voucher_status === "APROBADA" ? "green" : "red"; //red CANCELADO
+      const bgColor = obj.voucher_status === "CREADO" ? "gray" : obj.voucher_status === "ALTA" ? "blue" : obj.voucher_status === "APROBADA" ? "green" : "red"; //red CANCELADO
       return (
          <Box textAlign={"center"}>
             <Chip
@@ -170,17 +180,18 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
 
    const columns = [
       // { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
-      { field: "id", header: "ID", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },
-      { field: "vehicle", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
+      { field: "id", header: "Folio", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },
+      { field: "internal_folio", header: "Folio Interno", sortable: true, functionEdit: null, body: InternalFolioBodyTemplate, filterField: null },
 
-      { field: "payroll_number", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filterField: null },
+      { field: "requested_fullname", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
       { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filterField: null },
-      { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filterField: null },
+      // { field: "vehicle", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
+      // { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filterField: null },
       { field: "created_at", header: "Solicitado", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filterField: null },
-      { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedBodyTemplate, filterField: null },
       { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
-      { field: "canceled_amount", header: "Cancelados", sortable: true, functionEdit: null, body: CanceledBodyTemplate, filterField: null },
+      { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedBodyTemplate, filterField: null },
+      { field: "canceled_amount", header: "Cancelado", sortable: true, functionEdit: null, body: CanceledBodyTemplate, filterField: null },
       { field: "viewed_by", header: "Visto", sortable: true, functionEdit: null, body: ViewedBodyTemplate, filterField: null },
 
       { field: "voucher_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
@@ -199,7 +210,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
             setInAprobation(false);
             setOpen(true);
          }, 500);
-         setTextBtnSumbit("AGREGAR");
+         setTextBtnSumbit("CREAR VALE");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
          console.log(error);
@@ -212,7 +223,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
          setLoadingAction(true);
          setTextBtnSumbit("APROBAR");
          setFormTitle(`ASIGNAR FOLIOS Y APROBAR ${singularName.toUpperCase()}`);
+         setVoucherId(id);
          await showVoucher(id);
+         await getIndexByVoucher(id);
          setInAprobation(true);
          setOpenDialog(true);
          setLoadingAction(false);
@@ -245,6 +258,23 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       try {
          await setVoucher(obj);
          setOpenModalCancel(true);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickEditCREADO = async (id) => {
+      try {
+         setLoadingAction(true);
+         setTextBtnSumbit("FINALIZAR VALE");
+         setFormTitle(`FINALIZAR ${singularName.toUpperCase()}`);
+         // setInEdit(true);
+         setVoucherId(id);
+         await showVoucher(id);
+         await getIndexByVoucher(id);
+         setOpenDialog(true);
+         setLoadingAction(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -290,6 +320,13 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                   <IconEye />
                </Button>
             </Tooltip>
+            {obj.voucher_status === "CREADO" && (
+               <Tooltip title={`Finalizar ${singularName}`} placement="top">
+                  <Button color="dark" onClick={() => handleClickEditCREADO(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
             {auth.permissions.more_permissions.includes("24@Aprobar Vale") && obj.voucher_status === "ALTA" && (
                <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickAssign(id)}>
@@ -297,7 +334,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && obj.voucher_status === "ALTA" && (
+            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADO", "CANCELADO"].includes(obj.voucher_status) && (
                <Tooltip title={`Cancelar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj)}>
                      <IconBan />
