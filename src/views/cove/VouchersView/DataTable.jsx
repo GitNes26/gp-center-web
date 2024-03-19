@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_ADMIN_VOUCHER, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
@@ -47,7 +47,8 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       setTextBtnSumbit,
       setFormTitle,
       setInAprobation,
-      setInEdit
+      setInEdit,
+      seenVoucher
    } = useVoucherContext();
    const globalFilterFields = [
       "id",
@@ -73,7 +74,10 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       "canceled_at",
       "canceled_comments",
       "created_at",
-      "creditor_fullname"
+      "creditor_fullname",
+      "username_viewed",
+      "viewed_by",
+      "viewed_at"
    ];
 
    // #region BodysTemplate
@@ -103,7 +107,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       <Typography textAlign={"center"} fontWeight={"normal"}>
          N° Nómina: <b>{obj.payroll_number}</b> <br />
          Nombre: <b>{obj.requested_fullname}</b> <br />
-         Tel: <b>{formatPhone(obj.phone)}</b>
+         Tel: <b>{obj.phone && formatPhone(obj.phone)}</b>
       </Typography>
    );
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
@@ -126,6 +130,12 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
          Por: <b>{obj.username_canceled ?? "-"}</b> <br />
          El: <b>{formatDatetime(obj.canceled_at, true)}</b>
          <p>{obj.canceled_comments}</p>
+      </Typography>
+   );
+   const ViewedBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         Por: <b>{obj.username_viewed ?? "-"}</b> <br />
+         El: <b>{formatDatetime(obj.viewed_at, true)}</b>
       </Typography>
    );
    const StatusBodyTemplate = (obj) => {
@@ -171,6 +181,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedBodyTemplate, filterField: null },
       { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
       { field: "canceled_amount", header: "Cancelados", sortable: true, functionEdit: null, body: CanceledBodyTemplate, filterField: null },
+      { field: "viewed_by", header: "Visto", sortable: true, functionEdit: null, body: ViewedBodyTemplate, filterField: null },
 
       { field: "voucher_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
@@ -213,6 +224,15 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
 
    const handleClickShow = async (id, obj) => {
       try {
+         if (auth.role_id === ROLE_ADMIN_VOUCHER && obj.viewed_by < 1) {
+            console.log("checar visto");
+            const data = {
+               id: obj.id,
+               viewed_by: auth.id,
+               viewed_at: formatDatetimeToSQL(new Date())
+            };
+            await seenVoucher(data);
+         }
          await setVoucher(obj);
          setOpenModalRequest(true);
       } catch (error) {
@@ -270,14 +290,14 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                   <IconEye />
                </Button>
             </Tooltip>
-            {auth.permissions.more_permissions.includes("22@Aprobar") && obj.voucher_status === "ALTA" && (
+            {auth.permissions.more_permissions.includes("24@Aprobar Vale") && obj.voucher_status === "ALTA" && (
                <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickAssign(id)}>
                      <IconProgressCheck />
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("22@Cancelar") && obj.voucher_status === "ALTA" && (
+            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && obj.voucher_status === "ALTA" && (
                <Tooltip title={`Cancelar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj)}>
                      <IconBan />

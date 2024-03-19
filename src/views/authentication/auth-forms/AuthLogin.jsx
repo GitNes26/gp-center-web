@@ -44,6 +44,7 @@ import { useAuthContext } from "../../../context/AuthContext";
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
+   const { auth } = useAuthContext();
    const theme = useTheme();
    const scriptedRef = useScriptRef();
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
@@ -81,7 +82,7 @@ const FirebaseLogin = ({ ...others }) => {
             // setStatus({ success: true });
             setSubmitting(false);
          }
-         resetForm();
+         auth && resetForm();
       } catch (error) {
          console.error(error);
          if (scriptedRef.current) {

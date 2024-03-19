@@ -8,6 +8,8 @@ const VoucherContext = createContext();
 const voucherInitialState = {
    id: 0,
    requested_by: 0,
+   internal_folio: "",
+   letter_folio: "",
    foliated_vouchers: "",
    vehicle: "",
    vehicle_plates: "",
@@ -26,6 +28,8 @@ const voucherInitialState = {
    activity: "",
    voucher_status: "",
 
+   viewed_by: "",
+   viewed_at: "",
    approved_by: "",
    approved_amount: 0,
    approved_at: "",
@@ -67,6 +71,23 @@ export default function VoucherContextProvider({ children }) {
          console.log("Error en resetVoucher:", error);
          Toast.Error(error);
       }
+   };
+
+   const seenVoucher = async (voucher) => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await Axios.post(`/vouchers/seenVoucher/${voucher.id}`, voucher);
+         // console.log(axiosData);
+         res = axiosData.data.data;
+         getVouchers();
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+      return res;
    };
 
    const getVouchers = async () => {
@@ -228,7 +249,8 @@ export default function VoucherContextProvider({ children }) {
             inAprobation,
             inEdit,
             setInEdit,
-            setInAprobation
+            setInAprobation,
+            seenVoucher
          }}
       >
          {children}

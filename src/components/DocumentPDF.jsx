@@ -251,6 +251,7 @@ export const stylesPDF = StyleSheet.create({
 
 const formDataInitial = {
    folio: "",
+   internal_folio: "",
    date: null,
    directorFrom: "",
    departmentFrom: "",
@@ -287,6 +288,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
 
                <View style={stylesPDF.folioDate}>
                   <Text>Folio: #{formData.folio}</Text>
+                  <Text>Folio Interno: {formData.internal_folio}</Text>
                   <Text style={{ fontFamily: "Roboto-Regular" }}>Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false) : "--/--/----"}</Text>
                </View>
 

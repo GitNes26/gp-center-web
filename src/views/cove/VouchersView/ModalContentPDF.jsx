@@ -55,7 +55,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
                <Text style={stylesPDF.cell}>{voucher.vehicle}</Text>
             </View>
             <View style={stylesPDF.column}>
-               <Text style={[stylesPDF.cell, stylesPDF.bolder]}>PALCAS</Text>
+               <Text style={[stylesPDF.cell, stylesPDF.bolder]}>PLACAS</Text>
                <Text style={stylesPDF.cell}>{voucher.vehicle_plates}</Text>
             </View>
             <View style={stylesPDF.column}>

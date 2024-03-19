@@ -291,20 +291,21 @@ const VoucherForm = ({ open, setOpen }) => {
 
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
+         internal_folio: inAprobation && Yup.string().trim().required("Folio Interno requeridos"),
          foliated_vouchers: inAprobation && Yup.string().trim().required("Vales Foliados requeridos"),
-         approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
-         vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
-         requested_amount: Yup.number("Solo números").min(0, "Mínimo"),
-         payroll_number: Yup.number("Solo números"),
-         // payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
-         // department: Yup.string().trim().required("Departamento requerido"),
-         name: Yup.string().trim().required("Nombre(s) requerido"),
-         paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
-         phone: Yup.string()
-            .trim()
-            .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
-            .required("Número telefónico requerido"),
+         // approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
+         // vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
+         // requested_amount: Yup.number("Solo números").min(0, "Mínimo"),
+         // payroll_number: Yup.number("Solo números"),
+         // // payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
+         // // department: Yup.string().trim().required("Departamento requerido"),
+         // name: Yup.string().trim().required("Nombre(s) requerido"),
+         // paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
+         // maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
+         // phone: Yup.string()
+         //    .trim()
+         //    .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
+         //    .required("Número telefónico requerido"),
          activity: Yup.string().trim().required("Actividad requerida")
       });
       return validationSchema;
@@ -432,8 +433,30 @@ const VoucherForm = ({ open, setOpen }) => {
                         {/* Divisor */}
                         <Grid xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
-                              SOLICITUD
+                              DATOS DE SOLICITUD
                            </Divider>
+                        </Grid>
+                        {/* Folio Interno */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="internal_folio"
+                              name="internal_folio"
+                              label="Folio Interno *"
+                              type="text"
+                              value={values.internal_folio}
+                              placeholder="FI-01"
+                              onChange={handleChange}
+                              onBlur={(e) => {
+                                 handleBlur(e);
+                                 handleBlurFoliatedVouchers(e, setFieldValue, values, setSubmitting);
+                              }}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "internal_folio", true)}
+                              // InputProps={{}}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.internal_folio && touched.internal_folio}
+                              helperText={errors.internal_folio && touched.internal_folio && errors.internal_folio}
+                           />
                         </Grid>
                         {/* Vehículo */}
                         <Grid xs={12} md={4} sx={{ mb: 1 }}>
