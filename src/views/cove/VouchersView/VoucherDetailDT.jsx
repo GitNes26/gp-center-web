@@ -7,7 +7,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import { Button, ButtonGroup, IconButton, Tooltip, Typography } from "@mui/material";
+import { Button, ButtonGroup, IconButton, TextField, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
@@ -62,7 +62,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       "maternal_last_name",
       // "acreditor_fullname",
       "phone",
-      "requested_amount",
+      // "requested_amount",
       "active",
       "created_at"
    ];
@@ -76,7 +76,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    const PaternalBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.paternal_last_name}</Typography>;
    const MaternalBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.maternal_last_name}</Typography>;
    const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.phone ? formatPhone(obj.phone, true) : "-"}</Typography>;
-   const AmountTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_amount}</Typography>;
+   // const AmountTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_amount}</Typography>;
    // #endregion BodysTemplate
 
    // #region BodysTemplateEditor
@@ -102,11 +102,22 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       />
    );
 
+   const handleChangePhone = (e, options) => {
+      const value = e.target.value;
+      // console.log(value);
+      // console.log(options);
+   };
    const phoneEditor = (options) => (
       <InputText
-         type="number"
+         type="text"
          value={options.value}
-         onChange={(e) => options.editorCallback(e.target.value)}
+         placeholder="10 dígitos"
+         onChange={(e) => {
+            if (!/^\d*$/.test(e.target.value) || e.target.value.length > 10) return;
+            options.editorCallback(e.target.value);
+            // handleChangePhone(e, options);
+         }}
+         itemProp={{ maxLength: 10 }}
          inputProps={{ maxLength: 10 }}
          data-field-name={options.field}
          data-field-key={options.rowData.key}
@@ -194,8 +205,8 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       { field: "name", header: "NOMBRE", sortable: true, functionEdit: textMayusEditor, body: NameBodyTemplate, filterField: null },
       { field: "paternal_last_name", header: "A. PATERNO", sortable: true, functionEdit: textMayusEditor, body: PaternalBodyTemplate, filterField: null },
       { field: "maternal_last_name", header: "A. MATERNO", sortable: true, functionEdit: textMayusEditor, body: MaternalBodyTemplate, filterField: null },
-      { field: "phone", header: "TELÉFONO", sortable: true, functionEdit: phoneEditor, body: PhoneBodyTemplate, filterField: null },
-      { field: "requested_amount", header: "CANTIDAD VALES", sortable: true, functionEdit: numberEditor, body: AmountTemplate, filterField: null }
+      { field: "phone", header: "TELÉFONO", sortable: true, functionEdit: phoneEditor, body: PhoneBodyTemplate, filterField: null }
+      // { field: "requested_amount", header: "CANTIDAD VALES", sortable: true, functionEdit: numberEditor, body: AmountTemplate, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);
@@ -306,6 +317,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
          createData={createVoucherDetail}
          updateData={updateVoucherDetail}
          btnAdd={values.voucher_status === "CREADO" ? true : false}
+         titleBtnAdd={"ACREDITADO"}
          newRow={newRow}
          btnDeleteMultiple={values.voucher_status === "CREADO" ? true : false}
          handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}

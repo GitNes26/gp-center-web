@@ -368,16 +368,18 @@ export default function DataTableComponent({
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
          {btnAdd && (
-            <Button
-               variant="contained"
-               sx={{ width: 250 }}
-               startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
-               size="large"
-               disabled={updating}
-               onClick={() => (rowEdit ? addRow() : setOpen ? setOpen(true) : handleClickAdd())}
-            >
-               {titleBtnAdd ? titleBtnAdd : "CREAR VALE"}
-            </Button>
+            <Tooltip title={titleBtnAdd ? `AGREGAR ${titleBtnAdd}` : "AGREGAR"}>
+               <Button
+                  variant="contained"
+                  sx={{ width: 250 }}
+                  startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
+                  size="large"
+                  disabled={updating}
+                  onClick={() => (rowEdit ? addRow() : setOpen ? setOpen(true) : handleClickAdd())}
+               >
+                  {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
+               </Button>
+            </Tooltip>
          )}
       </Box>
    );

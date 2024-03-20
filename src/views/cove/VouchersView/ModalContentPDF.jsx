@@ -53,10 +53,10 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
                   <Text style={stylesPDF.cell}>{vd.requested_amount ?? "-"}</Text>
                ))}
             </View> */}
-            <View style={stylesPDF.column}>
+            {/* <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VALES</Text>
                <Text style={stylesPDF.cell}>{voucher.foliated_vouchers ? `${voucher.letter_folio} ${voucher.foliated_vouchers}` : "-"}</Text>
-            </View>
+            </View> */}
             <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VEHÍCULO</Text>
                {voucherDetails.map((vd) => (

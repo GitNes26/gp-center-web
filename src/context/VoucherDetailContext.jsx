@@ -9,10 +9,7 @@ const voucherInitialState = {
    id: 0,
    vehicle: "",
    vehicle_plates: "",
-   requested_amount: 0,
-   workstation: "",
-   img_firm: "",
-
+   // requested_amount: 0,
    payroll_number: "",
    department: "",
    name: "",
@@ -54,6 +51,14 @@ export default function VoucherDetailContextProvider({ children }) {
          setVoucherDetail(voucherInitialState);
       } catch (error) {
          console.log("Error en resetVoucherDetail:", error);
+         Toast.Error(error);
+      }
+   };
+   const resetVoucherDetails = () => {
+      try {
+         setVoucherDetails([]);
+      } catch (error) {
+         console.log("Error en resetVoucherDetails:", error);
          Toast.Error(error);
       }
    };
@@ -168,6 +173,7 @@ export default function VoucherDetailContextProvider({ children }) {
             formData,
             setFormData,
             resetFormData,
+            resetVoucherDetails,
             getIndexByVoucher,
             showVoucherDetail,
             createVoucherDetail,

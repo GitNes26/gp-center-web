@@ -195,26 +195,24 @@ const VoucherForm = ({ open, setOpen }) => {
          approved_amount = Number(range[1]) - Number(range[0]) + 1;
       }
       setFieldValue("approved_amount", approved_amount);
-      if (approved_amount > values.requested_amount) Toast.Warning("¡¡CUIDADO!! Estás asignando más vales de los solicitados");
-      else if (approved_amount < values.requested_amount) {
-         sAlert.Warning(`ESTÁS POR ASIGNAR MENOS DE LOS VALES SOLICITADOS: <br/><br/>
-         Asignados: <b>${approved_amount}<b/> <br/>
-         Solicitados: <b>${values.requested_amount}<b/>`);
-      }
+      // if (approved_amount > values.requested_amount) Toast.Warning("¡¡CUIDADO!! Estás asignando más vales de los solicitados");
+      // else if (approved_amount < values.requested_amount) {
+      //    sAlert.Warning(`ESTÁS POR ASIGNAR MENOS DE LOS VALES SOLICITADOS: <br/><br/>
+      //    Asignados: <b>${approved_amount}<b/> <br/>
+      //    Solicitados: <b>${values.requested_amount}<b/>`);
+      // }
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
          // console.log("formData", formData);
          // console.log("values", values);
-
+         values.id = voucherId;
+         values.voucher_status = "ALTA";
          if (values.id < 1) {
             values.requested_by = auth.id;
             values.voucher_status = "CREADO";
             setTextBtnSumbit("FINALIZAR VALE");
-         } else if (values.id > 0) {
-            console.log("values para finalizar", values);
-            values.voucher_status = "ALTA";
          }
 
          setFormData(values);
@@ -225,9 +223,10 @@ const VoucherForm = ({ open, setOpen }) => {
             values.approved_by = auth.id;
             values.approved_at = formatDatetimeToSQL(new Date());
             // return console.log("values", values);
-            if (values.approved_amount > values.requested_amount) return sAlert.Warning("NO PUEDES ASIGNAR MÁS DE LOS VALES SOLICITADOS");
+            // if (values.approved_amount > values.requested_amount) return sAlert.Warning("NO PUEDES ASIGNAR MÁS DE LOS VALES SOLICITADOS");
             axiosResponse = await updateStatus(values);
          } else {
+            // console.log("values", values);
             if (values.id == 0) axiosResponse = await createVoucher(values);
             else axiosResponse = await updateVoucher(values);
          }
@@ -247,8 +246,8 @@ const VoucherForm = ({ open, setOpen }) => {
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          // console.log(checkAdd);
          // console.log(axiosResponse.status_code);
-         console.log(values.id);
-         if (values.id > 0 && !checkAdd && axiosResponse.status_code == 200) {
+         // console.log(values.id);
+         if (["FINALIZAR VALE", "APROBAR"].includes(textBtnSubmit) && !checkAdd && axiosResponse.status_code == 200) {
             setOpen(false);
             setTimeout(() => {
                setOpen(false);
@@ -306,7 +305,7 @@ const VoucherForm = ({ open, setOpen }) => {
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
          internal_folio: Yup.string().trim().required("Folio Interno requeridos"),
-         letter_folios: inAprobation && Yup.string().trim().required("Prefijo requerida"),
+         letter_folio: inAprobation && Yup.string().trim().required("Prefijo requerida"),
          foliated_vouchers: inAprobation && Yup.string().trim().required("Vales Foliados requeridos"),
          // approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
          // vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
@@ -405,23 +404,23 @@ const VoucherForm = ({ open, setOpen }) => {
                               <Grid xs={12} md={2} sx={{ mb: 2 }}>
                                  <Tooltip title="Ingresa el prefijo del vale para control interno; S=SIMSA | C=CargoGAS">
                                     <TextField
-                                       id="letter_folios"
-                                       name="letter_folios"
+                                       id="letter_folio"
+                                       name="letter_folio"
                                        label="Prefijo Vale *"
                                        type="text"
-                                       value={values.letter_folios}
+                                       value={values.letter_folio}
                                        placeholder="S | C"
                                        onChange={handleChange}
                                        onBlur={(e) => {
                                           handleBlur(e);
                                           handleBlurFoliatedVouchers(e, setFieldValue, values, setSubmitting);
                                        }}
-                                       onInput={(e) => handleInputFormik(e, setFieldValue, "letter_folios", true)}
+                                       onInput={(e) => handleInputFormik(e, setFieldValue, "letter_folio", true)}
                                        inputProps={{ maxLength: 1 }}
                                        fullWidth
                                        // disabled={values.id == 0 ? false : true}
-                                       error={errors.letter_folios && touched.letter_folios}
-                                       helperText={errors.letter_folios && touched.letter_folios && errors.letter_folios}
+                                       error={errors.letter_folio && touched.letter_folio}
+                                       helperText={errors.letter_folio && touched.letter_folio && errors.letter_folio}
                                     />
                                  </Tooltip>
                               </Grid>
@@ -455,8 +454,8 @@ const VoucherForm = ({ open, setOpen }) => {
                                     name="approved_amount"
                                     label="Cantidad de Vales Aprobados *"
                                     type="number"
-                                    value={values.approved_amount}
-                                    placeholder="0"
+                                    value={values.approved_amount ?? 0}
+                                    placeholder=""
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     onInput={(e) => handleInputFormik(e, setFieldValue, "approved_amount", true)}
@@ -499,24 +498,26 @@ const VoucherForm = ({ open, setOpen }) => {
                         </Grid>
                         {/* Actividad */}
                         <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                           <TextField
-                              id="activity"
-                              name="activity"
-                              label="Actvidad *"
-                              type="text"
-                              value={values.activity}
-                              placeholder="actividad..."
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "activity", false)}
-                              // inputProps={{ maxLength: 2 }}
-                              fullWidth
-                              multiline
-                              rows={3}
-                              disabled={inAprobation}
-                              error={errors.activity && touched.activity}
-                              helperText={errors.activity && touched.activity && errors.activity}
-                           />
+                           <Tooltip title={"No olvides describir la cantidad de LITROS a solicitar"}>
+                              <TextField
+                                 id="activity"
+                                 name="activity"
+                                 label="Actvidad *"
+                                 type="text"
+                                 value={values.activity}
+                                 placeholder="actividad..."
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "activity", false)}
+                                 // inputProps={{ maxLength: 2 }}
+                                 fullWidth
+                                 multiline
+                                 rows={3}
+                                 disabled={inAprobation}
+                                 error={errors.activity && touched.activity}
+                                 helperText={errors.activity && touched.activity && errors.activity}
+                              />
+                           </Tooltip>
                         </Grid>
                         {/* Vehículo */}
                         {/* <Grid xs={12} md={4} sx={{ mb: 1 }}>

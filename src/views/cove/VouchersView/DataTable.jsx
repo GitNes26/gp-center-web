@@ -51,7 +51,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       setInEdit,
       seenVoucher
    } = useVoucherContext();
-   const { getIndexByVoucher, voucherId, setVoucherId } = useVoucherDetailContext();
+   const { getIndexByVoucher, voucherId, setVoucherId, resetVoucherDetails } = useVoucherDetailContext();
    const globalFilterFields = [
       "id",
       "internal_folio",
@@ -204,6 +204,8 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       try {
          resetVoucher();
          resetFormData();
+         resetVoucherDetails();
+         setVoucherId(0);
          setOpenDialog(true);
          setInAprobation(false);
          setTimeout(() => {
@@ -292,6 +294,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          setInEdit(true);
          await showVoucher(id);
+         await getIndexByVoucher(id);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -338,7 +341,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADA", "CANCELADO"].includes(obj.voucher_status) && (
+            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADA", "CANCELADA"].includes(obj.voucher_status) && (
                <Tooltip title={`Cancelar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj)}>
                      <IconBan />
@@ -367,7 +370,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", vouchers);
-         await vouchers.map((obj, index) => {
+         await vouchers.map(async (obj, index) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
