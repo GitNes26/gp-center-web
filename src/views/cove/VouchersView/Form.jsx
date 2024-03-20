@@ -234,7 +234,7 @@ const VoucherForm = ({ open, setOpen }) => {
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
             if (values.id < 1) {
-               console.log("axiosResponse", axiosResponse);
+               // console.log("axiosResponse", axiosResponse);
                setVoucherId(axiosResponse.result.id);
             } else if (values.id > 0) {
                ResetForm(resetForm);
@@ -306,7 +306,7 @@ const VoucherForm = ({ open, setOpen }) => {
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
          internal_folio: Yup.string().trim().required("Folio Interno requeridos"),
-         letter_vouchers: inAprobation && Yup.string().trim().required("Prefijo requerida"),
+         letter_folios: inAprobation && Yup.string().trim().required("Prefijo requerida"),
          foliated_vouchers: inAprobation && Yup.string().trim().required("Vales Foliados requeridos"),
          // approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
          // vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
@@ -403,25 +403,25 @@ const VoucherForm = ({ open, setOpen }) => {
                               </Grid>
                               {/* Letra Vale */}
                               <Grid xs={12} md={2} sx={{ mb: 2 }}>
-                                 <Tooltip title="Ingresa el prefijo del vale para control interno; S=SIMSA | C=CARGO GAS">
+                                 <Tooltip title="Ingresa el prefijo del vale para control interno; S=SIMSA | C=CargoGAS">
                                     <TextField
-                                       id="letter_vouchers"
-                                       name="letter_vouchers"
+                                       id="letter_folios"
+                                       name="letter_folios"
                                        label="Prefijo Vale *"
                                        type="text"
-                                       value={values.letter_vouchers}
+                                       value={values.letter_folios}
                                        placeholder="S | C"
                                        onChange={handleChange}
                                        onBlur={(e) => {
                                           handleBlur(e);
                                           handleBlurFoliatedVouchers(e, setFieldValue, values, setSubmitting);
                                        }}
-                                       onInput={(e) => handleInputFormik(e, setFieldValue, "letter_vouchers", true)}
+                                       onInput={(e) => handleInputFormik(e, setFieldValue, "letter_folios", true)}
                                        inputProps={{ maxLength: 1 }}
                                        fullWidth
                                        // disabled={values.id == 0 ? false : true}
-                                       error={errors.letter_vouchers && touched.letter_vouchers}
-                                       helperText={errors.letter_vouchers && touched.letter_vouchers && errors.letter_vouchers}
+                                       error={errors.letter_folios && touched.letter_folios}
+                                       helperText={errors.letter_folios && touched.letter_folios && errors.letter_folios}
                                     />
                                  </Tooltip>
                               </Grid>

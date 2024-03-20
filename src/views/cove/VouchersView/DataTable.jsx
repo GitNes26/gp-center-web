@@ -57,12 +57,12 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       "internal_folio",
       "letter_folio",
       "foliated_vouchers",
-      "vehicle",
-      "vehicle_plates",
-      "payroll_number",
-      "name",
-      "paternal_last_name",
-      "maternal_last_name",
+      // "vehicle",
+      // "vehicle_plates",
+      // "payroll_number",
+      // "name",
+      // "paternal_last_name",
+      // "maternal_last_name",
       "requested_fullname",
       "requested_department",
       "requested_payroll_number",
@@ -104,7 +104,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    );
    const FoliatedVouchersBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"bolder"}>
-         {obj.letter_folio} - {obj.foliated_vouchers}
+         {obj.letter_folio} {obj.foliated_vouchers}
       </Typography>
    );
    const StockNumberBodyTemplate = (obj) => (
@@ -237,8 +237,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
 
    const handleClickShow = async (id, obj) => {
       try {
+         setInAprobation(false);
          if (auth.role_id === ROLE_ADMIN_VOUCHER && obj.viewed_by < 1) {
-            console.log("checar visto");
+            // console.log("checar visto");
             const data = {
                id: obj.id,
                viewed_by: auth.id,
@@ -247,6 +248,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
             await seenVoucher(data);
          }
          await setVoucher(obj);
+         await getIndexByVoucher(obj.id);
          setOpenModalRequest(true);
       } catch (error) {
          console.log(error);
@@ -256,6 +258,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
 
    const handleClickCancel = async (id, obj) => {
       try {
+         setInAprobation(false);
          await setVoucher(obj);
          setOpenModalCancel(true);
       } catch (error) {
@@ -267,6 +270,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    const handleClickEditCREADO = async (id) => {
       try {
          setLoadingAction(true);
+         setInAprobation(false);
          setTextBtnSumbit("FINALIZAR VALE");
          setFormTitle(`FINALIZAR ${singularName.toUpperCase()}`);
          // setInEdit(true);
@@ -334,7 +338,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADO", "CANCELADO"].includes(obj.voucher_status) && (
+            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADA", "CANCELADO"].includes(obj.voucher_status) && (
                <Tooltip title={`Cancelar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj)}>
                      <IconBan />
