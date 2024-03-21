@@ -228,7 +228,10 @@ const VoucherForm = ({ open, setOpen }) => {
          } else {
             // console.log("values", values);
             if (values.id == 0) axiosResponse = await createVoucher(values);
-            else axiosResponse = await updateVoucher(values);
+            else {
+               if (textBtnSubmit === "FINALIZAR VALE") values.approved_amount = 0;
+               axiosResponse = await updateVoucher(values);
+            }
          }
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");
          if (axiosResponse.status_code == 200) {
@@ -519,6 +522,30 @@ const VoucherForm = ({ open, setOpen }) => {
                               />
                            </Tooltip>
                         </Grid>
+                        {/* Estatus del Vale */}
+                        {/* {inEdit && (
+                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                              <TextField
+                                 id="voucher_status"
+                                 name="voucher_status"
+                                 label="Estatus del Vale"
+                                 type="text"
+                                 value={values.voucher_status}
+                                 placeholder="ALTA"
+                                 onChange={handleChange}
+                                 onBlur={(e) => {
+                                    handleBlur(e);
+                                    // handleBlurStockNumber(e, setFieldValue, values);
+                                 }}
+                                 onInput={(e) => handleInputFormik(e, setFieldValue, "voucher_status", true)}
+                                 // inputProps={{ maxLength: 2 }}
+                                 fullWidth
+                                 disabled={inAprobation}
+                                 error={errors.voucher_status && touched.voucher_status}
+                                 helperText={errors.voucher_status && touched.voucher_status && errors.voucher_status}
+                              />
+                           </Grid>
+                        )} */}
                         {/* Vehículo */}
                         {/* <Grid xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField

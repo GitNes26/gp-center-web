@@ -28,6 +28,8 @@ const voucherInitialState = {
    activity: "",
    voucher_status: "",
 
+   vobo_by: "",
+   vobo_at: "",
    viewed_by: "",
    viewed_at: "",
    approved_by: "",

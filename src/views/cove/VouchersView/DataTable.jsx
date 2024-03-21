@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_ADMIN_VOUCHER, useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_ADMIN_VOUCHER, ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
@@ -25,7 +25,7 @@ import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils/Formats";
 import { IconProgressCheck } from "@tabler/icons-react";
-import { IconBan, IconEye } from "@tabler/icons";
+import { IconBan, IconCheckbox, IconEye } from "@tabler/icons";
 import ModalCancelComments from "./ModalCancelComments";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 
@@ -49,7 +49,8 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       setFormTitle,
       setInAprobation,
       setInEdit,
-      seenVoucher
+      seenVoucher,
+      updateStatus
    } = useVoucherContext();
    const { getIndexByVoucher, voucherId, setVoucherId, resetVoucherDetails } = useVoucherDetailContext();
    const globalFilterFields = [
@@ -149,7 +150,16 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       </Typography>
    );
    const StatusBodyTemplate = (obj) => {
-      const bgColor = obj.voucher_status === "CREADO" ? "gray" : obj.voucher_status === "ALTA" ? "blue" : obj.voucher_status === "APROBADA" ? "green" : "red"; //red CANCELADO
+      const bgColor =
+         obj.voucher_status === "CREADO"
+            ? "gray"
+            : obj.voucher_status === "ALTA"
+            ? "blue"
+            : obj.voucher_status === "VoBo"
+            ? "greenyellow"
+            : obj.voucher_status === "APROBADA"
+            ? "green"
+            : "red"; //red CANCELADO
       return (
          <Box textAlign={"center"}>
             <Chip
@@ -237,6 +247,29 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       }
    };
 
+   const handleClickVoBo = async (obj) => {
+      try {
+         setLoadingAction(true);
+         // console.log(obj);
+         if (obj.vobo_by < 1) {
+            const data = {
+               id: obj.id,
+               voucher_status: "VoBo",
+               vobo_by: auth.id,
+               vobo_at: formatDatetimeToSQL(new Date())
+            };
+            // console.log(data);
+            await updateStatus(data);
+         }
+         setInAprobation(false);
+         setInEdit(false);
+         setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const handleClickShow = async (id, obj) => {
       try {
          setInAprobation(false);
@@ -262,7 +295,24 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       try {
          setInAprobation(false);
          await setVoucher(obj);
-         setOpenModalCancel(true);
+         if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) {
+            mySwal.fire(QuestionAlertConfig(`Estas seguro de CANCELAR el vale #${id}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
+               if (result.isConfirmed) {
+                  setLoadingAction(true);
+
+                  // return console.log(formData);
+                  const axiosResponse = await updateStatus({
+                     id: id,
+                     voucher_status: "CANCELADA",
+                     canceled_by: auth.id,
+                     canceled_comments: "VoBo Rechazado.",
+                     canceled_at: formatDatetimeToSQL(new Date())
+                  });
+                  setLoadingAction(false);
+                  Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+               }
+            });
+         } else setOpenModalCancel(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -334,9 +384,16 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@Aprobar Vale") && obj.voucher_status === "ALTA" && (
+            {auth.permissions.more_permissions.includes("24@VoBo") && obj.voucher_status === "ALTA" && (
+               <Tooltip title={`Dar Visto Bueno al ${singularName} #${id}`} placement="top">
+                  <Button color="error" onClick={() => handleClickVoBo(obj)}>
+                     <IconCheckbox />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes("24@Aprobar Vale") && obj.voucher_status === "VoBo" && (
                <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
-                  <Button color="error" onClick={() => handleClickAssign(id)}>
+                  <Button color="secondary" onClick={() => handleClickAssign(id)}>
                      <IconProgressCheck />
                   </Button>
                </Tooltip>

@@ -20,6 +20,7 @@ export const ROLE_DIRECTOR = 5;
 export const ROLE_DRIVER = 6;
 export const ROLE_ADMIN_VOUCHER = 7;
 export const ROLE_VOUCHER_REQUESTER = 8;
+export const ROLE_VOUCHER_SUPERVISOR = 9;
 
 export const GlobalContext = createContext();
 
