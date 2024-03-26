@@ -15,7 +15,7 @@ const formDataInitialState = {
    url: "",
    icon: "",
    order: "",
-   show_counter: false,
+   show_counter: "",
    others_permissions: "",
 
    patern: ""
@@ -108,25 +108,42 @@ export default function MenuContextProvider({ children }) {
             const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
             // console.log("HeaderMenus", HeaderMenus);
             const items = [];
-            HeaderMenus.map((hm) => {
+            HeaderMenus.map(async (hm) => {
                const item = {
                   id: hm.id,
                   title: hm.menu,
                   caption: hm.caption,
                   type: hm.type,
+                  show_counter: hm.show_counter,
+                  label_conter: 0,
                   children: []
                };
+               let axiosCounter;
+               if (item.show_counter !== null) {
+                  if (item.show_counter.length < 0) {
+                     axiosCounter = await Axios.get(`${show_counter}`);
+                     console.log("axiosCounter", axiosCounter);
+                  }
+               }
 
                const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
                // console.log("childrenMenus", childrenMenus);
-               childrenMenus.map((iCh) => {
+               childrenMenus.map(async (iCh) => {
                   const child = {
                      id: iCh.id,
                      title: iCh.menu,
                      type: iCh.type,
                      url: iCh.url,
+                     show_counter: iCh.show_counter,
+                     label_conter: 0,
                      icon: tablerIcons[`${iCh.icon}`]
                   };
+                  if (child.show_counter !== null) {
+                     if (child.show_counter.length < 0) {
+                        axiosCounter = await Axios.get(`${show_counter}`);
+                        console.log("axiosCounter", axiosCounter);
+                     }
+                  }
                   item.children.push(child);
                });
 

@@ -61,6 +61,7 @@ const NavItem = ({ item, level }) => {
 
    // active menu item on page load
    useEffect(() => {
+      // console.log("el  item", item);
       const currentIndex = document.location.pathname
          .toString()
          .split("/")
@@ -90,20 +91,22 @@ const NavItem = ({ item, level }) => {
          <ListItemText
             primary={<Typography variant={customization.isOpen.findIndex((id) => id === item.id) > -1 ? "h5_GPC" : "body1_GPC"}>{item.title}</Typography>}
             secondary={
-               item.caption && (
-                  <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption_GPC }} display="block" gutterBottom>
-                     {item.caption}
-                  </Typography>
-               )
+               <>
+                  {item.caption && (
+                     <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption_GPC }} display="block" gutterBottom>
+                        {item.caption} {item.show_counter}
+                     </Typography>
+                  )}
+               </>
             }
          />
-         {item.chip && (
+         {item.show_counter !== null && item.show_counter.length < 0 && (
             <Chip
-               color={item.chip.color}
-               variant={item.chip.variant}
-               size={item.chip.size}
-               label={item.chip.label}
-               avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
+               color={"primary" /* item.chip.color */}
+               variant={"filled" /* item.chip.variant */}
+               size={"small" /* item.chip.size */}
+               label={item.show_counter}
+               // avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
             />
          )}
       </ListItemButton>

@@ -320,12 +320,28 @@ const MenuForm = () => {
                      {/* Mostrar contador */}
                      {values.type === "item" && (
                         <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                           <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
-                              <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
-                                 <SwitchComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
-                              </Button>
-                           </Tooltip>
+                           <TextField
+                              id="show_counter"
+                              name="show_counter"
+                              label="Ruta para mostrar contador"
+                              type="text"
+                              value={values.show_counter}
+                              placeholder="model/counter/column/value"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "show_counter", false)}
+                              fullWidth
+                              error={errors.show_counter && touched.show_counter}
+                              helperText={errors.show_counter && touched.show_counter && errors.show_counter}
+                           />
                         </Grid>
+                        // <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        //    <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
+                        //       <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
+                        //          <SwitchComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
+                        //       </Button>
+                        //    </Tooltip>
+                        // </Grid>
                      )}
                      {/* Activar */}
                      <Grid xs={12} md={12} sx={{ mb: 3 }}>

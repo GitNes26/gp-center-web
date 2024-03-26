@@ -34,7 +34,8 @@ const NavGroup = ({ item }) => {
          <List
             subheader={
                item.title && (
-                  <Typography variant="caption" sx={{  ...theme.typography.menuCaption_GPC }} display="block" gutterBottom>
+                  // <NavCollapse key={item.title} menu={item} level={1}>
+                  <Typography variant="caption" sx={{ ...theme.typography.menuCaption_GPC }} display="block" gutterBottom>
                      {item.title}
                      {item.caption && (
                         <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption_GPC }} display="block" gutterBottom>
@@ -42,6 +43,7 @@ const NavGroup = ({ item }) => {
                         </Typography>
                      )}
                   </Typography>
+                  // </NavCollapse>
                )
             }
          >
