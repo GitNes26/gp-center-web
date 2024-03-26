@@ -545,7 +545,7 @@ const DirectorForm = () => {
                         <Grid xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_firm"
-                              label="Foto Firma *"
+                              label="Foto Firma"
                               filePreviews={imgFirm}
                               setFilePreviews={setImgFirm}
                               error={errors.img_firm}
