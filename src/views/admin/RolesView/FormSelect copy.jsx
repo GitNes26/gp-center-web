@@ -30,7 +30,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
       setFormTitle,
       roleSelect,
       setRoleSelect,
-      showRoleSelect
+      showRoleSelect,
+      getRolesSelectIndex
    } = useRoleContext();
 
    const handleChangeRole = async (value2, setFieldValue) => {
@@ -181,6 +182,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
                         error={errors.id}
                         touched={touched.id}
                         disabled={false}
+                        pluralName={"Roles"}
+                        refreshSelect={getRolesSelectIndex}
                      />
                   </Grid>
                   {auth.permissions.update && (

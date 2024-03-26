@@ -95,6 +95,24 @@ export default function MenuContextProvider({ children }) {
       }
    };
 
+   const getCounter = async (showCounter) => {
+      let labelCounter = 0;
+      if (showCounter !== null) {
+         if (showCounter !== "") {
+            let axiosCounter;
+            if (showCounter.includes("vouchers/")) {
+               let status = "CREADO,APROBADA";
+               if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) status = "ALTA";
+               else if (auth.role_id === ROLE_ADMIN_VOUCHER) status = "VoBo";
+               axiosCounter = await Axios.get(`${showCounter}/${status}`);
+               labelCounter = axiosCounter.data.data.result;
+            } else axiosCounter = Axios.get(`${showCounter}`);
+            console.log("axiosCounter", labelCounter);
+         }
+      }
+      return labelCounter;
+   };
+
    const showMyMenus = async () => {
       // console.log("cargando mis menussss");
       let res = CorrectRes;
@@ -109,55 +127,41 @@ export default function MenuContextProvider({ children }) {
             const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
             // console.log("HeaderMenus", HeaderMenus);
             const items = [];
-            HeaderMenus.map(async (hm) => {
+            await HeaderMenus.map(async (hm) => {
                const item = {
                   id: hm.id,
                   title: hm.menu,
                   caption: hm.caption,
                   type: hm.type,
-                  show_counter: hm.show_counter,
-                  label_conter: 0,
                   children: []
                };
-               let axiosCounter;
-               if (hm.show_counter !== null) {
-                  if (hm.show_counter.length < 0) {
-                     axiosCounter = await Axios.get(`${show_counter}`);
-                     console.log("axiosCounter", axiosCounter);
-                  }
-               }
 
                const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
                // console.log("childrenMenus", childrenMenus);
                childrenMenus.map(async (iCh) => {
+                  let axiosCounter;
+                  let label_counter = 0;
+                  // let label_counter = await getCounter(iCh.show_counter);
+
                   const child = {
                      id: iCh.id,
                      title: iCh.menu,
                      type: iCh.type,
                      url: iCh.url,
                      show_counter: iCh.show_counter,
-                     label_conter: 0,
+                     label_counter: label_counter,
                      icon: tablerIcons[`${iCh.icon}`]
                   };
-                  if (iCh.show_counter !== null) {
-                     if (iCh.show_counter !== "") {
-                        if (iCh.show_counter.includes("vouchers/")) {
-                           let status = "CREADO,APROBADA";
-                           if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) status = "ALTA";
-                           else if (auth.role_id === ROLE_ADMIN_VOUCHER) status = "VoBo";
-                           axiosCounter = await Axios.get(`${iCh.show_counter}/${status}`);
-                           child.label_conter = axiosCounter.data.data.result;
-                        } else axiosCounter = await Axios.get(`${iCh.show_counter}`);
-                        console.log("axiosCounter", axiosCounter);
-                     }
-                  }
                   item.children.push(child);
                });
 
                items.push(item);
             });
             // console.log("items", items);
-            setMenuItems({ items: items });
+            // setMenuItems({ items: items });
+            setTimeout(() => {
+               setMenuItems({ items: items });
+            }, 1500);
             // setAuth({ ...auth, menus: "cambiados" });
          }
       } catch (error) {

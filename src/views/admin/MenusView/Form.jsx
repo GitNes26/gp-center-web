@@ -26,8 +26,21 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const MenuForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
-   const { singularName, menus, createMenu, updateMenu, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle, headerMenus } =
-      useMenuContext();
+   const {
+      singularName,
+      menus,
+      createMenu,
+      updateMenu,
+      formData,
+      setFormData,
+      textBtnSubmit,
+      resetFormData,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle,
+      headerMenus,
+      getHeaderMenusSelectIndex
+   } = useMenuContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isItem, setIsItem] = useState(false);
@@ -234,6 +247,8 @@ const MenuForm = () => {
                                  error={errors.belongs_to}
                                  touched={touched.belongs_to}
                                  disabled={false}
+                                 pluralName={"Menús Padre"}
+                                 refreshSelect={getHeaderMenusSelectIndex}
                               />
                            </Grid>
                            {/* URL */}

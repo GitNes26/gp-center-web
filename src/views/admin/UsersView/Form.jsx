@@ -23,6 +23,7 @@ import { strengthColor, strengthIndicator } from "../../../utils/password-streng
 import Select2Component from "../../../components/Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import DatePickerComponent from "../../../components/Form/DatePickerComponent";
+import { useRoleContext } from "../../../context/RoleContext";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -65,6 +66,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       cursorLoading
    } = useGlobalContext();
    const { user, resetUser, singularName, createUser, updateUser, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useUserContext();
+   const { getRolesSelectIndex } = useRoleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isAdmin, setIsAdmin] = useState(true);
@@ -160,7 +162,6 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       try {
          if (formData.community_id > 0) {
             // // setShowLoading(true);
-
             // getCommunity(
             //    formData.zip,
             //    setFieldValue,
@@ -326,6 +327,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                            error={errors.role_id}
                            touched={touched.role_id}
                            disabled={false}
+                           pluralName={"Roles"}
+                           refreshSelect={getRolesSelectIndex}
                         />
                      </Grid>
                      {/* Nombre de Usuario */}
@@ -541,6 +544,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                                  error={errors.department_id}
                                  touched={touched.department_id}
                                  disabled={false}
+                                 pluralName={"Departamentos"}
+                                 // refreshSelect={getDepartmentSelectIndex}
                               />
                            </Grid>
                            {/* Divisor */}

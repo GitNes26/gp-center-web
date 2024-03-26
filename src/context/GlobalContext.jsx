@@ -38,6 +38,9 @@ export const GlobalContextProvider = ({ children }) => {
    const [cursorLoading, setCursorLoading] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
    const [bgImage, setBgImage] = useState("none");
+   const [counters, setCounters] = useState({
+      vouchers: 0
+   });
 
    const toggleDrawer =
       (open, setOpenSwiper = null) =>
@@ -132,7 +135,9 @@ export const GlobalContextProvider = ({ children }) => {
             dataColonies,
             setDataColonies,
             dataColoniesComplete,
-            setDataColoniesComplete
+            setDataColoniesComplete,
+            counters,
+            setCounters
          }}
       >
          {children}

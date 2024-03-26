@@ -23,7 +23,7 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 const ModelForm = () => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
    const { singularName, createModel, updateModel, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } = useModelContext();
-   const { brands } = useBrandContext();
+   const { brands, getBrandsSelectIndex } = useBrandContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    // const inputsRef = useRef([]);
@@ -177,6 +177,8 @@ const ModelForm = () => {
                            error={errors.brand_id}
                            touched={touched.brand_id}
                            disabled={false}
+                           pluralName={"Marcas"}
+                           refreshSelect={getBrandsSelectIndex}
                         />
                      </Grid>
                      {/* Modelo */}

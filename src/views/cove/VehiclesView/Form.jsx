@@ -41,9 +41,9 @@ const VehicleForm = () => {
       formTitle,
       setFormTitle
    } = useVehicleContext();
-   const { brands } = useBrandContext();
+   const { brands, getBrandsSelectIndex } = useBrandContext();
    const { models } = useModelContext();
-   const { vehicleStatuss } = useVehicleStatusContext();
+   const { vehicleStatuss, getVehicleStatussSelectIndex } = useVehicleStatusContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -352,6 +352,8 @@ const VehicleForm = () => {
                               error={errors.brand_id}
                               touched={touched.brand_id}
                               disabled={false}
+                              pluralName={"Marcas"}
+                              refreshSelect={getBrandsSelectIndex}
                            />
                         </Grid>
                         {/* Modelo */}
@@ -435,6 +437,8 @@ const VehicleForm = () => {
                               error={errors.vehicle_status_id}
                               touched={touched.vehicle_status_id}
                               disabled={false}
+                              pluralName={"Estatus del Vehículo"}
+                              refreshSelect={(e) => getVehicleStatussSelectIndex(["ASIGNADO", "PRESTADO", "EN SERVICIO"])}
                            />
                         </Grid>
                         {/* Descripcion */}

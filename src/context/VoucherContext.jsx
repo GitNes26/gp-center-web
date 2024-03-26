@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+import { useGlobalContext } from "./GlobalContext";
 
 const VoucherContext = createContext();
 
@@ -44,6 +45,7 @@ const voucherInitialState = {
 
 export default function VoucherContextProvider({ children }) {
    const { auth } = useAuthContext();
+   const { counters, setCounters } = useGlobalContext();
 
    const singularName = "Vale"; //Escribirlo siempre letra Capital
    const pluralName = "Vales"; //Escribirlo siempre letra Capital
@@ -98,6 +100,7 @@ export default function VoucherContextProvider({ children }) {
          const axiosData = await Axios.get(`/vouchers`);
          res.result.vouchers = axiosData.data.data.result;
          setVouchers(axiosData.data.data.result);
+         setCounters({ ...counters, vouchers: axiosData.data.data.result.length });
          // console.log("vouchers", vouchers);
 
          return res;

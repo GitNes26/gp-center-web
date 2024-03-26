@@ -22,7 +22,7 @@ const NavItem = ({ item, level }) => {
    const { pathname } = useLocation();
    const customization = useSelector((state) => state.customization);
    const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
-   const { load, setLoading } = useGlobalContext();
+   const { load, setLoading, counters } = useGlobalContext();
 
    const Icon = item.icon;
    const itemIcon = item?.icon ? (
@@ -105,7 +105,7 @@ const NavItem = ({ item, level }) => {
                color={"primary" /* item.chip.color */}
                variant={"filled" /* item.chip.variant */}
                size={"small" /* item.chip.size */}
-               label={item.label_conter}
+               label={counters.vouchers}
                // avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
             />
          )}

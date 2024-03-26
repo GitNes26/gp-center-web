@@ -32,7 +32,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
       roleSelect,
       setRoleSelect,
       showRoleSelect,
-      updatePermissions
+      updatePermissions,
+      getRolesSelectIndex
    } = useRoleContext();
    const { menus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
 
@@ -176,7 +177,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          // console.log("values", values);
-         // console.log("checkMenus", checkMenus); 
+         // console.log("checkMenus", checkMenus);
          if (values.id < 1) return Toast.Info("Selecciona un Role");
          setLoadingAction(true);
          values.read = [];
@@ -297,6 +298,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
                         error={errors.id}
                         touched={touched.id}
                         disabled={false}
+                        pluralName={"Roles"}
+                        refreshSelect={getRolesSelectIndex}
                      />
                   </Grid>
                   {auth.permissions.update && (

@@ -600,6 +600,8 @@ const RequestBecaView = () => {
                                           error={errors.disability_id}
                                           touched={touched.disability_id}
                                           disabled={false}
+                                          pluralName={"Discapacidades"}
+                                          refreshSelect={getDisabilitiesSelectIndex}
                                        />
                                     </Grid>
 
@@ -667,6 +669,8 @@ const RequestBecaView = () => {
                                           touched={touched.school_id}
                                           disabled={false}
                                           // inputref={inputRefSchoolId}
+                                          pluralName={"Escuelas"}
+                                          refreshSelect={getSchoolsSelectIndex}
                                        />
                                     </Grid>
                                     {/* Grado */}

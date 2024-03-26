@@ -98,9 +98,11 @@ const MainRoutes = {
       {
          path: "usuarios",
          element: (
-            <UserContextProvider>
-               <UsersView />
-            </UserContextProvider>
+            <RoleContextProvider>
+               <UserContextProvider>
+                  <UsersView />
+               </UserContextProvider>
+            </RoleContextProvider>
          ),
          loader: loaderIndexUsersView
       },
