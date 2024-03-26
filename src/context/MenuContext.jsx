@@ -3,6 +3,7 @@ import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 import * as tablerIcons from "@tabler/icons";
+import { ROLE_ADMIN_VOUCHER, ROLE_VOUCHER_SUPERVISOR } from "./GlobalContext";
 
 const MenuContext = createContext();
 
@@ -119,8 +120,8 @@ export default function MenuContextProvider({ children }) {
                   children: []
                };
                let axiosCounter;
-               if (item.show_counter !== null) {
-                  if (item.show_counter.length < 0) {
+               if (hm.show_counter !== null) {
+                  if (hm.show_counter.length < 0) {
                      axiosCounter = await Axios.get(`${show_counter}`);
                      console.log("axiosCounter", axiosCounter);
                   }
@@ -138,9 +139,15 @@ export default function MenuContextProvider({ children }) {
                      label_conter: 0,
                      icon: tablerIcons[`${iCh.icon}`]
                   };
-                  if (child.show_counter !== null) {
-                     if (child.show_counter.length < 0) {
-                        axiosCounter = await Axios.get(`${show_counter}`);
+                  if (iCh.show_counter !== null) {
+                     if (iCh.show_counter !== "") {
+                        if (iCh.show_counter.includes("vouchers/")) {
+                           let status = "CREADO,APROBADA";
+                           if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) status = "ALTA";
+                           else if (auth.role_id === ROLE_ADMIN_VOUCHER) status = "VoBo";
+                           axiosCounter = await Axios.get(`${iCh.show_counter}/${status}`);
+                           child.label_conter = axiosCounter.data.data.result;
+                        } else axiosCounter = await Axios.get(`${iCh.show_counter}`);
                         console.log("axiosCounter", axiosCounter);
                      }
                   }
