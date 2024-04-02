@@ -100,12 +100,12 @@ const NavItem = ({ item, level }) => {
                </>
             }
          />
-         {item.show_counter !== null && item.show_counter !== "" && (
+         {Boolean(item.show_counter) && (
             <Chip
                color={"primary" /* item.chip.color */}
                variant={"filled" /* item.chip.variant */}
                size={"small" /* item.chip.size */}
-               label={counters.vouchers}
+               label={counters[item.counter_name] || 0}
                // avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
             />
          )}

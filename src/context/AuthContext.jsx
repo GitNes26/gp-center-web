@@ -2,6 +2,8 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import sAlert from "../utils/sAlert";
 import { CorrectRes } from "../utils/Response";
+import { ROLE_ADMIN_VOUCHER, useGlobalContext } from "./GlobalContext";
+import Toast from "../utils/Toast";
 
 export const AuthContext = createContext();
 
@@ -40,6 +42,7 @@ const AuthinitialStatate = {
 };
 
 export default function AuthContextProvider({ children }) {
+   const { counters, setCounters, resetCounters } = useGlobalContext();
    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || AuthinitialStatate);
    const [permissionRead, setPermissionRead] = useState(false);
    // const [idPage, setIdPage] = useState(0);
@@ -143,6 +146,38 @@ export default function AuthContextProvider({ children }) {
          Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
          setAuth(null);
          location.hash = "/login";
+      }
+   };
+
+   const counterOfMenus = async () => {
+      let res = CorrectRes;
+      try {
+         await resetCounters();
+         counters.vouchers = 0;
+         // console.log("counterofMenus");
+         // const axiosData = await Axios.get(`counters/counterOfMenus`);
+         // res = await axiosData.data.data;
+         const filterCounters = { ...counters };
+         const newCounters = { ...counters };
+
+         newCounters.vouchers = 0;
+         const vouchersData = await Axios.get(`/vouchers`);
+         console.log("vouchersData", vouchersData.data.data.result.length);
+         newCounters.vouchers = vouchersData.data.data.result.length;
+
+         // if (auth.role_id === ROLE_ADMIN_VOUCHER)
+         // filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.counter));
+         // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         console.log("newCounters", newCounters);
+         await setCounters(newCounters);
+         console.log(counters);
+
+         // return res;
+      } catch (error) {
+         console.log(error);
+         // res.message = error;
+         // res.alert_text = error;
+         // Toast.Error(error);
       }
    };
 
@@ -289,17 +324,15 @@ export default function AuthContextProvider({ children }) {
       }
    };
 
-   // useEffect(() => {
-   //    console.log("el useEffect de AuthContext");
-   //    const asyncCall = async () => await loggedInCheck();
-   //    asyncCall();
-   // }, []);
+   useEffect(() => {
+      counterOfMenus();
+   }, []);
 
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
    return (
-      <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage, changePasswordAuth }}>
+      <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage, changePasswordAuth, counterOfMenus }}>
          {children}
       </AuthContext.Provider>
    );

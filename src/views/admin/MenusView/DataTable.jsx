@@ -23,7 +23,7 @@ const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
-   const globalFilterFields = ["id", "icon", "menu", "caption", "patern", "order", "url", "others_permissions", "show_counter", "active", "created_at"];
+   const globalFilterFields = ["id", "icon", "menu", "caption", "patern", "order", "url", "others_permissions", "counter_name", "active", "created_at"];
 
    // #region BodysTemplate
    const IdBodyTemplate = (obj) => (
@@ -65,6 +65,7 @@ const MenuDT = () => {
                <br />
                Path: <b>{obj.url ?? "-"}</b>
                <br />
+               Nombre del Contador: <b>{obj.counter_name ?? "-"}</b>
             </Typography>
          ) : (
             <>
@@ -85,8 +86,8 @@ const MenuDT = () => {
    );
    const ShowCounterBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         {obj.show_counter}
-         {/* {obj.show_counter ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />} */}
+         {/* {obj.show_counter} */}
+         {obj.show_counter ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
       </Typography>
    );
    const ActiveBodyTemplate = (obj) => (
@@ -103,8 +104,8 @@ const MenuDT = () => {
       { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filterField: null },
       { field: "menu", header: "Menu", sortable: true, functionEdit: null, body: MenuBodyTemplate, filterField: null },
       { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null },
-      { field: "others_permissions", header: "Otros Permisos", sortable: true, functionEdit: null, body: OthersPermissionsTemplate, filterField: null },
-      { field: "show_counter", header: "Contador", sortable: true, functionEdit: null, body: ShowCounterBodyTemplate, filterField: null }
+      { field: "others_permissions", header: "Otros Permisos", sortable: true, functionEdit: null, body: OthersPermissionsTemplate, filterField: null }
+      // { field: "show_counter", header: "Contador", sortable: true, functionEdit: null, body: ShowCounterBodyTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(

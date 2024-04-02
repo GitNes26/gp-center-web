@@ -29,6 +29,10 @@ export const TransitionSlide = (direction = "up") =>
       return <Slide direction={direction} ref={ref} {...props} />;
    });
 
+const initialStateCounters = {
+   vouchers: 0
+};
+
 export const GlobalContextProvider = ({ children }) => {
    // const [loadLogo, setLoadLogo] = useState(true);
    const [load, setLoad] = useState(true);
@@ -38,9 +42,7 @@ export const GlobalContextProvider = ({ children }) => {
    const [cursorLoading, setCursorLoading] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
    const [bgImage, setBgImage] = useState("none");
-   const [counters, setCounters] = useState({
-      vouchers: 0
-   });
+   const [counters, setCounters] = useState(initialStateCounters);
 
    const toggleDrawer =
       (open, setOpenSwiper = null) =>
@@ -98,6 +100,10 @@ export const GlobalContextProvider = ({ children }) => {
    const [dataColoniesComplete, setDataColoniesComplete] = useState([]);
    //#endregion INPUTS-COMMUNITY-COMPONENT
 
+   const resetCounters = () => {
+      setCounters(initialStateCounters);
+   };
+
    return (
       <GlobalContext.Provider
          value={{
@@ -137,7 +143,8 @@ export const GlobalContextProvider = ({ children }) => {
             dataColoniesComplete,
             setDataColoniesComplete,
             counters,
-            setCounters
+            setCounters,
+            resetCounters
          }}
       >
          {children}

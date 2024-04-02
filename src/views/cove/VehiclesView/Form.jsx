@@ -693,7 +693,7 @@ const VehicleForm = () => {
                            </Grid>
                         )}
                         {/* Placas */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="plates"
                               name="plates"
@@ -710,6 +710,26 @@ const VehicleForm = () => {
                               // inputRef={(el) => (inputsRef.current[1] = el)}
                               error={errors.plates && touched.plates}
                               helperText={errors.plates && touched.plates && errors.plates}
+                           />
+                        </Grid>
+                        {/* Código de Gasolina */}
+                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="gasoline_code"
+                              name="gasoline_code"
+                              label="Código de Gasolina"
+                              type="text"
+                              value={values.gasoline_code}
+                              placeholder="Inserte el código de gasolina"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "gasoline_code", true)}
+                              // inputProps={{ maxLength: 9 }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              // inputRef={(el) => (inputsRef.current[1] = el)}
+                              error={errors.gasoline_code && touched.gasoline_code}
+                              helperText={errors.gasoline_code && touched.gasoline_code && errors.gasoline_code}
                            />
                         </Grid>
                         {/* Fecha de Plaqueo */}

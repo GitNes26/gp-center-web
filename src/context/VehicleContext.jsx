@@ -38,6 +38,7 @@ const formDataInitialState = {
    violated: "",
 
    plates: "",
+   gasoline_code: "",
    initial_date: "",
    due_date: "",
 

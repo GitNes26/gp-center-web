@@ -44,8 +44,7 @@ const voucherInitialState = {
 };
 
 export default function VoucherContextProvider({ children }) {
-   const { auth } = useAuthContext();
-   const { counters, setCounters } = useGlobalContext();
+   const { auth, counterOfMenus } = useAuthContext();
 
    const singularName = "Vale"; //Escribirlo siempre letra Capital
    const pluralName = "Vales"; //Escribirlo siempre letra Capital
@@ -100,9 +99,9 @@ export default function VoucherContextProvider({ children }) {
          const axiosData = await Axios.get(`/vouchers`);
          res.result.vouchers = axiosData.data.data.result;
          setVouchers(axiosData.data.data.result);
-         setCounters({ ...counters, vouchers: axiosData.data.data.result.length });
+         // setCounters({ ...counters, vouchers: axiosData.data.data.result.length });
          // console.log("vouchers", vouchers);
-
+         counterOfMenus();
          return res;
       } catch (error) {
          console.log(error);
