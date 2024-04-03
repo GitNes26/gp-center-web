@@ -153,7 +153,6 @@ export default function AuthContextProvider({ children }) {
       let res = CorrectRes;
       try {
          await resetCounters();
-         counters.vouchers = 0;
          // console.log("counterofMenus");
          // const axiosData = await Axios.get(`counters/counterOfMenus`);
          // res = await axiosData.data.data;
@@ -162,16 +161,15 @@ export default function AuthContextProvider({ children }) {
 
          newCounters.vouchers = 0;
          const vouchersData = await Axios.get(`/vouchers`);
-         console.log("vouchersData", vouchersData.data.data.result.length);
+         // console.log("vouchersData", vouchersData.data.data.result.length);
          newCounters.vouchers = vouchersData.data.data.result.length;
 
          // if (auth.role_id === ROLE_ADMIN_VOUCHER)
          // filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.counter));
          // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
-         console.log("newCounters", newCounters);
+         // console.log("newCounters", newCounters);
          await setCounters(newCounters);
-         console.log(counters);
-
+         // console.log(counters);
          // return res;
       } catch (error) {
          console.log(error);

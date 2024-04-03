@@ -121,7 +121,7 @@ import { useDropzone } from "react-dropzone";
 // #endregion
 
 export const setObjImg = (img, setImg) => {
-   if (img == "" || img == undefined) return setImg([]);
+   if (["", null, undefined].includes(img)) return setImg([]);
    // console.log("setObjImg --> ", img, " <--");
    const imgObj = {
       file: {
@@ -281,7 +281,7 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                                                 onMouseLeave={handleMouseLeave}
                                              />
                                           )}
-                                          <button
+                                          <div
                                              className="remove-pdf-button"
                                              onClick={(e) => {
                                                 e.preventDefault();
@@ -289,7 +289,7 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                                              }}
                                           >
                                              Eliminar
-                                          </button>
+                                          </div>
                                        </>
                                     ) : (
                                        <>
@@ -305,7 +305,7 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                                                 onMouseLeave={handleMouseLeave}
                                              />
                                           )}
-                                          <button
+                                          <div
                                              className="remove-button"
                                              onClick={(e) => {
                                                 e.preventDefault();
@@ -315,7 +315,7 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                                              onMouseLeave={handleMouseLeave}
                                           >
                                              Eliminar
-                                          </button>
+                                          </div>
                                        </>
                                     )}
                                  </div>

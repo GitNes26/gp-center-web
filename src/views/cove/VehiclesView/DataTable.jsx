@@ -53,7 +53,8 @@ const VehicleDT = () => {
       "serial_number",
       "circulation_card",
       "insurance_policy",
-      "description"
+      "description",
+      "gasoline_code"
    ];
 
    // #region BodysTemplate
@@ -115,6 +116,11 @@ const VehicleDT = () => {
       </Typography>
    );
    const DescriptionBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.description}</Typography>;
+   const GasolineCodeBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+         {obj.gasoline_code}
+      </Typography>
+   );
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
@@ -133,7 +139,8 @@ const VehicleDT = () => {
       { field: "serial_number", header: "N° de Serie", sortable: true, functionEdit: null, body: SerialNumberBodyTemplate, filterField: null },
       { field: "circulation_card", header: "Tarjeta de Circulación", sortable: true, functionEdit: null, body: CirculationCardBodyTemplate, filterField: null },
       { field: "insurance_policy", header: "Poliza de Seguro", sortable: true, functionEdit: null, body: InsurancePolicyBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null }
+      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null },
+      { field: "gasoline_code", header: "Código Gasolina", sortable: true, functionEdit: null, body: GasolineCodeBodyTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(

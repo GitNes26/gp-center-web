@@ -25,7 +25,7 @@ import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils/Formats";
 import { IconProgressCheck } from "@tabler/icons-react";
-import { IconBan, IconCheckbox, IconEye } from "@tabler/icons";
+import { IconBan, IconCheckbox, IconEye, IconFileInvoice, IconTicket } from "@tabler/icons";
 import ModalCancelComments from "./ModalCancelComments";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 
@@ -156,7 +156,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
             : obj.voucher_status === "ALTA"
             ? "blue"
             : obj.voucher_status === "VoBo"
-            ? "greenyellow"
+            ? "#50897A"
             : obj.voucher_status === "APROBADA"
             ? "green"
             : "red"; //red CANCELADO
@@ -270,16 +270,29 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       }
    };
 
+   const handleClickGenerateVocuher = async (id, obj) => {
+      try {
+         await setVoucher(obj);
+         await getIndexByVoucher(obj.id);
+         setOpenModalRequest(true);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const handleClickShow = async (id, obj) => {
       try {
          setInAprobation(false);
-         if (auth.role_id === ROLE_ADMIN_VOUCHER && obj.viewed_by < 1) {
+         if (auth.role_id === ROLE_VOUCHER_SUPERVISOR && obj.viewed_by < 1) {
             // console.log("checar visto");
             const data = {
                id: obj.id,
                viewed_by: auth.id,
                viewed_at: formatDatetimeToSQL(new Date())
             };
+            // console.log("checar visto->data", data);
+
             await seenVoucher(data);
          }
          await setVoucher(obj);
@@ -395,6 +408,13 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
                   <Button color="secondary" onClick={() => handleClickAssign(id)}>
                      <IconProgressCheck />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes("24@Generar Vale") && obj.voucher_status === "APROBADA" && (
+               <Tooltip title={`Generar Formato de Recepción de ${singularName}`} placement="top">
+                  <Button color="secondary" onClick={() => handleClickGenerateVocuher(id)}>
+                     <IconFileInvoice />
                   </Button>
                </Tooltip>
             )}

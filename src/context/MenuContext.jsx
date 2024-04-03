@@ -140,8 +140,6 @@ export default function MenuContextProvider({ children }) {
                const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
                // console.log("childrenMenus", childrenMenus);
                childrenMenus.map(async (iCh) => {
-                  let axiosCounter;
-                  let label_counter = 0;
                   // let label_counter = await getCounter(iCh.show_counter);
 
                   const child = {
@@ -150,7 +148,7 @@ export default function MenuContextProvider({ children }) {
                      type: iCh.type,
                      url: iCh.url,
                      show_counter: iCh.show_counter,
-                     label_counter: label_counter,
+                     counter_name: iCh.counter_name,
                      icon: tablerIcons[`${iCh.icon}`]
                   };
                   item.children.push(child);

@@ -87,6 +87,7 @@ const VoucherRequesterForm = () => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
    const [imgFirm, setImgFirm] = useState([]);
+   const [imgStamp, setImgStamp] = useState([]);
    const [imgAvatar, setImgAvatar] = useState([]);
 
    const ResetForm = async (resetForm = null) => {
@@ -94,6 +95,7 @@ const VoucherRequesterForm = () => {
       await resetFormData();
       setImgAvatar([]);
       setImgFirm([]);
+      setImgStamp([]);
    };
 
    const handleChangeRole = (value2, setFieldValue) => {
@@ -163,8 +165,10 @@ const VoucherRequesterForm = () => {
          // values.community_id = values.colony_id;
          values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
          values.img_firm = imgFirm.length == 0 ? "" : imgFirm[0].file;
+         values.img_stamp = imgStamp.length == 0 ? "" : imgStamp[0].file;
 
          if (!validateImageRequired(values.img_firm, "La foto de la firma es requerida")) return;
+         if (!validateImageRequired(values.img_stamp, "La foto del Sello es requerida")) return;
 
          // return console.log("values", values);
 
@@ -231,6 +235,7 @@ const VoucherRequesterForm = () => {
          setValues(formData);
          setObjImg(formData.avatar, setImgAvatar);
          setObjImg(formData.img_firm, setImgFirm);
+         setObjImg(formData.img_stamp, setImgStamp);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -461,6 +466,9 @@ const VoucherRequesterForm = () => {
                         </Grid>
                         {/* Foto Firma */}
                         <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <small>
+                              <i>Con fondo transparente en formato .PNG</i>
+                           </small>
                            <InputFileComponent
                               idName="img_firm"
                               label="Foto Firma *"
@@ -468,6 +476,22 @@ const VoucherRequesterForm = () => {
                               setFilePreviews={setImgFirm}
                               error={errors.img_firm}
                               touched={touched.img_firm}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+                        {/* Foto Sello del Departamento */}
+                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <small>
+                              <i>Con fondo transparente en formato .PNG</i>
+                           </small>
+                           <InputFileComponent
+                              idName="img_stamp"
+                              label="Foto Sello del Departamento *"
+                              filePreviews={imgStamp}
+                              setFilePreviews={setImgStamp}
+                              error={errors.img_stamp}
+                              touched={touched.img_stamp}
                               multiple={false}
                               accept={"image/*"}
                            />

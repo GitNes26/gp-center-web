@@ -58,10 +58,34 @@ export function formatDatetime(the_date, long_format = true, format = null) {
    }
 
    date = new Date(the_date);
-   const formato = long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY";
-   return (datetime = moment(date)
-      .locale("es-mx")
-      .format(format ? format : formato));
+   let formato = long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY";
+   console.log(formato);
+   datetime = moment(date).locale("es-mx").format(formato);
+   if (["LL", "LLL", "ll", "lll", "sello"].includes(format)) {
+      let mounth = datetime.split("-")[1];
+      console.log(mounth);
+      const mounths = {
+         "01": format == "LL" ? "-ENE-" : format == "LLL" ? "-ENERO-" : format == "ll" ? " de ene de " : format == "lll" ? " de enero de " : " ENERO ",
+         "02": format == "LL" ? "-FEB-" : format == "LLL" ? "-FEBRERO-" : format == "ll" ? " de feb de " : format == "lll" ? " de febrero de " : " FEBRERO ",
+         "03": format == "LL" ? "-MAR-" : format == "LLL" ? "-MARZO-" : format == "ll" ? " de mar de " : format == "lll" ? " de marzo de " : " MARZO ",
+         "04": format == "LL" ? "-ABR-" : format == "LLL" ? "-ABRIL-" : format == "ll" ? " de abr de " : format == "lll" ? " de abril de " : " ABRIL ",
+         "05": format == "LL" ? "-MAY-" : format == "LLL" ? "-MAYO-" : format == "ll" ? " de may de " : format == "lll" ? " de mayo de " : " MAYO ",
+         "06": format == "LL" ? "-JUN-" : format == "LLL" ? "-JUNIO-" : format == "ll" ? " de jun de " : format == "lll" ? " de junio de " : " JUNIO ",
+         "07": format == "LL" ? "-JUL-" : format == "LLL" ? "-JULIO-" : format == "ll" ? " de jul de " : format == "lll" ? " de julio de " : " JULIO ",
+         "08": format == "LL" ? "-AGO-" : format == "LLL" ? "-AGOSTO-" : format == "ll" ? " de ago de " : format == "lll" ? " de agosto de " : " AGOSTO ",
+         "09": format == "LL" ? "-SEP-" : format == "LLL" ? "-SEPTIEMBRE-" : format == "ll" ? " de sep de " : format == "lll" ? " de septiembre de " : " SEPTIEMBRE ",
+         10: format == "LL" ? "-OCT-" : format == "LLL" ? "-OCTUBRE-" : format == "ll" ? " de oct de " : format == "lll" ? " de octubre de " : " OCTUBRE ",
+         11: format == "LL" ? "-NOV-" : format == "LLL" ? "-NOVIEMBRE-" : format == "ll" ? " de nov de " : format == "lll" ? " de noviembre de " : " NOVIEMBRE ",
+         12: format == "LL" ? "-DIC-" : format == "LLL" ? "-DICIEMBRE-" : format == "ll" ? " de dic de " : format == "lll" ? " de diciembre de " : " DICIEMBRE "
+      };
+      const mounthNumber = datetime.split("-")[1];
+
+      datetime = datetime.replace(`-${mounthNumber}-`, `${mounths[mounthNumber]}`);
+
+      console.log(datetime); // Salida: '28-marzo-2024'
+   }
+   console.log(datetime);
+   return datetime;
    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(date);
 }
 

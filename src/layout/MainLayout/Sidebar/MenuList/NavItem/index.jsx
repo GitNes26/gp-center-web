@@ -94,7 +94,7 @@ const NavItem = ({ item, level }) => {
                <>
                   {item.caption && (
                      <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption_GPC }} display="block" gutterBottom>
-                        {item.caption} {item.show_counter}
+                        {item.caption}
                      </Typography>
                   )}
                </>
