@@ -2,11 +2,11 @@ import Slide from "@mui/material/Slide";
 
 import { forwardRef, useEffect, useLayoutEffect, useState } from "react";
 import { useAuthContext } from "../../../context/AuthContext";
-import { Text, View } from "@react-pdf/renderer";
+import { Image, Text, View } from "@react-pdf/renderer";
 import { ModalPDF, stylesPDF } from "../../../components/DocumentPDF";
 import { useVoucherContext } from "../../../context/VoucherContext";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
-
+// import imgStamp from "../../../assets/images/SELLO-Control-Vehicular.png";
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -21,11 +21,15 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
       date: "--/--/----",
       directorFrom: "LIC. MAURICIO GUERRERO FELIX",
       departmentFrom: "JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
-      directorTo: "C. ING. RODRIGO DE LA TORRE VALLE",
-      departmentTo: "OFICIAL MAYOR",
-      workstationFirm: "JEFE DE DEPARTAMENTO DE SERVICIOS GENERALES",
+      directorTo1: "C. ING. RODRIGO DE LA TORRE VALLE",
+      departmentTo1: "OFICIAL MAYOR",
+      directorTo2: "LIC. CARLOS GARCIA GONZALEZ",
+      departmentTo2: "TESORERIA MUNICIPAL",
+      workstationFirm: "",
       imgFirm: null,
-      directorFirm: "C. FERNANDO ANTONIO LAVIN GONZALEZ"
+      directorFirm: "",
+      imgStamp: "",
+      imgDateStamp: ""
    });
 
    useEffect(() => {
@@ -38,7 +42,8 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
       formData.date = voucher.created_at;
       formData.workstationFirm = voucher.workstation;
       formData.imgFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
-      formData.directorFirm = voucher.requested_role_id === 7 ? "LIC. MAURICIO GUERRERO FELIX" : voucher.requested_fullname;
+      formData.directorFirm = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
+
       // console.log("estoy en el useLayoutEffect final", formData);
       // console.log("estoy en el useLayoutEffect final", voucherDetails);
    }, [voucher]);
@@ -46,6 +51,8 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    return (
       <ModalPDF open={open} setOpen={setOpen} formTitle={"OFICIO DE VALES"} watermark={"Control Vehícular"} formData={formData}>
          <Text style={stylesPDF.p}>{voucher.activity}</Text>
+         {/* <Image style={stylesPDF.sello} src={formData.imgStamp} /> */}
+
          <View style={[stylesPDF.table, stylesPDF.center]}>
             {/* <View style={stylesPDF.column}>
                <Text style={[stylesPDF.cell, stylesPDF.bolder]}>CANTIDAD</Text>
@@ -83,7 +90,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
             </View>
          </View>
 
-         <Text style={stylesPDF.p}>Sin más por el momento me despido de usted quedando a sus órdenes para cualquier duda o aclaración.</Text>
+         {/* <Text style={stylesPDF.p}>Sin más por el momento me despido de usted quedando a sus órdenes KCpara cualquier duda o aclaración.</Text> */}
       </ModalPDF>
    );
 };

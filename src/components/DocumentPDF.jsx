@@ -232,6 +232,20 @@ export const stylesPDF = StyleSheet.create({
       transform: "translateX(-100%)",
       marginBottom: -10
    },
+   stamp: {
+      width: "4cm",
+      height: "4cm",
+      left: "25%",
+      transform: "translateX(-100%)",
+      marginBottom: -10
+   },
+   dateStamp: {
+      width: "4.5cm",
+      height: "3.7cm",
+      left: "75%",
+      transform: "translateX(-100%)",
+      marginBottom: -10
+   },
    upperCase: {
       textTransform: "uppercase"
    },
@@ -255,11 +269,15 @@ const formDataInitial = {
    date: null,
    directorFrom: "",
    departmentFrom: "",
-   directorTo: "",
-   departmentTo: "",
+   directorTo1: "",
+   departmentTo1: "",
+   directorTo2: "",
+   departmentTo2: "",
    workstationFirm: "",
    imgFirm: sinFirma,
-   directorFirm: ""
+   directorFirm: "",
+   imgStamp: "",
+   imgDateStamp: ""
 };
 
 // Componente que representa el documento OficioPDF
@@ -290,7 +308,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                   <Text>Folio: #{formData.folio}</Text>
                   <Text>Folio Interno: {formData.internal_folio}</Text>
                   <Text style={{ fontFamily: "Roboto-Regular" }}>
-                     Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false, "sello") : "--/---/----"}
+                     Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false, "lll") : "--/---/----"}
                   </Text>
                </View>
 
@@ -300,11 +318,30 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                   <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
                </View>
 
-               <View style={stylesPDF.dataTitlesRigth}>
-                  <Text>CON ATENCIÓN A:</Text>
-                  <Text style={stylesPDF.upperCase}>{formData.directorTo}</Text>
-                  <Text style={stylesPDF.upperCase}>{formData.departmentTo}</Text>
-               </View>
+               {formData.directorTo2 != "" ? (
+                  <View style={stylesPDF.row}>
+                     <View style={stylesPDF.column}>
+                        <View style={stylesPDF.dataTitlesLeft}>
+                           <Text>CON ATENCIÓN A:</Text>
+                           <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
+                           <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
+                        </View>
+                     </View>
+                     <View style={[stylesPDF.column, { width: "100%" }]}>
+                        <View style={stylesPDF.dataTitlesRigth}>
+                           <Text> </Text>
+                           <Text style={stylesPDF.upperCase}>{formData.directorTo2}</Text>
+                           <Text style={stylesPDF.upperCase}>{formData.departmentTo2}</Text>
+                        </View>
+                     </View>
+                  </View>
+               ) : (
+                  <View style={stylesPDF.dataTitlesRigth}>
+                     <Text>CON ATENCIÓN A:</Text>
+                     <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
+                     <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
+                  </View>
+               )}
 
                {/* CUERPO DEL MENSAJE */}
                <View style={stylesPDF.messageBody}>{children}</View>
