@@ -122,7 +122,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
       </Typography>
    );
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_department}</Typography>;
-   const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity}</Typography>;
+   const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{`${obj.activity.slice(0, 100)}...`}</Typography>;
    const RequestAmountBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"bolder"}>
          {obj.requested_amount}
@@ -390,7 +390,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
                   <IconEye />
                </Button>
             </Tooltip>
-            {obj.voucher_status === "CREADO" && (
+            {obj.voucher_status === "CREADO" && auth.role_id != ROLE_VOUCHER_SUPERVISOR && (
                <Tooltip title={`Finalizar ${singularName}`} placement="top">
                   <Button color="dark" onClick={() => handleClickEditCREADO(id)}>
                      <IconEdit />

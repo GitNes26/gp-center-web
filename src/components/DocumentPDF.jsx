@@ -45,6 +45,9 @@ import RobotoBold from "../assets/fonts/Roboto-Bold.ttf";
 import RobotoRegular from "../assets/fonts/Roboto-Regular.ttf";
 import RobotoItalic from "../assets/fonts/Roboto-Italic.ttf";
 import ProtestRiot from "../assets/fonts/ProtestRiot-Regular.ttf";
+import BarlowRegular from "../assets/fonts/Barlow-Regular.ttf";
+import BarlowMedium from "../assets/fonts/Barlow-Medium.ttf";
+import BarlowBold from "../assets/fonts/Barlow-Bold.ttf";
 
 //#region FUENTES
 Font.register({
@@ -64,6 +67,21 @@ Font.register({
 Font.register({
    family: "Protest-Riot",
    src: ProtestRiot
+});
+
+Font.register({
+   family: "Barlow-Regular",
+   src: BarlowRegular
+});
+
+Font.register({
+   family: "Barlow-Medium",
+   src: BarlowMedium
+});
+
+Font.register({
+   family: "Barlow-Bold",
+   src: BarlowBold
 });
 
 //#endregion
@@ -141,10 +159,10 @@ export const stylesPDF = StyleSheet.create({
    viewBgImage: {
       position: "absolute",
       top: 0,
-      left: 0,
+      left: -15,
       height: "100%",
-      width: "100%"
-      // opacity: "0.5"
+      width: "100%",
+      opacity: "0.75"
    },
    viewContainer: {
       position: "absolute",
@@ -176,9 +194,11 @@ export const stylesPDF = StyleSheet.create({
    messageBody: {
       fontFamily: "Roboto-Regular",
       fontSize: 12,
-      height: 300,
+      height: 320,
+      maxHeight: 320,
       textAlign: "justify",
       lineHeight: "1.5px"
+      // backgroundColor: "red"
       // marginBottom: 1
       // paddingHorizontal: 35
    },
@@ -222,9 +242,10 @@ export const stylesPDF = StyleSheet.create({
       fontFamily: "Roboto-Bold",
       textAlign: "center",
       fontSize: 14,
-      height: 150,
-      fontWeight: "heavy",
-      marginLeft: 30
+      maxHeight: 100,
+      fontWeight: "heavy"
+      // marginLeft: 30
+      // backgroundColor: "blue"
    },
    firma: {
       width: "200px",
@@ -233,18 +254,40 @@ export const stylesPDF = StyleSheet.create({
       marginBottom: -10
    },
    stamp: {
+      position: "absolute",
       width: "4cm",
       height: "4cm",
-      left: "25%",
-      transform: "translateX(-100%)",
-      marginBottom: -10
+      top: "87%",
+      left: "21%",
+      transform: "translateX(-100%)"
+      // backgroundColor: "yellow"
+      // marginBottom: -10
+   },
+   containerDateStamp: {
+      position: "absolute",
+      transform: "translateX(-100%) rotate(-5deg)",
+      top: "65%",
+      left: "95%"
+      // backgroundColor: "green",
    },
    dateStamp: {
+      position: "absolute",
       width: "4.5cm",
-      height: "3.7cm",
-      left: "75%",
-      transform: "translateX(-100%)",
-      marginBottom: -10
+      height: "3.7cm"
+      // backgroundColor: "red"
+      // marginBottom: -10
+   },
+   dateStampText: {
+      position: "absolute",
+      fontFamily: "Barlow-Medium",
+      textAlign: "center",
+      fontSize: 12,
+      color: "#47464E",
+      width: "2.9cm",
+      top: 50,
+      left: -28,
+      transform: "translateX(50%)"
+      // backgroundColor: "yellow"
    },
    upperCase: {
       textTransform: "uppercase"
@@ -264,20 +307,24 @@ export const stylesPDF = StyleSheet.create({
 //#endregion ESTILOS
 
 const formDataInitial = {
-   folio: "",
-   internal_folio: "",
-   date: null,
    directorFrom: "",
    departmentFrom: "",
    directorTo1: "",
    departmentTo1: "",
    directorTo2: "",
    departmentTo2: "",
-   workstationFirm: "",
-   imgFirm: sinFirma,
-   directorFirm: "",
    imgStamp: "",
-   imgDateStamp: ""
+   imgDateStamp: "",
+   voucher: {
+      folio: "",
+      internal_folio: "",
+      date: null,
+      requesterWorkstation: "",
+      requesterFirm: sinFirma,
+      requesterName: "",
+      requesterStamp: null,
+      viewed_at: ""
+   }
 };
 
 // Componente que representa el documento OficioPDF
@@ -296,6 +343,13 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                <Image style={stylesPDF.bgImage} src={backgroundImage} />
             </View>
             <View style={stylesPDF.viewContainer}>
+               <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp}></Image>
+               {formData.voucher.viewed_at != null && (
+                  <View style={stylesPDF.containerDateStamp}>
+                     <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp}></Image>
+                     <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.viewed_at, false, "sello")}</Text>
+                  </View>
+               )}
                {/* <Image style={stylesPDF.image} src={logo}></Image> */}
                {/* <Text style={stylesPDF.title}>Solicitud Ciudadana</Text>
                     <Text style={stylesPDF.author}>Sec. Particular</Text>
@@ -303,21 +357,18 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                         <Text style={stylesPDF.author}><Text style={{ fontFamily: 'Roboto-Bold', textDecoration: 'underline' }}>Fecha de Solicitud:</Text> {"formData.fecha_solicitud"}</Text>
                         <Text style={stylesPDF.author}><Text style={{ fontFamily: 'Roboto-Bold', textDecoration: 'underline' }}>Folio:</Text> {"formData.id"}</Text>
                     </View> */}
-
                <View style={stylesPDF.folioDate}>
-                  <Text>Folio: #{formData.folio}</Text>
-                  <Text>Folio Interno: {formData.internal_folio}</Text>
+                  <Text>Folio: #{formData.voucher.folio}</Text>
+                  <Text>Folio Interno: {formData.voucher.internal_folio}</Text>
                   <Text style={{ fontFamily: "Roboto-Regular" }}>
-                     Gómez Palacio, Dgo., {formData.date ? formatDatetime(formData.date, false, "lll") : "--/---/----"}
+                     Gómez Palacio, Dgo., {formData.voucher.date ? formatDatetime(formData.voucher.date, false, "lll") : "--/---/----"}
                   </Text>
                </View>
-
                <View style={stylesPDF.dataTitlesLeft}>
                   <Text style={stylesPDF.upperCase}>{formData.directorFrom}</Text>
                   <Text style={stylesPDF.upperCase}>{formData.departmentFrom}</Text>
                   <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
                </View>
-
                {formData.directorTo2 != "" ? (
                   <View style={stylesPDF.row}>
                      <View style={stylesPDF.column}>
@@ -342,17 +393,15 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                      <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
                   </View>
                )}
-
                {/* CUERPO DEL MENSAJE */}
                <View style={stylesPDF.messageBody}>{children}</View>
                {/* CUERPO DEL MENSAJE */}
-
                <View style={stylesPDF.firmContainer}>
                   <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
-                  <Text style={stylesPDF.upperCase}>{formData.workstationFirm}</Text>
-                  <Image style={stylesPDF.firma} src={formData.imgFirm ?? formDataInitial.imgFirm} />
-                  <Text>______________________________________</Text>
-                  <Text style={stylesPDF.upperCase}>{formData.directorFirm} </Text>
+                  <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
+                  <Image style={stylesPDF.firma} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
+                  <Text style={{ paddingBottom: 4 }}>______________________________________</Text>
+                  <Text style={stylesPDF.upperCase}>{formData.voucher.requesterName} </Text>
                </View>
             </View>
 

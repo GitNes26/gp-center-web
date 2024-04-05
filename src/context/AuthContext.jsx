@@ -2,7 +2,7 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import sAlert from "../utils/sAlert";
 import { CorrectRes } from "../utils/Response";
-import { ROLE_ADMIN_VOUCHER, useGlobalContext } from "./GlobalContext";
+import { ROLE_ADMIN_VOUCHER, ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "./GlobalContext";
 import Toast from "../utils/Toast";
 
 export const AuthContext = createContext();
@@ -161,12 +161,29 @@ export default function AuthContextProvider({ children }) {
 
          newCounters.vouchers = 0;
          const vouchersData = await Axios.get(`/vouchers`);
-         // console.log("vouchersData", vouchersData.data.data.result.length);
-         newCounters.vouchers = vouchersData.data.data.result.length;
+         res.result = vouchersData.data.data.result;
+         // console.log("vouchersData", res.result);
+         // console.log("vouchersData", res.result.length);
+         // if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) newCounters.vouchers = res.result.length;
 
-         // if (auth.role_id === ROLE_ADMIN_VOUCHER)
-         // filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.counter));
-         // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) {
+            // console.log("soy supervisor de vales");
+            filterCounters.vouchers = await res.result.filter((data) => ["ALTA"].includes(data.voucher_status));
+            // console.log("filterCounters.vouchers", filterCounters.vouchers);
+            newCounters.vouchers = filterCounters.vouchers.length;
+            // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         } else if (auth.role_id === ROLE_ADMIN_VOUCHER) {
+            // console.log("soy admin de vales");
+            filterCounters.vouchers = await res.result.filter((data) => ["VoBo"].includes(data.voucher_status));
+            newCounters.vouchers = await filterCounters.vouchers.length;
+            // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         } else {
+            // console.log("soy algo de vales");
+            filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.voucher_status));
+            newCounters.vouchers = await filterCounters.vouchers.length;
+            // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         }
+
          // console.log("newCounters", newCounters);
          await setCounters(newCounters);
          // console.log(counters);

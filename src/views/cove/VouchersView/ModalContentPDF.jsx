@@ -16,20 +16,24 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    const { voucher } = useVoucherContext();
    const { voucherDetails } = useVoucherDetailContext();
    const [formData, setFormData] = useState({
-      folio: "",
-      internal_folio: "",
-      date: "--/--/----",
       directorFrom: "LIC. MAURICIO GUERRERO FELIX",
       departmentFrom: "JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
       directorTo1: "C. ING. RODRIGO DE LA TORRE VALLE",
       departmentTo1: "OFICIAL MAYOR",
       directorTo2: "LIC. CARLOS GARCIA GONZALEZ",
       departmentTo2: "TESORERIA MUNICIPAL",
-      workstationFirm: "",
-      imgFirm: null,
-      directorFirm: "",
-      imgStamp: "",
-      imgDateStamp: ""
+      imgStamp: `${import.meta.env.VITE_HOST}/${"GPCenter/vouchersSettings/SELLO-Control-Vehicular-2022-2025.png"}`,
+      imgDateStamp: `${import.meta.env.VITE_HOST}/${"GPCenter/vouchersSettings/SELLO-Control-Vehicular-Recibido-2022-2025.png"}`,
+      voucher: {
+         folio: "",
+         internal_folio: "",
+         date: "--/--/----",
+         requesterWorkstation: "",
+         requesterFirm: null,
+         requesterName: "",
+         requesterStamp: null,
+         viewed_at: null
+      }
    });
 
    useEffect(() => {
@@ -37,12 +41,14 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    }, []);
    useLayoutEffect(() => {
       // console.log("estoy en el useLayoutEffect", voucher);
-      formData.folio = voucher.id;
-      formData.internal_folio = voucher.internal_folio;
-      formData.date = voucher.created_at;
-      formData.workstationFirm = voucher.workstation;
-      formData.imgFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
-      formData.directorFirm = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
+      formData.voucher.folio = voucher.id;
+      formData.voucher.internal_folio = voucher.internal_folio;
+      formData.voucher.date = voucher.created_at;
+      formData.voucher.requesterWorkstation = voucher.workstation;
+      formData.voucher.requesterFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
+      formData.voucher.requesterName = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
+      formData.voucher.requesterStamp = voucher.img_stamp ? `${import.meta.env.VITE_HOST}/${voucher.img_stamp}` : null;
+      formData.voucher.viewed_at = voucher.viewed_at;
 
       // console.log("estoy en el useLayoutEffect final", formData);
       // console.log("estoy en el useLayoutEffect final", voucherDetails);
