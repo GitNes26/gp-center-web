@@ -13,6 +13,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import VoucherDT from "./DataTable";
 import ModalCancelComments from "./ModalCancelComments";
 import ModalContentPDF from "./ModalContentPDF";
+import ModalContentRecivedPDF from "./ModalContentRecivedPDF";
 
 const VouchersView = () => {
    // const { result } = useLoaderData();
@@ -20,6 +21,7 @@ const VouchersView = () => {
    const { pluralName, voucher, getVouchers } = useVoucherContext();
    const [openForm, setOpenForm] = useState(false);
    const [openModalShowRequest, setOpenModalShowRequest] = useState(false);
+   const [openModalShowRecived, setOpenModalShowRecived] = useState(false);
    const [openModalCancel, setOpenModalCancel] = useState(false);
 
    useEffect(() => {
@@ -42,12 +44,18 @@ const VouchersView = () => {
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
-         <VoucherDT setOpen={setOpenForm} setOpenModalRequest={setOpenModalShowRequest} setOpenModalCancel={setOpenModalCancel} />
+         <VoucherDT
+            setOpen={setOpenForm}
+            setOpenModalRequest={setOpenModalShowRequest}
+            setOpenModalShowRecived={setOpenModalShowRecived}
+            setOpenModalCancel={setOpenModalCancel}
+         />
 
          <VoucherForm open={openForm} setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} />
 
          {/* <ModalShowRequest open={openModalShowRequest} setOpen={setOpenModalShowRequest} /> */}
          <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} />
+         <ModalContentRecivedPDF open={openModalShowRecived} setOpen={setOpenModalShowRecived} />
          <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} />
       </>
    );

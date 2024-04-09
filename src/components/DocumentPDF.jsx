@@ -268,6 +268,15 @@ export const stylesPDF = StyleSheet.create({
       transform: "translateX(-100%)",
       marginBottom: -10
    },
+   containerStamp: {
+      border: "2px solid black",
+      width: "4.25cm",
+      height: "4.25cm"
+   },
+   stampInContainer: {
+      width: "4cm",
+      height: "4cm"
+   },
    stamp: {
       position: "absolute",
       width: "4cm",
@@ -343,7 +352,7 @@ const formDataInitial = {
 };
 
 // Componente que representa el documento OficioPDF
-export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formData = { formDataInitial } }) => {
+export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formData = { formDataInitial }, isOfficialDoc = true }) => {
    return (
       <Document>
          {/* <Page size="A4" style={stylesPDF.body} wrap>
@@ -355,70 +364,71 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                <Text style={stylesPDF.header} fixed>
                   ~ {watermark} ~
                </Text>
-               <Image style={stylesPDF.bgImage} src={backgroundImage} />
+               {isOfficialDoc && <Image style={stylesPDF.bgImage} src={backgroundImage} />}
             </View>
-            <View style={stylesPDF.viewContainer}>
-               <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp}></Image>
-               {formData.voucher.viewed_at != null && (
-                  <View style={stylesPDF.containerDateStamp}>
-                     <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp}></Image>
-                     <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.viewed_at, false, "sello")}</Text>
+            {isOfficialDoc ? (
+               <View style={stylesPDF.viewContainer}>
+                  <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp}></Image>
+                  {formData.voucher.viewed_at != null && (
+                     <View style={stylesPDF.containerDateStamp}>
+                        <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp}></Image>
+                        <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.viewed_at, false, "sello")}</Text>
+                     </View>
+                  )}
+                  <View style={stylesPDF.folioDate}>
+                     <Text>Folio: #{formData.voucher.folio}</Text>
+                     <Text>Folio Interno: {formData.voucher.internal_folio}</Text>
+                     <Text style={{ fontFamily: "Roboto-Regular" }}>
+                        Gómez Palacio, Dgo., {formData.voucher.date ? formatDatetime(formData.voucher.date, false, "lll") : "--/---/----"}
+                     </Text>
                   </View>
-               )}
-               {/* <Image style={stylesPDF.image} src={logo}></Image> */}
-               {/* <Text style={stylesPDF.title}>Solicitud Ciudadana</Text>
-                    <Text style={stylesPDF.author}>Sec. Particular</Text>
-                    <View style={{ flexDirection: "row", justifyContent: 'space-between' }}>
-                        <Text style={stylesPDF.author}><Text style={{ fontFamily: 'Roboto-Bold', textDecoration: 'underline' }}>Fecha de Solicitud:</Text> {"formData.fecha_solicitud"}</Text>
-                        <Text style={stylesPDF.author}><Text style={{ fontFamily: 'Roboto-Bold', textDecoration: 'underline' }}>Folio:</Text> {"formData.id"}</Text>
-                    </View> */}
-               <View style={stylesPDF.folioDate}>
-                  <Text>Folio: #{formData.voucher.folio}</Text>
-                  <Text>Folio Interno: {formData.voucher.internal_folio}</Text>
-                  <Text style={{ fontFamily: "Roboto-Regular" }}>
-                     Gómez Palacio, Dgo., {formData.voucher.date ? formatDatetime(formData.voucher.date, false, "lll") : "--/---/----"}
-                  </Text>
-               </View>
-               <View style={stylesPDF.dataTitlesLeft}>
-                  <Text style={stylesPDF.upperCase}>{formData.directorFrom}</Text>
-                  <Text style={stylesPDF.upperCase}>{formData.departmentFrom}</Text>
-                  <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
-               </View>
-               {formData.directorTo2 != "" ? (
-                  <View style={stylesPDF.row}>
-                     <View style={stylesPDF.column}>
-                        <View style={stylesPDF.dataTitlesLeft}>
-                           <Text>CON ATENCIÓN A:</Text>
-                           <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
-                           <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
+                  <View style={stylesPDF.dataTitlesLeft}>
+                     <Text style={stylesPDF.upperCase}>{formData.directorFrom}</Text>
+                     <Text style={stylesPDF.upperCase}>{formData.departmentFrom}</Text>
+                     <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
+                  </View>
+                  {formData.directorTo2 != "" ? (
+                     <View style={stylesPDF.row}>
+                        <View style={stylesPDF.column}>
+                           <View style={stylesPDF.dataTitlesLeft}>
+                              <Text>CON ATENCIÓN A:</Text>
+                              <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
+                              <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
+                           </View>
+                        </View>
+                        <View style={[stylesPDF.column, { width: "100%" }]}>
+                           <View style={stylesPDF.dataTitlesRigth}>
+                              <Text> </Text>
+                              <Text style={stylesPDF.upperCase}>{formData.directorTo2}</Text>
+                              <Text style={stylesPDF.upperCase}>{formData.departmentTo2}</Text>
+                           </View>
                         </View>
                      </View>
-                     <View style={[stylesPDF.column, { width: "100%" }]}>
-                        <View style={stylesPDF.dataTitlesRigth}>
-                           <Text> </Text>
-                           <Text style={stylesPDF.upperCase}>{formData.directorTo2}</Text>
-                           <Text style={stylesPDF.upperCase}>{formData.departmentTo2}</Text>
-                        </View>
+                  ) : (
+                     <View style={stylesPDF.dataTitlesRigth}>
+                        <Text>CON ATENCIÓN A:</Text>
+                        <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
+                        <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
                      </View>
+                  )}
+                  {/* CUERPO DEL MENSAJE */}
+                  <View style={stylesPDF.messageBody}>{children}</View>
+                  {/* CUERPO DEL MENSAJE */}
+                  <View style={stylesPDF.firmContainer}>
+                     <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
+                     <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
+                     <Image style={stylesPDF.firma} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
+                     <Text style={{ paddingBottom: 4 }}>______________________________________</Text>
+                     <Text style={stylesPDF.upperCase}>{formData.voucher.requesterName} </Text>
                   </View>
-               ) : (
-                  <View style={stylesPDF.dataTitlesRigth}>
-                     <Text>CON ATENCIÓN A:</Text>
-                     <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
-                     <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
-                  </View>
-               )}
-               {/* CUERPO DEL MENSAJE */}
-               <View style={stylesPDF.messageBody}>{children}</View>
-               {/* CUERPO DEL MENSAJE */}
-               <View style={stylesPDF.firmContainer}>
-                  <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
-                  <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
-                  <Image style={stylesPDF.firma} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
-                  <Text style={{ paddingBottom: 4 }}>______________________________________</Text>
-                  <Text style={stylesPDF.upperCase}>{formData.voucher.requesterName} </Text>
                </View>
-            </View>
+            ) : (
+               <View style={stylesPDF.viewContainer}>
+                  {/* CUERPO DEL MENSAJE */}
+                  <View style={stylesPDF.messageBody}>{children}</View>
+                  {/* CUERPO DEL MENSAJE */}
+               </View>
+            )}
 
             <Text style={stylesPDF.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
             {/* </View> */}
@@ -430,7 +440,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="down" ref={ref} {...props} />;
 });
-export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, formData }) => {
+export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, formData, isOfficialDoc = true }) => {
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
@@ -492,7 +502,7 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
             </DialogTitle>
             <DialogContent sx={{ pb: 0, height: "90vh" }}>
                <PDFViewer width={"100%"} height={"99%"}>
-                  <DocumentPDF watermark={watermark} formData={formData}>
+                  <DocumentPDF watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
                      {children}
                   </DocumentPDF>
                </PDFViewer>

@@ -8,6 +8,7 @@ import { useVoucherContext } from "../../../context/VoucherContext";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 // import imgStamp from "../../../assets/images/SELLO-Control-Vehicular.png";
 import GPLogo from "../../../assets/images/logo-gpd.png";
+import { formatDatetime } from "../../../utils/Formats";
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -59,44 +60,6 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
       <ModalPDF open={open} setOpen={setOpen} formTitle={"OFICIO DE VALES"} watermark={"Control Vehícular"} formData={formData}>
          <Text style={stylesPDF.p}>{voucher.activity}</Text>
          {/* <Image style={stylesPDF.sello} src={formData.imgStamp} /> */}
-
-         <View style={[stylesPDF.table]}>
-            <View style={[stylesPDF.row, stylesPDF.dobleLine]}>
-               <View style={stylesPDF.column}>
-                  <View style={[stylesPDF.row]}>
-                     <Image style={stylesPDF.imageLogo} src={GPLogo}></Image>
-                     <Image style={stylesPDF.imageLogo} src={GPLogo}></Image>
-                  </View>
-               </View>
-               <View style={[stylesPDF.column, stylesPDF.textCenter, { width: "69%" }]}>
-                  <Text style={[stylesPDF.bolder, { verticalAlign: "sub" }]}>
-                     FORMATO DE RECEPCIÓN PARA VALES DE COMBUSTIBLE A DIRECCIONES DEL AYUNTAMIENTO DE GÓMEZ PALACIO 2022-2025
-                  </Text>
-               </View>
-            </View>
-            <View style={[stylesPDF.row, { marginTop: 20, marginHorizontal: 20 }]}>
-               <View style={[stylesPDF.row, { width: "70%", backgroundColor: "red", marginRight: 10 }]}>
-                  <View style={[stylesPDF.column, { marginRight: 5 }]}>
-                     <Text style={[stylesPDF.bolder, stylesPDF.right]}>DEPENDENCIA</Text>
-                     <Text style={[stylesPDF.bolder, stylesPDF.right]}>CANTIDAD</Text>
-                  </View>
-                  <View style={[stylesPDF.column, { marginRight: 15 }]}>
-                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom, { width: "300%", verticalAlign: "middle" }]}>{"department"}</Text>
-                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom]}>{"1"}</Text>
-                     <Text style={[stylesPDF.regular]}>VALES</Text>
-                  </View>
-                  <View style={[stylesPDF.column, { marginRight: 15 }]}>
-                     <Text style={[stylesPDF.regular]}> </Text>
-                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom]}>{"60"}</Text>
-                     <Text style={[stylesPDF.regular]}>LITROS</Text>
-                  </View>
-               </View>
-               <View style={[stylesPDF.row, { width: "26%", backgroundColor: "blue" }]}>
-                  <Text style={[stylesPDF.bolder, { marginRight: 5 }]}>FECHA</Text>
-                  <Text style={[stylesPDF.regular, stylesPDF.borderBottom]}>{`formatDatetime(formData.voucher.viewed_at, false, "sello")`}</Text>
-               </View>
-            </View>
-         </View>
 
          <View style={[stylesPDF.table, stylesPDF.center]}>
             {/* <View style={stylesPDF.column}>

@@ -29,7 +29,7 @@ import { IconBan, IconCheckbox, IconEye, IconFileInvoice, IconTicket } from "@ta
 import ModalCancelComments from "./ModalCancelComments";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 
-const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
+const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setOpenModalCancel }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
@@ -273,8 +273,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
    const handleClickGenerateVocuher = async (obj) => {
       try {
          await setVoucher(obj);
-         await getIndexByVoucher(obj.id);
-         setOpenModalRequest(true);
+         console.log("el voucher", voucher);
+         // await getIndexByVoucher(obj.id);
+         setOpenModalShowRecived(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -413,7 +414,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalCancel }) => {
             )}
             {auth.permissions.more_permissions.includes("24@Generar Vale") && obj.voucher_status === "APROBADA" && (
                <Tooltip title={`Generar Formato de Recepción de ${singularName}`} placement="top">
-                  <Button color="secondary" onClick={() => handleClickGenerateVocuher(id)}></Button>
+                  <Button color="secondary" onClick={() => handleClickGenerateVocuher(obj)}></Button>
                </Tooltip>
             )}
             {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADA", "CANCELADA"].includes(obj.voucher_status) && (
