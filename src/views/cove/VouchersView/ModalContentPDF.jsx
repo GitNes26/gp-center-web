@@ -34,7 +34,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
          requesterFirm: null,
          requesterName: "",
          requesterStamp: null,
-         viewed_at: null
+         vobo_at: null
       }
    });
 
@@ -50,7 +50,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
       formData.voucher.requesterFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
       formData.voucher.requesterName = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
       formData.voucher.requesterStamp = voucher.img_stamp ? `${import.meta.env.VITE_HOST}/${voucher.img_stamp}` : null;
-      formData.voucher.viewed_at = voucher.viewed_at;
+      formData.voucher.vobo_at = voucher.vobo_at;
 
       // console.log("estoy en el useLayoutEffect final", formData);
       // console.log("estoy en el useLayoutEffect final", voucherDetails);

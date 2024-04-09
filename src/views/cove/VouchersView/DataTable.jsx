@@ -273,7 +273,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    const handleClickGenerateVocuher = async (obj) => {
       try {
          await setVoucher(obj);
-         console.log("el voucher", voucher);
+         // console.log("el voucher", voucher);
          // await getIndexByVoucher(obj.id);
          setOpenModalShowRecived(true);
       } catch (error) {
@@ -414,7 +414,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             )}
             {auth.permissions.more_permissions.includes("24@Generar Vale") && obj.voucher_status === "APROBADA" && (
                <Tooltip title={`Generar Formato de Recepción de ${singularName}`} placement="top">
-                  <Button color="secondary" onClick={() => handleClickGenerateVocuher(obj)}></Button>
+                  <Button color="secondary" onClick={() => handleClickGenerateVocuher(obj)}>
+                     <IconFileInvoice />
+                  </Button>
                </Tooltip>
             )}
             {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADA", "CANCELADA"].includes(obj.voucher_status) && (

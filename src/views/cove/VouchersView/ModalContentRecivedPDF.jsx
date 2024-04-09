@@ -89,7 +89,7 @@ const ModalContentRecivedPDF = ({ open, setOpen, formTitle = "titulo" }) => {
                   </View>
                   <View style={[stylesPDF.column, { marginRight: 15 }]}>
                      <Text style={[stylesPDF.regular, stylesPDF.borderBottom, { verticalAlign: "sub", width: "600%" }]}>
-                        {voucher.requested_department.toUpperCase()}
+                        {voucher.requested_department != null && voucher.requested_department.toUpperCase()}
                      </Text>
                      <Text style={[stylesPDF.regular, stylesPDF.borderBottom, { verticalAlign: "sub" }]}>{voucher.approved_amount}</Text>
                      <Text style={[stylesPDF.bolder]}>VALES</Text>
@@ -119,7 +119,7 @@ const ModalContentRecivedPDF = ({ open, setOpen, formTitle = "titulo" }) => {
                      <Text style={[stylesPDF.bolder, stylesPDF.right]}> </Text>
                   </View>
                   <View style={[stylesPDF.column]}>
-                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom]}>{`${formatDatetime(formData.voucher.date, false)}`}</Text>
+                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom]}>{`${formatDatetime(new Date(), false)}`}</Text>
                      <Text style={[stylesPDF.regular]}> </Text>
                      <Text style={[stylesPDF.regular]}> </Text>
                      <Text style={[stylesPDF.bolder, stylesPDF.right]}> </Text>

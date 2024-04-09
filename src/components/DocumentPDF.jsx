@@ -266,7 +266,9 @@ export const stylesPDF = StyleSheet.create({
       width: "200px",
       left: "50%",
       transform: "translateX(-100%)",
-      marginBottom: -10
+      marginBottom: -10,
+      opacity: "1",
+      filter: "contrast(2.75)"
    },
    containerStamp: {
       border: "2px solid black",
@@ -347,7 +349,7 @@ const formDataInitial = {
       requesterFirm: sinFirma,
       requesterName: "",
       requesterStamp: null,
-      viewed_at: ""
+      vobo_at: ""
    }
 };
 
@@ -369,10 +371,10 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
             {isOfficialDoc ? (
                <View style={stylesPDF.viewContainer}>
                   <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp}></Image>
-                  {formData.voucher.viewed_at != null && (
+                  {formData.voucher.vobo_at != null && (
                      <View style={stylesPDF.containerDateStamp}>
                         <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp}></Image>
-                        <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.viewed_at, false, "sello")}</Text>
+                        <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
                      </View>
                   )}
                   <View style={stylesPDF.folioDate}>
@@ -417,7 +419,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                   <View style={stylesPDF.firmContainer}>
                      <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
                      <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
-                     <Image style={stylesPDF.firma} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
+                     <Image style={[stylesPDF.firma]} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
                      <Text style={{ paddingBottom: 4 }}>______________________________________</Text>
                      <Text style={stylesPDF.upperCase}>{formData.voucher.requesterName} </Text>
                   </View>
