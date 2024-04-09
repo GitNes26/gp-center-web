@@ -100,9 +100,15 @@ export const stylesPDF = StyleSheet.create({
    section: {
       margin: 10
    },
+   imageLogo: {
+      height: "1.30cm",
+      width: "auto",
+      objectFit: "contain",
+      marginVertical: 1
+   },
    image: {
       width: "30%",
-      mmarginVertical: 15,
+      marginVertical: 15,
       marginHorizontal: 180
    },
    header: {
@@ -211,7 +217,9 @@ export const stylesPDF = StyleSheet.create({
    p: {
       marginVertical: 10
    },
+   right: { textAlign: "right" },
    center: { marginHorizontal: "auto" },
+   centerAcross: { marginVertical: "auto" },
    textCenter: {
       textAlign: "center"
    },
@@ -222,9 +230,16 @@ export const stylesPDF = StyleSheet.create({
    column: {
       flexDirection: "column"
    },
+   borderBottom: {
+      borderBottom: "1px solid black"
+   },
+   dobleLine: {
+      borderBottom: "1px double black"
+   },
    table: {
       border: "2px solid black",
       flexDirection: "row",
+      flexWrap: "wrap",
       marginVertical: 5,
       padding: 0
       // textAlign: "center"
