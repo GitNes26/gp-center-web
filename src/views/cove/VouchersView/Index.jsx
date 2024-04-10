@@ -2,6 +2,8 @@ import VoucherForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
+import { useParams } from "react-router";
+
 import { Axios } from "../../../context/AuthContext";
 
 import { useEffect, useState } from "react";
@@ -16,6 +18,7 @@ import ModalContentPDF from "./ModalContentPDF";
 import ModalContentRecivedPDF from "./ModalContentRecivedPDF";
 
 const VouchersView = () => {
+   const { status } = useParams();
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, voucher, getVouchers } = useVoucherContext();
@@ -27,7 +30,7 @@ const VouchersView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getVouchers();
+         getVouchers(status);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -49,14 +52,15 @@ const VouchersView = () => {
             setOpenModalRequest={setOpenModalShowRequest}
             setOpenModalShowRecived={setOpenModalShowRecived}
             setOpenModalCancel={setOpenModalCancel}
+            currentStatus={status}
          />
 
-         <VoucherForm open={openForm} setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} />
+         <VoucherForm open={openForm} setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} currentStatus={status} />
 
          {/* <ModalShowRequest open={openModalShowRequest} setOpen={setOpenModalShowRequest} /> */}
          <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} />
          <ModalContentRecivedPDF open={openModalShowRecived} setOpen={setOpenModalShowRecived} />
-         <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} />
+         <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} currentStatus={status} />
       </>
    );
 };

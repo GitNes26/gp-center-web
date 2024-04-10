@@ -30,7 +30,12 @@ export const TransitionSlide = (direction = "up") =>
    });
 
 const initialStateCounters = {
-   vouchers: 0
+   vouchers: 0,
+   vouchersCreated: 0,
+   vouchersVoBo: 0,
+   vouchersCanceled: 0,
+   vouchersApproved: 0,
+   vouchersCanceled: 0
 };
 
 export const GlobalContextProvider = ({ children }) => {

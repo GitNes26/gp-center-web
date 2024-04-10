@@ -59,7 +59,7 @@ const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const VoucherForm = ({ open, setOpen }) => {
+const VoucherForm = ({ open, setOpen, currentStatus }) => {
    const { auth } = useAuthContext();
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
    const { voucherId, setVoucherId } = useVoucherDetailContext();
@@ -224,13 +224,13 @@ const VoucherForm = ({ open, setOpen }) => {
             values.approved_at = formatDatetimeToSQL(new Date());
             // return console.log("values", values);
             // if (values.approved_amount > values.requested_amount) return sAlert.Warning("NO PUEDES ASIGNAR MÁS DE LOS VALES SOLICITADOS");
-            axiosResponse = await updateStatus(values);
+            axiosResponse = await updateStatus(values, currentStatus);
          } else {
             // console.log("values", values);
-            if (values.id == 0) axiosResponse = await createVoucher(values);
+            if (values.id == 0) axiosResponse = await createVoucher(values, currentStatus);
             else {
                if (textBtnSubmit === "FINALIZAR VALE") values.approved_amount = 0;
-               axiosResponse = await updateVoucher(values);
+               axiosResponse = await updateVoucher(values, currentStatus);
             }
          }
          // if (axiosResponse.message == "duplicate") return Toast.Info("hola");

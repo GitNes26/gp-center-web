@@ -21,7 +21,7 @@ const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ModalCancelComments = ({ open, setOpen }) => {
+const ModalCancelComments = ({ open, setOpen, currentStatus }) => {
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
    const { setLoadingAction } = useGlobalContext();
@@ -62,7 +62,7 @@ const ModalCancelComments = ({ open, setOpen }) => {
                   setLoadingAction(true);
 
                   // return console.log(formData);
-                  const axiosResponse = await updateStatus(formData);
+                  const axiosResponse = await updateStatus(formData, currentStatus);
                   setOpen(false);
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);

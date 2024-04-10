@@ -166,26 +166,51 @@ export default function AuthContextProvider({ children }) {
          // console.log("vouchersData", res.result.length);
          // if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) newCounters.vouchers = res.result.length;
 
-         if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) {
-            // console.log("soy supervisor de vales");
-            filterCounters.vouchers = await res.result.filter((data) => ["ALTA"].includes(data.voucher_status));
-            // console.log("filterCounters.vouchers", filterCounters.vouchers);
-            newCounters.vouchers = filterCounters.vouchers.length;
-            // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
-         } else if (auth.role_id === ROLE_ADMIN_VOUCHER) {
-            // console.log("soy admin de vales");
-            filterCounters.vouchers = await res.result.filter((data) => ["VoBo"].includes(data.voucher_status));
-            newCounters.vouchers = await filterCounters.vouchers.length;
-            // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
-         } else {
-            // console.log("soy algo de vales");
-            filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.voucher_status));
-            newCounters.vouchers = await filterCounters.vouchers.length;
-            // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
-         }
+         // if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) {
+         //    // console.log("soy supervisor de vales");
+         //    filterCounters.vouchers = await res.result.filter((data) => ["ALTA"].includes(data.voucher_status));
+         //    // console.log("filterCounters.vouchers", filterCounters.vouchers);
+         //    newCounters.vouchers = filterCounters.vouchers.length;
+         //    // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         // } else if (auth.role_id === ROLE_ADMIN_VOUCHER) {
+         //    // console.log("soy admin de vales");
+         //    filterCounters.vouchers = await res.result.filter((data) => ["VoBo"].includes(data.voucher_status));
+         //    newCounters.vouchers = await filterCounters.vouchers.length;
+         //    // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         // } else {
+         //    // console.log("soy algo de vales");
+         //    filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.voucher_status));
+         //    newCounters.vouchers = await filterCounters.vouchers.length;
+         //    // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+         // }
+
+         filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.voucher_status));
+         // console.log("filterCounters.vouchers", filterCounters.vouchers);
+         newCounters.vouchers = filterCounters.vouchers.length;
+         // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+
+         filterCounters.vouchersCreated = await res.result.filter((data) => ["CREADO", "ALTA"].includes(data.voucher_status));
+         // console.log("filterCounters.vouchers", filterCounters.vouchers);
+         newCounters.vouchersCreated = filterCounters.vouchersCreated.length;
+         // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
+
+         filterCounters.vouchersVoBo = await res.result.filter((data) => ["VoBo"].includes(data.voucher_status));
+         // console.log("filterCounters.vouchersVoBo", filterCounters.vouchersVoBo);
+         newCounters.vouchersVoBo = filterCounters.vouchersVoBo.length;
+         // await filterCounters.vouchersVoBo.map((data) => (newCounters.vouchersVoBo += data.total));
+
+         filterCounters.vouchersApproved = await res.result.filter((data) => ["APROBADA"].includes(data.voucher_status));
+         // console.log("filterCounters.vouchersApproved", filterCounters.vouchersApproved);
+         newCounters.vouchersApproved = filterCounters.vouchersApproved.length;
+         // await filterCounters.vouchersApproved.map((data) => (newCounters.vouchersApproved += data.total));
+
+         filterCounters.vouchersCanceled = await res.result.filter((data) => ["CANCELADA"].includes(data.voucher_status));
+         // console.log("filterCounters.vouchersCanceled", filterCounters.vouchersCanceled);
+         newCounters.vouchersCanceled = filterCounters.vouchersCanceled.length;
+         // await filterCounters.vouchersCanceled.map((data) => (newCounters.vouchersCanceled += data.total));
 
          // console.log("newCounters", newCounters);
-         await setCounters(newCounters);
+         setCounters(newCounters);
          // console.log(counters);
          // return res;
       } catch (error) {

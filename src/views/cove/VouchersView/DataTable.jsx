@@ -29,7 +29,7 @@ import { IconBan, IconCheckbox, IconEye, IconFileInvoice, IconTicket } from "@ta
 import ModalCancelComments from "./ModalCancelComments";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 
-const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setOpenModalCancel }) => {
+const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setOpenModalCancel, currentStatus }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
@@ -259,7 +259,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                vobo_at: formatDatetimeToSQL(new Date())
             };
             // console.log(data);
-            await updateStatus(data);
+            await updateStatus(data, currentStatus);
          }
          setInAprobation(false);
          setInEdit(false);
@@ -315,13 +315,16 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                   setLoadingAction(true);
 
                   // return console.log(formData);
-                  const axiosResponse = await updateStatus({
-                     id: id,
-                     voucher_status: "CANCELADA",
-                     canceled_by: auth.id,
-                     canceled_comments: "VoBo Rechazado.",
-                     canceled_at: formatDatetimeToSQL(new Date())
-                  });
+                  const axiosResponse = await updateStatus(
+                     {
+                        id: id,
+                        voucher_status: "CANCELADA",
+                        canceled_by: auth.id,
+                        canceled_comments: "VoBo Rechazado.",
+                        canceled_at: formatDatetimeToSQL(new Date())
+                     },
+                     currentStatus
+                  );
                   setLoadingAction(false);
                   Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
                }
@@ -372,7 +375,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar el vale #${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteVoucher(id);
+               const axiosResponse = await deleteVoucher(id, currentStatus);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -476,7 +479,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             globalFilterFields={globalFilterFields}
             headerFilters={false}
             handleClickAdd={handleClickAdd}
-            refreshTable={getVouchers}
+            refreshTable={getVouchers(currentStatus)}
             btnAdd={auth.permissions.create}
             titleBtnAdd="SOLICITAR VALE"
             setOpen={false}

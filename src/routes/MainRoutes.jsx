@@ -250,9 +250,15 @@ const MainRoutes = {
                   </VehicleContextProvider>
                )
                // loader: loaderIndexVehiclesView
-            },
+            }
+         ]
+      },
+      {
+         path: "vales",
+         children: [
             {
-               path: "vales",
+               index: true,
+               path: ":status?",
                element: (
                   <VoucherContextProvider>
                      <VehicleContextProvider>

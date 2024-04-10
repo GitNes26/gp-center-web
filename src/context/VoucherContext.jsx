@@ -93,10 +93,31 @@ export default function VoucherContextProvider({ children }) {
       return res;
    };
 
-   const getVouchers = async () => {
+   const getVouchers = async (status = null) => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/vouchers`);
+         let pathApi = `/vouchers`;
+
+         if (status != null) {
+            // console.log("getRequestBecas()->status", status);
+            let filterStatus;
+            if (status == "altas") {
+               filterStatus = "CREADO,ALTA";
+               // counterName = "requestInReview";
+            } else if (status == "vobos") {
+               filterStatus = "VoBo";
+               // counterName = "requestInEvaluation";
+            } else if (status == "aprobadas") {
+               filterStatus = "APROBADA";
+               // counterName = "requestApproved";
+            } else if (status == "canceladas") {
+               filterStatus = "CANCELADA";
+               // counterName = "requestCanceled";
+            }
+            pathApi = `/vouchers/status/${filterStatus}`;
+         }
+
+         const axiosData = await Axios.get(pathApi);
          res.result.vouchers = axiosData.data.data.result;
          setVouchers(axiosData.data.data.result);
          // setCounters({ ...counters, vouchers: axiosData.data.data.result.length });
@@ -152,13 +173,13 @@ export default function VoucherContextProvider({ children }) {
       }
    };
 
-   const createVoucher = async (voucher) => {
+   const createVoucher = async (voucher, currentStatus = null) => {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post(`/vouchers/create`, voucher);
          // console.log(axiosData);
          res = axiosData.data.data;
-         getVouchers();
+         getVouchers(currentStatus);
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -169,13 +190,13 @@ export default function VoucherContextProvider({ children }) {
       return res;
    };
 
-   const updateVoucher = async (voucher) => {
+   const updateVoucher = async (voucher, currentStatus = null) => {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post(`/vouchers/update/${voucher.id}`, voucher);
 
          res = axiosData.data.data;
-         getVouchers();
+         getVouchers(currentStatus);
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -186,13 +207,13 @@ export default function VoucherContextProvider({ children }) {
       return res;
    };
 
-   const updateStatus = async (voucher) => {
+   const updateStatus = async (voucher, currentStatus = null) => {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post(`/vouchers/updateStatus/id/${voucher.id}/voucher_status/${voucher.voucher_status}`, voucher);
 
          res = axiosData.data.data;
-         getVouchers();
+         getVouchers(currentStatus);
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -203,12 +224,12 @@ export default function VoucherContextProvider({ children }) {
       return res;
    };
 
-   const deleteVoucher = async (user_id) => {
+   const deleteVoucher = async (user_id, currentStatus = null) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/vouchers/destroy/${user_id}`);
          // console.log("deleteVoucher() axiosData", axiosData.data);
-         getVouchers();
+         getVouchers(currentStatus);
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
