@@ -122,7 +122,7 @@ export default function VoucherContextProvider({ children }) {
          setVouchers(axiosData.data.data.result);
          // setCounters({ ...counters, vouchers: axiosData.data.data.result.length });
          // console.log("vouchers", vouchers);
-         counterOfMenus();
+         // counterOfMenus();
          return res;
       } catch (error) {
          console.log(error);
