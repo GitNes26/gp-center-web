@@ -262,9 +262,11 @@ const MainRoutes = {
                element: (
                   <VoucherContextProvider>
                      <VehicleContextProvider>
-                        <VoucherDetailContextProvider>
-                           <VouchersView />
-                        </VoucherDetailContextProvider>
+                        <VoucherRequesterContextProvider>
+                           <VoucherDetailContextProvider>
+                              <VouchersView />
+                           </VoucherDetailContextProvider>
+                        </VoucherRequesterContextProvider>
                      </VehicleContextProvider>
                   </VoucherContextProvider>
                )

@@ -16,6 +16,7 @@ import VoucherDT from "./DataTable";
 import ModalCancelComments from "./ModalCancelComments";
 import ModalContentPDF from "./ModalContentPDF";
 import ModalContentRecivedPDF from "./ModalContentRecivedPDF";
+import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
 
 const VouchersView = () => {
    const { status } = useParams();
@@ -26,16 +27,18 @@ const VouchersView = () => {
    const [openModalShowRequest, setOpenModalShowRequest] = useState(false);
    const [openModalShowRecived, setOpenModalShowRecived] = useState(false);
    const [openModalCancel, setOpenModalCancel] = useState(false);
+   const { getVoucherRequestersSelectIndex } = useVoucherRequesterContext();
 
    useEffect(() => {
       try {
          setLoading(true);
          getVouchers(status);
+         getVoucherRequestersSelectIndex();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [voucher]);
+   }, [voucher, status]);
 
    return (
       <>

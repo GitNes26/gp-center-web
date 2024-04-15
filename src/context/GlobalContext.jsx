@@ -33,7 +33,6 @@ const initialStateCounters = {
    vouchers: 0,
    vouchersCreated: 0,
    vouchersVoBo: 0,
-   vouchersCanceled: 0,
    vouchersApproved: 0,
    vouchersCanceled: 0
 };

@@ -40,7 +40,8 @@ const voucherInitialState = {
    canceled_comments: "",
    canceled_at: "",
 
-   creditor_fullname: ""
+   creditor_fullname: "",
+   requester_external: null
 };
 
 export default function VoucherContextProvider({ children }) {
@@ -122,7 +123,7 @@ export default function VoucherContextProvider({ children }) {
          setVouchers(axiosData.data.data.result);
          // setCounters({ ...counters, vouchers: axiosData.data.data.result.length });
          // console.log("vouchers", vouchers);
-         // counterOfMenus();
+         counterOfMenus();
          return res;
       } catch (error) {
          console.log(error);
@@ -176,6 +177,7 @@ export default function VoucherContextProvider({ children }) {
    const createVoucher = async (voucher, currentStatus = null) => {
       let res = CorrectRes;
       try {
+         return console.log("voucher", voucher);
          const axiosData = await Axios.post(`/vouchers/create`, voucher);
          // console.log(axiosData);
          res = axiosData.data.data;

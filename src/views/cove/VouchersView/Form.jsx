@@ -50,6 +50,7 @@ import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import VoucherDetailDT from "./VoucherDetailDT";
 import { useAsyncError } from "react-router-dom";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
+import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
 // import DialogComponent from "../../../components/DialogComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -63,6 +64,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
    const { auth } = useAuthContext();
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
    const { voucherId, setVoucherId } = useVoucherDetailContext();
+   const [enableRequesterExternal, setEnableRequesterExternal] = useState(false);
 
    const {
       setLoadingAction,
@@ -99,6 +101,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
       updateStatus
    } = useVoucherContext();
    const { showVehicleBy } = useVehicleContext();
+   const { voucherRequesters, getVoucherRequestersSelectIndex } = useVoucherRequesterContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -210,10 +213,12 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
          values.id = voucherId;
          values.voucher_status = "ALTA";
          if (values.id < 1) {
-            values.requested_by = auth.id;
+            values.requested_by = enableRequesterExternal ? values.requested_by : auth.id;
             values.voucher_status = "CREADO";
             setTextBtnSumbit("FINALIZAR VALE");
          }
+         values.requested_by = enableRequesterExternal ? values.requested_by : auth.id;
+         values.requester_external = enableRequesterExternal ? auth.id : null;
 
          setFormData(values);
          setLoadingAction(true);
@@ -477,8 +482,46 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                               DATOS DE SOLICITUD
                            </Divider>
                         </Grid>
+
+                        {/* Requisitor de Vale */}
+                        {auth.permissions.more_permissions.includes("24@Solicitador Externo") && (
+                           <>
+                              {/* Switch para replaquear */}
+                              <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                                 <FormControlLabel
+                                    control={<Switch />}
+                                    label="¿Solicitar vales por otro departamento?"
+                                    checked={enableRequesterExternal}
+                                    onChange={() => setEnableRequesterExternal(!enableRequesterExternal)}
+                                 />
+                              </Grid>
+                              <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                 <Select2Component
+                                    idName={"requested_by"}
+                                    label={"Requisitor de Vale *"}
+                                    valueLabel={values.requested_by}
+                                    values={values}
+                                    formData={formData}
+                                    setFormData={setFormData}
+                                    formDataLabel={"requested_by"}
+                                    placeholder={"Selecciona una opción..."}
+                                    options={voucherRequesters}
+                                    fullWidth={true}
+                                    handleChange={handleChange}
+                                    // handleChangeValueSuccess={handleChangeRole}
+                                    setValues={setValues}
+                                    handleBlur={handleBlur}
+                                    error={errors.requested_by}
+                                    touched={touched.requested_by}
+                                    disabled={!enableRequesterExternal}
+                                    pluralName={"Solicitadores de Vales"}
+                                    refreshSelect={getVoucherRequestersSelectIndex}
+                                 />
+                              </Grid>
+                           </>
+                        )}
                         {/* Folio Interno */}
-                        <Grid xs={12} mdOffset={8} md={4} sx={{ mb: 1 }}>
+                        <Grid xs={12} mdOffset={auth.permissions.more_permissions.includes("24@Solicitador Externo") ? 2 : 8} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="internal_folio"
                               name="internal_folio"

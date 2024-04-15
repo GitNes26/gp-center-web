@@ -370,10 +370,10 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
             </View>
             {isOfficialDoc ? (
                <View style={stylesPDF.viewContainer}>
-                  <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp}></Image>
+                  <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
                   {formData.voucher.vobo_at != null && (
                      <View style={stylesPDF.containerDateStamp}>
-                        <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp}></Image>
+                        <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp} />
                         <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
                      </View>
                   )}

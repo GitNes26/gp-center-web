@@ -479,7 +479,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             globalFilterFields={globalFilterFields}
             headerFilters={false}
             handleClickAdd={handleClickAdd}
-            refreshTable={getVouchers(currentStatus)}
+            refreshTable={() => getVouchers(currentStatus)}
             btnAdd={auth.permissions.create}
             titleBtnAdd="SOLICITAR VALE"
             setOpen={false}
