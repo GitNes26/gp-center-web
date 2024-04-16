@@ -70,9 +70,9 @@ export default function VoucherDetailContextProvider({ children }) {
          // console.log("getFamilies() ejecutado... voucher_id", voucher_id);
          const axiosData = await Axios.get(`/voucherDetails/voucher_id/${voucher_id}`);
          // console.log("getIndexByFolio() -> axiosData", axiosData.data.data.result);
-         res.result.families = axiosData.data.data.result;
+         res.result.voucherDetails = axiosData.data.data.result;
          setVoucherDetails(axiosData.data.data.result);
-         // console.log("families", families);
+         // console.log("voucherDetails", voucherDetails);
 
          return res;
       } catch (error) {
@@ -90,9 +90,9 @@ export default function VoucherDetailContextProvider({ children }) {
          // console.log("getFamilies() ejecutado... voucher_id", voucher_id);
          const axiosData = await Axios.get(`/voucherDetails/id/${voucher_id}`);
          // console.log("getIndexByFolio() -> axiosData", axiosData.data.data.result);
-         res.result.families = axiosData.data.data.result;
+         res.result.voucherDetails = axiosData.data.data.result;
          setVoucherDetails(axiosData.data.data.result);
-         // console.log("families", families);
+         // console.log("voucherDetails", voucherDetails);
 
          return res;
       } catch (error) {

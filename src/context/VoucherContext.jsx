@@ -41,7 +41,8 @@ const voucherInitialState = {
    canceled_at: "",
 
    creditor_fullname: "",
-   requester_external: null
+   requester_external: null,
+   requested_by_name: ""
 };
 
 export default function VoucherContextProvider({ children }) {
@@ -177,7 +178,7 @@ export default function VoucherContextProvider({ children }) {
    const createVoucher = async (voucher, currentStatus = null) => {
       let res = CorrectRes;
       try {
-         return console.log("voucher", voucher);
+         // return console.log("voucher", voucher);
          const axiosData = await Axios.post(`/vouchers/create`, voucher);
          // console.log(axiosData);
          res = axiosData.data.data;

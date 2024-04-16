@@ -64,7 +64,7 @@ const Select2Component = ({
    // const handleChangeValue = async (value, setValues) => {
    const handleChangeValue = async (value, setFieldValue) => {
       try {
-         // console.log(value);
+         // console.log("Select2Component -> handleChangeValue()", value);
          if (!value) {
             setFieldValue(idName, 0);
             setFieldValue(formDataLabel, "Selecciona una opción...");
@@ -106,7 +106,7 @@ const Select2Component = ({
    };
 
    useEffect(() => {
-      // console.log("useEffect");
+      // console.log("Select2Component -> useEffect", options);
    }, [valueLabel]);
 
    return (

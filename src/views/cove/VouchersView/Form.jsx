@@ -100,6 +100,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
       setInEdit,
       updateStatus
    } = useVoucherContext();
+   const { getIndexByVoucher } = useVoucherDetailContext();
    const { showVehicleBy } = useVehicleContext();
    const { voucherRequesters, getVoucherRequestersSelectIndex } = useVoucherRequesterContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
@@ -234,7 +235,15 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
             // console.log("values", values);
             if (values.id == 0) axiosResponse = await createVoucher(values, currentStatus);
             else {
-               if (textBtnSubmit === "FINALIZAR VALE") values.approved_amount = 0;
+               if (textBtnSubmit === "FINALIZAR VALE") {
+                  values.approved_amount = 0;
+                  const voucherDetailsRes = await getIndexByVoucher(values.id);
+                  if (voucherDetailsRes.result.voucherDetails.length == 0) {
+                     values.voucher_status = "CREADO";
+                     setLoadingAction(false);
+                     return Toast.Error("Tienes que registrar mínimo un vehículo en la tabla");
+                  }
+               }
                axiosResponse = await updateVoucher(values, currentStatus);
             }
          }
@@ -286,6 +295,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
       try {
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
+         setEnableRequesterExternal(formData.requester_external != null ? true : false);
          setLoadingAction(false);
          setOpen(true);
       } catch (error) {
@@ -499,11 +509,11 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                  <Select2Component
                                     idName={"requested_by"}
                                     label={"Requisitor de Vale *"}
-                                    valueLabel={values.requested_by}
+                                    valueLabel={values.requested_by_name}
                                     values={values}
                                     formData={formData}
                                     setFormData={setFormData}
-                                    formDataLabel={"requested_by"}
+                                    formDataLabel={"requested_by_name"}
                                     placeholder={"Selecciona una opción..."}
                                     options={voucherRequesters}
                                     fullWidth={true}
@@ -654,7 +664,10 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                         {voucherId > 0 && (
                            <Grid xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
-                                 DATOS DE LOS ACREDITADOS
+                                 DATOS DE LOS ACREDITADOS <br />
+                                 <small>
+                                    <i>No dejar ningun campo vacio</i>
+                                 </small>
                               </Divider>
                               <VoucherDetailDT values={values} setFieldValue={setFieldValue} voucherId={voucherId} />
                            </Grid>
