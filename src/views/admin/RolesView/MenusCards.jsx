@@ -26,8 +26,8 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
       <Card sx={{ p: 0 }} className={classes.cardChildren}>
          <Grid xs={12} sx={{ m: 0 }}>
             <FormControlLabel
-               value={`${id}@submenu`}
-               id={`${id}@submenu`}
+               value={`${id}@page`}
+               id={`${id}@page`}
                control={<Checkbox checked={isChecked} onChange={(e) => handleCheckboxChange(e.target)} />}
                label={
                   <Typography variant="h3" className={classes.titleChildren}>
@@ -172,7 +172,7 @@ const MenusCards = ({ loadPermissions }) => {
       // console.log("_checkMenus", _checkMenus);
       _checkMenus = _checkMenus.map((check) => {
          if (Number(check.id) === Number(id)) {
-            if (["menu", "submenu"].includes(value.split("@")[1])) check.isChecked = isChecked;
+            if (["menu", "page"].includes(value.split("@")[1])) check.isChecked = isChecked;
             // console.log("value", value);
             // if (!["menu"].includes(value)) {
             // if (!check.permissions.includes(value)) check.permissions.push(value);
@@ -182,7 +182,7 @@ const MenusCards = ({ loadPermissions }) => {
             if (value === "update") check.permissions.update = isChecked;
             if (value === "delete") check.permissions.delete = isChecked;
             // }
-            if (!["menu", "submenu"].includes(value.split("@")[1])) {
+            if (!["menu", "page"].includes(value.split("@")[1])) {
                if (!["read", "create", "update", "delete"].includes(value)) {
                   if (isChecked) {
                      if (!check.permissions.more_permissions.includes(value)) check.permissions.more_permissions.push(value);
