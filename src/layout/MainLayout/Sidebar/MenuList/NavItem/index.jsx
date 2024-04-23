@@ -106,6 +106,7 @@ const NavItem = ({ item, level }) => {
                variant={"filled" /* item.chip.variant */}
                size={"small" /* item.chip.size */}
                label={counters[item.counter_name] || 0}
+               sx={{ fontSize: 10 }}
                // avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
             />
          )}

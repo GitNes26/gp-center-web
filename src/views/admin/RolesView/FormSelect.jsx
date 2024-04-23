@@ -13,7 +13,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useMenuContext } from "../../../context/MenuContext";
 
-const FormSelect = ({ setOpenDialogTable }) => {
+const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
    const { auth } = useAuthContext();
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const {
@@ -50,9 +50,10 @@ const FormSelect = ({ setOpenDialogTable }) => {
    const handleChangeRole = async (value2, setFieldValue) => {
       try {
          // console.log("amanas", value2);
+         setLoadPermissions(true);
          resetCheckMenus();
          // console.log("resetCheckMenus", resetCheckMenus);
-         if (value2.id < 1) return; // checks se quedan reiniciados
+         if (value2.id < 1) return setLoadPermissions(false); // checks se quedan reiniciados
          const axiosResponse = await showRoleSelect(value2.id);
          // console.log(axiosResponse);
          const permissions = {
@@ -116,6 +117,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
             // else check.permissions.more_permissions = permissions.more_permissions;
          });
          setCheckMenus(newCheckMenus);
+         setLoadPermissions(false);
          // console.log("FormSelect - checkMenus", checkMenus);
       } catch (error) {
          console.log(error);
