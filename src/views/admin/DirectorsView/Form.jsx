@@ -600,7 +600,7 @@ const DirectorForm = () => {
                               onChange={handleChange}
                               onBlur={handleBlur}
                               onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
-                              InputProps={{ disabled: true }}
+                              InputProps={{ disabled: values.id == 0 ? false : true }}
                               fullWidth
                               // disabled={values.id == 0 ? false : true}
                               error={errors.department && touched.department}
