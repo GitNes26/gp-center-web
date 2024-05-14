@@ -61,8 +61,8 @@ const VouchersView = () => {
          <VoucherForm open={openForm} setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} currentStatus={status} />
 
          {/* <ModalShowRequest open={openModalShowRequest} setOpen={setOpenModalShowRequest} /> */}
-         <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} />
-         <ModalContentRecivedPDF open={openModalShowRecived} setOpen={setOpenModalShowRecived} />
+         {openModalShowRequest && <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} />}
+         {openModalShowRecived && <ModalContentRecivedPDF open={openModalShowRecived} setOpen={setOpenModalShowRecived} />}
          <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} currentStatus={status} />
       </>
    );

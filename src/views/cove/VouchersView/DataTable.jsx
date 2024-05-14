@@ -48,6 +48,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       setTextBtnSumbit,
       setFormTitle,
       setInAprobation,
+      inEdit,
       setInEdit,
       seenVoucher,
       updateStatus
@@ -122,7 +123,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       </Typography>
    );
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_department}</Typography>;
-   const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{`${obj.activity.slice(0, 100)}...`}</Typography>;
+   const ActivityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.activity.length > 100 ? `${obj.activity.slice(0, 100)}...` : obj.activity}</Typography>;
    const RequestAmountBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"bolder"}>
          {obj.requested_amount}

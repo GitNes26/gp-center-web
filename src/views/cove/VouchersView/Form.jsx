@@ -116,6 +116,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
 
    const ResetForm = async (resetForm = null) => {
       if (resetForm) await resetForm();
+      setInEdit(false);
       resetVoucher();
       await resetFormData();
    };
@@ -211,6 +212,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
       try {
          // console.log("formData", formData);
          // console.log("values", values);
+
          values.id = voucherId;
          values.voucher_status = "ALTA";
          if (values.id < 1) {
@@ -233,7 +235,11 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
             axiosResponse = await updateStatus(values, currentStatus);
          } else {
             // console.log("values", values);
-            if (values.id == 0) axiosResponse = await createVoucher(values, currentStatus);
+            // return;
+            if (inEdit) {
+               values.id = voucher.id;
+               axiosResponse = await updateVoucher(values, currentStatus);
+            } else if (values.id == 0) axiosResponse = await createVoucher(values, currentStatus);
             else {
                if (textBtnSubmit === "FINALIZAR VALE") {
                   values.approved_amount = 0;
@@ -264,7 +270,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
          // console.log(checkAdd);
          // console.log(axiosResponse.status_code);
          // console.log(values.id);
-         if (["FINALIZAR VALE", "APROBAR"].includes(textBtnSubmit) && !checkAdd && axiosResponse.status_code == 200) {
+         if ((["FINALIZAR VALE", "APROBAR"].includes(textBtnSubmit) || inEdit) && !checkAdd && axiosResponse.status_code == 200) {
             setOpen(false);
             setTimeout(() => {
                setOpen(false);

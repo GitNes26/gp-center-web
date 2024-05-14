@@ -267,8 +267,8 @@ const VoucherRequesterForm = () => {
          // role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
          phone: Yup.string()
             .trim()
-            .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
-            .required("Número telefónico requerido"),
+            .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos"),
+         // .required("Número telefónico requerido"),
          payroll_number: Yup.number("Solo números"),
          payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
          // department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
@@ -452,7 +452,7 @@ const VoucherRequesterForm = () => {
                            <TextField
                               id="phone"
                               name="phone"
-                              label="Número Telefónico *"
+                              label="Número Telefónico (opcional)"
                               type="phone"
                               value={values.phone}
                               placeholder="10 dígitos"
