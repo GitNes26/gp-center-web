@@ -117,7 +117,8 @@ export function formatearCantidadDeRenglones(tds) {
 }
 
 export function formatPhone(phone) {
-   return `(${phone.slice(0, 3)})${phone.slice(3, 6)}-${phone.slice(6, 8)}-${phone.slice(-2)}`;
+   if (phone == null || phone == undefined || phone == "" || phone.length < 1) return "S/N";
+   return `${phone.slice(0, 3)} ${phone.slice(3, 6)} ${phone.slice(6, 8)}${phone.slice(-2)}`;
 }
 
 export function formatToLowerCase(event) {
