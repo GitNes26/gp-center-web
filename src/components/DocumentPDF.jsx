@@ -48,6 +48,7 @@ import ProtestRiot from "../assets/fonts/ProtestRiot-Regular.ttf";
 import BarlowRegular from "../assets/fonts/Barlow-Regular.ttf";
 import BarlowMedium from "../assets/fonts/Barlow-Medium.ttf";
 import BarlowBold from "../assets/fonts/Barlow-Bold.ttf";
+import { clamp } from "framer-motion";
 
 //#region FUENTES
 Font.register({
@@ -94,8 +95,15 @@ export const stylesPDF = StyleSheet.create({
       paddingHorizontal: 35
    },
    page: {
-      flexDirection: "row"
-      // backgroundColor: '#E4E4E4',
+      // flexDirection: "row",
+      paddingHorizontal: 35,
+      paddingTop: 100, //125,
+      paddingBottom: 160,
+      position: "absolute"
+      // left: 30,
+      // height: 540,
+      // width: "90%"
+      // backgroundColor: "#E4E4E4"
    },
    section: {
       margin: 10
@@ -165,8 +173,8 @@ export const stylesPDF = StyleSheet.create({
    viewBgImage: {
       position: "absolute",
       top: 0,
-      left: -15,
-      height: "100%",
+      left: 25,
+      height: "148%",
       width: "100%",
       opacity: "0.75"
    },
@@ -188,22 +196,23 @@ export const stylesPDF = StyleSheet.create({
       fontFamily: "Roboto-Bold",
       fontWeight: "bold",
       textAlign: "left",
-      marginBottom: 15
+      marginBottom: 10
    },
    dataTitlesRigth: {
       fontSize: 12,
       fontFamily: "Roboto-Bold",
       fontWeight: "bold",
       textAlign: "right",
-      marginBottom: 15
+      marginBottom: 10
    },
    messageBody: {
       fontFamily: "Roboto-Regular",
-      fontSize: 12,
-      height: 320,
-      maxHeight: 320,
+      fontSize: 11,
+      // height: 320,
+      // maxHeight: 320,
       textAlign: "justify",
       lineHeight: "1.5px"
+      // border: "1px solid black"
       // backgroundColor: "red"
       // marginBottom: 1
       // paddingHorizontal: 35
@@ -216,6 +225,7 @@ export const stylesPDF = StyleSheet.create({
    },
    p: {
       marginVertical: 10
+      // fontSize:16
    },
    right: { textAlign: "right" },
    center: { marginHorizontal: "auto" },
@@ -237,6 +247,7 @@ export const stylesPDF = StyleSheet.create({
       borderBottom: "1px double black"
    },
    table: {
+      // backgroundColor: "green",
       border: "2px solid black",
       flexDirection: "row",
       flexWrap: "wrap",
@@ -258,8 +269,14 @@ export const stylesPDF = StyleSheet.create({
       textAlign: "center",
       fontSize: 14,
       maxHeight: 100,
-      fontWeight: "heavy"
-      // marginLeft: 30
+      fontWeight: "heavy",
+      position: "absolute",
+      justifyContent: "center",
+      width: "100%",
+      marginHorizontal: 35,
+      bottom: 95
+      // paddingVertical: 0,
+      // marginVertical: 0
       // backgroundColor: "blue"
    },
    firma: {
@@ -283,7 +300,7 @@ export const stylesPDF = StyleSheet.create({
       position: "absolute",
       width: "4cm",
       height: "4cm",
-      top: "87%",
+      top: "25%", //"87%",
       left: "21%",
       transform: "translateX(-100%)"
       // backgroundColor: "yellow"
@@ -292,7 +309,7 @@ export const stylesPDF = StyleSheet.create({
    containerDateStamp: {
       position: "absolute",
       transform: "translateX(-100%) rotate(-5deg)",
-      top: "65%",
+      top: "25%", //"65%",
       left: "95%"
       // backgroundColor: "green",
    },
@@ -354,29 +371,36 @@ const formDataInitial = {
 };
 
 // Componente que representa el documento OficioPDF
-export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formData = { formDataInitial }, isOfficialDoc = true }) => {
+export const DocumentPDF = ({
+   children,
+   watermark = "Departamento Emisor",
+   table,
+   formData = { formDataInitial },
+   breakFirmContent = false,
+   isOfficialDoc = true
+}) => {
    return (
       <Document>
          {/* <Page size="A4" style={stylesPDF.body} wrap>
                 
             </Page> */}
-         <Page size="LETTER" style={stylesPDF.page} wrap>
+         <Page size="LETTER" style={[stylesPDF.page]} wrap>
             {/* <View style={stylesPDF.pageBody}> */}
-            <View style={stylesPDF.viewBgImage}>
+            <View style={stylesPDF.viewBgImage} fixed>
                <Text style={stylesPDF.header} fixed>
                   ~ {watermark} ~
                </Text>
                {isOfficialDoc && <Image style={stylesPDF.bgImage} src={backgroundImage} />}
             </View>
             {isOfficialDoc ? (
-               <View style={stylesPDF.viewContainer}>
-                  <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
+               <>
+                  {/* <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
                   {formData.voucher.vobo_at != null && (
                      <View style={stylesPDF.containerDateStamp}>
                         <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp} />
                         <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
                      </View>
-                  )}
+                  )} */}
                   <View style={stylesPDF.folioDate}>
                      <Text>Folio: #{formData.voucher.folio}</Text>
                      <Text>Folio Interno: {formData.voucher.internal_folio}</Text>
@@ -414,16 +438,27 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                      </View>
                   )}
                   {/* CUERPO DEL MENSAJE */}
-                  <View style={stylesPDF.messageBody}>{children}</View>
+                  <View style={stylesPDF.messageBody} wrap>
+                     {children}
+                  </View>
+                  {formData.table}
+
                   {/* CUERPO DEL MENSAJE */}
-                  <View style={stylesPDF.firmContainer}>
+                  <View style={stylesPDF.firmContainer} wrap={false}>
+                     <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
+                     {formData.voucher.vobo_at != null && (
+                        <View style={stylesPDF.containerDateStamp}>
+                           <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp} />
+                           <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
+                        </View>
+                     )}
                      <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
                      <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
                      <Image style={[stylesPDF.firma]} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
                      <Text style={{ paddingBottom: 4 }}>______________________________________</Text>
                      <Text style={stylesPDF.upperCase}>{formData.voucher.requesterName} </Text>
                   </View>
-               </View>
+               </>
             ) : (
                <View style={stylesPDF.viewContainer}>
                   {/* CUERPO DEL MENSAJE */}

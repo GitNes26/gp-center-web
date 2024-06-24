@@ -1,6 +1,7 @@
 import moment from "moment";
 import Toast from "./Toast";
-moment.locale("es-mx");
+
+moment.locale("es");
 
 //#region /** FECHAS - FORMATEADO */
 function validateRangeDates(action, input_initial_date, input_final_date) {
@@ -42,51 +43,25 @@ function binaryDateTimeFormat(the_date) {
    return datetime;
 }
 
-export function formatDatetime(the_date, long_format = true, format = null) {
-   moment.locale("es-mx");
-
+export function formatDatetime(the_date, long_format = true) {
    if (the_date == null) return "Sin Fecha";
    let date = new Date(the_date);
    let datetime;
 
    if (the_date.length <= 10) {
       date = new Date(date.setDate(date.getDate() + 1));
-      datetime = moment(date).format("DD-MM-YYYY");
-      // console.log("formaaatFecha", the_date, "-->", datetime);
-      return datetime;
+      return (datetime = moment(date).format("DD-MM-YYYY"));
       // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric'}).format(date);
    }
 
    date = new Date(the_date);
-   let formato = long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY";
-   datetime = moment(date).locale("es-mx").format(formato);
-   if (["LL", "LLL", "ll", "lll", "sello"].includes(format)) {
-      let mounth = datetime.split("-")[1];
-      const mounths = {
-         "01": format == "LL" ? "-ENE-" : format == "LLL" ? "-ENERO-" : format == "ll" ? " de ene de " : format == "lll" ? " de enero de " : " ENE ",
-         "02": format == "LL" ? "-FEB-" : format == "LLL" ? "-FEBRERO-" : format == "ll" ? " de feb de " : format == "lll" ? " de febrero de " : " FEB ",
-         "03": format == "LL" ? "-MAR-" : format == "LLL" ? "-MARZO-" : format == "ll" ? " de mar de " : format == "lll" ? " de marzo de " : " MAR ",
-         "04": format == "LL" ? "-ABR-" : format == "LLL" ? "-ABRIL-" : format == "ll" ? " de abr de " : format == "lll" ? " de abril de " : " ABR ",
-         "05": format == "LL" ? "-MAY-" : format == "LLL" ? "-MAYO-" : format == "ll" ? " de may de " : format == "lll" ? " de mayo de " : " MAY ",
-         "06": format == "LL" ? "-JUN-" : format == "LLL" ? "-JUNIO-" : format == "ll" ? " de jun de " : format == "lll" ? " de junio de " : " JUN ",
-         "07": format == "LL" ? "-JUL-" : format == "LLL" ? "-JULIO-" : format == "ll" ? " de jul de " : format == "lll" ? " de julio de " : " JUL ",
-         "08": format == "LL" ? "-AGO-" : format == "LLL" ? "-AGOSTO-" : format == "ll" ? " de ago de " : format == "lll" ? " de agosto de " : " AGO ",
-         "09": format == "LL" ? "-SEP-" : format == "LLL" ? "-SEPTIEMBRE-" : format == "ll" ? " de sep de " : format == "lll" ? " de septiembre de " : " SEP ",
-         10: format == "LL" ? "-OCT-" : format == "LLL" ? "-OCTUBRE-" : format == "ll" ? " de oct de " : format == "lll" ? " de octubre de " : " OCT ",
-         11: format == "LL" ? "-NOV-" : format == "LLL" ? "-NOVIEMBRE-" : format == "ll" ? " de nov de " : format == "lll" ? " de noviembre de " : " NOV ",
-         12: format == "LL" ? "-DIC-" : format == "LLL" ? "-DICIEMBRE-" : format == "ll" ? " de dic de " : format == "lll" ? " de diciembre de " : " DIC "
-      };
-      const mounthNumber = datetime.split("-")[1];
-
-      datetime = datetime.replace(`-${mounthNumber}-`, `${mounths[mounthNumber]}`);
-   }
-   // console.log(datetime);
-   return datetime;
+   const formato = long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY";
+   return (datetime = moment(date).format(formato));
    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(date);
 }
 
 export function formatDatetimeToSQL(the_date) {
-   let datetime = moment(the_date).format("YYYY-MM-DDThh:mm:ss");
+   let datetime = moment(the_date).format("YYYY-MM-DDTh:mm:ss");
    return datetime;
 }
 //#endregion /** FECHAS - FORMATEADO */
@@ -117,7 +92,7 @@ export function formatearCantidadDeRenglones(tds) {
 }
 
 export function formatPhone(phone) {
-   if (phone == null || phone == undefined || phone == "" || phone.length < 1) return "S/N";
+   if (!phone) return "Sin numero";
    return `${phone.slice(0, 3)} ${phone.slice(3, 6)} ${phone.slice(6, 8)}${phone.slice(-2)}`;
 }
 
@@ -147,4 +122,72 @@ export const handleInputStringCase = async (e, setState, toUpper = true) => {
       console.log(error);
       Toast.Error(error);
    }
+};
+
+export const splitArroba = (string, returnFirst = true) => {
+   try {
+      const array = string.split("@");
+      const value = returnFirst ? array[0] : array.reverse()[0];
+      return value;
+   } catch (error) {
+      console.log(error);
+      Toast.Error(error);
+   }
+};
+
+/**
+ * const groupedData = groupBy(data, "category");
+ *
+ * @param {array} data - la data
+ * @param {string} key - nombre de la propiedad para filtrar
+ * @param {boolean} returnArray - retornar el valor como array o como objeto
+ * @param {boolean} consoleLogResult - por si quieres ver el resultaod en consola
+ * @returns La data filtrada
+ */
+export const groupBy = (data, key, returnArray, consoleLogResult = false) => {
+   let result = data.reduce((result, currentValue) => {
+      const keys = key.includes(".") && key.split(".");
+
+      // Extraer el valor clave
+      const keyValue = keys ? currentValue[keys[0]][keys[1]] : currentValue[key];
+
+      // Si el valor clave no existe en el objeto de resultado, cree datos para él
+      if (!result[keyValue]) {
+         result[keyValue] = [];
+      }
+
+      // Agregue el valor actual a los datos correspondientes.
+      result[keyValue].push(currentValue);
+
+      return result;
+   }, {});
+   if (returnArray) result = Object.entries(result);
+
+   if (consoleLogResult) console.log(`🚀 ~ groupBy ~ result ${returnArray ? "array" : "object"}:`, result);
+   return result;
+};
+
+/**
+ *
+ * @param {array<objecT>} data - para arreglos de objetos [{}]
+ * @param {string} key - nombre de la propiedad por la cual se desea filtrar
+ * @returns {array}
+ */
+export const unifyBy = (data, key) => {
+   return Array.from(new Map(data.map((item) => [item[key], item])).values());
+};
+
+export const cutLinesPDF = (text, lengthRow = 100) => {
+   if (typeof text != "string") return;
+   // console.log("🚀 ~ cutLinesPDF ~ text:", text);
+   const lines = text.split(/\r\n|\n/);
+   const rows = [];
+   lines.map((line) => {
+      for (let i = 0; i < line.length; i += lengthRow) {
+         const fragment = line.slice(i, i + lengthRow);
+         rows.push(fragment);
+      }
+   });
+   // console.log("🚀 ~ cutLinesPDF ~ rows:", rows);
+   return rows;
 };
