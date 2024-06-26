@@ -131,21 +131,21 @@ const VehicleDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "image_preview", header: "Vista Previa", sortable: false, functionEdit: null, body: ImagePreviewBodyTemplate, filterField: null },
-      { field: "info", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null },
-      { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
-      { field: "plates", header: "Placas", sortable: true, functionEdit: null, body: PlatesBodyTemplate, filterField: null },
-      { field: "vehicle_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
-      { field: "serial_number", header: "N° de Serie", sortable: true, functionEdit: null, body: SerialNumberBodyTemplate, filterField: null },
-      { field: "circulation_card", header: "Tarjeta de Circulación", sortable: true, functionEdit: null, body: CirculationCardBodyTemplate, filterField: null },
-      { field: "insurance_policy", header: "Poliza de Seguro", sortable: true, functionEdit: null, body: InsurancePolicyBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null },
-      { field: "gasoline_code", header: "Código Gasolina", sortable: true, functionEdit: null, body: GasolineCodeBodyTemplate, filterField: null }
+      { field: "image_preview", header: "Vista Previa", sortable: false, functionEdit: null, body: ImagePreviewBodyTemplate, filter: true, filterField: null },
+      { field: "info", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filter: true, filterField: null },
+      { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
+      { field: "plates", header: "Placas", sortable: true, functionEdit: null, body: PlatesBodyTemplate, filter: true, filterField: null },
+      { field: "vehicle_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filter: true, filterField: null },
+      { field: "serial_number", header: "N° de Serie", sortable: true, functionEdit: null, body: SerialNumberBodyTemplate, filter: true, filterField: null },
+      { field: "circulation_card", header: "Tarjeta de Circulación", sortable: true, functionEdit: null, body: CirculationCardBodyTemplate, filter: true, filterField: null },
+      { field: "insurance_policy", header: "Poliza de Seguro", sortable: true, functionEdit: null, body: InsurancePolicyBodyTemplate, filter: true, filterField: null },
+      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filter: true, filterField: null },
+      { field: "gasoline_code", header: "Código Gasolina", sortable: true, functionEdit: null, body: GasolineCodeBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
+         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);

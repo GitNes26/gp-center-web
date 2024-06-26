@@ -21,6 +21,16 @@
 }
 /* SCROLL */
 
+/* para la tabla de prime */
+.p-input-icon-left>i:first-of-type, .p-input-icon-left>svg:first-of-type, .p-input-icon-left>.p-input-prefix {
+   left: .75rem;
+   color: #6b7280;
+}
+.p-input-icon-left>.p-inputtext {
+   padding-left: 2.5rem;
+}
+/* para la tabla de prime */
+
 .bg-login {
    background-image: url("../src/assets/images/bg-login.jpg");
    background-position: center;

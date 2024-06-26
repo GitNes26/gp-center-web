@@ -74,13 +74,13 @@ const VehicleStatusDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "vehicle_status", header: "Estatus del Vehículo", sortable: true, functionEdit: null, body: VehicleStatusBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: false, functionEdit: null, body: DescriptionBodyTemplate, filterField: null }
+      { field: "vehicle_status", header: "Estatus del Vehículo", sortable: true, functionEdit: null, body: VehicleStatusBodyTemplate, filter: true, filterField: null },
+      { field: "description", header: "Descripción", sortable: false, functionEdit: null, body: DescriptionBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
+         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);

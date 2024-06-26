@@ -100,17 +100,17 @@ const MenuDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "id", header: "ID", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },
-      { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filterField: null },
-      { field: "menu", header: "Menu", sortable: true, functionEdit: null, body: MenuBodyTemplate, filterField: null },
-      { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null },
-      { field: "others_permissions", header: "Otros Permisos", sortable: true, functionEdit: null, body: OthersPermissionsTemplate, filterField: null }
-      // { field: "show_counter", header: "Contador", sortable: true, functionEdit: null, body: ShowCounterBodyTemplate, filterField: null }
+      { field: "id", header: "ID", sortable: true, functionEdit: null, body: IdBodyTemplate, filter: true, filterField: null },
+      { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filter: true, filterField: null },
+      { field: "menu", header: "Menu", sortable: true, functionEdit: null, body: MenuBodyTemplate, filter: true, filterField: null },
+      { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filter: true, filterField: null },
+      { field: "others_permissions", header: "Otros Permisos", sortable: true, functionEdit: null, body: OthersPermissionsTemplate, filter: true, filterField: null }
+      // { field: "show_counter", header: "Contador", sortable: true, functionEdit: null, body: ShowCounterBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
-         // { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null }
+         // { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);

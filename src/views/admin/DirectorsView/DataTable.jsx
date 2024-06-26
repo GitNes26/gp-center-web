@@ -59,15 +59,15 @@ const DirectorDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
-      { field: "payroll_number", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filterField: null },
-      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
-      { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
-      { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
-      { field: "license_number", header: "No. Licencia", sortable: true, functionEdit: null, body: LicenseBodyTemplate, filterField: null },
-      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
-      // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
-      { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
+      { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filter: false, filterField: null },
+      { field: "payroll_number", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filter: true, filterField: null },
+      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filter: true, filterField: null },
+      { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filter: true, filterField: null },
+      { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: true, filterField: null },
+      { field: "license_number", header: "No. Licencia", sortable: true, functionEdit: null, body: LicenseBodyTemplate, filter: true, filterField: null },
+      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
+      { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: false, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);
@@ -166,7 +166,7 @@ const DirectorDT = () => {
          columns={columns}
          data={data}
          globalFilterFields={globalFilterFields}
-         headerFilters={false}
+         headerFilters={true}
          handleClickAdd={handleClickAdd}
          refreshTable={getDirectors}
          btnAdd={auth.permissions.create}

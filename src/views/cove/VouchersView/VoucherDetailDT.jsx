@@ -198,15 +198,15 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    // #endregion BodysTemplatesFunctionEditor
 
    const columns = [
-      { field: "vehicle", header: "VEHÍCULO", sortable: true, functionEdit: textMayusEditor, body: VehicleBodyTemplate, filterField: null },
-      { field: "vehicle_plates", header: "PLACAS", sortable: true, functionEdit: textMayusEditor, body: VehiclePlatesBodyTemplate, filterField: null },
-      { field: "payroll_number", header: "N° NÓMINA", sortable: true, functionEdit: PayrollBodyTemplateEditor, body: PayrollBodyTemplate, filterField: null },
-      { field: "department", header: "DEPARTAMENTO", sortable: true, functionEdit: textMayusEditor, body: DepartmentBodyTemplate, filterField: null },
-      { field: "name", header: "NOMBRE", sortable: true, functionEdit: textMayusEditor, body: NameBodyTemplate, filterField: null },
-      { field: "paternal_last_name", header: "A. PATERNO", sortable: true, functionEdit: textMayusEditor, body: PaternalBodyTemplate, filterField: null },
-      { field: "maternal_last_name", header: "A. MATERNO", sortable: true, functionEdit: textMayusEditor, body: MaternalBodyTemplate, filterField: null },
-      { field: "phone", header: "TELÉFONO", sortable: true, functionEdit: phoneEditor, body: PhoneBodyTemplate, filterField: null }
-      // { field: "requested_amount", header: "CANTIDAD VALES", sortable: true, functionEdit: numberEditor, body: AmountTemplate, filterField: null }
+      { field: "vehicle", header: "VEHÍCULO", sortable: true, functionEdit: textMayusEditor, body: VehicleBodyTemplate, filter: true, filterField: null },
+      { field: "vehicle_plates", header: "PLACAS", sortable: true, functionEdit: textMayusEditor, body: VehiclePlatesBodyTemplate, filter: true, filterField: null },
+      { field: "payroll_number", header: "N° NÓMINA", sortable: true, functionEdit: PayrollBodyTemplateEditor, body: PayrollBodyTemplate, filter: true, filterField: null },
+      { field: "department", header: "DEPARTAMENTO", sortable: true, functionEdit: textMayusEditor, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      { field: "name", header: "NOMBRE", sortable: true, functionEdit: textMayusEditor, body: NameBodyTemplate, filter: true, filterField: null },
+      { field: "paternal_last_name", header: "A. PATERNO", sortable: true, functionEdit: textMayusEditor, body: PaternalBodyTemplate, filter: true, filterField: null },
+      { field: "maternal_last_name", header: "A. MATERNO", sortable: true, functionEdit: textMayusEditor, body: MaternalBodyTemplate, filter: true, filterField: null },
+      { field: "phone", header: "TELÉFONO", sortable: true, functionEdit: phoneEditor, body: PhoneBodyTemplate, filter: true, filterField: null }
+      // { field: "requested_amount", header: "CANTIDAD VALES", sortable: true, functionEdit: numberEditor, body: AmountTemplate, filter: true, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);

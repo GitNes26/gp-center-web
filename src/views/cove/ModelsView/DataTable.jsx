@@ -61,13 +61,13 @@ const ModelDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "brand", header: "Marca", sortable: true, functionEdit: null, body: ImagePreviewBodyTemplate, filterField: null },
-      { field: "model", header: "Modelo", sortable: true, functionEdit: null, body: ModelBodyTemplate, filterField: null }
+      { field: "brand", header: "Marca", sortable: true, functionEdit: null, body: ImagePreviewBodyTemplate, filter: true, filterField: null },
+      { field: "model", header: "Modelo", sortable: true, functionEdit: null, body: ModelBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
+         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);

@@ -37,14 +37,14 @@ const RoleDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "role", header: "Role", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null },
-      { field: "page_index", header: "Página Principal", sortable: true, functionEdit: null, body: PageIndexBodyTemplate, filterField: null }
+      { field: "role", header: "Role", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
+      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filter: true, filterField: null },
+      { field: "page_index", header: "Página Principal", sortable: true, functionEdit: null, body: PageIndexBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
-         // { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null }
+         // { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);

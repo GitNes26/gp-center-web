@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primeicons/primeicons.css";
+
 import { Button as Btn } from "primereact/button";
 
 import { DataTable } from "primereact/datatable";
@@ -349,12 +350,6 @@ export default function DataTableComponent({
       setSelectedData([]);
    };
 
-         // <div className="flex justify-content-end">
-         //    {/* <IconField iconPosition="left"> */}
-         //    <InputIcon className="pi pi-search" />
-         //    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
-         //    {/* </IconField> */}
-         // </div>
    const header = (
       <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between", alignItems: "center" }}>
          {btnDeleteMultiple && (
@@ -468,14 +463,15 @@ export default function DataTableComponent({
                      header={col.header}
                      headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
                      headerClassName="text-center"
-                     filter={headerFilters}
+                     filter={col.filter && headerFilters}
                      filterField={col.filterField}
                      filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                      editor={(options) => col.functionEdit(options)}
                      sortable={col.sortable}
                      body={col.body}
-                     style={{ width: "auto" }}
+                     style={{ minWidth: col.width ? col.width : col.filter ? "12rem" : "auto" }}
                      footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     frozen={col.frozen && true}
                   ></Column>
                ))}
                {rowEdit ? (
@@ -503,6 +499,8 @@ export default function DataTableComponent({
                      filter={false}
                      style={{ width: "auto" }}
                      footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     alignFrozen="right"
+                     frozen={true}
                   ></Column>
                )}
             </DataTable>

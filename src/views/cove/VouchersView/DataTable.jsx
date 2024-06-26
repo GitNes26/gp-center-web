@@ -181,23 +181,23 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    // #endregion BodysTemplate
 
    const columns = [
-      // { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filterField: null },
-      { field: "id", header: "Folio", sortable: true, functionEdit: null, body: IdBodyTemplate, filterField: null },
-      { field: "internal_folio", header: "Folio Interno", sortable: true, functionEdit: null, body: InternalFolioBodyTemplate, filterField: null },
+      // { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filter: true, filterField: null },
+      { field: "id", header: "Folio", sortable: true, functionEdit: null, body: IdBodyTemplate, filter: true, filterField: null },
+      { field: "internal_folio", header: "Folio Interno", sortable: true, functionEdit: null, body: InternalFolioBodyTemplate, filter: true, filterField: null },
 
-      { field: "requested_fullname", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filterField: null },
-      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filterField: null },
-      { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filterField: null },
-      // { field: "vehicle", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
-      // { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filterField: null },
-      { field: "created_at", header: "Solicitado", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filterField: null },
-      { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filterField: null },
-      { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedBodyTemplate, filterField: null },
-      { field: "canceled_amount", header: "Cancelado", sortable: true, functionEdit: null, body: CanceledBodyTemplate, filterField: null },
-      { field: "viewed_by", header: "Visto", sortable: true, functionEdit: null, body: ViewedBodyTemplate, filterField: null },
+      { field: "requested_fullname", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filter: true, filterField: null },
+      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filter: true, filterField: null },
+      // { field: "vehicle", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
+      // { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filter: true, filterField: null },
+      { field: "created_at", header: "Solicitado", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filter: true, filterField: null },
+      { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filter: true, filterField: null },
+      { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedBodyTemplate, filter: false, filterField: null },
+      { field: "canceled_amount", header: "Cancelado", sortable: true, functionEdit: null, body: CanceledBodyTemplate, filter: false, filterField: null },
+      { field: "viewed_by", header: "Visto", sortable: true, functionEdit: null, body: ViewedBodyTemplate, filter: false, filterField: null },
 
-      { field: "voucher_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null },
-      { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
+      { field: "voucher_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filter: false, filterField: null },
+      { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: false, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);
@@ -474,7 +474,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             columns={columns}
             data={data}
             globalFilterFields={globalFilterFields}
-            headerFilters={false}
+            headerFilters={true}
             handleClickAdd={handleClickAdd}
             refreshTable={() => getVouchers(currentStatus)}
             btnAdd={auth.permissions.create}
