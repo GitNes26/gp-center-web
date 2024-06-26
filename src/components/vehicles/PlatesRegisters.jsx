@@ -1,44 +1,17 @@
-import { Field, Formik } from "formik";
-import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
-   Autocomplete,
-   Backdrop,
-   Button,
-   CircularProgress,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
+   Grid,
    Typography
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { useVehicleContext } from "../../context/VehicleContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
-import Select2 from "react-select";
-import { formatDatetime, formatToLowerCase, formatToUpperCase } from "../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../utils/password-strength";
-import axios from "axios";
-import { Axios } from "../../context/AuthContext";
+import { formatDatetime } from "../../utils/Formats";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";

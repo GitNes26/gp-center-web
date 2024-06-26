@@ -1,6 +1,6 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -14,7 +14,9 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Fragment, forwardRef, useEffect, useState } from "react";
-import { ButtonGroup, CircularProgress, IconButton, ListItemButton, TextField, Tooltip } from "@mui/material";
+import { 
+   Grid,
+   ButtonGroup, CircularProgress, IconButton, ListItemButton, TextField, Tooltip } from "@mui/material";
 import { useUserContext } from "../../../context/UserContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
 
@@ -186,7 +188,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
    const ItemUserTest = ({ full_name = "", department, email }) => {
       return (
          <>
-            <Grid xs={12} md={6} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                <OutlineInputStyle
                   id={"search"}
                   name={"search"}
@@ -390,7 +392,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
          <>
             <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
             {/* N° Unidad */}
-            <Grid xs={12} md={6} sx={{ mb: 1 }}>
+            <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                <InputComponentv2
                   idName={"stock_number"}
                   label={"N° Unidad"}
@@ -414,7 +416,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                {showLoading && <CircularProgress disableShrink sx={{ position: "absolute", left: "35%", mt: 0, zIndex: 10 }} />}
             </Grid>
             {/* Fecha de Registro */}
-            <Grid xs={12} md={6} sx={{ mb: 1 }}>
+            <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                <InputComponentv2
                   idName={"dateTime"}
                   label={"Fecha de Registro"}
@@ -435,7 +437,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                />
             </Grid>
             {/* Nombre de contacto */}
-            <Grid xs={12} md={7} sx={{ mb: 1 }}>
+            <Grid item xs={12} md={7} sx={{ mb: 1 }}>
                <InputComponentv2
                   idName={"contact_name"}
                   label={"Nombre de contacto"}
@@ -456,7 +458,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                />
             </Grid>
             {/* Telefono de contacto */}
-            <Grid xs={12} md={5} sx={{ mb: 1 }}>
+            <Grid item xs={12} md={5} sx={{ mb: 1 }}>
                <InputComponentv2
                   idName={"contact_phone"}
                   label={"Telefono de contacto"}
@@ -477,7 +479,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                />
             </Grid>
             {/* Diagnostico inicial */}
-            <Grid xs={12} md={12} sx={{ mb: 1 }}>
+            <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                <InputComponentv2
                   idName={"pre_diagnosis"}
                   label={"Diagnóstico inicial"}
@@ -543,7 +545,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                                  handleBlur={handleBlur}
                               />
 
-                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                                  <Divider
                                     sx={{ flexGrow: 1, my: 1, borderStyle: "dashed", borderBottomWidth: "thick", borderColor: gpcDark }}
                                     orientation="horizontal"
@@ -551,7 +553,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                               </Grid>
 
                               {/* Diagnostico Final */}
-                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                                  <InputComponentv2
                                     idName={"final_diagnosis"}
                                     label={"Diagnóstico Final"}
@@ -621,7 +623,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                            <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} sx={{ mt: 0 }}>
                               {/* Folio del servicio */}
-                              <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                                  <InputComponentv2
                                     idName={"folio"}
                                     label={"Folio del servicio"}
@@ -644,7 +646,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                               </Grid>
 
                               {/* Codigo material */}
-                              <Grid xs={12} md={3} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={3} sx={{ mb: 1 }}>
                                  <InputComponentv2
                                     idName={"final_diagnosis"}
                                     label={"Código material"}
@@ -665,7 +667,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                                  />
                               </Grid>
                               {/* Descripción */}
-                              <Grid xs={12} md={5} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={5} sx={{ mb: 1 }}>
                                  <InputComponentv2
                                     idName={"description"}
                                     label={"Descripción"}
@@ -686,7 +688,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                                  />
                               </Grid>
                               {/* Cantidad */}
-                              <Grid xs={12} md={3} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={3} sx={{ mb: 1 }}>
                                  <InputComponentv2
                                     idName={"quantity"}
                                     label={"Cantidad"}
@@ -707,7 +709,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                                  />
                               </Grid>
                               {/* Btn Cargar */}
-                              <Grid xs={12} md={1} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={1} sx={{ mb: 1 }}>
                                  <Tooltip title="Cargar Material">
                                     <IconButton variant="outlined" onClick={() => Toast.Success("Cargando material")}>
                                        <UploadIcon />

@@ -1,8 +1,9 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
+   Grid,
    Button,
    Dialog,
    DialogActions,
@@ -10,7 +11,6 @@ import {
    DialogTitle,
    Divider,
    FormControlLabel,
-   InputLabel,
    Slide,
    Switch,
    TextField,
@@ -19,36 +19,23 @@ import {
    Typography
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
 import { forwardRef, useState } from "react";
 import { useVoucherContext } from "../../../context/VoucherContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
-import { TransitionSlide, gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
+import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
 import { formatDatetimeToSQL, handleInputFormik } from "../../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
 import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import axios from "axios";
-import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
-import { validateImageRequired } from "../../../utils/Validations";
 import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import { useAuthContext } from "../../../context/AuthContext";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import VoucherDetailDT from "./VoucherDetailDT";
-import { useAsyncError } from "react-router-dom";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
 // import DialogComponent from "../../../components/DialogComponent";
@@ -419,13 +406,13 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                         {(inAprobation || inEdit) && (
                            <>
                               {/* Divisor */}
-                              <Grid xs={12}>
+                              <Grid item xs={12}>
                                  <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
                                     ASIGNAR FOLIOS
                                  </Divider>
                               </Grid>
                               {/* Letra Vale */}
-                              <Grid xs={12} md={2} sx={{ mb: 2 }}>
+                              <Grid item xs={12} md={2} sx={{ mb: 2 }}>
                                  <Tooltip title="Ingresa el prefijo del vale para control interno; S=SIMSA | C=CargoGAS">
                                     <TextField
                                        id="letter_folio"
@@ -449,7 +436,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                  </Tooltip>
                               </Grid>
                               {/* Vales Foliados */}
-                              <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                              <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                                  <Tooltip title="En caso de poner más de un folio, ingresarlos como si fuera un rango de folios, con guion medio; ej. 1-6">
                                     <TextField
                                        id="foliated_vouchers"
@@ -472,7 +459,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                  </Tooltip>
                               </Grid>
                               {/* Cantidad de Vales Aprobados */}
-                              <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                                  <TextField
                                     id="approved_amount"
                                     name="approved_amount"
@@ -493,7 +480,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            </>
                         )}
                         {/* Divisor */}
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
                               DATOS DE SOLICITUD
                            </Divider>
@@ -503,7 +490,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                         {auth.permissions.more_permissions.includes("24@Solicitador Externo") && (
                            <>
                               {/* Switch para replaquear */}
-                              <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                                  <FormControlLabel
                                     control={<Switch />}
                                     label="¿Solicitar vales por otro departamento?"
@@ -511,7 +498,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                     onChange={() => setEnableRequesterExternal(!enableRequesterExternal)}
                                  />
                               </Grid>
-                              <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                  <Select2Component
                                     idName={"requested_by"}
                                     label={"Requisitor de Vale *"}
@@ -537,7 +524,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            </>
                         )}
                         {/* Folio Interno */}
-                        <Grid xs={12} mdOffset={auth.permissions.more_permissions.includes("24@Solicitador Externo") ? 2 : 8} md={4} sx={{ mb: 1 }}>
+                        <Grid item xs={12} mdOffset={auth.permissions.more_permissions.includes("24@Solicitador Externo") ? 2 : 8} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="internal_folio"
                               name="internal_folio"
@@ -559,7 +546,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid>
                         {/* Actividad */}
-                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                            <Tooltip title={"No olvides describir la cantidad de LITROS a solicitar"}>
                               <TextField
                                  id="activity"
@@ -583,7 +570,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                         </Grid>
                         {/* Estatus del Vale */}
                         {/* {inEdit && (
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                               <TextField
                                  id="voucher_status"
                                  name="voucher_status"
@@ -606,7 +593,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            </Grid>
                         )} */}
                         {/* Vehículo */}
-                        {/* <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        {/* <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="vehicle"
                               name="vehicle"
@@ -628,7 +615,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid> */}
                         {/* Placas del Vehículo */}
-                        {/* <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        {/* <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="vehicle_plates"
                               name="vehicle_plates"
@@ -647,7 +634,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid> */}
                         {/* Cantidad de Vales Solicitados */}
-                        {/* <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        {/* <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="requested_amount"
                               name="requested_amount"
@@ -668,7 +655,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
 
                         {/* Divisor */}
                         {voucherId > 0 && (
-                           <Grid xs={12}>
+                           <Grid item xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
                                  DATOS DE LOS ACREDITADOS <br />
                                  <small>
@@ -687,7 +674,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            onChange={handleChange}
                            onBlur={handleBlur}
                         />
-                        {/* <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        {/* <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="payroll_number"
                               name="payroll_number"
@@ -711,7 +698,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid> */}
                         {/* Departameto */}
-                        {/* <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                        {/* <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                            <TextField
                               id="department"
                               name="department"
@@ -730,7 +717,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid> */}
                         {/* Nombre */}
-                        {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        {/* <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="name"
                               name="name"
@@ -749,7 +736,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid> */}
                         {/* Apellido Paterno */}
-                        {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        {/* <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="paternal_last_name"
                               name="paternal_last_name"
@@ -768,7 +755,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid> */}
                         {/* Apellido Materno */}
-                        {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        {/* <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="maternal_last_name"
                               name="maternal_last_name"
@@ -787,7 +774,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            />
                         </Grid> */}
                         {/* Telefono */}
-                        {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        {/* <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <TextField
                               id="phone"
                               name="phone"

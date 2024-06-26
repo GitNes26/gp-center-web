@@ -1,8 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,
+   Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -20,10 +22,7 @@ import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import DatePickerComponent from "../../../components/Form/DatePickerComponent";
-import { useDepartmentContext } from "../../../context/DepartmentContext";
 import axios from "axios";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 import { validateImageRequired } from "../../../utils/Validations";
@@ -314,7 +313,7 @@ const DirectorForm = () => {
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)} className={cursorLoading ? "cursor-loading" : ""}>
-         <Box role="presentation" p={3} pt={5} className="form">
+         <Box role="presentation" p={3} pt={5}  className="form">
             <Typography variant="h2" mb={3}>
                {formTitle}
                <FormControlLabel
@@ -327,11 +326,11 @@ const DirectorForm = () => {
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
             <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, setSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
+                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} >
+                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* Foto de Perfil */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="avatar"
                               label="Foto de Perfil"
@@ -346,7 +345,7 @@ const DirectorForm = () => {
                         {/* Rol */}
                         {/* <Field id="role_id" name="role_id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
                         {/* Nombre de Usuario */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="username"
                               name="username"
@@ -364,7 +363,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Correo Electronico */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <TextField
                               id="email"
                               name="email"
@@ -385,7 +384,7 @@ const DirectorForm = () => {
 
                         {/* Switch para mostrar el cambiar contraseña */}
                         {checkedShowSwitchPassword && (
-                           <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                               <FormControlLabel
                                  control={<Switch />}
                                  label="Cambiar Contraseña"
@@ -395,7 +394,7 @@ const DirectorForm = () => {
                            </Grid>
                         )}
                         {/* Contraseña */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                               <InputLabel htmlFor="password">Contraseña *</InputLabel>
                               <OutlinedInput
@@ -461,7 +460,7 @@ const DirectorForm = () => {
                         </Grid>
 
                         {/* Telefono */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <TextField
                               id="phone"
                               name="phone"
@@ -478,7 +477,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Numero de Licencia */}
-                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="license_number"
                               name="license_number"
@@ -495,7 +494,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Tipo de Licencia */}
-                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="license_type"
                               name="license_type"
@@ -513,7 +512,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Fecha de Vencimiento */}
-                        <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                            <DatePickerComponent
                               idName={"license_due_date"}
                               label={"Fecha de Vencimiento *"}
@@ -529,7 +528,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Foto Licencia de Conducir */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_license"
                               label="Foto Licencia de Conducir *"
@@ -542,7 +541,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Foto Firma */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_firm"
                               label="Foto Firma"
@@ -555,7 +554,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Divisor */}
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                         </Grid>
                         {/* Número de Nómina */}
@@ -568,7 +567,7 @@ const DirectorForm = () => {
                            onBlur={handleBlur}
                         />
 
-                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="payroll_number"
                               name="payroll_number"
@@ -589,7 +588,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Departameto */}
-                        <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                            <TextField
                               id="department"
                               name="department"
@@ -627,12 +626,12 @@ const DirectorForm = () => {
                         /> */}
                         </Grid>
                         {/* Divisor */}
-                        {/* <Grid xs={12}>
+                        {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid> */}
 
                         {/* Nombre */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <TextField
                               id="name"
                               name="name"
@@ -651,7 +650,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Apellido Paterno */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="paternal_last_name"
                               name="paternal_last_name"
@@ -670,7 +669,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Apellido Materno */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="maternal_last_name"
                               name="maternal_last_name"
@@ -689,7 +688,7 @@ const DirectorForm = () => {
                            />
                         </Grid>
                         {/* Divisor */}
-                        {/* <Grid xs={12}>
+                        {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 

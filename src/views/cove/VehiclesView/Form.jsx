@@ -1,8 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Divider, FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,
+   Button, Divider, FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormHelperText } from "@mui/material";
@@ -311,10 +313,10 @@ const VehicleForm = () => {
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
+                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* N° Económico */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="stock_number"
                               name="stock_number"
@@ -338,7 +340,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Marca */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <Select2Component
                               idName={"brand_id"}
                               label={"Marca *"}
@@ -357,7 +359,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Modelo */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <Select2Component
                               idName={"model_id"}
                               label={"Modelo *"}
@@ -374,7 +376,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Año */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="year"
                               name="year"
@@ -403,7 +405,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Fecha de Registro */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <DatePickerComponent
                               idName={"registration_date"}
                               label={"Fecha de Registro *"}
@@ -418,7 +420,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Estatus */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <Select2Component
                               idName={"vehicle_status_id"}
                               label={"Estatus del Vehículo *"}
@@ -442,7 +444,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Descripcion */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <TextField
                               id="description"
                               name="description"
@@ -464,7 +466,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Tipos de Licencia Aceptables */}
-                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                            <Tooltip title="Tipos de licencia que pueden manejar ésta unidad. Si es más de un tipo, separar por coma; Ej. A,C...">
                               <TextField
                                  id="acceptable_license_type"
@@ -485,7 +487,7 @@ const VehicleForm = () => {
                         </Grid>
 
                         {/* Imagen PREVIEW del vehículo */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_preview"
                               label="Foto PREVIEW del vehículo"
@@ -498,7 +500,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Imagen L. DERECHO del vehículo */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_right"
                               label="Foto L. DERECHO del vehículo"
@@ -511,7 +513,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Imagen TRASERA del vehículo */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_back"
                               label="Foto TRASERA del vehículo"
@@ -524,7 +526,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Imagen L. IZQUIERDO del vehículo */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_left"
                               label="Foto L. IZQUIERDO del vehículo"
@@ -537,7 +539,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Imagen FRONTAL del vehículo */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_front"
                               label="Foto FRONTAL del vehículo"
@@ -551,12 +553,12 @@ const VehicleForm = () => {
                         </Grid>
 
                         {/* Separador */}
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                         </Grid>
 
                         {/* Número de Serie */}
-                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                            <TextField
                               id="serial_number"
                               name="serial_number"
@@ -576,7 +578,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Switch para replaquear */}
-                        <Grid xs={12} md={12} sx={{ mb: 0 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 0 }}>
                            <FormControlLabel
                               control={<Switch />}
                               label="Evidencia de Número de Serie Visible en la Unidad?"
@@ -586,7 +588,7 @@ const VehicleForm = () => {
                         </Grid>
                         {/* Evidencia de Número de Serie */}
                         {visibleSerialNumber && (
-                           <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                               <InputFileComponent
                                  idName="img_serial_number"
                                  label="Evidencia del Número de Serie"
@@ -602,12 +604,12 @@ const VehicleForm = () => {
                         )}
 
                         {/* Separador */}
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                         </Grid>
 
                         {/* N° Tarjeta de Circulación */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <TextField
                               id="circulation_card"
                               name="circulation_card"
@@ -627,7 +629,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Tarjeta de Circulación */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_circulation_card"
                               label="Tarjeta de circulación"
@@ -642,12 +644,12 @@ const VehicleForm = () => {
                         </Grid>
 
                         {/* Separador */}
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                         </Grid>
 
                         {/* N° Póliza de Seguro */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <TextField
                               id="insurance_policy"
                               name="insurance_policy"
@@ -667,7 +669,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Poliza de Seguro */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="img_insurance_policy"
                               label="Póliza de Seguro"
@@ -682,18 +684,18 @@ const VehicleForm = () => {
                         </Grid>
 
                         {/* Separador */}
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                         </Grid>
 
                         {/* Switch para replaquear */}
                         {formData.id > 0 && (
-                           <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                               <FormControlLabel control={<Switch />} label="Replaquear" checked={changePlates} onChange={() => setChangePlates(!changePlates)} />
                            </Grid>
                         )}
                         {/* Placas */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="plates"
                               name="plates"
@@ -713,7 +715,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Código de Gasolina */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="gasoline_code"
                               name="gasoline_code"
@@ -733,7 +735,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Fecha de Plaqueo */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <DatePickerComponent
                               idName={"initial_date"}
                               label={"Fecha de Plaqueo *"}
@@ -748,7 +750,7 @@ const VehicleForm = () => {
                            />
                         </Grid>
                         {/* Fecha Expiracion de Placas */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <DatePickerComponent
                               idName={"due_date"}
                               label={"Fecha Expiración de Placas *"}

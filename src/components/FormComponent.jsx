@@ -1,13 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
-   Autocomplete,
-   Backdrop,
+   Grid,
    Button,
-   CircularProgress,
-   Divider,
    FormControlLabel,
    FormLabel,
    InputLabel,
@@ -30,7 +27,6 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useGlobalContext } from "../../context/GlobalContext";
-import Select2 from "react-select";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -168,7 +164,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Codigo */}
-                     <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                         <TextField
                            id="code"
                            name="code"
@@ -186,7 +182,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         />
                      </Grid>
                      {/* Nivel */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth>
                            {/* <Autocomplete
                               disablePortal
@@ -263,7 +259,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         </FormControl>
                      </Grid>
                      {/* Escuela */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
                            id="school"
                            name="school"
@@ -279,7 +275,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         />
                      </Grid>
                      {/* Ciduad */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth>
                            <InputLabel id="city_id-label">Ciudad *</InputLabel>
                            <Select
@@ -311,7 +307,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         </FormControl>
                      </Grid>
                      {/* Colonia */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth>
                            <InputLabel id="colony_id-label">Colonia *</InputLabel>
                            <Select
@@ -374,7 +370,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                   </FormControl> */}
                      </Grid>
                      {/* Direccion */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                         <TextField
                            id="street"
                            name="street"
@@ -390,7 +386,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         />
                      </Grid>
                      {/* Telefono */}
-                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                         <TextField
                            id="phone"
                            name="phone"
@@ -407,7 +403,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         />
                      </Grid>
                      {/* Director */}
-                     <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                         {/* <ReactInputMask mask={"(999)-999-99-99"} value={values.director} disabled={false} maskChar=" "> */}
                         <TextField
                            id="director"
@@ -424,7 +420,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         />
                      </Grid>
                      {/* Local o Foraneo */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth sx={{ alignItems: "center" }}>
                            <FormLabel id="loc_for-label">Ubicacion de escuela</FormLabel>
                            <RadioGroup
@@ -447,7 +443,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         </FormControl>
                      </Grid>
                      {/* Zona */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                         <FormControl fullWidth sx={{ alignItems: "center" }}>
                            <FormLabel id="zone-label">Zona</FormLabel>
                            <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>

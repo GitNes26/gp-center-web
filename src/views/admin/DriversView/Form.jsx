@@ -1,8 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import {
+   Grid,
+    Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -20,10 +22,7 @@ import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import DatePickerComponent from "../../../components/Form/DatePickerComponent";
-import { useDepartmentContext } from "../../../context/DepartmentContext";
 import { useDirectorContext } from "../../../context/DirectorContext";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 import axios from "axios";
@@ -336,9 +335,10 @@ const DriverForm = () => {
             <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
+                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Foto de Perfil */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="avatar"
                            label="Foto de Perfil"
@@ -353,7 +353,7 @@ const DriverForm = () => {
                      {/* Rol */}
                      {/* <Field id="role_id" name="role_id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
                      {/* Nombre de Usuario */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
                            id="username"
                            name="username"
@@ -371,7 +371,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Correo Electronico */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <TextField
                            id="email"
                            name="email"
@@ -392,7 +392,7 @@ const DriverForm = () => {
 
                      {/* Switch para mostrar el cambiar contraseña */}
                      {checkedShowSwitchPassword && (
-                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                            <FormControlLabel
                               control={<Switch />}
                               label="Cambiar Contraseña"
@@ -402,7 +402,7 @@ const DriverForm = () => {
                         </Grid>
                      )}
                      {/* Contraseña */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                            <InputLabel htmlFor="password">Contraseña *</InputLabel>
                            <OutlinedInput
@@ -468,7 +468,7 @@ const DriverForm = () => {
                      </Grid>
 
                      {/* Telefono */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <TextField
                            id="phone"
                            name="phone"
@@ -485,7 +485,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Numero de Licencia */}
-                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                         <TextField
                            id="license_number"
                            name="license_number"
@@ -502,7 +502,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Tipo de Licencia */}
-                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                         <TextField
                            id="license_type"
                            name="license_type"
@@ -520,7 +520,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Fecha de Vencimiento */}
-                     <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                         <DatePickerComponent
                            idName={"license_due_date"}
                            label={"Fecha de Vencimiento *"}
@@ -536,7 +536,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Foto Licencia de Conducir */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                         <InputFileComponent
                            idName="img_license"
                            label="Foto Licencia de Conducir *"
@@ -549,7 +549,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Divisor */}
-                     <Grid xs={12}>
+                     <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
                      {/* Número de Nómina */}
@@ -561,7 +561,7 @@ const DriverForm = () => {
                         onChange={handleChange}
                         onBlur={handleBlur}
                      />
-                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                         <TextField
                            id="payroll_number"
                            name="payroll_number"
@@ -582,7 +582,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Departameto */}
-                     <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                         <TextField
                            id="department"
                            name="department"
@@ -620,12 +620,12 @@ const DriverForm = () => {
                         /> */}
                      </Grid>
                      {/* Divisor */}
-                     {/* <Grid xs={12}>
+                     {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid> */}
 
                      {/* Nombre */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
                            id="name"
                            name="name"
@@ -644,7 +644,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Apellido Paterno */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
                            id="paternal_last_name"
                            name="paternal_last_name"
@@ -663,7 +663,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Apellido Materno */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
                            id="maternal_last_name"
                            name="maternal_last_name"
@@ -682,7 +682,7 @@ const DriverForm = () => {
                         />
                      </Grid>
                      {/* Divisor */}
-                     {/* <Grid xs={12}>
+                     {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 
@@ -697,6 +697,7 @@ const DriverForm = () => {
                         errors={errors}
                         touched={touched}
                      /> */}
+                     </Grid>
 
                      <LoadingButton
                         type="submit"

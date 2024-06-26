@@ -1,8 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,
+   Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -308,7 +310,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Rol */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <Select2Component
                            idName={"role_id"}
                            label={"Rol *"}
@@ -332,7 +334,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         />
                      </Grid>
                      {/* Nombre de Usuario */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
                            id="username"
                            name="username"
@@ -351,7 +353,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         />
                      </Grid>
                      {/* Correo Electronico */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <TextField
                            id="email"
                            name="email"
@@ -372,7 +374,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
 
                      {/* Switch para mostrar el cambiar contraseña */}
                      {checkedShowSwitchPassword && (
-                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                            <FormControlLabel
                               control={<Switch />}
                               label="Cambiar Contraseña"
@@ -382,7 +384,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                         </Grid>
                      )}
                      {/* Contraseña */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                            <InputLabel htmlFor="password">Contraseña *</InputLabel>
                            <OutlinedInput
@@ -450,7 +452,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                      {!isAdmin && (
                         <>
                            {/* Telefono */}
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                               <TextField
                                  id="phone"
                                  name="phone"
@@ -471,7 +473,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                      {!isAdmin && !isGarage && (
                         <>
                            {/* Numero de Licencia */}
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                               <TextField
                                  id="license_number"
                                  name="license_number"
@@ -488,7 +490,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
                            {/* Fecha de Vencimiento */}
-                           <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                           <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                               <DatePickerComponent
                                  idName={"license_due_date"}
                                  label={"Fecha de Vencimiento *"}
@@ -504,11 +506,11 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
                            {/* Divisor */}
-                           <Grid xs={12}>
+                           <Grid item xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
                            {/* Número de Nómina */}
-                           <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                               <TextField
                                  id="payroll_number"
                                  name="payroll_number"
@@ -525,7 +527,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
                            {/* Departameto */}
-                           <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                               <Select2Component
                                  idName={"department_id"}
                                  label={"Departameto *"}
@@ -549,7 +551,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
                            {/* Divisor */}
-                           <Grid xs={12}>
+                           <Grid item xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
                         </>
@@ -558,7 +560,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                      {!isAdmin && (
                         <>
                            {/* Nombre */}
-                           <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                               <TextField
                                  id="name"
                                  name="name"
@@ -577,7 +579,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
                            {/* Apellido Paterno */}
-                           <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                               <TextField
                                  id="paternal_last_name"
                                  name="paternal_last_name"
@@ -596,7 +598,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                               />
                            </Grid>
                            {/* Apellido Materno */}
-                           <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                           <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                               <TextField
                                  id="maternal_last_name"
                                  name="maternal_last_name"
@@ -620,7 +622,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
                      {!isAdmin && !isGarage && (
                         <>
                            {/* Divisor */}
-                           <Grid xs={12}>
+                           <Grid item xs={12}>
                               <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                            </Grid>
 

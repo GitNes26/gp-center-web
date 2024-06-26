@@ -1,7 +1,7 @@
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid,CircularProgress, TextField } from "@mui/material";
 import { Field } from "formik";
 import Toast from "../../utils/Toast";
-import { CircularProgress, TextField } from "@mui/material";
 import { handleInputFormik } from "../../utils/Formats";
 import { useEffect } from "react";
 import axios from "axios";
@@ -278,7 +278,7 @@ const InputsCommunityComponent = ({
          {/* Comunidad */}
          <Grid container spacing={2} xs={12} sx={{ p: 1 }}>
             {/* C.P. */}
-            <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
                <TextField
                   id="zip"
                   name="zip"
@@ -301,7 +301,7 @@ const InputsCommunityComponent = ({
                {showLoading && <CircularProgress disableShrink sx={{ position: "relative", right: "-65%", top: "-52px", mt: 0.75, zIndex: 10 }} />}
             </Grid>
             {/* Estado */}
-            <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
                <Select2Component
                   idName={"state"}
                   label={"Estado *"}
@@ -338,7 +338,7 @@ const InputsCommunityComponent = ({
             </Grid>
 
             {/* Ciduad */}
-            <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
                <Select2Component
                   idName={"city"}
                   label={"Ciudad *"}
@@ -375,7 +375,7 @@ const InputsCommunityComponent = ({
             </Grid>
             {/* Colonia */}
             {!registerCommunity && (
-               <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
+               <Grid item xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
                   <Select2Component
                      idName={"colony"}
                      label={"Colonia *"}
@@ -395,7 +395,7 @@ const InputsCommunityComponent = ({
          </Grid>
          {/* Calle */}
          {!registerCommunity && (
-            <Grid xs={12} md={8} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={8} sx={{ mb: 2 }}>
                <TextField
                   id="street"
                   name="street"
@@ -415,7 +415,7 @@ const InputsCommunityComponent = ({
          )}
          {/* No. Ext. */}
          {!registerCommunity && (
-            <Grid xs={12} md={2} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={2} sx={{ mb: 2 }}>
                <TextField
                   id="num_ext"
                   name="num_ext"
@@ -435,7 +435,7 @@ const InputsCommunityComponent = ({
          )}
          {/* No. Int. */}
          {!registerCommunity && (
-            <Grid xs={12} md={2} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={2} sx={{ mb: 2 }}>
                <TextField
                   id="num_int"
                   name="num_int"

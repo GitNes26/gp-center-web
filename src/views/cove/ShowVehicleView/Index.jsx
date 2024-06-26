@@ -3,17 +3,17 @@ import Paper from "@mui/material/Paper";
 
 import MainCard from "../../../ui-component/cards/MainCard";
 
-import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { Axios, useAuthContext } from "../../../context/AuthContext";
+import { useAuthContext } from "../../../context/AuthContext";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useVehicleContext } from "../../../context/VehicleContext";
-import { Avatar, Button, Card, CardContent, Chip, Grow, List, ListItem, ListItemIcon, OutlinedInput, Tooltip, Typography } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import {
+   Grid,
+    Avatar, Button, Card, CardContent, Chip, Grow, List, ListItem, ListItemIcon, OutlinedInput, Tooltip, Typography } from "@mui/material";
 
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_ADMIN, ROLE_DIRECTOR, ROLE_DRIVER, useGlobalContext } from "../../../context/GlobalContext";
+import { useGlobalContext } from "../../../context/GlobalContext";
 // import bgGarage from "../../assets/images/bg-primary.jpg";
 // import bgPrimary from "../../assets/images/fondo menú.jpg";
 // import bgPlatform from "../../../assets/images/bg-auto.jpg";
@@ -23,7 +23,7 @@ import { drawerWidth } from "../../../config/store/constant";
 import { Icon123, IconAB2, IconCalendarStats, IconCandle, IconNotebook } from "@tabler/icons";
 import { shouldForwardProp } from "@mui/system";
 import { useTheme } from "@emotion/react";
-import { formatDatetime, formatDatetimeToSQL, handleInputStringCase } from "../../../utils/Formats";
+import { formatDatetime, handleInputStringCase } from "../../../utils/Formats";
 import SearchInput from "../../../components/SearchInput";
 import PlatesRegisters from "./PlatesRegisters";
 import HistoryRegister from "./HIstoryRegister";
@@ -235,7 +235,7 @@ const ShowVehicleView = () => {
          >
             <Grid container spacing={2}>
                {/* PRIMER COLUMNA */}
-               <Grid xs={12} md={3} sx={{ mb: 0 }}>
+               <Grid item xs={12} md={3} sx={{ mb: 0 }}>
                   <SearchInput
                      idName={"search"}
                      search={search}
@@ -263,10 +263,10 @@ const ShowVehicleView = () => {
                         }}
                      > */}
                   <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
-                     <Grid xs={12} md={12} spacing={2} sx={{ mb: 0, pb: 0, height: "66vh", overflowY: "auto", scrollbarWidth: "none" }}>
+                     <Grid item xs={12} md={12} spacing={2} sx={{ mb: 0, pb: 0, height: "66vh", overflowY: "auto", scrollbarWidth: "none" }}>
                         {/* <Grid container spacing={3}> */}
                         {auth.permissions.more_permissions.includes("2@Solicitar Servicio") && (
-                           <Grid xs alignItems={"center"}>
+                           <Grid item xs alignItems={"center"}>
                               <Tooltip title={"Dar Servicio a este vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
                                     <IconBtnService onClick={() => setOpenService(true)} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
@@ -275,7 +275,7 @@ const ShowVehicleView = () => {
                            </Grid>
                         )}
                         {auth.permissions.more_permissions.includes("2@Asignar Vehículo") && (
-                           <Grid xs alignItems={"center"}>
+                           <Grid item xs alignItems={"center"}>
                               <Tooltip title={"Asignar vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
                                     <IconBtnAssign onClick={handleClickAssign} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
@@ -284,7 +284,7 @@ const ShowVehicleView = () => {
                            </Grid>
                         )}
                         {auth.permissions.more_permissions.includes("2@Prestar Vehículo") && (
-                           <Grid xs alignItems={"center"}>
+                           <Grid item xs alignItems={"center"}>
                               <Tooltip title={"Prestar vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
                                     <IconBtnLoan onClick={handleClickLoan} width={sizeBtns} height={sizeBtns} className={"btn-action"} />
@@ -292,7 +292,7 @@ const ShowVehicleView = () => {
                               </Tooltip>
                            </Grid>
                         )}
-                        <Grid xs alignItems={"center"}>
+                        <Grid item xs alignItems={"center"}>
                            {auth.permissions.more_permissions.includes("2@Devolver Vehículo") && (
                               <Tooltip title={"Devolver Vehículo"} placement="right" arrow>
                                  <Button
@@ -338,7 +338,7 @@ const ShowVehicleView = () => {
                {/* COLUMNA CENTRAL */}
                {vehicle && (
                   <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <Card sx={{ backgroundColor: "transparent" }}>
                            <CardContent sx={{ color: "whitesmoke", textAlign: "center" }}>
                               <Typography variant={"h1"} sx={{ color: "whitesmoke" }}>
@@ -385,8 +385,8 @@ const ShowVehicleView = () => {
                {/* TERCER COLUMNA */}
                {vehicle && (
                   <Grow in={growOn} style={{ transformOrigin: "0 0 0" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
-                     <Grid xs={12} md={3} sx={{ mb: 2 }}>
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={3} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <Card>
                               <List>
                                  <ComponentItem title="No. Económico" icon={<Icon123 />} text={vehicle.stock_number} />
@@ -395,17 +395,17 @@ const ShowVehicleView = () => {
                               </List>
                            </Card>
                         </Grid>
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <Button variant="contained" fullWidth onClick={() => handleClickViewPlates()} sx={{ mb: 1 }}>
                               <Icon123 sx={{ mr: 1 }} /> VER PLAQUEOS
                            </Button>
                         </Grid>
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <Button variant="contained" fullWidth onClick={() => handleClickViewHistory()} sx={{ mb: 1 }}>
                               <IconNotebook sx={{ mr: 1 }} /> VER HISTORIAL
                            </Button>
                         </Grid>
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <Card>
                               <ComponentItem
                                  title="Asignado a"

@@ -3,7 +3,7 @@ const InputPasswordCompnent = ({ idNamne }) => {
       <>
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid xs={12} md={12} sx={{ mb: -2 }}>
+            <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                <FormControlLabel
                   control={<Switch />}
                   label="Cambiar Contraseña"
@@ -13,7 +13,7 @@ const InputPasswordCompnent = ({ idNamne }) => {
             </Grid>
          )}
          {/* Contraseña */}
-         <Grid xs={12} md={6} sx={{ mb: 2 }}>
+         <Grid item xs={12} md={6} sx={{ mb: 2 }}>
             <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                <InputLabel htmlFor="password">Contraseña *</InputLabel>
                <OutlinedInput

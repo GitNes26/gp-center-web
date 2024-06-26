@@ -1,8 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import {
+   Grid,
+    Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormHelperText } from "@mui/material";
@@ -160,7 +162,7 @@ const DepartmentForm = () => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Departamento */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
                            id="department"
                            name="department"
@@ -181,7 +183,7 @@ const DepartmentForm = () => {
                         />
                      </Grid>
                      {/* Descripcion */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
                            id="description"
                            name="description"

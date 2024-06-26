@@ -1,8 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,
+   Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -20,10 +22,6 @@ import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import DatePickerComponent from "../../../components/Form/DatePickerComponent";
-import { useDepartmentContext } from "../../../context/DepartmentContext";
 import axios from "axios";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 import { validateImageRequired } from "../../../utils/Validations";
@@ -315,10 +313,10 @@ const VoucherRequesterForm = () => {
             <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, setSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
+                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* Foto de Perfil */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
                               idName="avatar"
                               label="Foto de Perfil"
@@ -333,7 +331,7 @@ const VoucherRequesterForm = () => {
                         {/* Rol */}
                         {/* <Field id="role_id" name="role_id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
                         {/* Nombre de Usuario */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="username"
                               name="username"
@@ -351,7 +349,7 @@ const VoucherRequesterForm = () => {
                            />
                         </Grid>
                         {/* Correo Electronico */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <TextField
                               id="email"
                               name="email"
@@ -372,7 +370,7 @@ const VoucherRequesterForm = () => {
 
                         {/* Switch para mostrar el cambiar contraseña */}
                         {checkedShowSwitchPassword && (
-                           <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                               <FormControlLabel
                                  control={<Switch />}
                                  label="Cambiar Contraseña"
@@ -382,7 +380,7 @@ const VoucherRequesterForm = () => {
                            </Grid>
                         )}
                         {/* Contraseña */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                               <InputLabel htmlFor="password">Contraseña *</InputLabel>
                               <OutlinedInput
@@ -448,7 +446,7 @@ const VoucherRequesterForm = () => {
                         </Grid>
 
                         {/* Telefono */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <TextField
                               id="phone"
                               name="phone"
@@ -465,7 +463,7 @@ const VoucherRequesterForm = () => {
                            />
                         </Grid>
                         {/* Foto Firma */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <small>
                               <i>Con fondo transparente en formato .PNG</i>
                            </small>
@@ -481,7 +479,7 @@ const VoucherRequesterForm = () => {
                            />
                         </Grid>
                         {/* Foto Sello del Departamento */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <small>
                               <i>Con fondo transparente en formato .PNG</i>
                            </small>
@@ -497,7 +495,7 @@ const VoucherRequesterForm = () => {
                            />
                         </Grid>
                         {/* Divisor */}
-                        <Grid xs={12}>
+                        <Grid item xs={12}>
                            <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                         </Grid>
                         {/* Número de Nómina */}
@@ -510,7 +508,7 @@ const VoucherRequesterForm = () => {
                            onBlur={handleBlur}
                         />
 
-                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="payroll_number"
                               name="payroll_number"
@@ -531,7 +529,7 @@ const VoucherRequesterForm = () => {
                            />
                         </Grid>
                         {/* Departameto */}
-                        <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                            <TextField
                               id="department"
                               name="department"
@@ -569,12 +567,12 @@ const VoucherRequesterForm = () => {
                         /> */}
                         </Grid>
                         {/* Divisor */}
-                        {/* <Grid xs={12}>
+                        {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid> */}
 
                         {/* Nombre */}
-                        <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <TextField
                               id="name"
                               name="name"
@@ -593,7 +591,7 @@ const VoucherRequesterForm = () => {
                            />
                         </Grid>
                         {/* Apellido Paterno */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="paternal_last_name"
                               name="paternal_last_name"
@@ -612,7 +610,7 @@ const VoucherRequesterForm = () => {
                            />
                         </Grid>
                         {/* Apellido Materno */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="maternal_last_name"
                               name="maternal_last_name"
@@ -633,7 +631,7 @@ const VoucherRequesterForm = () => {
                      </Grid>
 
                      {/* Divisor */}
-                     {/* <Grid xs={12}>
+                     {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 

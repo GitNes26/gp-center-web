@@ -5,13 +5,12 @@ import { useSelector } from "react-redux";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
+   Grid,
    Avatar,
    Box,
    Button,
-   ButtonGroup,
-   Card,
-   CardContent,
    Chip,
    ClickAwayListener,
    Dialog,
@@ -33,23 +32,17 @@ import {
    Popper,
    Slide,
    Stack,
-   Switch,
-   TextField,
    Typography
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 // third-party
-import PerfectScrollbar from "react-perfect-scrollbar";
 
 // project imports
 import MainCard from "../../../../ui-component/cards/MainCard";
 import Transitions from "../../../../ui-component/extended/Transitions";
-import UpgradePlanCard from "./UpgradePlanCard";
-import User1 from "../../../../assets/others/users/user-round.svg";
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconSquareAsterisk, IconUser } from "@tabler/icons";
+import { IconLogout, IconSettings, IconSquareAsterisk } from "@tabler/icons";
 // import { useAuthContext } from "../../../../context/AuthContextFirebase";
 import { useAuthContext } from "../../../../context/AuthContext";
 import Toast from "../../../../utils/Toast";
@@ -58,7 +51,7 @@ import * as Yup from "yup";
 import { strengthColor, strengthIndicator } from "../../../../utils/password-strength";
 import { useGlobalContext } from "../../../../context/GlobalContext";
 import { LoadingButton } from "@mui/lab";
-import { Title, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 // import { logout } from "../../../../config/firebase";
 
 // ==============================|| PROFILE MENU ||============================== //
@@ -501,7 +494,7 @@ const ProfileSection = () => {
                   <DialogContent sx={{ pb: 0, height: 250 }}>
                      <Grid container spacing={2}>
                         {/* Contraseña */}
-                        <Grid xs={12} sx={{ mt: 2, mb: 2 }}>
+                        <Grid item xs={12} sx={{ mt: 2, mb: 2 }}>
                            <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                               <InputLabel htmlFor="password">Contraseña Actual *</InputLabel>
                               <OutlinedInput
@@ -566,7 +559,7 @@ const ProfileSection = () => {
                            )}
                         </Grid>
                         {/* Nueva Contraseña */}
-                        <Grid xs={12} sx={{ mb: 1 }}>
+                        <Grid item xs={12} sx={{ mb: 1 }}>
                            <FormControl fullWidth error={Boolean(touched.new_password && errors.new_password)}>
                               <InputLabel htmlFor="new_password">Nueva Contraseña *</InputLabel>
                               <OutlinedInput

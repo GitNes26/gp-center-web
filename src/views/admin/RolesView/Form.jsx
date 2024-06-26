@@ -1,24 +1,20 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Card, FormControlLabel, FormLabel, InputLabel, Radio, RadioGroup, Select, Switch, TextField, Tooltip, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import {
+   Grid,
+   Button, Card, FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useRoleContext } from "../../../context/RoleContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import { handleInputFormik } from "../../../utils/Formats";
 import SwitchComponent from "../../../components/SwitchComponent";
-import { Label } from "@mui/icons-material";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -135,7 +131,7 @@ const RoleForm = () => {
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
 
                         {/* Rol */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="role"
                               name="role"
@@ -152,7 +148,7 @@ const RoleForm = () => {
                            />
                         </Grid>
                         {/* Descripción */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="description"
                               name="description"
@@ -170,7 +166,7 @@ const RoleForm = () => {
                         </Grid>
 
                         {/* Página Principal */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="page_index"
                               name="page_index"
@@ -188,7 +184,7 @@ const RoleForm = () => {
                         </Grid>
 
                         {/* Activar */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
                               <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
                                  <SwitchComponent checked={Boolean(values.active)} label={"¿Rol Activo?"} />

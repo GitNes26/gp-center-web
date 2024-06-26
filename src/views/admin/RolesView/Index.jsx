@@ -1,19 +1,16 @@
 import RoleForm from "./Form";
 import RoleDT from "./DataTable";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../../context/AuthContext";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import { useEffect, useState } from "react";
 import { useRoleContext } from "../../../context/RoleContext";
-import { Alert, AlertTitle, SwipeableDrawer, Typography } from "@mui/material";
+import { 
+   Grid,
+   SwipeableDrawer, Typography } from "@mui/material";
 
-import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
 import FormSelect from "./FormSelect";
 import { Box } from "@mui/system";
 import { makeStyles } from "@mui/styles";
@@ -71,10 +68,10 @@ const RolesView = () => {
          </Typography>
          {/* </MainCard> */}
          <Grid container spacing={2}>
-            <Grid xs={12} md={12} sx={{ mb: 3 }}>
+            <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                <FormSelect setOpenDialogTable={setOpenDialogTable} setLoadPermissions={setLoadPermissions} />
             </Grid>
-            <Grid xs={12} md={12} sx={{ mb: 3 }}>
+            <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                <MenusCards key={"MenusCards"} loadPermissions={loadPermissions} />
             </Grid>
          </Grid>

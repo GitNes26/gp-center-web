@@ -7,6 +7,7 @@ import { Button as Btn } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
+// import { IconField } from 'primereact/iconfield';
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
@@ -104,7 +105,9 @@ export default function DataTableComponent({
    showGridlines = false,
    btnDeleteMultiple = false,
    handleClickDeleteMultipleContinue,
-   scrollHeight = "67vh"
+   scrollHeight = "67vh",
+   exportPDFFunction = null,
+   exportExcelFunction = null
 }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
@@ -120,6 +123,7 @@ export default function DataTableComponent({
    const [filters, setFilters] = useState(filtersColumns);
    const [loading, setLoading] = useState(false);
    const [globalFilterValue, setGlobalFilterValue] = useState("");
+
    // FILTROS
 
    const getSeverity = (value) => {
@@ -228,6 +232,7 @@ export default function DataTableComponent({
    };
 
    const exportPdf = async () => {
+      if (exportPDFFunction) return exportPDFFunction(data);
       import("jspdf").then((jsPDF) => {
          import("jspdf-autotable").then(() => {
             const doc = new jsPDF.default(0, 0);
@@ -275,6 +280,26 @@ export default function DataTableComponent({
    };
    //#endregion EXPORTAR
 
+   // const onGlobalFilterChange = (e) => {
+   //    const value = e.target.value;
+   //    let _filters = { ...filters };
+
+   //    _filters["global"].value = value;
+
+   //    setFilters(_filters);
+   //    setGlobalFilterValue(value);
+   // };
+
+   // const renderHeader = () => {
+   //    return (
+   //       <div className="flex justify-content-end">
+   //          <IconField iconPosition="left">
+   //             <InputIcon className="pi pi-search" />
+   //             <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+   //          </IconField>
+   //       </div>
+   //    );
+   // };
    const onGlobalFilterChange = (e) => {
       try {
          let value = e.target.value;
@@ -291,6 +316,7 @@ export default function DataTableComponent({
          Toast.Error(error);
       }
    };
+   // const header = renderHeader();
 
    const handleClickRefresh = async () => {
       try {
@@ -323,6 +349,12 @@ export default function DataTableComponent({
       setSelectedData([]);
    };
 
+         // <div className="flex justify-content-end">
+         //    {/* <IconField iconPosition="left"> */}
+         //    <InputIcon className="pi pi-search" />
+         //    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+         //    {/* </IconField> */}
+         // </div>
    const header = (
       <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between", alignItems: "center" }}>
          {btnDeleteMultiple && (

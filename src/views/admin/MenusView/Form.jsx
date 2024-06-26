@@ -1,13 +1,14 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Card, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Tooltip, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,
+   Button, Card, FormControlLabel, FormLabel, Radio, RadioGroup, TextField, Tooltip, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useMenuContext } from "../../../context/MenuContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
@@ -15,10 +16,8 @@ import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
 import SwitchComponent from "../../../components/SwitchComponent";
-import { Label } from "@mui/icons-material";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -155,7 +154,7 @@ const MenuForm = () => {
    return (
       // <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
       <Card>
-         <Box role="presentation" p={3} pt={5} className="form" sx={{ maxHeight: "77.2vh", overflowY: "auto" }}>
+         <Box role="presentation" p={3} pt={5} className="form" sx={{ maxHeight: "77.3vh", overflowY: "auto" }}>
             <Typography variant="h2" mb={3} textAlign={"center"}>
                {formTitle}
                {/* <FormControlLabel
@@ -167,9 +166,10 @@ const MenuForm = () => {
             <Formik initialValues={formData} validationSchema={validationSchemas} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
+                  <Grid container spacing={2} p={1} width={"100%"} maxHeight={"58vh"} overflow={"auto"}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Padre o Hijo */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                         <FormControl fullWidth sx={{ alignItems: "center" }}>
                            <FormLabel id="type-label">Tipo de Menú</FormLabel>
                            <RadioGroup
@@ -195,7 +195,7 @@ const MenuForm = () => {
                         </FormControl>
                      </Grid>
                      {/* Menú */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
                            id="menu"
                            name="menu"
@@ -213,7 +213,7 @@ const MenuForm = () => {
                      </Grid>
                      {/* Leyenda */}
                      {values.type === "group" && (
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="caption"
                               name="caption"
@@ -233,7 +233,7 @@ const MenuForm = () => {
                      {values.type === "item" && (
                         <>
                            {/* Pertence a */}
-                           <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                               <Select2Component
                                  idName={"belongs_to"}
                                  label={"Pertenezco a *"}
@@ -252,7 +252,7 @@ const MenuForm = () => {
                               />
                            </Grid>
                            {/* URL */}
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                               <TextField
                                  id="url"
                                  name="url"
@@ -269,7 +269,7 @@ const MenuForm = () => {
                               />
                            </Grid>
                            {/* Icono */}
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                               <TextField
                                  id="icon"
                                  name="icon"
@@ -291,7 +291,7 @@ const MenuForm = () => {
                               </small>
                            </Grid>
                            {/* Otros Permisos */}
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                               <TextField
                                  id="others_permissions"
                                  name="others_permissions"
@@ -316,7 +316,7 @@ const MenuForm = () => {
                      )}
 
                      {/* Orden */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
                            id="order"
                            name="order"
@@ -334,7 +334,7 @@ const MenuForm = () => {
                      </Grid>
                      {/* Mostrar contador */}
                      {values.type === "item" && (
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
                               <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
                                  <SwitchComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
@@ -344,7 +344,7 @@ const MenuForm = () => {
                      )}
                      {/* Nombre del Contador */}
                      {values.type === "item" && (
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="counter_name"
                               name="counter_name"
@@ -362,13 +362,15 @@ const MenuForm = () => {
                         </Grid>
                      )}
                      {/* Activar */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                         <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
                            <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
                               <SwitchComponent checked={Boolean(values.active)} label={"¿Menú Activo?"} />
                            </Button>
                         </Tooltip>
-                     </Grid>
+                        </Grid>
+                        </Grid>
+
                      <LoadingButton
                         type="submit"
                         disabled={isSubmitting}

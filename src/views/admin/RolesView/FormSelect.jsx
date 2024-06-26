@@ -1,13 +1,15 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
-import { Button, ButtonGroup } from "@mui/material";
+import { 
+   Grid,
+   Button, ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
@@ -261,27 +263,27 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          <Formik initialValues={roleSelect} validationSchema={validationSchema} onSubmit={onSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                  <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                  <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
                      <Button type="reset" variant="outlined" color="secondary" size="large" sx={{ mt: 1 }} fullWidth onClick={() => handleClickShowTable()}>
                         VER TODOS
                      </Button>
                   </Grid>
                   {auth.permissions.update && (
-                     <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                     <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
                         <Button type="button" variant="outlined" color="info" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleClickEdit(values.id)}>
                            EDITAR
                         </Button>
                      </Grid>
                   )}
                   {auth.permissions.create && (
-                     <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                     <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
                         <Button type="button" variant="outlined" color="success" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleClickAdd(values.id)}>
                            AGREGAR
                         </Button>
                      </Grid>
                   )}
 
-                  <Grid xs={12} sm={4} sx={{ mb: 1 }}>
+                  <Grid item xs={12} sm={4} sx={{ mb: 1 }}>
                      <Select2Component
                         idName={"id"}
                         label={"Rol *"}
@@ -305,7 +307,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
                      />
                   </Grid>
                   {auth.permissions.update && (
-                     <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+                     <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
                         <LoadingButton
                            type="submit"
                            disabled={isSubmitting}

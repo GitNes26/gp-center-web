@@ -1,7 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useGlobalContext } from "../../context/GlobalContext";
-import { Box } from "@mui/system";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
+   Grid,
+   Box,
    Button,
    Divider,
    FormControl,
@@ -16,7 +18,6 @@ import {
    TextField,
    Typography
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -24,9 +25,6 @@ import { useRequestBecaContext } from "../../context/RequestBecaContext";
 import { IconInfoCircle } from "@tabler/icons";
 import { useStudentContext } from "../../context/StudentContext";
 import Toast from "../../utils/Toast";
-import { useLoaderData } from "react-router-dom";
-import { CorrectRes, ErrorRes } from "../../utils/Response";
-import { Axios } from "../../context/AuthContext";
 import sAlert from "../../utils/sAlert";
 import IconSended from "../../components/icons/IconSended";
 import Select2Component from "../../components/Form/Select2Component";
@@ -419,7 +417,7 @@ const RequestBecaView = () => {
                               >
                                  <Grid container spacing={2}>
                                     {/* Nombre Tutor */}
-                                    <Grid xs={12} md={9} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={9} sx={{ mb: 3 }}>
                                        <TextField
                                           id="tutor_full_name"
                                           name="tutor_full_name"
@@ -438,7 +436,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Tel Tutor */}
-                                    <Grid xs={12} md={3} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={3} sx={{ mb: 3 }}>
                                        <TextField
                                           id="tutor_phone"
                                           name="tutor_phone"
@@ -472,7 +470,7 @@ const RequestBecaView = () => {
                               >
                                  <Grid container spacing={2}>
                                     {/* CURP */}
-                                    <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                                        <TextField
                                           id="curp"
                                           name="curp"
@@ -496,7 +494,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Nombre del Alumno */}
-                                    <Grid xs={12} md={8} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={8} sx={{ mb: 3 }}>
                                        <TextField
                                           id="name"
                                           name="name"
@@ -514,7 +512,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Apellido Paterno del Alumno */}
-                                    <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                        <TextField
                                           id="paternal_last_name"
                                           name="paternal_last_name"
@@ -532,7 +530,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Apellido Materno del Alumno */}
-                                    <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                        <TextField
                                           id="maternal_last_name"
                                           name="maternal_last_name"
@@ -550,7 +548,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Fecha de Nacimiento */}
-                                    <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                                        <DatePickerComponent
                                           idName={"birthdate"}
                                           label={"Fecha de Nacimiento"}
@@ -563,7 +561,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Genero */}
-                                    <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                                    <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                                        <FormControl fullWidth sx={{ alignItems: "center" }}>
                                           <FormLabel id="gender-label">Género</FormLabel>
                                           <RadioGroup
@@ -582,7 +580,7 @@ const RequestBecaView = () => {
                                        </FormControl>
                                     </Grid>
                                     {/* Discapacidad */}
-                                    <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                                    <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                                        <Select2Component
                                           idName={"disability_id"}
                                           label={"Discapacidad *"}
@@ -605,7 +603,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
 
-                                    <Grid xs={12}>
+                                    <Grid item xs={12}>
                                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                                     </Grid>
 
@@ -650,7 +648,7 @@ const RequestBecaView = () => {
                               >
                                  <Grid container spacing={2}>
                                     {/* Escuela */}
-                                    <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                        <Select2Component
                                           idName={"school_id"}
                                           label={"Escuela *"}
@@ -674,7 +672,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Grado */}
-                                    <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                        <TextField
                                           id="grade"
                                           name="grade"
@@ -692,7 +690,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Promedio */}
-                                    <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                        <TextField
                                           id="average"
                                           name="average"
@@ -710,7 +708,7 @@ const RequestBecaView = () => {
                                        />
                                     </Grid>
                                     {/* Comentarios */}
-                                    <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                    <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                        <TextField
                                           id="comments"
                                           name="comments"

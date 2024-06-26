@@ -1,8 +1,10 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Switch, TextField, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,
+   Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormHelperText } from "@mui/material";
@@ -162,7 +164,7 @@ const VehicleStatusForm = () => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Estatus */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
                            id="vehicle_status"
                            name="vehicle_status"
@@ -183,7 +185,7 @@ const VehicleStatusForm = () => {
                         />
                      </Grid>
                      {/* Color de Fondo */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
                            id="bg_color"
                            name="bg_color"
@@ -204,7 +206,7 @@ const VehicleStatusForm = () => {
                         />
                      </Grid>
                      {/* Color de Letra */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <FormControl fullWidth sx={{ alignItems: "center" }}>
                            <FormLabel id="letter_black-label">Color de Letra</FormLabel>
                            <RadioGroup
@@ -227,7 +229,7 @@ const VehicleStatusForm = () => {
                         </FormControl>
                      </Grid>
                      {/* Descripcion */}
-                     <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                         <TextField
                            id="description"
                            name="description"

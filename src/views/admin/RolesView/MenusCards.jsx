@@ -1,11 +1,12 @@
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Backdrop, Card, CardContent, CardHeader, Checkbox, CircularProgress, FormControlLabel, Typography } from "@mui/material";
-import { Title } from "@mui/icons-material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,
+   Backdrop, Card, Checkbox, CircularProgress, FormControlLabel, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useRoleContext } from "../../../context/RoleContext";
 import { useMenuContext } from "../../../context/MenuContext";
 import { Box } from "@mui/system";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Masonry } from "@mui/lab";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,7 +25,7 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
    // console.log("isChecked", isChecked);
    return (
       <Card sx={{ p: 0 }} className={classes.cardChildren}>
-         <Grid xs={12} sx={{ m: 0 }}>
+         <Grid item xs={12} sx={{ m: 0 }}>
             <FormControlLabel
                value={`${id}@page`}
                id={`${id}@page`}

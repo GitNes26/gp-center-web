@@ -37,12 +37,8 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
          vobo_at: null
       }
    });
-   const [rows, setRows] = useState([]);
-   const [brekPage, setBreakPage] = useState(false);
-   const [table, setTable] = useState();
 
    useEffect(() => {
-      setRows(cutLinesPDF(voucher.activity));
       // console.log("estoy en el modal", voucher);
    }, []);
    useLayoutEffect(() => {
@@ -100,13 +96,6 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    return (
       <ModalPDF open={open} setOpen={setOpen} formTitle={"OFICIO DE VALES"} watermark={"Control Vehícular"} formData={formData}>
          <Text style={stylesPDF.p}>{voucher.activity}</Text>
-         {/* <Image style={stylesPDF.sello} src={formData.imgStamp} /> */}
-
-         {/* {rows.map((row,i) =>{ */}
-         {/* <Text style={stylesPDF.p}> */}
-         {/* {rows.map((row, i) => row + "\n")} */}
-         {/* </Text> */}
-         {/* })} */}
 
          {/* <Text style={stylesPDF.p}>Sin más por el momento me despido de usted quedando a sus órdenes KCpara cualquier duda o aclaración.</Text> */}
       </ModalPDF>

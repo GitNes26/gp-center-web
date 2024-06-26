@@ -1,22 +1,14 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { useEffect } from "react";
 import { Button, ButtonGroup, Chip, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import VoucherContextProvider, { useVoucherContext } from "../../../context/VoucherContext";
+import { useVoucherContext } from "../../../context/VoucherContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_ADMIN_VOUCHER, ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
@@ -25,8 +17,7 @@ import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils/Formats";
 import { IconProgressCheck } from "@tabler/icons-react";
-import { IconBan, IconCheckbox, IconEye, IconFileInvoice, IconTicket } from "@tabler/icons";
-import ModalCancelComments from "./ModalCancelComments";
+import { IconBan, IconCheckbox, IconEye, IconFileInvoice } from "@tabler/icons";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 
 const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setOpenModalCancel, currentStatus }) => {
@@ -448,6 +439,11 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       );
    };
 
+   const exportPDFFunction = (data) => {
+      console.log("🚀 ~ exportPDFFunction ~ data:", data);
+      return {};
+   };
+
    const data = [];
    const formatData = async () => {
       try {
@@ -498,6 +494,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             // EDITAR
             // setData={setVehicles}
             // updateData={updateVehicle}
+            exportPDFFunction={exportPDFFunction}
          />
          {/* <VoucherContextProvider>
          </VoucherContextProvider> */}

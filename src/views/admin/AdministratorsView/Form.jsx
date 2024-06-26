@@ -1,15 +1,17 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { 
+   Grid,Box,
+   Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useState } from "react";
 import { useAdministratorContext } from "../../../context/AdministratorContext";
-import { Box } from "@mui/system";
+
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
@@ -20,8 +22,6 @@ import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
-import Select2Component from "../../../components/Form/Select2Component";
-import { useRoleContext } from "../../../context/RoleContext";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -198,11 +198,11 @@ const AdministratorForm = ({ dataRoles }) => {
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
             <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
+                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} >
+                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"}  overflow={"auto"} >
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* Nombre de Usuario */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
                               id="username"
                               name="username"
@@ -221,7 +221,7 @@ const AdministratorForm = ({ dataRoles }) => {
                            />
                         </Grid>
                         {/* Correo Electronico */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <TextField
                               id="email"
                               name="email"
@@ -242,7 +242,7 @@ const AdministratorForm = ({ dataRoles }) => {
 
                         {/* Switch para mostrar el cambiar contraseña */}
                         {checkedShowSwitchPassword && (
-                           <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                               <FormControlLabel
                                  control={<Switch />}
                                  label="Cambiar Contraseña"
@@ -252,7 +252,7 @@ const AdministratorForm = ({ dataRoles }) => {
                            </Grid>
                         )}
                         {/* Contraseña */}
-                        <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                               <InputLabel htmlFor="password">Contraseña *</InputLabel>
                               <OutlinedInput
