@@ -19,8 +19,11 @@ import { formatDatetime, formatDatetimeToSQL, formatPhone } from "../../../utils
 import { IconProgressCheck } from "@tabler/icons-react";
 import { IconBan, IconCheckbox, IconEye, IconFileInvoice } from "@tabler/icons";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
+import { IconFileTypePdf } from "@tabler/icons-react";
+import { Text, View } from "@react-pdf/renderer";
+import { stylesPDF } from "../../../components/DocumentPDF";
 
-const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setOpenModalCancel, currentStatus }) => {
+const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setOpenModalCancel, setArrayData, currentStatus }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
@@ -44,7 +47,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       seenVoucher,
       updateStatus
    } = useVoucherContext();
-   const { getIndexByVoucher, voucherId, setVoucherId, resetVoucherDetails } = useVoucherDetailContext();
+   const { getIndexByVoucher, voucherId, setVoucherId, resetVoucherDetails, getVouchersDetails } = useVoucherDetailContext();
    const globalFilterFields = [
       "id",
       "internal_folio",
@@ -146,12 +149,12 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
          obj.voucher_status === "CREADO"
             ? "gray"
             : obj.voucher_status === "ALTA"
-            ? "blue"
-            : obj.voucher_status === "VoBo"
-            ? "#50897A"
-            : obj.voucher_status === "APROBADA"
-            ? "green"
-            : "red"; //red CANCELADO
+              ? "blue"
+              : obj.voucher_status === "VoBo"
+                ? "#50897A"
+                : obj.voucher_status === "APROBADA"
+                  ? "green"
+                  : "red"; //red CANCELADO
       return (
          <Box textAlign={"center"}>
             <Chip
@@ -191,7 +194,15 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       // { field: "vehicle", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
       // { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filter: true, filterField: null },
       { field: "created_at", header: "Solicitado", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filter: true, filterField: null },
-      { field: "foliated_vouchers", header: "Vales Foliados", sortable: true, functionEdit: null, body: FoliatedVouchersBodyTemplate, filter: true, filterField: null },
+      {
+         field: "foliated_vouchers",
+         header: "Vales Foliados",
+         sortable: true,
+         functionEdit: null,
+         body: FoliatedVouchersBodyTemplate,
+         filter: true,
+         filterField: null
+      },
       { field: "approved_amount", header: "Aprobados", sortable: true, functionEdit: null, body: AprovedBodyTemplate, filter: false, filterField: null },
       { field: "canceled_amount", header: "Cancelado", sortable: true, functionEdit: null, body: CanceledBodyTemplate, filter: false, filterField: null },
       { field: "viewed_by", header: "Visto", sortable: true, functionEdit: null, body: ViewedBodyTemplate, filter: false, filterField: null },
@@ -277,6 +288,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    const handleClickShow = async (id, obj) => {
       try {
          setInAprobation(false);
+         setArrayData([]);
          if (auth.role_id === ROLE_VOUCHER_SUPERVISOR && obj.viewed_by < 1) {
             // console.log("checar visto");
             const data = {
@@ -439,9 +451,102 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       );
    };
 
-   const exportPDFFunction = (data) => {
-      console.log("🚀 ~ exportPDFFunction ~ data:", data);
-      return {};
+   const toolbarContent = () => {
+      return (
+         <div className="flex flex-wrap gap-2">
+            {/* {(auth.permissions.more_permissions.includes(`Exportar Lista Pública`) || auth.permissions.more_permissions.includes(`todas`)) && ( */}
+            <Button variant="contained" color="error" startIcon={<IconFileTypePdf />} onClick={() => exportPDFFunction(data)} sx={{ mx: 1 }}>
+               Exprotar todas las solicitudes en PDF
+            </Button>
+            {/* )} */}
+         </div>
+      );
+   };
+
+   const exportPDFFunction = async (data) => {
+      try {
+         // console.log("🚀 ~ exportPDFFunction ~ data:", data);
+         setLoadingAction(true);
+         // if (data.length > 1) {
+
+         const arrayFD = [];
+         setArrayData(arrayFD);
+         const axiosVouchersDetails = await getVouchersDetails();
+         const vouchersDetails = axiosVouchersDetails.result.voucherDetails;
+         // console.log("🚀 ~ init ~ vouchersDetails:", vouchersDetails);
+         await data.map((voucher) => {
+            const dataVoucher = {
+               directorFrom: "LIC. MAURICIO GUERRERO FELIX",
+               departmentFrom: "JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
+               directorTo1: "C. ING. RODRIGO DE LA TORRE VALLE",
+               departmentTo1: "OFICIAL MAYOR",
+               directorTo2: "LIC. CARLOS GARCIA GONZALEZ",
+               departmentTo2: "TESORERIA MUNICIPAL",
+               imgStamp: `${import.meta.env.VITE_HOST}/${"GPCenter/vouchersSettings/SELLO-Control-Vehicular-2022-2025.png"}`,
+               imgDateStamp: `${import.meta.env.VITE_HOST}/${"GPCenter/vouchersSettings/SELLO-Control-Vehicular-Recibido-2022-2025.png"}`,
+               voucher: {
+                  folio: "",
+                  internal_folio: "",
+                  date: "--/--/----",
+                  requesterWorkstation: "",
+                  requesterFirm: null,
+                  requesterName: "",
+                  requesterStamp: null,
+                  vobo_at: null,
+                  activity: null,
+                  table: null
+               }
+            };
+            // console.log("🚀 ~ data.map ~ voucher.id:", voucher);
+            const voucherDetails = vouchersDetails.filter((item) => item.voucher_id == voucher.id);
+            // console.log("🚀 ~ data.map ~ voucherDetails:", voucherDetails);
+
+            dataVoucher.voucher.folio = voucher.id;
+            dataVoucher.voucher.internal_folio = voucher.internal_folio;
+            dataVoucher.voucher.date = voucher.created_at;
+            dataVoucher.voucher.requesterWorkstation = voucher.workstation;
+            dataVoucher.voucher.requesterFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
+            dataVoucher.voucher.requesterName = voucher.requested_role_id === 7 ? dataVoucher.directorFrom : voucher.requested_fullname;
+            dataVoucher.voucher.requesterStamp = voucher.img_stamp ? `${import.meta.env.VITE_HOST}/${voucher.img_stamp}` : null;
+            dataVoucher.voucher.vobo_at = voucher.vobo_at;
+            dataVoucher.voucher.activity = <Text style={stylesPDF.p}>{voucher.activity}</Text>;
+            dataVoucher.voucher.table = (
+               <View style={[stylesPDF.table, stylesPDF.center]} wrap={false}>
+                  <View style={stylesPDF.column}>
+                     <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VEHÍCULO</Text>
+                     {voucherDetails.map((vd) => (
+                        <Text style={stylesPDF.cell}>{vd.vehicle}</Text>
+                     ))}
+                  </View>
+                  <View style={stylesPDF.column}>
+                     <Text style={[stylesPDF.cell, stylesPDF.bolder]}>PLACAS</Text>
+                     {voucherDetails.map((vd) => (
+                        <Text style={stylesPDF.cell}>{vd.vehicle_plates}</Text>
+                     ))}
+                  </View>
+                  <View style={stylesPDF.column}>
+                     <Text style={[stylesPDF.cell, stylesPDF.bolder]}>EMPLEADO</Text>
+                     {voucherDetails.map((vd) => (
+                        <Text style={stylesPDF.cell}>{vd.creditor_fullname}</Text>
+                     ))}
+                  </View>
+                  <View style={stylesPDF.column}>
+                     <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>
+                     {voucherDetails.map((vd) => (
+                        <Text style={stylesPDF.cell}>{vd.payroll_number}</Text>
+                     ))}
+                  </View>
+               </View>
+            );
+            arrayFD.push(dataVoucher);
+         });
+         setArrayData(arrayFD);
+         setOpenModalRequest(true);
+      } catch (error) {
+         console.log("🚀 ~ exportPDFFunction ~ error:", error);
+         Toast.Error(error);
+         setOpenModalRequest(false);
+      }
    };
 
    const data = [];
@@ -494,7 +599,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             // EDITAR
             // setData={setVehicles}
             // updateData={updateVehicle}
-            exportPDFFunction={exportPDFFunction}
+            // exportPDFFunction={exportPDFFunction}
+            toolBar={true}
+            toolbarContent={toolbarContent}
          />
          {/* <VoucherContextProvider>
          </VoucherContextProvider> */}

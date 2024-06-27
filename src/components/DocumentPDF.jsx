@@ -20,7 +20,7 @@
  */
 
 // import logo from '../../assets/images/logo-gpd.png';
-import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Font, Image, Page, StyleSheet, Text, View, usePDF } from "@react-pdf/renderer";
 import backgroundImage from "../assets/images/Oficio.jpg";
 import firmademo from "../assets/images/FirmaDemo.png";
 import sinFirma from "../assets/images/sinFirma.png";
@@ -48,7 +48,6 @@ import ProtestRiot from "../assets/fonts/ProtestRiot-Regular.ttf";
 import BarlowRegular from "../assets/fonts/Barlow-Regular.ttf";
 import BarlowMedium from "../assets/fonts/Barlow-Medium.ttf";
 import BarlowBold from "../assets/fonts/Barlow-Bold.ttf";
-import { clamp } from "framer-motion";
 
 //#region FUENTES
 Font.register({
@@ -366,120 +365,125 @@ const formDataInitial = {
       requesterFirm: sinFirma,
       requesterName: "",
       requesterStamp: null,
-      vobo_at: ""
+      vobo_at: "",
+      activity: null,
+      table: null
    }
 };
 
 // Componente que representa el documento OficioPDF
-export const DocumentPDF = ({
-   children,
-   watermark = "Departamento Emisor",
-   table,
-   formData = { formDataInitial },
-   breakFirmContent = false,
-   isOfficialDoc = true
-}) => {
-   return (
+export const DocumentPDF = ({ children, watermark = "Departamento Emisor", arrayFormData = [formDataInitial], isOfficialDoc = true }) => {
+   const DocPDF = (
       <Document>
-         {/* <Page size="A4" style={stylesPDF.body} wrap>
-                
-            </Page> */}
-         <Page size="LETTER" style={[stylesPDF.page]} wrap>
-            {/* <View style={stylesPDF.pageBody}> */}
-            <View style={stylesPDF.viewBgImage} fixed>
-               <Text style={stylesPDF.header} fixed>
-                  ~ {watermark} ~
-               </Text>
-               {isOfficialDoc && <Image style={stylesPDF.bgImage} src={backgroundImage} />}
-            </View>
-            {isOfficialDoc ? (
-               <>
-                  {/* <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
+         {arrayFormData.map((formData, i) => (
+            <Page size="LETTER" style={[stylesPDF.page]} wrap key={i}>
+               {/* <View style={stylesPDF.pageBody}> */}
+               <View style={stylesPDF.viewBgImage} fixed>
+                  <Text style={stylesPDF.header} fixed>
+                     ~ {watermark} ~
+                  </Text>
+                  {isOfficialDoc && <Image style={stylesPDF.bgImage} src={backgroundImage} />}
+               </View>
+               {isOfficialDoc ? (
+                  <>
+                     {/* <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
                   {formData.voucher.vobo_at != null && (
                      <View style={stylesPDF.containerDateStamp}>
                         <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp} />
                         <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
                      </View>
                   )} */}
-                  <View style={stylesPDF.folioDate}>
-                     <Text>Folio: #{formData.voucher.folio}</Text>
-                     <Text>Folio Interno: {formData.voucher.internal_folio}</Text>
-                     <Text style={{ fontFamily: "Roboto-Regular" }}>
-                        Gómez Palacio, Dgo., {formData.voucher.date ? formatDatetime(formData.voucher.date, false, "lll") : "--/---/----"}
-                     </Text>
-                  </View>
-                  <View style={stylesPDF.dataTitlesLeft}>
-                     <Text style={stylesPDF.upperCase}>{formData.directorFrom}</Text>
-                     <Text style={stylesPDF.upperCase}>{formData.departmentFrom}</Text>
-                     <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
-                  </View>
-                  {formData.directorTo2 != "" ? (
-                     <View style={stylesPDF.row}>
-                        <View style={stylesPDF.column}>
-                           <View style={stylesPDF.dataTitlesLeft}>
-                              <Text>CON ATENCIÓN A:</Text>
-                              <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
-                              <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
+                     <View style={stylesPDF.folioDate}>
+                        <Text>Folio: #{formData.voucher.folio}</Text>
+                        <Text>Folio Interno: {formData.voucher.internal_folio}</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular" }}>
+                           Gómez Palacio, Dgo., {formData.voucher.date ? formatDatetime(formData.voucher.date, false, "lll") : "--/---/----"}
+                        </Text>
+                     </View>
+                     <View style={stylesPDF.dataTitlesLeft}>
+                        <Text style={stylesPDF.upperCase}>{formData.directorFrom}</Text>
+                        <Text style={stylesPDF.upperCase}>{formData.departmentFrom}</Text>
+                        <Text style={stylesPDF.letterSpace}>PRESENTE.- </Text>
+                     </View>
+                     {formData.directorTo2 != "" ? (
+                        <View style={stylesPDF.row}>
+                           <View style={stylesPDF.column}>
+                              <View style={stylesPDF.dataTitlesLeft}>
+                                 <Text>CON ATENCIÓN A:</Text>
+                                 <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
+                                 <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
+                              </View>
+                           </View>
+                           <View style={[stylesPDF.column, { width: "100%" }]}>
+                              <View style={stylesPDF.dataTitlesRigth}>
+                                 <Text> </Text>
+                                 <Text style={stylesPDF.upperCase}>{formData.directorTo2}</Text>
+                                 <Text style={stylesPDF.upperCase}>{formData.departmentTo2}</Text>
+                              </View>
                            </View>
                         </View>
-                        <View style={[stylesPDF.column, { width: "100%" }]}>
-                           <View style={stylesPDF.dataTitlesRigth}>
-                              <Text> </Text>
-                              <Text style={stylesPDF.upperCase}>{formData.directorTo2}</Text>
-                              <Text style={stylesPDF.upperCase}>{formData.departmentTo2}</Text>
-                           </View>
-                        </View>
-                     </View>
-                  ) : (
-                     <View style={stylesPDF.dataTitlesRigth}>
-                        <Text>CON ATENCIÓN A:</Text>
-                        <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
-                        <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
-                     </View>
-                  )}
-                  {/* CUERPO DEL MENSAJE */}
-                  <View style={stylesPDF.messageBody} wrap>
-                     {children}
-                  </View>
-                  {formData.table}
-
-                  {/* CUERPO DEL MENSAJE */}
-                  <View style={stylesPDF.firmContainer} wrap={false}>
-                     <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
-                     {formData.voucher.vobo_at != null && (
-                        <View style={stylesPDF.containerDateStamp}>
-                           <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp} />
-                           <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
+                     ) : (
+                        <View style={stylesPDF.dataTitlesRigth}>
+                           <Text>CON ATENCIÓN A:</Text>
+                           <Text style={stylesPDF.upperCase}>{formData.directorTo1}</Text>
+                           <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
                         </View>
                      )}
-                     <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
-                     <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
-                     <Image style={[stylesPDF.firma]} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
-                     <Text style={{ paddingBottom: 4 }}>______________________________________</Text>
-                     <Text style={stylesPDF.upperCase}>{formData.voucher.requesterName} </Text>
-                  </View>
-               </>
-            ) : (
-               <View style={stylesPDF.viewContainer}>
-                  {/* CUERPO DEL MENSAJE */}
-                  <View style={stylesPDF.messageBody}>{children}</View>
-                  {/* CUERPO DEL MENSAJE */}
-               </View>
-            )}
+                     {/* CUERPO DEL MENSAJE */}
+                     <View style={stylesPDF.messageBody} wrap>
+                        {arrayFormData.length > 1 ? formData.voucher.activity : children}
+                     </View>
+                     {formData.voucher.table}
 
-            <Text style={stylesPDF.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
-            {/* </View> */}
-         </Page>
+                     {/* CUERPO DEL MENSAJE */}
+                     <View style={stylesPDF.firmContainer} wrap={false}>
+                        <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
+                        {formData.voucher.vobo_at != null && (
+                           <View style={stylesPDF.containerDateStamp}>
+                              <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp} />
+                              <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
+                           </View>
+                        )}
+                        <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
+                        <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
+                        <Image style={[stylesPDF.firma]} src={formData.voucher.requesterFirm ?? formDataInitial.requesterFirm} />
+                        <Text style={{ paddingBottom: 4 }}>______________________________________</Text>
+                        <Text style={stylesPDF.upperCase}>{formData.voucher.requesterName} </Text>
+                     </View>
+                  </>
+               ) : (
+                  <View style={stylesPDF.viewContainer}>
+                     {/* CUERPO DEL MENSAJE */}
+                     <View style={stylesPDF.messageBody}>{arrayFormData.length > 1 ? formData.voucher.activity : children}</View>
+                     {/* CUERPO DEL MENSAJE */}
+                  </View>
+               )}
+
+               <Text style={stylesPDF.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
+               {/* </View> */}
+            </Page>
+         ))}
       </Document>
    );
+   return DocPDF;
+   // const [instance, updateInstance] = usePDF({ document: DocPDF });
+   // const onDocumentLoadSuccess = () => {
+   //    console.log("🚀 ~ onDocumentLoadSuccess ~ onDocumentLoadSuccess ~ instance:", instance);
+   // };
+   // const [loading, setLoading] = useState(true);
+
+   // useEffect(() => {
+   //    onDocumentLoadSuccess();
+   // }, []);
+
+   // return <>{loading ? <h1>Cargando...</h1> : DocPDF}</>;
 };
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="down" ref={ref} {...props} />;
 });
-export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, formData, isOfficialDoc = true }) => {
+export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, arrayFormData, isOfficialDoc = true }) => {
    const { auth } = useAuthContext();
-   const mySwal = withReactContent(Swal);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
    const { setLoadingAction } = useGlobalContext();
 
@@ -539,7 +543,7 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
             </DialogTitle>
             <DialogContent sx={{ pb: 0, height: "90vh" }}>
                <PDFViewer width={"100%"} height={"99%"}>
-                  <DocumentPDF watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
+                  <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc}>
                      {children}
                   </DocumentPDF>
                </PDFViewer>

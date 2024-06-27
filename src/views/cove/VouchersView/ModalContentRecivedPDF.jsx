@@ -60,7 +60,7 @@ const ModalContentRecivedPDF = ({ open, setOpen, formTitle = "titulo" }) => {
    }, [voucher]);
 
    return (
-      <ModalPDF open={open} setOpen={setOpen} formTitle={"RECIBO DE VALES"} watermark={"Control Vehícular"} formData={formData} isOfficialDoc={false}>
+      <ModalPDF open={open} setOpen={setOpen} formTitle={"RECIBO DE VALES"} watermark={"Control Vehícular"} arrayFormData={[formData]} isOfficialDoc={false}>
          <View style={[stylesPDF.table, { height: 300 }]}>
             {/* ENCABEZADO */}
             <View style={[stylesPDF.row, stylesPDF.dobleLine]}>

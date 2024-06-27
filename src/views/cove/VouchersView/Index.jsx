@@ -27,6 +27,7 @@ const VouchersView = () => {
    const [openModalShowRequest, setOpenModalShowRequest] = useState(false);
    const [openModalShowRecived, setOpenModalShowRecived] = useState(false);
    const [openModalCancel, setOpenModalCancel] = useState(false);
+   const [arrayData, setArrayData] = useState([]);
    const { getVoucherRequestersSelectIndex } = useVoucherRequesterContext();
 
    useEffect(() => {
@@ -55,13 +56,14 @@ const VouchersView = () => {
             setOpenModalRequest={setOpenModalShowRequest}
             setOpenModalShowRecived={setOpenModalShowRecived}
             setOpenModalCancel={setOpenModalCancel}
+            setArrayData={setArrayData}
             currentStatus={status}
          />
 
          <VoucherForm open={openForm} setOpen={setOpenForm} setOpenModalCancel={setOpenModalCancel} currentStatus={status} />
 
          {/* <ModalShowRequest open={openModalShowRequest} setOpen={setOpenModalShowRequest} /> */}
-         {openModalShowRequest && <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} />}
+         {openModalShowRequest && <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} arrayData={arrayData} setArrayData={setArrayData} />}
          {openModalShowRecived && <ModalContentRecivedPDF open={openModalShowRecived} setOpen={setOpenModalShowRecived} />}
          <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} currentStatus={status} />
       </>

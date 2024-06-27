@@ -82,7 +82,7 @@ export default function VoucherContextProvider({ children }) {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post(`/vouchers/seenVoucher/${voucher.id}`, voucher);
-         // console.log(axiosData);
+         console.log(axiosData);
          res = axiosData.data.data;
          getVouchers();
       } catch (error) {

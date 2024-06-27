@@ -63,13 +63,32 @@ export default function VoucherDetailContextProvider({ children }) {
       }
    };
 
+   const getVouchersDetails = async () => {
+      try {
+         setVoucherDetails([]);
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/voucherDetails`);
+         // console.log("getVouchersDetails() -> axiosData", axiosData.data.data.result);
+         res.result.voucherDetails = axiosData.data.data.result;
+         setVoucherDetails(axiosData.data.data.result);
+         // console.log("voucherDetails", voucherDetails);
+
+         // console.log("🚀 ~ getVouchersDetails ~ res:", res)
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const getIndexByVoucher = async (voucher_id) => {
       try {
          setVoucherDetails([]);
          const res = CorrectRes;
-         // console.log("getFamilies() ejecutado... voucher_id", voucher_id);
          const axiosData = await Axios.get(`/voucherDetails/voucher_id/${voucher_id}`);
-         // console.log("getIndexByFolio() -> axiosData", axiosData.data.data.result);
+         // console.log("getIndexByVoucher() -> axiosData", axiosData.data.data.result);
          res.result.voucherDetails = axiosData.data.data.result;
          setVoucherDetails(axiosData.data.data.result);
          // console.log("voucherDetails", voucherDetails);
@@ -157,7 +176,7 @@ export default function VoucherDetailContextProvider({ children }) {
 
    // useEffect(() => {
    //    console.log("el useEffect de VoucherDetailContext");
-   //    getvoucherDetails();
+   //    getVouchersDetails();
    // });
 
    return (
@@ -188,7 +207,8 @@ export default function VoucherDetailContextProvider({ children }) {
             setInEdit,
             setInAprobation,
             voucherId,
-            setVoucherId
+            setVoucherId,
+            getVouchersDetails
          }}
       >
          {children}
