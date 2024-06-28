@@ -454,11 +454,12 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {/* {(auth.permissions.more_permissions.includes(`Exportar Lista Pública`) || auth.permissions.more_permissions.includes(`todas`)) && ( */}
-            <Button variant="contained" color="error" startIcon={<IconFileTypePdf />} onClick={() => exportPDFFunction(data)} sx={{ mx: 1 }}>
-               Exprotar todas las solicitudes en PDF
-            </Button>
-            {/* )} */}
+            {(auth.permissions.more_permissions.includes(`28@Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               location.hash.split("/").includes("aprobadas") && (
+                  <Button variant="contained" color="error" startIcon={<IconFileTypePdf />} onClick={() => exportPDFFunction(data)} sx={{ mx: 1 }}>
+                     Exprotar todas las solicitudes en PDF
+                  </Button>
+               )}
          </div>
       );
    };
@@ -467,7 +468,11 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       try {
          // console.log("🚀 ~ exportPDFFunction ~ data:", data);
          setLoadingAction(true);
-         // if (data.length > 1) {
+         if (data.length < 1) {
+            Toast.Info("No hay registros en la tabla");
+            setLoadingAction(false);
+            return;
+         }
 
          const arrayFD = [];
          setArrayData(arrayFD);
@@ -572,6 +577,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
 
    useEffect(() => {
       setLoading(false);
+      // console.log("location.hash.includes('vales/aprobadas')", location.hash, location.hash.includes("vales/aprobadas"));
    }, [voucher]);
    return (
       <>
@@ -600,7 +606,10 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             // setData={setVehicles}
             // updateData={updateVehicle}
             // exportPDFFunction={exportPDFFunction}
-            toolBar={true}
+            toolBar={
+               (auth.permissions.more_permissions.includes(`28@Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               location.hash.split("/").includes("aprobadas")
+            }
             toolbarContent={toolbarContent}
          />
          {/* <VoucherContextProvider>
