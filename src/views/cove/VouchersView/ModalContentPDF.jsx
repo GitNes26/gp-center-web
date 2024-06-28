@@ -100,7 +100,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          // });
          // setArrayData(arrayFD);
       } else {
-         console.log("solo soy un formData");
+         // console.log("solo soy un formData");
          formData.voucher.folio = voucher.id;
          formData.voucher.internal_folio = voucher.internal_folio;
          formData.voucher.date = voucher.created_at;
