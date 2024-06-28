@@ -455,7 +455,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       return (
          <div className="flex flex-wrap gap-2">
             {(auth.permissions.more_permissions.includes(`28@Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
-               location.hash.split("/").includes("aprobadas") && (
+               location.hash.includes("vales/aprobadas") && (
                   <Button variant="contained" color="error" startIcon={<IconFileTypePdf />} onClick={() => exportPDFFunction(data)} sx={{ mx: 1 }}>
                      Exprotar todas las solicitudes en PDF
                   </Button>
@@ -608,7 +608,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             // exportPDFFunction={exportPDFFunction}
             toolBar={
                (auth.permissions.more_permissions.includes(`28@Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
-               location.hash.split("/").includes("aprobadas")
+               location.hash.includes("vales/aprobadas")
             }
             toolbarContent={toolbarContent}
          />

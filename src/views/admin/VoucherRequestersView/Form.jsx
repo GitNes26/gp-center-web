@@ -263,9 +263,9 @@ const VoucherRequesterForm = () => {
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
          // role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
-         phone: Yup.string()
-            .trim()
-            .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos"),
+         // phone: Yup.string()
+         //    .trim()
+         //    .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos"),
          // .required("Número telefónico requerido"),
          payroll_number: Yup.number("Solo números"),
          payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
