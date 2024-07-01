@@ -18,7 +18,7 @@ const SwitchComponent = ({ checked, label, height = 26 }) => {
             transform: "translateX(16px)",
             color: "#fff",
             "& + .MuiSwitch-track": {
-               backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#65C466",
+               backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "primary", //"#65C466",
                opacity: 1,
                border: 0
             },

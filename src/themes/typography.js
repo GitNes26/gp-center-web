@@ -59,7 +59,8 @@ export default function themeTypography(theme) {
       body1: {
          fontSize: '0.875rem',
          fontWeight: 400,
-         lineHeight: '1.334em'
+         lineHeight: '1.334em',
+         color: theme.darkTextSecondary,
        },
       body1_GPC: {
          fontSize: "0.875rem",

@@ -24,10 +24,13 @@ import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatPhone } from "../../../utils/Formats";
+import SwitchComponent from "../../../components/SwitchComponent";
+import { useUserContext } from "../../../context/UserContext";
 
 const VoucherRequesterDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { DisEnableUser } = useUserContext();
    const {
       singularName,
       pluralName,
@@ -125,7 +128,21 @@ const VoucherRequesterDT = () => {
       }
    };
 
-   const ButtonsAction = ({ id, user_id, name }) => {
+   const handleClickDisEnable = async (id, name, active) => {
+      try {
+         let axiosResponse;
+         setTimeout(async () => {
+            axiosResponse = await DisEnableUser(id, !active);
+            Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            getVoucherRequesters();
+         }, 500);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const ButtonsAction = ({ id, user_id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
             {auth.permissions.update && (
@@ -135,10 +152,17 @@ const VoucherRequesterDT = () => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.delete && (
+            {/* {auth.permissions.delete && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
                      <IconDelete />
+                  </Button>
+               </Tooltip>
+            )} */}
+            {(auth.permissions.more_permissions.includes("14@Activar y Desactivar Solicitador de Vales") || auth.permissions.more_permissions.includes(`todas`)) && (
+               <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
+                  <Button color="dark" onClick={() => handleClickDisEnable(user_id, name, active)} sx={{}}>
+                     <SwitchComponent checked={active} />
                   </Button>
                </Tooltip>
             )}
@@ -154,7 +178,7 @@ const VoucherRequesterDT = () => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} />;
+            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} active={obj.active} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(voucherRequesters[0]));
@@ -193,7 +217,6 @@ const VoucherRequesterDT = () => {
          // EDITAR
          // setData={setVehicles}
          // updateData={updateVehicle}
-         
       />
    );
 };
