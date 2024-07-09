@@ -74,7 +74,15 @@ const VehicleStatusDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "vehicle_status", header: "Estatus del Vehículo", sortable: true, functionEdit: null, body: VehicleStatusBodyTemplate, filter: true, filterField: null },
+      {
+         field: "vehicle_status",
+         header: "Estatus del Vehículo",
+         sortable: true,
+         functionEdit: null,
+         body: VehicleStatusBodyTemplate,
+         filter: true,
+         filterField: null
+      },
       { field: "description", header: "Descripción", sortable: false, functionEdit: null, body: DescriptionBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
@@ -166,16 +174,20 @@ const VehicleStatusDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(id, name)}>
-                  <IconDelete />
-               </Button>
-            </Tooltip>
+            {auth.permissions.update && (
+               <Tooltip title={`Editar ${singularName}`} placement="top">
+                  <Button color="info" onClick={() => handleClickEdit(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.delete && (
+               <Tooltip title={`Eliminar ${singularName}`} placement="top">
+                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
+                     <IconDelete />
+                  </Button>
+               </Tooltip>
+            )}
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickdisEnable(id, name, active)} sx={{}}>

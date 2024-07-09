@@ -131,16 +131,20 @@ const AdministratorDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(id, name, active)}>
-                  <IconDelete />
-               </Button>
-            </Tooltip>
+            {auth.permissions.update && (
+               <Tooltip title={`Editar ${singularName}`} placement="top">
+                  <Button color="info" onClick={() => handleClickEdit(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.delete && (
+               <Tooltip title={`Eliminar ${singularName}`} placement="top">
+                  <Button color="error" onClick={() => handleClickDelete(id, name, active)}>
+                     <IconDelete />
+                  </Button>
+               </Tooltip>
+            )}
             {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>

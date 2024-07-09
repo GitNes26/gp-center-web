@@ -51,7 +51,7 @@ const UserDT = () => {
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: false, filterField: null },
          { field: "created_at", header: "Miembro desde", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
@@ -192,7 +192,7 @@ const UserDT = () => {
          columns={columns}
          data={data}
          globalFilterFields={globalFilterFields}
-         headerFilters={false}
+         headerFilters={true}
          handleClickAdd={handleClickAdd}
          refreshTable={getUsers}
          btnAdd={true}

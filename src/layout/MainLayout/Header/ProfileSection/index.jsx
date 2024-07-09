@@ -105,8 +105,8 @@ const ProfileSection = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         console.log("formData", formData);
-         console.log("values", values);
+         // console.log("formData", formData);
+         // console.log("values", values);
          // return;
 
          setLoadingAction(true);

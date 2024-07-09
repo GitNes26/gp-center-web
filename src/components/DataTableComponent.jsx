@@ -121,7 +121,7 @@ export default function DataTableComponent({
    // columns.unshift({ id: 0, label: "Selecciona una opción..." });
 
    // FILTROS
-   let filtersColumns = columns.map((c) => [c.field, { value: null, matchMode: FilterMatchMode.STARTS_WITH }]);
+   let filtersColumns = columns.map((c) => [c.field, { value: null, matchMode: FilterMatchMode.CONTAINS }]);
    filtersColumns = Object.fromEntries(filtersColumns);
    filtersColumns.global = { value: null, matchMode: FilterMatchMode.CONTAINS };
    const [filters, setFilters] = useState(filtersColumns);
