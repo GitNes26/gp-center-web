@@ -1,9 +1,9 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 import * as tablerIcons from "@tabler/icons";
-import { useGlobalContext } from "./GlobalContext";
+import { ROLE_ADMIN_VOUCHER, ROLE_VOUCHER_SUPERVISOR } from "./GlobalContext";
 
 const MenuContext = createContext();
 
@@ -16,18 +16,15 @@ const formDataInitialState = {
    url: "",
    icon: "",
    order: "",
-   show_counter: false,
+   show_counter: "",
    counter_name: "",
    others_permissions: "",
-   read_only: false,
 
-   active: true
+   patern: ""
 };
 
 export default function MenuContextProvider({ children }) {
-   const { counters, setCounters } = useGlobalContext();
    const { auth, setAuth, logout } = useAuthContext();
-
    const singularName = "Menú"; //Escribirlo siempre letra Capital
    const pluralName = "Menús"; //Escribirlo siempre letra Capital
 
@@ -35,7 +32,6 @@ export default function MenuContextProvider({ children }) {
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [menus, setMenus] = useState([]);
-   const [menusSelect, setMenusSelect] = useState([]);
    const [menu, setMenu] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
    const [menuItems, setMenuItems] = useState({ items: [] });
@@ -43,8 +39,6 @@ export default function MenuContextProvider({ children }) {
    const [permissionsByMenu, setPermissionsByMenu] = useState([]);
    const [checkMaster, setCheckMaster] = useState(false);
    const [checkMenus, setCheckMenus] = useState([]);
-   const [isItem, setIsItem] = useState(false);
-   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -91,7 +85,7 @@ export default function MenuContextProvider({ children }) {
          res = axiosData.data.data;
          // await setMenu(res.result);
          setMenu(res.result);
-         console.log(res.result);
+         // console.log(res);
 
          return res;
       } catch (error) {
@@ -100,6 +94,24 @@ export default function MenuContextProvider({ children }) {
          res.alert_text = error;
          Toast.Error(error);
       }
+   };
+
+   const getCounter = async (showCounter) => {
+      let labelCounter = 0;
+      if (showCounter !== null) {
+         if (showCounter !== "") {
+            let axiosCounter;
+            if (showCounter.includes("vouchers/")) {
+               let status = "CREADO,APROBADA";
+               if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) status = "ALTA";
+               else if (auth.role_id === ROLE_ADMIN_VOUCHER) status = "VoBo";
+               axiosCounter = await Axios.get(`${showCounter}/${status}`);
+               labelCounter = axiosCounter.data.data.result;
+            } else axiosCounter = Axios.get(`${showCounter}`);
+            console.log("axiosCounter", labelCounter);
+         }
+      }
+      return labelCounter;
    };
 
    const showMyMenus = async () => {
@@ -116,7 +128,7 @@ export default function MenuContextProvider({ children }) {
             const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
             // console.log("HeaderMenus", HeaderMenus);
             const items = [];
-            HeaderMenus.map((hm) => {
+            await HeaderMenus.map(async (hm) => {
                const item = {
                   id: hm.id,
                   title: hm.menu,
@@ -127,7 +139,9 @@ export default function MenuContextProvider({ children }) {
 
                const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
                // console.log("childrenMenus", childrenMenus);
-               childrenMenus.map((iCh) => {
+               childrenMenus.map(async (iCh) => {
+                  // let label_counter = await getCounter(iCh.show_counter);
+
                   const child = {
                      id: iCh.id,
                      title: iCh.menu,
@@ -143,7 +157,10 @@ export default function MenuContextProvider({ children }) {
                items.push(item);
             });
             // console.log("items", items);
-            setMenuItems({ items: items });
+            // setMenuItems({ items: items });
+            setTimeout(() => {
+               setMenuItems({ items: items });
+            }, 1500);
             // setAuth({ ...auth, menus: "cambiados" });
          }
       } catch (error) {
@@ -187,7 +204,7 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.get(`/menus/headers/selectIndex`);
          // console.log("el selectedDeLevels", axiosData);
          res.result.headerMenus = axiosData.data.data.result;
-         // res.result.headerMenus.unshift({ id: 0, label: "Selecciona una opción..." });
+         res.result.headerMenus.unshift({ id: 0, label: "Selecciona una opción..." });
          setHeaderMenus(axiosData.data.data.result);
          // console.log("headerMenus", headerMenus);
 
@@ -199,24 +216,8 @@ export default function MenuContextProvider({ children }) {
          res.alert_text = error;
       }
    };
-
-   const counterOfMenus = async () => {
-      try {
-         let res = CorrectRes;
-         const axiosData = await Axios.get(`/menus/counterOfMenus`);
-         res = axiosData.data.data;
-         // console.log("counterOfMenus()->res", res);
-
-         return res;
-      } catch (error) {
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
-         Toast.Error(error);
-      }
-   };
-
    // #region CRUD
+
    const getMenus = async (getItems = false) => {
       try {
          // setMenu([]);
@@ -245,7 +246,6 @@ export default function MenuContextProvider({ children }) {
                _checkMenus.push({
                   id: hm.id,
                   isChecked: false,
-                  others_permissions: [],
                   permissions: {
                      read: false,
                      create: false,
@@ -263,8 +263,7 @@ export default function MenuContextProvider({ children }) {
                   const child = {
                      id: iCh.id,
                      title: iCh.menu,
-                     others_permissions: others_permissions,
-                     readOnly: Boolean(iCh.read_only)
+                     others_permissions: others_permissions
                      // type: iCh.type,
                      // url: iCh.url,
                      // icon: tablerIcons[`${iCh.icon}`]
@@ -275,15 +274,13 @@ export default function MenuContextProvider({ children }) {
                   _checkMenus.push({
                      id: iCh.id,
                      isChecked: false,
-                     others_permissions: others_permissions,
                      permissions: {
                         read: false,
                         create: false,
                         update: false,
                         delete: false,
                         more_permissions: []
-                     },
-                     readOnly: false
+                     }
                   });
                   // #permisos
                });
@@ -305,31 +302,10 @@ export default function MenuContextProvider({ children }) {
       }
    };
 
-   const getMenusSelectIndexToRoles = async () => {
-      try {
-         const res = CorrectRes;
-         const axiosData = await Axios.get(`/menus/selectIndexToRoles`);
-         // console.log("el getMenusSelectIndexToRoles", axiosData);
-         res.result.menus = axiosData.data.data.result;
-         // console.log(res.result.menus);
-         // res.result.menus.unshift({ id: 0, label: "Selecciona una opción..." });
-         setMenusSelect(axiosData.data.data.result);
-         // console.log("menus", menus);
-
-         return res;
-      } catch (error) {
-         const res = ErrorRes;
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
-      }
-   };
-
    const showMenu = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/menus/id/${id}`);
-         // console.log("axiosData", axiosData);
+         const axiosData = await Axios.get(`/menus/${id}`);
          res = axiosData.data.data;
          // await setMenu(res.result);
          setFormData(res.result);
@@ -457,14 +433,7 @@ export default function MenuContextProvider({ children }) {
             checkMaster,
             setCheckMaster,
             checkMenus,
-            setCheckMenus,
-            counterOfMenus,
-            getMenusSelectIndexToRoles,
-            menusSelect,
-            setMenusSelect,
-            isItem,
-            setIsItem,
-            formikRef
+            setCheckMenus
          }}
       >
          {children}

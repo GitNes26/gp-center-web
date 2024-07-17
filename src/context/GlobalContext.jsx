@@ -11,6 +11,11 @@ export const gpcDark100 = "#566173";
 export const gpcDarkContrast = "#E9ECEF";
 export const gpcBlue = "#1455CB";
 export const gpcText = "#1455CB";
+export const colorPrimaryMain = "#1455CB";
+export const colorPrimaryDark = "#0c3f8b";
+export const colorSecondaryMain = "#2E353B";
+export const colorSecondaryDark = "#191d20";
+export const colorSecondaryLight = "#E9ECEF";
 
 export const ROLE_SUPER_ADMIN = 1;
 export const ROLE_ADMIN = 2;

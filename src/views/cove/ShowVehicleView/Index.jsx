@@ -8,9 +8,7 @@ import { useAuthContext } from "../../../context/AuthContext";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useVehicleContext } from "../../../context/VehicleContext";
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Grid,
-    Avatar, Button, Card, CardContent, Chip, Grow, List, ListItem, ListItemIcon, OutlinedInput, Tooltip, Typography } from "@mui/material";
+import { Grid, Avatar, Button, Card, CardContent, Chip, Grow, List, ListItem, ListItemIcon, OutlinedInput, Tooltip, Typography } from "@mui/material";
 
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
@@ -265,7 +263,7 @@ const ShowVehicleView = () => {
                   <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
                      <Grid item xs={12} md={12} spacing={2} sx={{ mb: 0, pb: 0, height: "66vh", overflowY: "auto", scrollbarWidth: "none" }}>
                         {/* <Grid container spacing={3}> */}
-                        {auth.permissions.more_permissions.includes("2@Solicitar Servicio") && (
+                        {auth.permissions.more_permissions.includes("Solicitar Servicio") && (
                            <Grid item xs alignItems={"center"}>
                               <Tooltip title={"Dar Servicio a este vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
@@ -274,7 +272,7 @@ const ShowVehicleView = () => {
                               </Tooltip>
                            </Grid>
                         )}
-                        {auth.permissions.more_permissions.includes("2@Asignar Vehículo") && (
+                        {auth.permissions.more_permissions.includes("Asignar Vehículo") && (
                            <Grid item xs alignItems={"center"}>
                               <Tooltip title={"Asignar vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
@@ -283,7 +281,7 @@ const ShowVehicleView = () => {
                               </Tooltip>
                            </Grid>
                         )}
-                        {auth.permissions.more_permissions.includes("2@Prestar Vehículo") && (
+                        {auth.permissions.more_permissions.includes("Prestar Vehículo") && (
                            <Grid item xs alignItems={"center"}>
                               <Tooltip title={"Prestar vehículo"} placement="top" arrow>
                                  <Box textAlign={"center"}>
@@ -293,7 +291,7 @@ const ShowVehicleView = () => {
                            </Grid>
                         )}
                         <Grid item xs alignItems={"center"}>
-                           {auth.permissions.more_permissions.includes("2@Devolver Vehículo") && (
+                           {auth.permissions.more_permissions.includes("Devolver Vehículo") && (
                               <Tooltip title={"Devolver Vehículo"} placement="right" arrow>
                                  <Button
                                     variant="contained"
@@ -310,7 +308,7 @@ const ShowVehicleView = () => {
                                  </Button>
                               </Tooltip>
                            )}
-                           {auth.permissions.more_permissions.includes("2@Devolver Préstamo") && (
+                           {auth.permissions.more_permissions.includes("Devolver Préstamo") && (
                               <Tooltip title={"Devolver préstamo"} placement="right" arrow>
                                  <Button
                                     variant="contained"

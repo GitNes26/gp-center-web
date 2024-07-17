@@ -159,7 +159,7 @@ const VoucherRequesterDT = () => {
                   </Button>
                </Tooltip>
             )} */}
-            {(auth.permissions.more_permissions.includes("14@Activar y Desactivar Solicitador de Vales") || auth.permissions.more_permissions.includes(`todas`)) && (
+            {(auth.permissions.more_permissions.includes("Activar y Desactivar Solicitador de Vales") || auth.permissions.more_permissions.includes(`todas`)) && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(user_id, name, active)} sx={{}}>
                      <SwitchComponent checked={active} />

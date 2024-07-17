@@ -1,11 +1,13 @@
 import MenuForm from "./Form";
 import MenuDT from "./DataTable";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import {
+   Grid,
+   Typography } from "@mui/material";
 
 import { useEffect } from "react";
 import { useMenuContext } from "../../../context/MenuContext";
-import { Typography } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
@@ -38,10 +40,10 @@ const MenusView = () => {
          </Typography>
          {/* </MainCard> */}
          <Grid container spacing={2}>
-            <Grid xs={12} md={3} sx={{ mb: 3 }}>
+            <Grid item xs={12} md={3} sx={{ mb: 3 }}>
                <MenuForm />
             </Grid>
-            <Grid xs={12} md={9} sx={{ mb: 3 }}>
+            <Grid item xs={12} md={9} sx={{ mb: 3 }}>
                <MenuDT />
             </Grid>
          </Grid>

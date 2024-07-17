@@ -405,28 +405,28 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@VoBo") && obj.voucher_status === "ALTA" && (
+            {auth.permissions.more_permissions.includes("VoBo") && obj.voucher_status === "ALTA" && (
                <Tooltip title={`Dar Visto Bueno al ${singularName} #${id}`} placement="top">
                   <Button color="error" onClick={() => handleClickVoBo(obj)}>
                      <IconCheckbox />
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@Aprobar Vale") && obj.voucher_status === "VoBo" && (
+            {auth.permissions.more_permissions.includes("Aprobar Vale") && obj.voucher_status === "VoBo" && (
                <Tooltip title={`Asignar y Aprobar ${singularName}`} placement="top">
                   <Button color="secondary" onClick={() => handleClickAssign(id)}>
                      <IconProgressCheck />
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@Generar Vale") && obj.voucher_status === "APROBADA" && (
+            {auth.permissions.more_permissions.includes("Generar Vale") && obj.voucher_status === "APROBADA" && (
                <Tooltip title={`Generar Formato de Recepción de ${singularName}`} placement="top">
                   <Button color="secondary" onClick={() => handleClickGenerateVocuher(obj)}>
                      <IconFileInvoice />
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes("24@Cancelar Vale") && !["APROBADA", "CANCELADA"].includes(obj.voucher_status) && (
+            {auth.permissions.more_permissions.includes("Cancelar Vale") && !["APROBADA", "CANCELADA"].includes(obj.voucher_status) && (
                <Tooltip title={`Cancelar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj)}>
                      <IconBan />
@@ -454,7 +454,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {(auth.permissions.more_permissions.includes(`28@Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
+            {(auth.permissions.more_permissions.includes(`Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
                location.hash.includes("vales/aprobadas") && (
                   <Button variant="contained" color="error" startIcon={<IconFileTypePdf />} onClick={() => exportPDFFunction(data)} sx={{ mx: 1 }}>
                      Exprotar todas las solicitudes en PDF
@@ -607,7 +607,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             // updateData={updateVehicle}
             // exportPDFFunction={exportPDFFunction}
             toolBar={
-               (auth.permissions.more_permissions.includes(`28@Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               (auth.permissions.more_permissions.includes(`Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
                location.hash.includes("vales/aprobadas")
             }
             toolbarContent={toolbarContent}

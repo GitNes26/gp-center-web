@@ -5,6 +5,9 @@ import { useCallback, useState } from "react";
 import Toast from "../../utils/Toast";
 import { Field } from "formik";
 import { useDropzone } from "react-dropzone";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { QuestionAlertConfig } from "../../utils/sAlert";
 
 // #region ESTILOS
 // /* CONTENEDOR DE IMAGENES */
@@ -153,12 +156,14 @@ export const setObjImg = (img, setImg) => {
 */
 //  ===================================== COMPONENTE =====================================
 const MB = 1048576; //2621440=2.5MB
+const mySwal = withReactContent(Swal);
 
 const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePreviews, error, touched, multiple, maxImages = -1, accept = null }) => {
    const [uploadProgress, setUploadProgress] = useState(0);
    // const [filePreviews, setFilePreviews] = useState([]);
    const [ttShow, setTtShow] = useState("");
    const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
+   const [confirmRemove, setConfirmRemove] = useState(false);
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -178,31 +183,37 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
       return true;
    };
 
-   const onDrop = useCallback((acceptedFiles) => {
-      setFilePreviews([]);
-      // if (multiple) if (!validationQuantityImages()) return
-      // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
-      acceptedFiles.forEach((file) => {
-         const reader = new FileReader();
+   const onDrop = useCallback(
+      (acceptedFiles) => {
+         if (!confirmRemove) return; // Solo permite la carga de archivos si la eliminación fue confirmada
+         setConfirmRemove(false); // Resetear la confirmación después de la carga
 
-         if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+         setFilePreviews([]);
+         // if (multiple) if (!validationQuantityImages()) return
+         // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
+         acceptedFiles.forEach((file) => {
+            const reader = new FileReader();
 
-         reader.onload = async (e) => {
-            const preview = {
-               file,
-               dataURL: reader.result
+            if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+
+            reader.onload = async (e) => {
+               const preview = {
+                  file,
+                  dataURL: reader.result
+               };
+               // if (multiple) if (!validationQuantityImages) return;
+
+               // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
+               // else
+               await setFilePreviews([preview]);
+               // console.log(filePreviews);
             };
-            // if (multiple) if (!validationQuantityImages) return;
 
-            // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-            // else
-            await setFilePreviews([preview]);
-            // console.log(filePreviews);
-         };
-
-         reader.readAsDataURL(file);
-      });
-   }, []);
+            reader.readAsDataURL(file);
+         });
+      },
+      [confirmRemove, setFilePreviews]
+   );
 
    const simulateUpload = () => {
       // Simulamos la carga con un temporizador.
@@ -223,7 +234,12 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
       // Filtra la lista de vistas previas para eliminar el archivo seleccionado.
       // console.log(filePreviews);
       // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
-      await setFilePreviews([]);
+      mySwal.fire(QuestionAlertConfig(`¿Estas seguro de eliminar la imágen?`, "CONFIRMAR")).then(async (result) => {
+         if (result.isConfirmed) {
+            await setFilePreviews([]);
+            setConfirmRemove(true); // Establecer la confirmación para permitir la carga de nuevos archivos
+         }
+      });
       // console.log(filePreviews);
    };
 
@@ -250,7 +266,7 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                   <>
                      <div className="dropzone-container">
                         <div {...getRootProps({ className: "dropzone" })}>
-                           <input {...getInputProps()} multiple={multiple} accept={accept} />
+                           <input {...getInputProps()} type={confirmRemove ? "file" : "text"} multiple={multiple} accept={accept} />
                            <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
                               Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
                            </p>

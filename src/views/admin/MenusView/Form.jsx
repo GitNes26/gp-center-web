@@ -1,29 +1,22 @@
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { 
-   Grid,
-   Button, Card, FormControlLabel, FormLabel, Radio, RadioGroup, TextField, Tooltip, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import { useMenuContext } from "../../../context/MenuContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
-import { handleInputFormik } from "../../../utils/Formats";
-import SwitchComponent from "../../../components/SwitchComponent";
+import { useAuthContext } from "../../../context/AuthContext";
+import { FormikComponent, InputComponent, RadioButtonComponent, SwitchComponent } from "../../../components/Form/FormikComponents";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const MenuForm = () => {
+   const { auth } = useAuthContext();
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const {
       singularName,
@@ -38,11 +31,13 @@ const MenuForm = () => {
       formTitle,
       setFormTitle,
       headerMenus,
-      getHeaderMenusSelectIndex
+      getHeaderMenusSelectIndex,
+      isItem,
+      setIsItem,
+      formikRef
    } = useMenuContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
-   const [isItem, setIsItem] = useState(false);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -57,9 +52,9 @@ const MenuForm = () => {
       }
    };
 
-   const handleChangeType = (type) => {
-      // console.log("handleChangeType - type", type);
-      setIsItem(type === "item" ? true : false);
+   const handleChangeType = (idName, value) => {
+      // console.log("handleChangeType - value", value);
+      setIsItem(value == "item" ? true : false);
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
@@ -99,18 +94,6 @@ const MenuForm = () => {
       }
    };
 
-   const handleModify = (setValues, setFieldValue) => {
-      try {
-         handleChangeType(formData.type);
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-         // console.log(formData);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const handleCancel = (resetForm) => {
       try {
          resetForm();
@@ -132,19 +115,18 @@ const MenuForm = () => {
          validationSchema = Yup.object().shape({
             menu: Yup.string().trim().required("Menú requerido"),
             belongs_to: Yup.number().min(1, "Esta opción no es valida").required("Pertenencia requerida"),
-            patern: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Pertenencia requerida"),
 
             url: Yup.string().trim().required("URL requerido"),
             icon: Yup.string().trim().required("Icono requerido"),
             order: Yup.number().required("Orden requerido")
          });
+      // console.log("🚀 ~ validationSchemas ~ validationSchema:", validationSchema);
       return validationSchema;
    };
 
    useEffect(() => {
       try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null && formData.id > 0) btnModify.click();
+         // console.log("validationSchema", validationSchemas());
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -154,256 +136,117 @@ const MenuForm = () => {
    return (
       // <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
       <Card>
-         <Box role="presentation" p={3} pt={5} className="form" sx={{ maxHeight: "77.3vh", overflowY: "auto" }}>
-            <Typography variant="h2" mb={3} textAlign={"center"}>
-               {formTitle}
-               {/* <FormControlLabel
-                  sx={{ float: "right", color: colorLabelcheck }}
-                  control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
-                  label="Seguir Agregando"
-               /> */}
-            </Typography>
-            <Formik initialValues={formData} validationSchema={validationSchemas} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                  <Grid container spacing={2} p={1} width={"100%"} maxHeight={"58vh"} overflow={"auto"}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Padre o Hijo */}
-                     <Grid item xs={12} md={12} sx={{ mb: 1 }}>
-                        <FormControl fullWidth sx={{ alignItems: "center" }}>
-                           <FormLabel id="type-label">Tipo de Menú</FormLabel>
-                           <RadioGroup
-                              row
-                              aria-labelledby="type-label"
-                              id="type"
-                              name="type"
-                              value={values.type}
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 handleChangeType(e.target.value);
-                              }}
-                              onBlur={handleBlur}
-                           >
-                              <FormControlLabel value="group" control={<Radio />} label="Padre" />
-                              <FormControlLabel value="item" control={<Radio />} label="Hijo" />
-                           </RadioGroup>
-                           {touched.type && errors.type && (
-                              <FormHelperText error id="ht-type">
-                                 {errors.type}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                     </Grid>
-                     {/* Menú */}
-                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="menu"
-                           name="menu"
-                           label="Nombre del Menú *"
-                           type="text"
-                           value={values.menu}
-                           placeholder="Usuarios"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "menu", true)}
-                           fullWidth
-                           error={errors.menu && touched.menu}
-                           helperText={errors.menu && touched.menu && errors.menu}
-                        />
-                     </Grid>
-                     {/* Leyenda */}
-                     {values.type === "group" && (
-                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                           <TextField
-                              id="caption"
-                              name="caption"
-                              label="Ingrese Leyenda"
-                              type="text"
-                              value={values.caption}
-                              placeholder="Texto de ayuda"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "caption", true)}
-                              fullWidth
-                              error={errors.caption && touched.caption}
-                              helperText={errors.caption && touched.caption && errors.caption}
-                           />
-                        </Grid>
-                     )}
-                     {values.type === "item" && (
-                        <>
-                           {/* Pertence a */}
-                           <Grid item xs={12} md={12} sx={{ mb: 2 }}>
-                              <Select2Component
-                                 idName={"belongs_to"}
-                                 label={"Pertenezco a *"}
-                                 valueLabel={values.patern}
-                                 formDataLabel={"patern"}
-                                 placeholder={"Selecciona una opción..."}
-                                 options={headerMenus}
-                                 fullWidth={true}
-                                 // handleChangeValueSuccess={handleChange...}
-                                 handleBlur={handleBlur}
-                                 error={errors.belongs_to}
-                                 touched={touched.belongs_to}
-                                 disabled={false}
-                                 pluralName={"Menús Padre"}
-                                 refreshSelect={getHeaderMenusSelectIndex}
-                              />
-                           </Grid>
-                           {/* URL */}
-                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                              <TextField
-                                 id="url"
-                                 name="url"
-                                 label="URL / Path *"
-                                 type="text"
-                                 value={values.url}
-                                 placeholder="/admin/nombre-de-pagina"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "url", false)}
-                                 fullWidth
-                                 error={errors.url && touched.url}
-                                 helperText={errors.url && touched.url && errors.url}
-                              />
-                           </Grid>
-                           {/* Icono */}
-                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                              <TextField
-                                 id="icon"
-                                 name="icon"
-                                 label="Ingrese el nombre del icono *"
-                                 type="text"
-                                 value={values.icon}
-                                 placeholder="NombreDelIcono"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "icon", true)}
-                                 fullWidth
-                                 error={errors.icon && touched.icon}
-                                 helperText={errors.icon && touched.icon && errors.icon}
-                              />
-                              <small style={{ fontStyle: "italic" }}>
-                                 <a href="https://tabler.io/icons" target="_blank">
-                                    Pagina de iconos - copiar el "React Name"
-                                 </a>
-                              </small>
-                           </Grid>
-                           {/* Otros Permisos */}
-                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                              <TextField
-                                 id="others_permissions"
-                                 name="others_permissions"
-                                 label="Ingrese los permisos especiales *"
-                                 type="text"
-                                 value={values.others_permissions}
-                                 placeholder="Otros Permisos"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 multiline={true}
-                                 rows={5}
-                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "others_permissions", true)}
-                                 fullWidth
-                                 error={errors.others_permissions && touched.others_permissions}
-                                 helperText={errors.others_permissions && touched.others_permissions && errors.others_permissions}
-                              />
-                              <small style={{ fontStyle: "italic" }}>
-                                 Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "ID@Nombre Del Permiso"
-                              </small>
-                           </Grid>
-                        </>
-                     )}
+         <Box role="presentation" p={3} pt={5} className="form" sx={{ maxHeight: "77.2vh", overflowY: "auto" }}>
+            <Grid container mb={2}>
+               <Grid item xs={12}>
+                  <Typography variant="h2" textAlign={"center"}>
+                     {formTitle}
+                  </Typography>
+               </Grid>
+               {/* <Grid item xs={4}>
+                  <FormControlLabel
+                     sx={{ float: "right", color: colorLabelcheck }}
+                     control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
+                     label="Seguir Agregando"
+                  />
+               </Grid> */}
+            </Grid>
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchemas}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+               maxHeight={"54.3vh"}
+            >
+               <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 
-                     {/* Orden */}
-                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="order"
-                           name="order"
-                           label="Ingrese el orden *"
-                           type="number"
-                           value={values.order}
-                           placeholder="0"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "order", true)}
-                           fullWidth
-                           error={errors.order && touched.order}
-                           helperText={errors.order && touched.order && errors.order}
-                        />
-                     </Grid>
-                     {/* Mostrar contador */}
-                     {values.type === "item" && (
-                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                           <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
-                              <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
-                                 <SwitchComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
-                              </Button>
-                           </Tooltip>
-                        </Grid>
-                     )}
-                     {/* Nombre del Contador */}
-                     {values.type === "item" && (
-                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                           <TextField
-                              id="counter_name"
-                              name="counter_name"
-                              label="Nombre del Contador *"
-                              type="text"
-                              value={values.counter_name}
-                              placeholder="vouchers"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "counter_name", true)}
-                              fullWidth
-                              error={errors.counter_name && touched.counter_name}
-                              helperText={errors.counter_name && touched.counter_name && errors.counter_name}
-                           />
-                        </Grid>
-                     )}
-                     {/* Activar */}
-                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                        <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
-                           <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
-                              <SwitchComponent checked={Boolean(values.active)} label={"¿Menú Activo?"} />
-                           </Button>
-                        </Tooltip>
-                        </Grid>
-                        </Grid>
+               {/* Padre o Hijo */}
+               <RadioButtonComponent
+                  col={12}
+                  idName={"type"}
+                  title={"Tipo de Menú"}
+                  options={[
+                     { value: "group", label: "Padre" },
+                     { value: "item", label: "Hijo" }
+                  ]}
+                  rowLayout={true}
+                  handleGetValue={handleChangeType}
+               />
 
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                        >
-                           LIMPIAR
-                        </Button>
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
-                        setValues
-                     </Button>
-                  </Grid>
+               {/* Menú */}
+               <InputComponent col={12} idName={"menu"} label={"Nombre del Menú"} placeholder={"Usuarios"} textStyleCase={null} />
+
+               {/* Leyenda */}
+               {!isItem && <InputComponent col={12} idName={"caption"} label={"Ingresas Leyenda"} placeholder={"Texto de ayuda"} textStyleCase={null} />}
+
+               {isItem && (
+                  <>
+                     {/* Pertence a */}
+                     <Select2Component
+                        col={12}
+                        idName={"belongs_to"}
+                        label={"Pertenezco a *"}
+                        options={headerMenus}
+                        pluralName={"Menús Padres"}
+                        refreshSelect={getHeaderMenusSelectIndex}
+                     />
+
+                     {/* URL */}
+                     <InputComponent col={12} idName={"url"} label={"URL / Path *"} placeholder={"/app/nombre-de-pagina"} textStyleCase={false} />
+
+                     {/* Icono */}
+                     <InputComponent
+                        col={12}
+                        idName={"icon"}
+                        label={"Ingrese el nombre del icono *"}
+                        placeholder={"NombreDelIcono"}
+                        textStyleCase={null}
+                        helperText={
+                           <small style={{ fontStyle: "italic" }}>
+                              <a href="https://tabler.io/icons" target="_blank">
+                                 Pagina de iconos - copiar el "React Name"
+                              </a>
+                           </small>
+                        }
+                     />
+
+                     {/* Otros Permisos */}
+                     <InputComponent
+                        col={12}
+                        idName={"others_permissions"}
+                        label={"Ingrese los permisos especiales"}
+                        placeholder={"Otros Permisos"}
+                        textStyleCase={null}
+                        rows={5}
+                        helperText={
+                           <small style={{ fontStyle: "italic" }}>
+                              Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "Nombre Del Permiso"
+                           </small>
+                        }
+                     />
+                  </>
                )}
-            </Formik>
+               {/* Orden */}
+               <InputComponent col={12} idName={"order"} label={"Ingrese el orden *"} placeholder={"0"} textStyleCase={null} />
+
+               {isItem && (
+                  <>
+                     {/* Solo lectura */}
+                     <SwitchComponent col={12} idName={"read_only"} label={"¿Solo lectura?"} textEnable={"Solo lectura"} textDisable={"Con Permisos"} />
+
+                     {/* Mostrar contador */}
+                     <SwitchComponent col={5} idName={"show_counter"} label={"¿Mostrar contador?"} textEnable={"Mostrar"} textDisable={"Ocultar"} />
+
+                     {/* Nombre del Contador */}
+                     <InputComponent col={7} idName={"counter_name"} label={"Nombre del Contador"} placeholder={"requestApproved"} textStyleCase={null} />
+                  </>
+               )}
+               {/* Activar */}
+               <SwitchComponent col={12} idName={"active"} label={"Menú Activo?"} textEnable={"Activo"} textDisable={"Inactivo"} />
+            </FormikComponent>
          </Box>
       </Card>
 

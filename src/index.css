@@ -21,6 +21,12 @@
 }
 /* SCROLL */
 
+.MuiDialogTitle-root, .form.MuiBox-root {
+   & h1,h2,h3,h4{
+      font-size: clamp(1.2rem,1.5vw,2rem);
+   }
+}
+
 /* para la tabla de prime */
 .p-input-icon-left>i:first-of-type, .p-input-icon-left>svg:first-of-type, .p-input-icon-left>.p-input-prefix {
    left: .75rem;

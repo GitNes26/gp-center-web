@@ -1,20 +1,15 @@
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Grid,
-   Button, Card, FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { Card, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 import { SwipeableDrawer } from "@mui/material";
 import { useState } from "react";
 import { useRoleContext } from "../../../context/RoleContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import SwitchComponent from "../../../components/SwitchComponent";
+import { useMenuContext } from "../../../context/MenuContext";
+import { FormikComponent, InputComponent, Select2Component, SwitchComponent } from "../../../components/Form/FormikComponents";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -22,8 +17,9 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const RoleForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
-   const { singularName, roles, createRole, updateRole, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle } =
+   const { singularName, roles, createRole, updateRole, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle, formikRef } =
       useRoleContext();
+   const { menusSelect, getMenusSelectIndexToRoles } = useMenuContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -66,26 +62,26 @@ const RoleForm = () => {
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id) => {
-      try {
-         resetForm();
-         setFieldValue("id", id);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   // const handleReset = (resetForm, setFieldValue, id) => {
+   //    try {
+   //       resetForm();
+   //       setFieldValue("id", id);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
 
-   const handleModify = (setValues, setFieldValue) => {
-      try {
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-         // console.log(formData);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   // const handleModify = (setValues, setFieldValue) => {
+   //    try {
+   //       if (formData.description) formData.description == null && (formData.description = "");
+   //       setValues(formData);
+   //       // console.log(formData);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
 
    const handleCancel = (resetForm) => {
       try {
@@ -104,8 +100,9 @@ const RoleForm = () => {
 
    useEffect(() => {
       try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null && formData.id > 0) btnModify.click();
+         // console.log("menusSelect", menusSelect);
+         // const btnModify = document.getElementById("btnModify");
+         // if (btnModify != null && formData.id > 0) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -114,118 +111,38 @@ const RoleForm = () => {
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-         <Card>
-            <Box role="presentation" p={3} pt={5} className="form" sx={{ maxHeight: "77.2vh", overflowY: "auto" }}>
-               <Typography variant="h2" mb={3} textAlign={"center"}>
-                  {formTitle}
+         {/* <Card> */}
+         <Box role="presentation" p={3} pt={5} className="form">
+            <Grid container mb={2}>
+               <Grid item xs={8} pr={3}>
+                  <Typography variant="h2">{formTitle}</Typography>
+               </Grid>
+               <Grid item xs={4}>
                   <FormControlLabel
                      sx={{ float: "right", color: colorLabelcheck }}
                      control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                      label="Seguir Agregando"
                   />
-               </Typography>
+               </Grid>
+            </Grid>
 
-               <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-                  {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                     <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-
-                        {/* Rol */}
-                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                           <TextField
-                              id="role"
-                              name="role"
-                              label="Nombre del Rol *"
-                              type="text"
-                              value={values.role}
-                              placeholder="Supervisor"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "role", true)}
-                              fullWidth
-                              error={errors.role && touched.role}
-                              helperText={errors.role && touched.role && errors.role}
-                           />
-                        </Grid>
-                        {/* Descripción */}
-                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                           <TextField
-                              id="description"
-                              name="description"
-                              label="Descripción"
-                              type="text"
-                              value={values.description}
-                              placeholder="Texto de ayuda"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "description", true)}
-                              fullWidth
-                              error={errors.description && touched.description}
-                              helperText={errors.description && touched.description && errors.description}
-                           />
-                        </Grid>
-
-                        {/* Página Principal */}
-                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                           <TextField
-                              id="page_index"
-                              name="page_index"
-                              label="Página Principal *"
-                              type="text"
-                              value={values.page_index}
-                              placeholder="/admin"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "page_index", true)}
-                              fullWidth
-                              error={errors.page_index && touched.page_index}
-                              helperText={errors.page_index && touched.page_index && errors.page_index}
-                           />
-                        </Grid>
-
-                        {/* Activar */}
-                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
-                           <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
-                              <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
-                                 <SwitchComponent checked={Boolean(values.active)} label={"¿Rol Activo?"} />
-                              </Button>
-                           </Tooltip>
-                        </Grid>
-                        <LoadingButton
-                           type="submit"
-                           disabled={isSubmitting}
-                           loading={isSubmitting}
-                           // loadingPosition="start"
-                           variant="contained"
-                           fullWidth
-                           size="large"
-                        >
-                           {textBtnSubmit}
-                        </LoadingButton>
-                        <ButtonGroup variant="outlined" fullWidth>
-                           <Button
-                              type="reset"
-                              variant="outlined"
-                              color="secondary"
-                              fullWidth
-                              size="large"
-                              sx={{ mt: 1, display: "none" }}
-                              onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                           >
-                              LIMPIAR
-                           </Button>
-                           <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                              CANCELAR
-                           </Button>
-                        </ButtonGroup>
-                        <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
-                           setValues
-                        </Button>
-                     </Grid>
-                  )}
-               </Formik>
-            </Box>
-         </Card>
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchema}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
+               <InputComponent col={12} idName={"id"} label={"id"} hidden={true} />
+               <InputComponent col={12} idName={"role"} label={"Nombre del Rol *"} placeholder={"Supervisor"} />
+               <InputComponent col={12} idName={"description"} label={"Descripción"} placeholder={"Texto de ayuda"} />
+               <Select2Component col={12} idName={"page_index"} label={"Página de Inicio *"} options={menusSelect} refreshSelect={getMenusSelectIndexToRoles} />
+               <SwitchComponent col={12} idName={"active"} label={"¿Rol Activo?"} textEnable={"Activo"} textDisable={"Inactivo"} />
+            </FormikComponent>
+         </Box>
+         {/* </Card> */}
       </SwipeableDrawer>
    );
 };

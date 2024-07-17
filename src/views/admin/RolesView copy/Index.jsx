@@ -1,11 +1,13 @@
 import RoleForm from "./Form";
 import RoleDT from "./DataTable";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import { useEffect, useState } from "react";
 import { useRoleContext } from "../../../context/RoleContext";
-import { SwipeableDrawer, Typography } from "@mui/material";
+import { 
+   Grid,
+   SwipeableDrawer, Typography } from "@mui/material";
 
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
@@ -36,7 +38,7 @@ const RolesView = () => {
    // const { result } = useLoaderData();
    const { setLoading, toggleDrawer } = useGlobalContext();
    const { pluralName, role, roles, getRoles, roleSelect, getRolesSelectIndex } = useRoleContext();
-   const { getMenus, getMenusSelectIndexToRoles } = useMenuContext();
+   const { getMenus } = useMenuContext();
 
    const [openDialogTable, setOpenDialogTable] = useState(false);
    const [loadPermissions, setLoadPermissions] = useState(false);
@@ -46,7 +48,6 @@ const RolesView = () => {
          setLoading(true);
          getRoles();
          getRolesSelectIndex();
-         getMenusSelectIndexToRoles();
          getMenus(true);
       } catch (error) {
          console.log(error);
@@ -67,10 +68,10 @@ const RolesView = () => {
          </Typography>
          {/* </MainCard> */}
          <Grid container spacing={2}>
-            <Grid xs={12} md={12} sx={{ mb: 2 }}>
+            <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                <FormSelect setOpenDialogTable={setOpenDialogTable} setLoadPermissions={setLoadPermissions} />
             </Grid>
-            <Grid xs={12} md={12} sx={{ mb: 1 }}>
+            <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                <MenusCards key={"MenusCards"} loadPermissions={loadPermissions} />
             </Grid>
          </Grid>

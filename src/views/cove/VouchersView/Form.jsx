@@ -487,7 +487,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                         </Grid>
 
                         {/* Requisitor de Vale */}
-                        {auth.permissions.more_permissions.includes("24@Solicitador Externo") && (
+                        {auth.permissions.more_permissions.includes("Solicitador Externo") && (
                            <>
                               {/* Switch para replaquear */}
                               <Grid item xs={12} md={12} sx={{ mb: -2 }}>
@@ -524,7 +524,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            </>
                         )}
                         {/* Folio Interno */}
-                        <Grid item xs={12} mdOffset={auth.permissions.more_permissions.includes("24@Solicitador Externo") ? 2 : 8} md={4} sx={{ mb: 1 }}>
+                        <Grid item xs={12} mdOffset={auth.permissions.more_permissions.includes("Solicitador Externo") ? 2 : 8} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="internal_folio"
                               name="internal_folio"

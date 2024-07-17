@@ -1,12 +1,15 @@
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { colorPrimaryDark, colorSecondaryDark } from "../context/GlobalContext";
 
 const Success = (msg, timer = 1500) => {
    withReactContent(Swal).fire({
       icon: "success",
       html: `<h3>${msg}</h3>`,
-      showConfirmButton: false,
-      timer
+      confirmButtonColor: colorPrimaryDark, // "#3e3e3e"
+      showConfirmButton: timer == null ? true : false,
+      timer,
+      confirmButtonText: "<b>OK</b>"
    });
 };
 
@@ -15,7 +18,8 @@ const Error = (msg) => {
       icon: "error",
       title: `Error!`,
       html: `${msg}`,
-      confirmButtonColor: "#3e3e3e"
+      confirmButtonColor: colorPrimaryDark, // "#3e3e3e"
+      confirmButtonText: "<b>OK</b>"
    });
 };
 
@@ -23,7 +27,8 @@ const Info = (msg) => {
    withReactContent(Swal).fire({
       icon: "info",
       html: `<h3>${msg}</h3>`,
-      confirmButtonColor: "#3e3e3e"
+      confirmButtonColor: colorPrimaryDark, // "#3e3e3e"
+      confirmButtonText: "<b>OK</b>"
    });
 };
 
@@ -31,19 +36,20 @@ const Warning = (msg) => {
    withReactContent(Swal).fire({
       icon: "warning",
       html: `<h3>${msg}</h3>`,
-      confirmButtonColor: "#3e3e3e"
+      confirmButtonColor: colorPrimaryDark, // "#3e3e3e"
+      confirmButtonText: "<b>OK</b>"
    });
 };
-const Question = (msg, confirmText = "<b>Si, eliminar!</b>", cancelText = "<b>No, cancelar!</b>") => {
+const Question = (msg, confirmText, cancelText) => {
    let res = null;
    withReactContent(Swal)
       .fire({
          icon: "question",
          html: `<h3>${msg}</h3>`,
-         confirmButtonText: `<b>${confirmText}</b>` || "<b>Si, eliminar!</b>",
-         confirmButtonColor: "green",
+         confirmButtonText: `<b>${confirmText}<b/>` || "<b>Si, eliminar!<b/>",
+         confirmButtonColor: colorPrimaryDark, //"green",
          showCancelButton: true,
-         cancelButtonText: `<b>${cancelText}</b>` || "<b>No, cancelar!</b>",
+         cancelButtonText: `<b>${cancelText}<b/>` || "<b>No, cancelar!<b/>",
          reverseButtons: true
       })
       .then((result) => {
@@ -56,20 +62,21 @@ const Customizable = (msg, icon, showConfirmButton = false, timer = 1500) => {
    withReactContent(Swal).fire({
       icon,
       html: `<h3>${msg}</h3>`,
-      confirmButtonColor: "#3e3e3e",
+      confirmButtonColor: colorPrimaryDark, //"#3e3e3e",
       showConfirmButton,
-      timer: timer && timer
+      timer,
+      confirmButtonText: "<b>OK</b>"
    });
 };
 
-export const QuestionAlertConfig = (msg, confirmText = "<b>Si, eliminar!</b>", cancelText = "<b>No, cancelar!</b>", icon = "question") => {
+export const QuestionAlertConfig = (msg, confirmText = "Si, eliminar!", cancelText = "No, cancelar!", showCancelButton = true) => {
    return {
-      icon: icon,
+      icon: "question",
       html: `<h3>${msg}</h3>`,
-      confirmButtonText: `<b>${confirmText}</b>` || "<b>Si, eliminar!</b>",
-      confirmButtonColor: "green",
-      showCancelButton: true,
-      cancelButtonText: `<b>${cancelText}</b>` || "<b>No, cancelar!</b>",
+      confirmButtonText: `<b>${confirmText}<b/>` || "<b>Si, eliminar!<b/>",
+      confirmButtonColor: colorPrimaryDark, //"green",
+      showCancelButton: showCancelButton,
+      cancelButtonText: `<b>${cancelText}<b/>` || "<b>No, cancelar!<b/>",
       reverseButtons: true
    };
 };

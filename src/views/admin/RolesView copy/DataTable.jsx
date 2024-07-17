@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
+import IconEdit from "../../../components/icons/IconEdit";
+import IconDelete from "../../../components/icons/IconDelete";
 
 import { useRoleContext } from "../../../context/RoleContext";
 import Swal from "sweetalert2";
@@ -12,13 +14,12 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
+import SwitchComponent from "../../../components/SwitchComponent";
 
 const RoleDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, role, roles, getRoles, showRole, deleteRole, DisEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle, formikRef } =
-      useRoleContext();
+   const { singularName, role, roles, getRoles, showRole, deleteRole, DisEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle } = useRoleContext();
    const globalFilterFields = ["role", "description", "page_index", "active", "created_at"];
 
    // #region BodysTemplate
@@ -36,14 +37,14 @@ const RoleDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "role", header: "Role", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null },
-      { field: "page_index", header: "Página Principal", sortable: true, functionEdit: null, body: PageIndexBodyTemplate, filterField: null }
+      { field: "role", header: "Role", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
+      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filter: true, filterField: null },
+      { field: "page_index", header: "Página Principal", sortable: true, functionEdit: null, body: PageIndexBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
-         // { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null }
+         // { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);
@@ -52,8 +53,6 @@ const RoleDT = () => {
       try {
          // resetRole();
          resetFormData();
-         formikRef.current.resetForm();
-
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -68,9 +67,7 @@ const RoleDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         const axiosResponse = await showRole(id);
-         formikRef.current.setValues(axiosResponse.result);
-
+         await showRole(id);
          // setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -124,7 +121,7 @@ const RoleDT = () => {
             {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchIOSComponent checked={Boolean(active)} />
+                     <SwitchComponent checked={Boolean(active)} />
                   </Button>
                </Tooltip>
             )}
