@@ -203,6 +203,7 @@ export const InputComponent = ({
    focus,
    icon = null,
    handleChangeExtra = null,
+   handleBlurExtra = null,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -230,6 +231,9 @@ export const InputComponent = ({
 
    const handleOnChangeExtra = (e) => {
       return handleChangeExtra(e.target.value);
+   };
+   const handleOnBlurExtra = (e) => {
+      return handleBlurExtra(e.target.value);
    };
 
    useEffect(() => {
@@ -270,6 +274,14 @@ export const InputComponent = ({
                            label={label}
                            type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
                            variant={variant}
+                           onChange={(e) => {
+                              formik.handleChange(e);
+                              handleChangeExtra != null ? handleOnChangeExtra(e) : null;
+                           }}
+                           onBlur={(e) => {
+                              formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
+                              handleBlurExtra != null ? handleOnBlurExtra(e) : null;
+                           }}
                            onInput={(e) => {
                               textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
                            }}
@@ -307,12 +319,13 @@ export const InputComponent = ({
                              ? parseInt(formik.values[idName])
                              : ""
                      }
-                     onChange={formik.handleChange} // Utiliza el handleChange de Formik
+                     onChange={(e) => {
+                        formik.handleChange(e);
+                        handleChangeExtra != null ? handleOnChangeExtra(e) : null;
+                     }}
                      onBlur={(e) => {
                         formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
-
-                        // Agrega tu lógica adicional aquí
-                        // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
+                        handleBlurExtra != null ? handleOnBlurExtra(e) : null;
                      }}
                      onInput={(e) => {
                         textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
@@ -365,9 +378,7 @@ export const InputComponent = ({
                      }}
                      onBlur={(e) => {
                         formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
-
-                        // Agrega tu lógica adicional aquí
-                        // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
+                        handleBlurExtra != null ? handleOnBlurExtra(e) : null;
                      }}
                      onInput={(e) => {
                         textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;

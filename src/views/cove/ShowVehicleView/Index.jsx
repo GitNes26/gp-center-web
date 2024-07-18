@@ -469,14 +469,16 @@ const ShowVehicleView = () => {
          </MainCard>
 
          <UserContextProvider>
-            <ModalService open={openService} setOpen={setOpenService} stockNumber={vehicle ? vehicle.stock_number : 0} />
-            <ModalAssign open={openAssign} setOpen={setOpenAssign} />
-            <ModalLoan open={openLoan} setOpen={setOpenLoan} />
-            <ModalDeliver open={openDeliver} setOpen={setOpenDeliver} />
-            <ModalReturnLoan open={openReturnLoan} setOpen={setOpenReturnLoan} />
+            {openService && (
+               <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} stockNumber={vehicle ? vehicle.stock_number : 0} />
+            )}
+            {openAssign && <ModalAssign open={openAssign} setOpen={setOpenAssign} />}
+            {openLoan && <ModalLoan open={openLoan} setOpen={setOpenLoan} />}
+            {openDeliver && <ModalDeliver open={openDeliver} setOpen={setOpenDeliver} />}
+            {openReturnLoan && <ModalReturnLoan open={openReturnLoan} setOpen={setOpenReturnLoan} />}
          </UserContextProvider>
-         <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />
-         <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />
+         {openDialogPlates && <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />}
+         {openDialogHistory && <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />}
          {/* <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} /> */}
       </>
    );
