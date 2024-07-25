@@ -40,7 +40,7 @@ import ModalLoan from "./ModalLoan";
 import { useDriverContext } from "../../../context/DriverContext";
 import ModalDeliver from "./ModalDeliver";
 import ModalReturnLoan from "./ModalReturnLoan";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { eventEnterKeyUp } from "../../../utils/Events";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -75,6 +75,7 @@ const sizeBtns = 150;
 const ShowVehicleView = () => {
    const { stock_number } = useParams();
    const searchRef = useRef(null);
+   const navigate = useNavigate();
 
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
@@ -141,6 +142,8 @@ const ShowVehicleView = () => {
                setSearch("");
                setLoadingAction(false);
                if (!res.result) return Toast.Info(res.alert_title);
+               navigate(`/admin/${search}`);
+
                setGrowOn(true);
                setClassesImgVehicle("zoom-in");
             }, 850);
@@ -469,9 +472,7 @@ const ShowVehicleView = () => {
          </MainCard>
 
          <UserContextProvider>
-            {openService && (
-               <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} stockNumber={vehicle ? vehicle.stock_number : 0} />
-            )}
+            {openService && <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} />}
             {openAssign && <ModalAssign open={openAssign} setOpen={setOpenAssign} />}
             {openLoan && <ModalLoan open={openLoan} setOpen={setOpenLoan} />}
             {openDeliver && <ModalDeliver open={openDeliver} setOpen={setOpenDeliver} />}

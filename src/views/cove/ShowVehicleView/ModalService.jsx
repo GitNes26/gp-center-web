@@ -1,31 +1,34 @@
 import * as Yup from "yup";
 
-import { Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ModalComponent } from "../../../components/ModalComponent";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { colorPrimaryDark, useGlobalContext } from "../../../context/GlobalContext";
 import Toast from "../../../utils/Toast";
-import { DatePickerComponent, FileInputComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
-import { MonetizationOn } from "@mui/icons-material";
+import { DatePickerComponent, FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
+import { useParams } from "react-router-dom";
+import ClockComponent from "../../../components/ClockComponent";
+import { Grid } from "@mui/material";
+import sAlert from "../../../utils/sAlert";
+import { useServiceContext } from "../../../context/ServiceContext";
+import { useVehicleContext } from "../../../context/VehicleContext";
+function ModalService({ open, setOpen, modalTitle, maxWidth }) {
+   const { stock_number } = useParams();
 
-const initialValues = {
-   id: 0,
-   folio: 0,
-   relationship_id: "",
-   amount_paid: "",
-   img_evidence: "",
-   paid_feedback: "",
-   paid_at: ""
-};
-function ModalService({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
+   const initialValues = {
+      id: 0,
+      vehicle_id: 0,
+      stock_number: stock_number,
+      contact_name: "",
+      contact_phone: "",
+      pre_diagnosis: ""
+   };
+
    const { setLoadingAction } = useGlobalContext();
-   // const { updateStatusBeca } = useRequestBecaContext();
-   // const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
+   const { vehicle, showVehicle, showVehicleBy } = useVehicleContext();
+   const { /* formData, setFormData,  resetFormData,*/ service, showService, createService, updateReport, textBtnSubmit, setTextBtnSumbit } = useServiceContext();
 
    const formikRef = useRef();
    const [formData, setFormData] = useState(initialValues);
-
-   const [textValue, setTextValue] = useState("");
 
    const handleCancel = (resetForm) => {
       try {
@@ -43,14 +46,16 @@ function ModalService({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         if (!vehicle) return Toast.Warning("La unidad a ingresar debe estar registrada en CoVe.");
+         // if (!vehicle) return Toast.Warning("La unidad a ingresar debe estar registrada en CoVe.");
+         const res = await showVehicleBy("stock_number", stock_number);
+         values.vehicle_id = res.result.id;
 
-         values.folio = folio;
-         values.paid_at = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
 
          setLoadingAction(true);
-         // const axiosResponse = await updateStatusBeca(folio, "PAGANDO", values, statusCurrent);
+         let axiosResponse;
+         if (values.id == 0) axiosResponse = await createService(values);
+         else axiosResponse = await updateReport(values);
 
          if (axiosResponse.status_code === 200) {
             resetForm();
@@ -58,7 +63,8 @@ function ModalService({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
          }
          setSubmitting(false);
          setLoadingAction(false);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         sAlert.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, true, null);
+         showVehicle(vehicle.id);
          setOpen(false);
       } catch (error) {
          console.error(error);
@@ -96,11 +102,6 @@ function ModalService({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       setFieldValue("vehicle_id", res.result.id);
    };
 
-   const handleChangeAmountPaid = (value) => {
-      if (value.length == 0) return setTextValue("");
-      setTextValue(numberToText(parseFloat(value)));
-   };
-
    const validationSchema = Yup.object().shape({
       stock_number: Yup.number("Solo números").required("Número de Inventario requerido"),
       contact_name: Yup.string().trim().required("Nombre de contacto requerido"),
@@ -128,7 +129,7 @@ function ModalService({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} styleInput={2} />
 
             <InputComponent
-               col={6}
+               col={3}
                idName={"stock_number"}
                label={"N° Económico"}
                placeholder={"Ingresa el N° Unidad"}
@@ -138,45 +139,39 @@ function ModalService({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
                // handleBlurExtra={handleBlurStockNumber}
                styleInput={2}
             />
-            <DatePickerComponent col={6} idName={"dateTime"} label={"Fecha y Hora de Registro"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} styleInput={2} />
+            <Grid container sm={9} justifyContent={"end"}>
+               <ClockComponent stylesBox={{}} textColor={colorPrimaryDark} />
+            </Grid>
+            {/* <DatePickerComponent col={6} idName={"dateTime"} label={"Fecha y Hora de Registro"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} styleInput={2} /> */}
 
             <InputComponent
                col={7}
                idName={"contact_name"}
                label={"Nombre de contacto"}
-               placeholder={"Ingresa un nombre a contactar"}
+               placeholder={"Ingresa un nombre para contactar"}
                textStyleCase={true}
                // disabled={vehicle ? false : true}
                styleInput={2}
             />
-            <Select2Component
-               col={5}
-               idName={"relationship_id"}
-               label={"Parentezco *"}
-               options={[]}
-               pluralName={"Parentezcos"}
-               // refreshSelect={}
-            />
-            <InputComponent col={7} idName={"paid_to"} label={"Nombre de quien Recibio el pago *"} placeholder={"Nombre Completo"} textStyleCase={true} />
+
             <InputComponent
-               col={2}
-               idName={"amount_paid"}
-               label={"Monto *"}
-               placeholder={"$999.99"}
-               type={"numeric"}
-               icon={<MonetizationOn />}
-               handleChangeExtra={handleChangeAmountPaid}
+               col={5}
+               idName={"contact_phone"}
+               label={"Teléfono de contacto"}
+               placeholder={"Ingresa un número telefónico a 10 dígitos"}
+               textStyleCase={true}
+               inputProps={{ maxLength: 10 }}
+               styleInput={2}
             />
-            <Typography color={"GrayText"} sx={{ display: "flex", alignItems: "center", fontStyle: "italic", fontWeight: "bolder" }}>
-               {textValue}
-            </Typography>
+
             <InputComponent
                col={12}
-               idName={"paid_feedback"}
-               label={"Comentarios (opcional)"}
-               placeholder={"Escriba comentarios u observaciones si existen..."}
+               idName={"pre_diagnosis"}
+               label={"Diagnóstico inicial *"}
+               placeholder={"Describa la falla en la unidad..."}
                textStyleCase={null}
-               rows={3}
+               rows={6}
+               styleInput={2}
             />
          </FormikComponent>
       </ModalComponent>

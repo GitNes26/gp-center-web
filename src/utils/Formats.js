@@ -59,7 +59,31 @@ export function formatDatetime(the_date, long_format = true, format = null) {
 
    date = new Date(the_date);
    const formato = !format ? (long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY") : format;
-   return (datetime = dayjs(date).format(formato));
+   datetime = dayjs(date).format(formato);
+
+   if (["LL", "LLL", "ll", "lll", "sello"].includes(format)) {
+      const formato = long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY";
+      datetime = dayjs(date).format(formato);
+
+      const mounths = {
+         "01": format == "LL" ? "-ENE-" : format == "LLL" ? "-ENERO-" : format == "ll" ? " de ene de " : format == "lll" ? " de enero de " : " ENE ",
+         "02": format == "LL" ? "-FEB-" : format == "LLL" ? "-FEBRERO-" : format == "ll" ? " de feb de " : format == "lll" ? " de febrero de " : " FEB ",
+         "03": format == "LL" ? "-MAR-" : format == "LLL" ? "-MARZO-" : format == "ll" ? " de mar de " : format == "lll" ? " de marzo de " : " MAR ",
+         "04": format == "LL" ? "-ABR-" : format == "LLL" ? "-ABRIL-" : format == "ll" ? " de abr de " : format == "lll" ? " de abril de " : " ABR ",
+         "05": format == "LL" ? "-MAY-" : format == "LLL" ? "-MAYO-" : format == "ll" ? " de may de " : format == "lll" ? " de mayo de " : " MAY ",
+         "06": format == "LL" ? "-JUN-" : format == "LLL" ? "-JUNIO-" : format == "ll" ? " de jun de " : format == "lll" ? " de junio de " : " JUN ",
+         "07": format == "LL" ? "-JUL-" : format == "LLL" ? "-JULIO-" : format == "ll" ? " de jul de " : format == "lll" ? " de julio de " : " JUL ",
+         "08": format == "LL" ? "-AGO-" : format == "LLL" ? "-AGOSTO-" : format == "ll" ? " de ago de " : format == "lll" ? " de agosto de " : " AGO ",
+         "09": format == "LL" ? "-SEP-" : format == "LLL" ? "-SEPTIEMBRE-" : format == "ll" ? " de sep de " : format == "lll" ? " de septiembre de " : " SEP ",
+         10: format == "LL" ? "-OCT-" : format == "LLL" ? "-OCTUBRE-" : format == "ll" ? " de oct de " : format == "lll" ? " de octubre de " : " OCT ",
+         11: format == "LL" ? "-NOV-" : format == "LLL" ? "-NOVIEMBRE-" : format == "ll" ? " de nov de " : format == "lll" ? " de noviembre de " : " NOV ",
+         12: format == "LL" ? "-DIC-" : format == "LLL" ? "-DICIEMBRE-" : format == "ll" ? " de dic de " : format == "lll" ? " de diciembre de " : " DIC "
+      };
+      const mounthNumber = datetime.split("-")[1];
+
+      datetime = datetime.replace(`-${mounthNumber}-`, `${mounths[mounthNumber]}`);
+   }
+   return datetime;
    //#endregion OPCION DayJS
 
    //#region OPCION MomentJS

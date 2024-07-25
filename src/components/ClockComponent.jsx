@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { formatDatetime } from "../utils/Formats";
 
-const ClockComponent = ({ stylesBox, getValue }) => {
+const ClockComponent = ({ stylesBox, textColor = "whitesmoke", getValue }) => {
    const [currentDatetime, setCurrenDatetime] = useState(new Date());
 
    useEffect(() => {
@@ -16,7 +16,7 @@ const ClockComponent = ({ stylesBox, getValue }) => {
 
    return (
       <Box sx={stylesBox}>
-         <Typography color={"whitesmoke"} fontWeight={"semibold"} variant="h4">
+         <Typography color={textColor} fontWeight={"semibold"} variant="h4">
             {formatDatetime(currentDatetime, true, "dddd DD/MM/YYYY h:mm:ss a")}
             {/* {currentDatetime.toLocaleDateString()} {currentDatetime.toLocaleTimeString()} */}
          </Typography>

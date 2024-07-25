@@ -14,7 +14,7 @@ import VehicleStatusView from "../views/cove/VehicleStatusView/Index";
 import VehicleContextProvider from "../context/VehicleContext";
 import VehiclePlateContextProvider from "../context/VehiclePlateContext";
 import ServiceContextProvider from "../context/ServiceContext";
-import ServicesView from "../views/garage/ServicesView/ServicesView";
+import ServicesView from "../views/garage/ServicesView/Index";
 import MenuContextProvider from "../context/MenuContext";
 import DirectorContextProvider from "../context/DirectorContext";
 import AdministratorsView, { loaderIndexAdministratorsView } from "../views/admin/AdministratorsView/Index";

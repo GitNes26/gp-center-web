@@ -301,56 +301,61 @@ export const InputComponent = ({
          ) : (
             <>
                {styleInput == 2 ? (
-                  <OutlineInputStyle
-                     key={idName}
-                     name={idName}
-                     label={styleInput == 1 && label}
-                     placeholder={placeholder}
-                     type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
-                     ref={inputRef}
-                     variant={variant}
-                     // value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
-                     value={
-                        formik.values && formik.values[idName]
-                           ? type === "number"
-                              ? formik.values[idName].toString().replace(/^0+(?=\d)/, "")
-                              : formik.values[idName]
-                           : type === "number" && !isNaN(parseInt(formik.values[idName]))
-                             ? parseInt(formik.values[idName])
-                             : ""
-                     }
-                     onChange={(e) => {
-                        formik.handleChange(e);
-                        handleChangeExtra != null ? handleOnChangeExtra(e) : null;
-                     }}
-                     onBlur={(e) => {
-                        formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
-                        handleBlurExtra != null ? handleOnBlurExtra(e) : null;
-                     }}
-                     onInput={(e) => {
-                        textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
-                     }}
-                     {...props}
-                     disabled={loading || disabled}
-                     fullWidth
-                     multiline={rows > 0 ? true : false}
-                     rows={rows && rows} // Establece las filas solo si type no está definido
-                     error={isError}
-                     helperText={isError ? error : helperText}
-                     InputLabelProps={{
-                        style: color ? { color: color } : {}
-                     }}
-                     size={size}
-                     sx={sxInput}
-                     startAdornment={
-                        // <Tooltip title={""} placement={"top"}>
-                        <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                           <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
-                           {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
-                        </InputAdornment>
-                        // </Tooltip>
-                     }
-                  />
+                  <>
+                     <OutlineInputStyle
+                        key={idName}
+                        name={idName}
+                        label={styleInput == 1 && label}
+                        placeholder={placeholder}
+                        type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                        ref={inputRef}
+                        variant={variant}
+                        // value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                        value={
+                           formik.values && formik.values[idName]
+                              ? type === "number"
+                                 ? formik.values[idName].toString().replace(/^0+(?=\d)/, "")
+                                 : formik.values[idName]
+                              : type === "number" && !isNaN(parseInt(formik.values[idName]))
+                                ? parseInt(formik.values[idName])
+                                : ""
+                        }
+                        onChange={(e) => {
+                           formik.handleChange(e);
+                           handleChangeExtra != null ? handleOnChangeExtra(e) : null;
+                        }}
+                        onBlur={(e) => {
+                           formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
+                           handleBlurExtra != null ? handleOnBlurExtra(e) : null;
+                        }}
+                        onInput={(e) => {
+                           textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                        }}
+                        {...props}
+                        disabled={loading || disabled}
+                        fullWidth
+                        multiline={rows > 0 ? true : false}
+                        rows={rows && rows} // Establece las filas solo si type no está definido
+                        error={isError}
+                        helperText={isError ? error : helperText}
+                        InputLabelProps={{
+                           style: color ? { color: color } : {}
+                        }}
+                        size={size}
+                        sx={sxInput}
+                        startAdornment={
+                           // <Tooltip title={""} placement={"top"}>
+                           <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                              <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
+                              {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
+                           </InputAdornment>
+                           // </Tooltip>
+                        }
+                     />
+                     <FormHelperText error={isError} id={`ht-${idName}`} sx={{ display: "flex" , width:"100%"}}>
+                        {isError ? error : helperText}
+                     </FormHelperText>
+                  </>
                ) : (
                   <TextField
                      key={idName}
