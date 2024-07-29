@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
@@ -16,6 +16,8 @@ import { formatDatetime, formatPhone } from "../../../utils/Formats";
 // import { GetDataCommunity } from "../../../utils/GetDataCommunity";
 import { useAuthContext } from "../../../context/AuthContext";
 import { getCommunity } from "../../../components/Form/FormikComponents";
+import { IconEye } from "@tabler/icons";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 const ServiceDT = () => {
    const { auth } = useAuthContext();
@@ -47,6 +49,8 @@ const ServiceDT = () => {
       formikRef
    } = useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
+   const [openService, setOpenService] = useState(false);
+   const [objService, setObjService] = useState(null);
 
    // #region BodysTemplate
    const FolioBodyTemplate = (obj) => (
@@ -79,11 +83,11 @@ const ServiceDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "folio", header: "Folio", sortable: true, functionEdit: null, body: FolioBodyTemplate, filterField: null },
-      { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filterField: null },
-      { field: "contact_name", header: "Contacto", sortable: true, functionEdit: null, body: ContactBodyTemplate, filterField: null },
-      { field: "pre_diagnosis", header: "Pre Diagnostico", sortable: true, functionEdit: null, body: PreDiagnosisBodyTemplate, filterField: null },
-      { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filterField: null }
+      { field: "folio", header: "Folio", sortable: true, functionEdit: null, body: FolioBodyTemplate, filter: true, filterField: null },
+      { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
+      { field: "contact_name", header: "Contacto", sortable: true, functionEdit: null, body: ContactBodyTemplate, filter: true, filterField: null },
+      { field: "pre_diagnosis", header: "Pre Diagnostico", sortable: true, functionEdit: null, body: PreDiagnosisBodyTemplate, filter: true, filterField: null },
+      { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -173,9 +177,25 @@ const ServiceDT = () => {
    //    }
    // };
 
-   const ButtonsAction = ({ id, name, active }) => {
+   const handleClickShowRequest = (id, folio, obj) => {
+      Toast.Info("Solicitud: Folio " + folio);
+      setObjService(obj);
+      setOpenService(true);
+   };
+
+   const ButtonsAction = ({ id, folio, obj }) => {
       return (
          <ButtonGroup variant="outlined">
+            <Tooltip title={`Ver Solicitud de ${singularName}`} placement="top">
+               <Button color="info" onClick={() => handleClickShowRequest(id, folio, obj)}>
+                  <IconEye />
+               </Button>
+            </Tooltip>
+            <Tooltip title={`Cargar Material al ${singularName}`} placement="top">
+               <Button color="secondary" oonClick={() => handleClickLoadMaterial(id, folio, obj)}>
+                  <FileUploadIcon />
+               </Button>
+            </Tooltip>
             {auth.permissions.update && (
                <Tooltip title={`Editar ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>
@@ -209,7 +229,7 @@ const ServiceDT = () => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={`${obj.code} - ${obj.services}`} active={obj.active} />;
+            register.actions = <ButtonsAction id={obj.id} folio={obj.folio} obj={obj} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(services[0]));
@@ -230,7 +250,7 @@ const ServiceDT = () => {
          columns={columns}
          data={data}
          globalFilterFields={globalFilterFields}
-         headerFilters={false}
+         headerFilters={true}
          btnAdd={auth.permissions.create}
          handleClickAdd={handleClickAdd}
          rowEdit={false}

@@ -9,7 +9,7 @@ import { useUserContext } from "../../../context/UserContext";
 import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import UserDT from "./DataTable";
 
 const UsersView = () => {
@@ -35,7 +35,7 @@ const UsersView = () => {
          </Alert> */}
 
          {/* <MainCard > */}
-         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+         <Typography variant="h1" color={gpcDark} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
          {/* <DataTableComponent /> */}

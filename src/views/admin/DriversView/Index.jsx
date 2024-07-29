@@ -9,7 +9,7 @@ import { useDriverContext } from "../../../context/DriverContext";
 import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import DriverDT from "./DataTable";
 // import { useDepartmentContext } from "../../../context/DepartmentContext";
 import { useDirectorContext } from "../../../context/DirectorContext";
@@ -41,7 +41,7 @@ const DriversView = () => {
          </Alert> */}
 
          {/* <MainCard > */}
-         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+         <Typography variant="h1" color={gpcDark} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
          {/* <DataTableComponent /> */}

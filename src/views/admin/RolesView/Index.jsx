@@ -8,7 +8,7 @@ import { useRoleContext } from "../../../context/RoleContext";
 import { SwipeableDrawer, Typography } from "@mui/material";
 
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import FormSelect from "./FormSelect";
 import { Box } from "@mui/system";
 import { makeStyles } from "@mui/styles";
@@ -62,7 +62,7 @@ const RolesView = () => {
          </Alert> */}
 
          {/* <MainCard > */}
-         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+         <Typography variant="h1" color={gpcDark} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase() + " Y PERMISOS"}
          </Typography>
          {/* </MainCard> */}

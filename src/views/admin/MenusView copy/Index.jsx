@@ -2,9 +2,7 @@ import MenuForm from "./Form";
 import MenuDT from "./DataTable";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Grid,
-   Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 import { useEffect } from "react";
 import { useMenuContext } from "../../../context/MenuContext";
@@ -35,7 +33,7 @@ const MenusView = () => {
          </Alert> */}
 
          {/* <MainCard > */}
-         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+         <Typography variant="h1" gpcDark mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
          {/* </MainCard> */}

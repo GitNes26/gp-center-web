@@ -8,16 +8,16 @@ import { Box } from "@mui/system";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Masonry } from "@mui/lab";
 import Toast from "../../../utils/Toast";
-import { colorSecondaryLight, colorSecondaryMain } from "../../../context/GlobalContext";
+import { colorSecondaryLight, colorSecondaryMain, gpcDark } from "../../../context/GlobalContext";
 
 const useStyles = makeStyles((theme) => ({
-   title: { color: "#1E2126" },
+   title: { color: gpcDark },
 
    cardHeader: { border: `2px solid ${colorSecondaryMain}`, backgroundColor: colorSecondaryMain /* "#525C6A" */ },
    titleHeader: { color: "whitesmoke" },
 
    cardChildren: { border: `1px solid ${colorSecondaryLight}`, backgroundColor: colorSecondaryLight /* "#c2cddd" */ },
-   titleChildren: { color: "#1E2126" }
+   titleChildren: { color: gpcDark }
 }));
 
 const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, handleCheckboxChange, isChecked, readOnly }) => {

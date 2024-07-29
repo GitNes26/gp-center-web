@@ -1,22 +1,21 @@
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { 
-   Grid,
-   Backdrop, Card, Checkbox, CircularProgress, FormControlLabel, Typography } from "@mui/material";
+import { Grid, Backdrop, Card, Checkbox, CircularProgress, FormControlLabel, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useRoleContext } from "../../../context/RoleContext";
 import { useMenuContext } from "../../../context/MenuContext";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Masonry } from "@mui/lab";
+import { gpcDark } from "../../../context/GlobalContext";
 
 const useStyles = makeStyles((theme) => ({
-   title: { color: "#1E2126" },
+   title: { color: gpcDark },
 
    cardHeader: { border: "2px solid #525C6A", backgroundColor: "#525C6A" },
    titleHeader: { color: "whitesmoke" },
 
    cardChildren: { border: "1px solid #c2cddd", backgroundColor: "#c2cddd" },
-   titleChildren: { color: "#1E2126" }
+   titleChildren: { color: gpcDark }
 }));
 
 const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, handleCheckboxChange, isChecked }) => {

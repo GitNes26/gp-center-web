@@ -11,7 +11,7 @@ import { useVoucherContext } from "../../../context/VoucherContext";
 import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import VoucherDT from "./DataTable";
 import ModalCancelComments from "./ModalCancelComments";
 import ModalContentPDF from "./ModalContentPDF";
@@ -48,7 +48,7 @@ const VouchersView = () => {
             Estas seguro de eliminar a — <strong>registro 1!</strong>
          </Alert> */}
 
-         <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
+         <Typography variant="h1" color={gpcDark} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
          <VoucherDT

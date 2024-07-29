@@ -37,7 +37,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/es";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
-import { colorPrimaryDark, useGlobalContext } from "../../context/GlobalContext";
+import { colorPrimaryDark, gpcDark, useGlobalContext } from "../../context/GlobalContext";
 // import Select2Component from "./Select2Component";
 // import { InputAdornment, OutlinedInput } from "@mui/material";
 import { shouldForwardProp, styled } from "@mui/system";
@@ -352,7 +352,7 @@ export const InputComponent = ({
                            // </Tooltip>
                         }
                      />
-                     <FormHelperText error={isError} id={`ht-${idName}`} sx={{ display: "flex" , width:"100%"}}>
+                     <FormHelperText error={isError} id={`ht-${idName}`} sx={{ display: "flex", width: "100%" }}>
                         {isError ? error : helperText}
                      </FormHelperText>
                   </>
@@ -1021,10 +1021,10 @@ export const RadioButtonComponent = ({
                               sx={{
                                  color: "black",
                                  "&.Mui-checked": {
-                                    color: color == "dark" ? "#1E2126" : color
+                                    color: color == "dark" ? gpcDark : color
                                  },
                                  "&.MuiSvgIcon-root": {
-                                    fill: color == "dark" ? "#1E2126" : color
+                                    fill: color == "dark" ? gpcDark : color
                                  }
                               }}
                            />
@@ -1038,13 +1038,13 @@ export const RadioButtonComponent = ({
                               color: "#c5c8cc" //"#1976d2"
                            },
                            "&.MuiFormControlLabel-label": {
-                              // color: "#1E2126", //"#1976d2",
-                              color: color == "dark" ? "#1E2126" : color,
+                              // color: gpcDark, //"#1976d2",
+                              color: color == "dark" ? gpcDark : color,
                               fontSize: "14px"
                            },
                            "&.Mui-checked": {
-                              color: color == "dark" ? "#1E2126" : color
-                              // color: "#1E2126" //"#1976d2"
+                              color: color == "dark" ? gpcDark : color
+                              // color: gpcDark //"#1976d2"
                            }
                         }}
                      />
