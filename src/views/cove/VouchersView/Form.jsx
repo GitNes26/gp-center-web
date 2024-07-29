@@ -26,7 +26,7 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
-import { formatDatetimeToSQL, handleInputFormik } from "../../../utils/Formats";
+import { formatDatetimeToSQL, formatToUpperCase, handleInputFormik } from "../../../utils/Formats";
 import { IconButton } from "@mui/material";
 import Select2Component from "../../../components/Form/Select2Component";
 import axios from "axios";
@@ -318,6 +318,8 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
          internal_folio: Yup.string().trim().required("Folio Interno requeridos"),
          letter_folio: inAprobation && Yup.string().trim().required("Prefijo requerida"),
          foliated_vouchers: inAprobation && Yup.string().trim().required("Vales Foliados requeridos"),
+         approved_liters: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Listros Aprobados requeridos"),
+         approved_combustible: inAprobation && Yup.string().trim().required("Combustible requerido"),
          // approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
          // vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
          // requested_amount: Yup.number("Solo números").min(0, "Mínimo"),
@@ -436,7 +438,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                  </Tooltip>
                               </Grid>
                               {/* Vales Foliados */}
-                              <Grid item xs={12} md={6} sx={{ mb: 2 }}>
+                              <Grid item xs={12} md={3} sx={{ mb: 2 }}>
                                  <Tooltip title="En caso de poner más de un folio, ingresarlos como si fuera un rango de folios, con guion medio; ej. 1-6">
                                     <TextField
                                        id="foliated_vouchers"
@@ -459,7 +461,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                  </Tooltip>
                               </Grid>
                               {/* Cantidad de Vales Aprobados */}
-                              <Grid item xs={12} md={4} sx={{ mb: 1 }}>
+                              <Grid item xs={12} md={2} sx={{ mb: 1 }}>
                                  <TextField
                                     id="approved_amount"
                                     name="approved_amount"
@@ -475,6 +477,47 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                     disabled={!inEdit}
                                     error={errors.approved_amount && touched.approved_amount}
                                     helperText={errors.approved_amount && touched.approved_amount && errors.approved_amount}
+                                 />
+                              </Grid>
+                              {/* Litros */}
+                              <Grid item xs={12} md={2} sx={{ mb: 2 }}>
+                                 <TextField
+                                    id="approved_liters"
+                                    name="approved_liters"
+                                    label="Litros Aprobodos *"
+                                    type="number"
+                                    value={values.approved_liters}
+                                    placeholder="10"
+                                    onChange={handleChange}
+                                    onBlur={(e) => {
+                                       handleBlur(e);
+                                    }}
+                                    // InputProps={{}}
+                                    fullWidth
+                                    // disabled={values.id == 0 ? false : true}
+                                    error={errors.approved_liters && touched.approved_liters}
+                                    helperText={errors.approved_liters && touched.approved_liters && errors.approved_liters}
+                                 />
+                              </Grid>
+                              {/* Combustible */}
+                              <Grid item xs={12} md={3} sx={{ mb: 2 }}>
+                                 <TextField
+                                    id="approved_combustible"
+                                    name="approved_combustible"
+                                    label="Combustible *"
+                                    type="text"
+                                    value={values.approved_combustible}
+                                    placeholder="GASOLINA"
+                                    onChange={handleChange}
+                                    onBlur={(e) => {
+                                       handleBlur(e);
+                                    }}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "approved_combustible", true)}
+                                    // InputProps={{}}
+                                    fullWidth
+                                    // disabled={values.id == 0 ? false : true}
+                                    error={errors.approved_combustible && touched.approved_combustible}
+                                    helperText={errors.approved_combustible && touched.approved_combustible && errors.approved_combustible}
                                  />
                               </Grid>
                            </>

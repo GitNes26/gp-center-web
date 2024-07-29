@@ -100,12 +100,12 @@ const ModalContentRecivedPDF = ({ open, setOpen, formTitle = "titulo" }) => {
                   </View>
                   <View style={[stylesPDF.column, { marginRight: 15 }]}>
                      <Text style={[stylesPDF.regular]}> </Text>
-                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom, { verticalAlign: "sub" }]}> </Text>
+                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom, { verticalAlign: "sub" }]}>{voucher.approved_liters}</Text>
                      <Text style={[stylesPDF.bolder]}>LITROS</Text>
                   </View>
                   <View style={[stylesPDF.column, { marginRight: 15 }]}>
                      <Text style={[stylesPDF.regular]}> </Text>
-                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom, { verticalAlign: "sub" }]}> </Text>
+                     <Text style={[stylesPDF.regular, stylesPDF.borderBottom, { verticalAlign: "sub" }]}>{voucher.approved_combustible}</Text>
                      <Text style={[stylesPDF.bolder]}>COMBUSTIBLE</Text>
                      <Text style={[stylesPDF.bolder, stylesPDF.right]}> </Text>
                      <Text style={[stylesPDF.bolder, stylesPDF.right]}> </Text>
