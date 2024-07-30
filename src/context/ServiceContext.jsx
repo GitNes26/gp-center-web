@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
@@ -14,9 +14,23 @@ const formDataInitialState = {
    contact_phone: "",
    pre_diagnosis: "",
    final_diagnosis: null,
+
    status: "",
-   mechanic_id: 0,
    // evidence_img_path: null,
+
+   requested_by: "",
+   requested_at: "",
+
+   approved_by: "",
+   approved_at: "",
+
+   mechanic_id: 0,
+   reviewed_at: "",
+
+   rejected_by: 0,
+   rejected_at: "",
+
+   closed_at: "",
 
    stock_number: "",
    year: "",
@@ -50,6 +64,7 @@ export default function ServiceContextProvider({ children }) {
    const [formData, setFormData] = useState(formDataInitialState);
    const [imgFile, setImgFile] = useState(null);
    const [imagePreview, setImagePreview] = useState(null);
+   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -240,7 +255,8 @@ export default function ServiceContextProvider({ children }) {
             imgFile,
             setImgFile,
             imagePreview,
-            setImagePreview
+            setImagePreview,
+            formikRef
          }}
       >
          {children}

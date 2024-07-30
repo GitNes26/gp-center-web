@@ -189,10 +189,28 @@ const MainRoutes = {
             {
                path: "servicios",
                element: (
-                  <ServiceContextProvider>
-                     <ServicesView />
-                  </ServiceContextProvider>
-               )
+                  <UserContextProvider>
+                     <VehicleContextProvider>
+                        <ServiceContextProvider>
+                           <ServicesView />
+                        </ServiceContextProvider>
+                     </VehicleContextProvider>
+                  </UserContextProvider>
+               ),
+               children: [
+                  {
+                     path: ":status?",
+                     element: (
+                        <UserContextProvider>
+                           <VehicleContextProvider>
+                              <ServiceContextProvider>
+                                 <ServicesView />
+                              </ServiceContextProvider>
+                           </VehicleContextProvider>
+                        </UserContextProvider>
+                     )
+                  }
+               ]
                // loader: loaderIndexModelsView
             },
             {

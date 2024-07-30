@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { formatDatetime } from "../utils/Formats";
 
+
 const ClockComponent = ({ stylesBox, textColor = "whitesmoke", getValue }) => {
    const [currentDatetime, setCurrenDatetime] = useState(new Date());
 

@@ -19,37 +19,12 @@ import { getCommunity } from "../../../components/Form/FormikComponents";
 import { IconEye } from "@tabler/icons";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 
-const ServiceDT = () => {
+const ServiceDT = ({ openService, setOpenService }) => {
    const { auth } = useAuthContext();
-   const {
-      setLoading,
-      setLoadingAction,
-      setOpenDialog,
-      setDisabledState,
-      setDisabledCity,
-      setDisabledColony,
-      setShowLoading,
-      setDataStates,
-      setDataCities,
-      setDataColonies,
-      setDataColoniesComplete
-   } = useGlobalContext();
-   const {
-      singularName,
-      services,
-      getServices,
-      showService,
-      deleteService,
-      formData,
-      setFormData,
-      resetFormData,
-      resetService,
-      setTextBtnSumbit,
-      setFormTitle,
-      formikRef
-   } = useServiceContext();
+   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { singularName, services, getServices, showService, deleteService, formData, resetFormData, setTextBtnSumbit, setFormTitle, formikRef } = useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
-   const [openService, setOpenService] = useState(false);
+   // const [openService, setOpenService] = useState(false);
    const [objService, setObjService] = useState(null);
 
    // #region BodysTemplate
@@ -102,6 +77,7 @@ const ServiceDT = () => {
          resetFormData();
          formikRef.current.resetForm();
          setOpenDialog(true);
+         setOpenService(true);
          // console.log("klasdklasdl");
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -119,23 +95,6 @@ const ServiceDT = () => {
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          const axiosResponse = await showService(id);
 
-         if (formData.community_id > 0) {
-            getCommunity(
-               formData.zip,
-               formikRef.current.setFieldValue,
-               formData.community_id,
-               formData,
-               setFormData,
-               setDisabledState,
-               setDisabledCity,
-               setDisabledColony,
-               setShowLoading,
-               setDataStates,
-               setDataCities,
-               setDataColonies,
-               setDataColoniesComplete
-            );
-         }
          if (formData.description) formData.description == null && (formData.description = "");
          formikRef.current.setValues(axiosResponse.result);
          setOpenDialog(true);
@@ -148,9 +107,9 @@ const ServiceDT = () => {
       }
    };
 
-   const handleClickDelete = async (id, name) => {
+   const handleClickDelete = async (id, folio) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la escuela ${name}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la Solicitu de Servicio con folio #${folio}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
                const axiosResponse = await deleteService(id);
@@ -192,7 +151,7 @@ const ServiceDT = () => {
                </Button>
             </Tooltip>
             <Tooltip title={`Cargar Material al ${singularName}`} placement="top">
-               <Button color="secondary" oonClick={() => handleClickLoadMaterial(id, folio, obj)}>
+               <Button color="secondary" onClick={() => handleClickLoadMaterial(id, folio, obj)}>
                   <FileUploadIcon />
                </Button>
             </Tooltip>
@@ -205,7 +164,7 @@ const ServiceDT = () => {
             )}
             {auth.permissions.delete && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
-                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
+                  <Button color="error" onClick={() => handleClickDelete(id, folio)}>
                      <IconDelete />
                   </Button>
                </Tooltip>

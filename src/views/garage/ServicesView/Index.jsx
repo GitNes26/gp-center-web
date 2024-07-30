@@ -1,26 +1,34 @@
 import ServiceForm from "./Form";
 import ServiceDT from "./DataTable";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useServiceContext } from "../../../context/ServiceContext";
 import { Typography } from "@mui/material";
 import Toast from "../../../utils/Toast";
-import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
+import { gpcDark, ROLE_DIRECTOR, useGlobalContext } from "../../../context/GlobalContext";
+import { useParams } from "react-router-dom";
+import { useAuthContext } from "../../../context/AuthContext";
+import ModalService from "../../cove/ShowVehicleView/ModalService";
+// import ModalService from "./ModalService";
 
 const ServicesView = () => {
+   const { status } = useParams();
+   const { auth } = useAuthContext();
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, school, getServices } = useServiceContext();
 
+   const [openService, setOpenService] = useState(false);
+
    useEffect(() => {
       try {
          setLoading(true);
-         getServices();
+         getServices(status);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [school]);
+   }, [status]);
 
    return (
       <>
@@ -31,12 +39,29 @@ const ServicesView = () => {
 
          {/* <MainCard > */}
          <Typography variant="h1" color={gpcDark} mb={2} textAlign={"center"}>
-            {pluralName.toUpperCase()}
+            {auth.role_id === ROLE_DIRECTOR ? "MIS SOLICITUDES".toUpperCase() : "LISTADO DE SOLICITUDES DE SERVICIO".toUpperCase()} <br />
+            {status != null && (
+               <Typography>
+                  <b>STATUS: </b>
+                  {status == "abiertas"
+                     ? "ABIERTA"
+                     : status == "aprobadas"
+                       ? "APROBADA"
+                       : status == "rechazadas"
+                         ? "RECHAZADA"
+                         : status == "en-revision"
+                           ? "EN REVISIÓN"
+                           : status == "cerradas"
+                             ? "CERRADA"
+                             : ""}
+               </Typography>
+            )}
          </Typography>
-         <ServiceDT />
+         <ServiceDT openService={openService} setOpenService={setOpenService} />
          {/* </MainCard> */}
 
-         <ServiceForm />
+         {/* <ServiceForm /> */}
+         {openService && <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} />}
       </>
    );
 };

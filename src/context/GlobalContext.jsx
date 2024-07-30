@@ -39,7 +39,12 @@ const initialStateCounters = {
    vouchersCreated: 0,
    vouchersVoBo: 0,
    vouchersApproved: 0,
-   vouchersCanceled: 0
+   vouchersCanceled: 0,
+   services: 0,
+   servicesOpened: 0,
+   servicesApproved: 0,
+   servicesInReviewed: 0,
+   servicesClosed: 0
 };
 
 export const GlobalContextProvider = ({ children }) => {

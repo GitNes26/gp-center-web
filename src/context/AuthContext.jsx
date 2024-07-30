@@ -161,53 +161,49 @@ export default function AuthContextProvider({ children }) {
 
          newCounters.vouchers = 0;
          const vouchersData = await Axios.get(`/vouchers`);
-         res.result = vouchersData.data.data.result;
+         res.result.vouchers = vouchersData.data.data.result;
+         const servicesData = await Axios.get(`/services`);
+         res.result.services = servicesData.data.data.result;
          // console.log("vouchersData", res.result);
+         // console.log("servicesData", res.result);
          // console.log("vouchersData", res.result.length);
-         // if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) newCounters.vouchers = res.result.length;
 
-         // if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) {
-         //    // console.log("soy supervisor de vales");
-         //    filterCounters.vouchers = await res.result.filter((data) => ["ALTA"].includes(data.voucher_status));
-         //    // console.log("filterCounters.vouchers", filterCounters.vouchers);
-         //    newCounters.vouchers = filterCounters.vouchers.length;
-         //    // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
-         // } else if (auth.role_id === ROLE_ADMIN_VOUCHER) {
-         //    // console.log("soy admin de vales");
-         //    filterCounters.vouchers = await res.result.filter((data) => ["VoBo"].includes(data.voucher_status));
-         //    newCounters.vouchers = await filterCounters.vouchers.length;
-         //    // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
-         // } else {
-         //    // console.log("soy algo de vales");
-         //    filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.voucher_status));
-         //    newCounters.vouchers = await filterCounters.vouchers.length;
-         //    // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
-         // }
-
-         filterCounters.vouchers = await res.result.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.voucher_status));
-         // console.log("filterCounters.vouchers", filterCounters.vouchers);
+         //#region SECCION DE VOUCHERS
+         filterCounters.vouchers = await res.result.vouchers.filter((data) => ["CREADO", "ALTA", "VoBo", "APROBADA", "CANCELADA"].includes(data.voucher_status));
          newCounters.vouchers = filterCounters.vouchers.length;
-         // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
 
-         filterCounters.vouchersCreated = await res.result.filter((data) => ["CREADO", "ALTA"].includes(data.voucher_status));
-         // console.log("filterCounters.vouchers", filterCounters.vouchers);
+         filterCounters.vouchersCreated = await res.result.vouchers.filter((data) => ["CREADO", "ALTA"].includes(data.voucher_status));
          newCounters.vouchersCreated = filterCounters.vouchersCreated.length;
-         // await filterCounters.vouchers.map((data) => (newCounters.vouchers += data.total));
 
-         filterCounters.vouchersVoBo = await res.result.filter((data) => ["VoBo"].includes(data.voucher_status));
-         // console.log("filterCounters.vouchersVoBo", filterCounters.vouchersVoBo);
+         filterCounters.vouchersVoBo = await res.result.vouchers.filter((data) => ["VoBo"].includes(data.voucher_status));
          newCounters.vouchersVoBo = filterCounters.vouchersVoBo.length;
-         // await filterCounters.vouchersVoBo.map((data) => (newCounters.vouchersVoBo += data.total));
 
-         filterCounters.vouchersApproved = await res.result.filter((data) => ["APROBADA"].includes(data.voucher_status));
-         // console.log("filterCounters.vouchersApproved", filterCounters.vouchersApproved);
+         filterCounters.vouchersApproved = await res.result.vouchers.filter((data) => ["APROBADA"].includes(data.voucher_status));
          newCounters.vouchersApproved = filterCounters.vouchersApproved.length;
-         // await filterCounters.vouchersApproved.map((data) => (newCounters.vouchersApproved += data.total));
 
-         filterCounters.vouchersCanceled = await res.result.filter((data) => ["CANCELADA"].includes(data.voucher_status));
-         // console.log("filterCounters.vouchersCanceled", filterCounters.vouchersCanceled);
+         filterCounters.vouchersCanceled = await res.result.vouchers.filter((data) => ["CANCELADA"].includes(data.voucher_status));
          newCounters.vouchersCanceled = filterCounters.vouchersCanceled.length;
-         // await filterCounters.vouchersCanceled.map((data) => (newCounters.vouchersCanceled += data.total));
+         //#endregion SECCION DE VOUCHERS
+
+         //#region SECCION DE SERVICIOS
+         filterCounters.services = await res.result.services;
+         newCounters.services = filterCounters.services.length;
+
+         filterCounters.servicesOpened = await res.result.services.filter((data) => ["ABIERTA"].includes(data.status));
+         newCounters.servicesOpened = filterCounters.servicesOpened.length;
+
+         filterCounters.servicesApproved = await res.result.services.filter((data) => ["APROBADA"].includes(data.status));
+         newCounters.servicesApproved = filterCounters.servicesApproved.length;
+
+         filterCounters.servicesInReviewed = await res.result.services.filter((data) => ["EN REVISIÓN"].includes(data.status));
+         newCounters.servicesInReviewed = filterCounters.servicesInReviewed.length;
+
+         filterCounters.servicesRejected = await res.result.services.filter((data) => ["RECHAZADA"].includes(data.status));
+         newCounters.servicesRejected = filterCounters.servicesRejected.length;
+
+         filterCounters.servicesClosed = await res.result.services.filter((data) => ["CERRADA"].includes(data.status));
+         newCounters.servicesClosed = filterCounters.servicesClosed.length;
+         //#endregion SECCION DE SERVICIOS
 
          // console.log("newCounters", newCounters);
          setCounters(newCounters);

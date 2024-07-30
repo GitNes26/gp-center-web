@@ -119,7 +119,7 @@ const ServiceMaterialDT = () => {
                </Button>
             </Tooltip> */}
             <Tooltip title={`Cargar Material al ${singularName}`} placement="top">
-               <Button color="secondary" oonClick={() => handleClickLoadMaterial(id, folio, obj)}>
+               <Button color="secondary" onClick={() => handleClickLoadMaterial(id, folio, obj)}>
                   <FileUploadIcon />
                </Button>
             </Tooltip>

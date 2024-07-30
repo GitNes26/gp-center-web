@@ -1,16 +1,16 @@
 import * as Yup from "yup";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ModalComponent } from "../../../components/ModalComponent";
-import { colorPrimaryDark, useGlobalContext } from "../../../context/GlobalContext";
-import Toast from "../../../utils/Toast";
-import { DatePickerComponent, FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ClockComponent from "../../../components/ClockComponent";
 import { Grid } from "@mui/material";
-import sAlert from "../../../utils/sAlert";
-import { useServiceContext } from "../../../context/ServiceContext";
+import { colorPrimaryDark, useGlobalContext } from "../../../context/GlobalContext";
 import { useVehicleContext } from "../../../context/VehicleContext";
+import { useServiceContext } from "../../../context/ServiceContext";
+import Toast from "../../../utils/Toast";
+import sAlert from "../../../utils/sAlert";
+import { ModalComponent } from "../../../components/ModalComponent";
+import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
+import ClockComponent from "../../../components/ClockComponent";
 
 function ModalService({ open, setOpen, modalTitle, maxWidth }) {
    const { stock_number = 0 } = useParams();

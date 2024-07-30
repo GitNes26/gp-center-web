@@ -49,6 +49,7 @@ export function formatDatetime(the_date, long_format = true, format = null) {
    if (the_date == null) return "Sin Fecha";
    //#region OPCION DayJS
    moment.locale("es");
+   dayjs.locale("es");
    let date = new Date(the_date);
    let datetime;
 
