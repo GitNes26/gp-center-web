@@ -57,7 +57,7 @@ export default function ServiceContextProvider({ children }) {
    const pluralName = "Servicios"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
-   const [textBtnSubmit, setTextBtnSumbit] = useState("REGISTRAR");
+   const [textBtnSubmit, setTextBtnSumbit] = useState("SOLICITAR");
 
    const [services, setServices] = useState([]);
    const [service, setService] = useState(null);
@@ -101,11 +101,23 @@ export default function ServiceContextProvider({ children }) {
       }
    };
 
-   const getServices = async () => {
+   const getServices = async (status = null) => {
       try {
          setService([]);
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/services`);
+         let pathApi = `/services`;
+         // let counterName = "requestAll";
+         if (status != null) {
+            // console.log("getRequestBecas()->status", status);
+            let filterStatus;
+            if (status == "abiertas") filterStatus = "ABIERTA";
+            else if (status == "aprobadas") filterStatus = "APROBADA";
+            else if (status == "rechazadas") filterStatus = "RECHAZADA";
+            else if (status == "en-revision") filterStatus = "EN REVISIÓN";
+            else if (status == "cerradas") filterStatus = "CERRADA";
+            pathApi = `/services/status/${filterStatus}`;
+         }
+         const axiosData = await Axios.get(pathApi);
          res.result.services = axiosData.data.data.result;
          // console.log(res.result);
          setServices(axiosData.data.data.result);
@@ -239,6 +251,7 @@ export default function ServiceContextProvider({ children }) {
             pluralName,
             services,
             service,
+            setService,
             formData,
             setFormData,
             resetFormData,

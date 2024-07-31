@@ -10,19 +10,19 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconCircleCheckFilled } from "@tabler/icons-react";
+import { IconCircleCheckFilled, IconSettingsSearch } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
-import { formatDatetime, formatPhone } from "../../../utils/Formats";
-// import { GetDataCommunity } from "../../../utils/GetDataCommunity";
+import { formatDatetime, formatPhone, includesInArray } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import { getCommunity } from "../../../components/Form/FormikComponents";
-import { IconEye } from "@tabler/icons";
+import { IconEye, IconThumbDown } from "@tabler/icons";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { IconThumbUpFilled } from "@tabler/icons-react";
 
-const ServiceDT = ({ openService, setOpenService }) => {
+const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, services, getServices, showService, deleteService, formData, resetFormData, setTextBtnSumbit, setFormTitle, formikRef } = useServiceContext();
+   const { singularName, services, setService, getServices, showService, deleteService, formData, resetFormData, setTextBtnSumbit, setFormTitle, formikRef } =
+      useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
    // const [openService, setOpenService] = useState(false);
    const [objService, setObjService] = useState(null);
@@ -79,7 +79,7 @@ const ServiceDT = ({ openService, setOpenService }) => {
          setOpenDialog(true);
          setOpenService(true);
          // console.log("klasdklasdl");
-         setTextBtnSumbit("AGREGAR");
+         setTextBtnSumbit("SOLICITAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
          setOpenDialog(false);
@@ -138,32 +138,59 @@ const ServiceDT = ({ openService, setOpenService }) => {
 
    const handleClickShowRequest = (id, folio, obj) => {
       Toast.Info("Solicitud: Folio " + folio);
+      setShowActionButtons(false);
+      setTextBtnSumbit("SOLICITAR");
       setObjService(obj);
+      setService(obj);
       setOpenService(true);
    };
 
    const ButtonsAction = ({ id, folio, obj }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Ver Solicitud de ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickShowRequest(id, folio, obj)}>
+            <Tooltip title={`Ver Solicitud de ${singularName} #${folio}`} placement="top">
+               <Button color="dark" onClick={() => handleClickShowRequest(id, folio, obj)}>
                   <IconEye />
                </Button>
             </Tooltip>
-            <Tooltip title={`Cargar Material al ${singularName}`} placement="top">
-               <Button color="secondary" onClick={() => handleClickLoadMaterial(id, folio, obj)}>
-                  <FileUploadIcon />
-               </Button>
-            </Tooltip>
+            {includesInArray(auth.permissions.more_permissions, ["Aprobar Servicio", "todas"]) && obj.status === "ABIERTA" && (
+               <>
+                  <Tooltip title={`Aprobar ${singularName} #${folio}`} placement="top">
+                     <Button color="primary" onClick={() => handleClickApprove(obj)}>
+                        <IconThumbUpFilled />
+                     </Button>
+                  </Tooltip>
+                  <Tooltip title={`Rechazar ${singularName} #${folio}`} placement="top">
+                     <Button color="primary" onClick={() => handleClickReject(id, obj)}>
+                        <IconThumbDown />
+                     </Button>
+                  </Tooltip>
+               </>
+            )}
+
+            {includesInArray(auth.permissions.more_permissions, ["Cargar Material", "todas"]) && obj.status === "ABIERTA" && (
+               <Tooltip title={`Iniciar Revisión al ${singularName} #${folio}`} placement="top">
+                  <Button color="error" onClick={() => handleClickInitReview(id, folio, obj)}>
+                     <IconSettingsSearch />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, ["Cargar Material", "todas"]) && obj.status === "ABIERTA" && (
+               <Tooltip title={`Cargar Material al ${singularName} #${folio}`} placement="top">
+                  <Button color="error" onClick={() => handleClickLoadMaterial(id, folio, obj)}>
+                     <FileUploadIcon />
+                  </Button>
+               </Tooltip>
+            )}
             {auth.permissions.update && (
-               <Tooltip title={`Editar ${singularName}`} placement="top">
+               <Tooltip title={`Editar ${singularName} #${folio}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>
                      <IconEdit />
                   </Button>
                </Tooltip>
             )}
             {auth.permissions.delete && (
-               <Tooltip title={`Eliminar ${singularName}`} placement="top">
+               <Tooltip title={`Eliminar ${singularName} #${folio}`} placement="top">
                   <Button color="error" onClick={() => handleClickDelete(id, folio)}>
                      <IconDelete />
                   </Button>
@@ -204,13 +231,14 @@ const ServiceDT = ({ openService, setOpenService }) => {
    useEffect(() => {
       setLoading(false);
    }, []);
+
    return (
       <DataTableComponent
          columns={columns}
          data={data}
          globalFilterFields={globalFilterFields}
          headerFilters={true}
-         btnAdd={auth.permissions.create}
+         btnAdd={false /* auth.permissions.create */}
          handleClickAdd={handleClickAdd}
          rowEdit={false}
          refreshTable={getServices}

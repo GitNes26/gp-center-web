@@ -16,9 +16,10 @@ const ServicesView = () => {
    const { auth } = useAuthContext();
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, school, getServices } = useServiceContext();
+   const { pluralName, service, getServices, textBtnSubmit, setTextBtnSumbit } = useServiceContext();
 
    const [openService, setOpenService] = useState(false);
+   const [showActionButtons, setShowActionButtons] = useState(true);
 
    useEffect(() => {
       try {
@@ -57,11 +58,13 @@ const ServicesView = () => {
                </Typography>
             )}
          </Typography>
-         <ServiceDT openService={openService} setOpenService={setOpenService} />
+         <ServiceDT openService={openService} setOpenService={setOpenService} setShowActionButtons={setShowActionButtons} />
          {/* </MainCard> */}
 
          {/* <ServiceForm /> */}
-         {openService && <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} />}
+         {openService && (
+            <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} obj={service} showActionButtons={showActionButtons} />
+         )}
       </>
    );
 };
