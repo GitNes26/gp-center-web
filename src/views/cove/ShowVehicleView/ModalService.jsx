@@ -355,6 +355,8 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                   </Grid>
                </>
             )}
+            <ServiceMaterialDT />
+
             {/* SECCION DE REVISIÓN. */}
          </FormikComponent>
       </ModalComponent>
