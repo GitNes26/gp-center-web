@@ -13,6 +13,7 @@ import { useServiceContext } from "../../../context/ServiceContext";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import { setPropsOriginals } from "../../../utils/Formats";
 import UploadIcon from "@mui/icons-material/Upload";
+import ServiceMaterialDT from "../../garage/ServicesView/ServiceMaterialDT";
 
 function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons = true, obj = null }) {
    const { stock_number = 0 } = useParams();
@@ -326,7 +327,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                   <Grid container sm={12} justifyContent={"center"}>
                      <Typography variant="h4">Cargar Material</Typography>
                   </Grid>
-                  <Select2Component col={3} idName={"code"} label={"Código"} options={[]} pluralName={"Materiales"} size="small" />
+                  {/* <Select2Component col={3} idName={"code"} label={"Código"} options={[]} pluralName={"Materiales"} size="small" />
                   <InputComponent
                      col={4}
                      idName={"description"}
@@ -345,7 +346,6 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                      disabled={formData.status !== "EN REVISIÓN"}
                      size="small"
                   />
-                  {/* Btn Cargar */}
                   <Grid item xs={12} md={1} sx={{ mb: 1, mt: 1 }}>
                      <Tooltip title="Cargar Material">
                         <IconButton onClick={() => Toast.Success("Cargando material")}>
@@ -353,9 +353,10 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                         </IconButton>
                      </Tooltip>
                   </Grid>
+                  <ServiceMaterialDT /> */}
+                  
                </>
             )}
-            <ServiceMaterialDT />
 
             {/* SECCION DE REVISIÓN. */}
          </FormikComponent>
