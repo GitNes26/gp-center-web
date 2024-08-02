@@ -14,6 +14,7 @@ import { useVehicleContext } from "../../../context/VehicleContext";
 import { setPropsOriginals } from "../../../utils/Formats";
 import UploadIcon from "@mui/icons-material/Upload";
 import ServiceMaterialDT from "../../garage/ServicesView/ServiceMaterialDT";
+import MaterialDT from "../../garage/ServicesView/MaterialDT";
 
 function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons = true, obj = null }) {
    const { stock_number = 0 } = useParams();
@@ -354,7 +355,17 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                      </Tooltip>
                   </Grid>
                   <ServiceMaterialDT /> */}
-                  
+                  <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
+                     <Grid xs={12} container spacing={2}>
+                        {/* LISTADO */}
+                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Typography variant="h2" mb={2}>
+                              ¿Quienes viven actualmente con el alumno?
+                           </Typography>
+                           {/* <MaterialDT becaId={folio} setFieldValue={formik.setFieldValue} values={formik.values} /> */}
+                        </Grid>
+                     </Grid>
+                  </Grid>
                </>
             )}
 

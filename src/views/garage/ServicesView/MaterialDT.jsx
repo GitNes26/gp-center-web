@@ -2,26 +2,27 @@ import { Button, ButtonGroup, IconButton, Tooltip, Typography } from "@mui/mater
 import { useAuthContext } from "../../../context/AuthContext";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
-import IconEdit from "../../components/icons/IconEdit";
-import IconDelete from "../../components/icons/IconDelete";
+// import IconEdit from "../../components/icons/IconEdit";
+// import IconDelete from "../../components/icons/IconDelete";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../utils/sAlert";
-import Toast from "../../utils/Toast";
-import DataTableComponent from "../../components/DataTableComponent";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
+import { formatCurrency } from "../../../utils/Formats";
+import Toast from "../../../utils/Toast";
+
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
-import { formatCurrency, formatDatetime } from "../../utils/Formats";
 import { useParams } from "react-router-dom";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "@mui/icons-material";
+import DataTableComponent from "../../../components/DataTableComponent";
 
 export let monthlyIncome = 0;
 
-const FamilyDT = ({ becaId, setFieldValue, values }) => {
+const MaterialDT = ({ serviceId, setFieldValue, values }) => {
    let { folio, pagina = 0 } = useParams();
 
    const { auth } = useAuthContext();
@@ -32,16 +33,16 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
       families,
       setFamilies,
       getIndexByFolio,
-      createFamily,
-      updateFamily,
-      deleteFamily,
-      DisEnableFamily,
+      createMaterial,
+      updateMaterial,
+      deleteMaterial,
+      DisEnableMaterial,
       resetFormData,
-      resetFamily,
+      resetMaterial,
       setTextBtnSumbit,
       setFormTitle
       // setMonthlyIncome
-   } = useFamilyContext();
+   } = useMaterialContext();
    const globalFilterFields = ["code", "description", "quantity", "stock", "active", "created_at"];
 
    // #region BodysTemplate
@@ -77,43 +78,6 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
    const priceEditor = (options) => (
       <InputNumber value={options.value} onValueChange={(e) => options.editorCallback(e.value)} mode="currency" currency="MXN" locale="es-MX" />
    );
-
-   // const addRow = () => {
-   //    console.log("addRow - data", data);
-   //    const newRow = {
-   //       id: data.length + 1,
-   //       beca_id: 1,
-   //       relationship: "",
-   //       age: 0,
-   //       occupation: "",
-   //       monthly_income: 0,
-   //       actions: "asa"
-   //       // finished: false
-   //    };
-
-   //    let _data = [...data];
-   //    console.log("_data", _data);
-   //    // let { newData, index } = e;
-
-   //    // _data[index] = newData;
-   //    _data.push(newRow);
-
-   //    setFamilies(_data);
-
-   //    // setData(newRow);
-   //    console.log(data);
-   // };
-   // const onRowEditCompleteContinue = async (newData) => {
-   //    delete newData.actions;
-   //    console.log("onRowEditCompleteContinue -> newData", newData);
-   //    const ajaxResponse = await updateFamily(newData);
-   //    console.log(ajaxResponse);
-   //    // console.log(e);
-   //    // let _products = [...data];
-   //    // let { newData, index } = e;
-   //    // _products[index] = newData;
-   //    // setData(_products);
-   // };
    // #endregion BodysTemplateEditor
 
    const columns = [
@@ -127,7 +91,7 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
 
    const handleClickAdd = () => {
       try {
-         // resetFamily();
+         // resetMaterial();
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
@@ -143,7 +107,7 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showFamily(id);
+         await showMaterial(id);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -162,7 +126,7 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
          mySwal.fire(QuestionAlertConfig(msg)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteFamily(ids, folio);
+               const axiosResponse = await deleteMaterial(ids, folio);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -178,12 +142,12 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
          <ButtonGroup variant="outlined">
             <Tooltip title={`Editar ${singularName}`} placement="top">
                <IconButton color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
+                  {/* <IconEdit /> */}
                </IconButton>
             </Tooltip>
             <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <IconButton color="error" onClick={() => handleClickDelete(id, name)}>
-                  <IconDelete />
+                  {/* <IconDelete /> */}
                </IconButton>
             </Tooltip>
          </ButtonGroup>
@@ -224,7 +188,7 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
 
    const newRow = {
       key: 0,
-      beca_id: becaId,
+      service_id: serviceId,
       relationship: "",
       age: "",
       occupation: "",
@@ -247,8 +211,8 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
          handleClickAdd={handleClickAdd}
          rowEdit={true}
          // onRowEditCompleteContinue={onRowEditCompleteContinue}
-         createData={createFamily}
-         updateData={updateFamily}
+         createData={createMaterial}
+         updateData={updateMaterial}
          btnAdd={true}
          newRow={newRow}
          btnDeleteMultiple={true}
@@ -258,4 +222,4 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
       />
    );
 };
-export default FamilyDT;
+export default MaterialDT;
