@@ -326,6 +326,7 @@ export default function DataTableComponent({
       try {
          setLoading(true);
          await refreshTable();
+         setUpdating(false);
          setLoading(false);
          Toast.Success("Tabla Actualizada");
       } catch (error) {
@@ -419,7 +420,7 @@ export default function DataTableComponent({
    }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
    useEffect(() => {
-      console.log("🚀 ~ useEffect ~ window.innerWidth:", window.innerWidth);
+      // console.log("🚀 ~ useEffect ~ window.innerWidth:", window.innerWidth);
    }, [window]);
    return (
       <div className="card p-fluid">

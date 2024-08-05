@@ -80,12 +80,45 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    // #endregion BodysTemplate
 
    // #region BodysTemplateEditor
+   const handleEditorValueChange = (e, options) => {
+      const newValue = e.target.value;
+      const updatedProducts = [...voucherDetails];
+      const rowIndex = options.rowIndex;
+
+      // Actualiza el valor de la columna 1
+      updatedProducts[rowIndex][options.field] = newValue;
+
+      // // Aquí se realiza la búsqueda del objeto correspondiente y se actualizan las demás columnas
+      const correspondingData = findCorrespondingData(newValue); // Implementa esta función
+
+      if (correspondingData) {
+         updatedProducts[rowIndex] = { ...updatedProducts[rowIndex], ...correspondingData };
+      }
+
+      setProducts(updatedProducts);
+      options.editorCallback(newValue);
+   };
+
+   const findCorrespondingData = (value) => {
+      console.log("🚀 ~ findCorrespondingData ~ value:", value);
+      // Implementa la lógica para encontrar los datos correspondientes
+      // Ejemplo:
+      const data = {
+         value1: { name: "Product 1", inventoryStatus: "INSTOCK", price: 100 },
+         value2: { name: "Product 2", inventoryStatus: "LOWSTOCK", price: 150 }
+      };
+      return data[value] || null;
+   };
+
    const textMayusEditor = (options) => {
       return (
          <InputText
             type="text"
             value={options.value ? options.value : ""}
-            onChange={(e) => options.editorCallback(e.target.value.toUpperCase())}
+            onChange={(e) => {
+               options.editorCallback(e.target.value.toUpperCase());
+               // if (options.field === "payroll_number") handleEditorValueChange(e, options);
+            }}
             data-field-name={options.field}
             data-field-key={options.rowData.key}
          />
@@ -191,7 +224,14 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    const PayrollBodyTemplateEditor = (options) => {
       return (
          <Tooltip title="Si no es empleado poner el N° 0">
-            <InputText type="number" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />
+            <InputText
+               type="number"
+               value={options.value}
+               onChange={(e) => {
+                  options.editorCallback(e.target.value);
+                  // if (options.field === "payroll_number") handleEditorValueChange(e, options);
+               }}
+            />
          </Tooltip>
       );
    };
@@ -200,11 +240,35 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    const columns = [
       { field: "vehicle", header: "VEHÍCULO", sortable: true, functionEdit: textMayusEditor, body: VehicleBodyTemplate, filter: true, filterField: null },
       { field: "vehicle_plates", header: "PLACAS", sortable: true, functionEdit: textMayusEditor, body: VehiclePlatesBodyTemplate, filter: true, filterField: null },
-      { field: "payroll_number", header: "N° NÓMINA", sortable: true, functionEdit: PayrollBodyTemplateEditor, body: PayrollBodyTemplate, filter: true, filterField: null },
+      {
+         field: "payroll_number",
+         header: "N° NÓMINA",
+         sortable: true,
+         functionEdit: PayrollBodyTemplateEditor,
+         body: PayrollBodyTemplate,
+         filter: true,
+         filterField: null
+      },
       { field: "department", header: "DEPARTAMENTO", sortable: true, functionEdit: textMayusEditor, body: DepartmentBodyTemplate, filter: true, filterField: null },
       { field: "name", header: "NOMBRE", sortable: true, functionEdit: textMayusEditor, body: NameBodyTemplate, filter: true, filterField: null },
-      { field: "paternal_last_name", header: "A. PATERNO", sortable: true, functionEdit: textMayusEditor, body: PaternalBodyTemplate, filter: true, filterField: null },
-      { field: "maternal_last_name", header: "A. MATERNO", sortable: true, functionEdit: textMayusEditor, body: MaternalBodyTemplate, filter: true, filterField: null },
+      {
+         field: "paternal_last_name",
+         header: "A. PATERNO",
+         sortable: true,
+         functionEdit: textMayusEditor,
+         body: PaternalBodyTemplate,
+         filter: true,
+         filterField: null
+      },
+      {
+         field: "maternal_last_name",
+         header: "A. MATERNO",
+         sortable: true,
+         functionEdit: textMayusEditor,
+         body: MaternalBodyTemplate,
+         filter: true,
+         filterField: null
+      },
       { field: "phone", header: "TELÉFONO", sortable: true, functionEdit: phoneEditor, body: PhoneBodyTemplate, filter: true, filterField: null }
       // { field: "requested_amount", header: "CANTIDAD VALES", sortable: true, functionEdit: numberEditor, body: AmountTemplate, filter: true, filterField: null }
    ];

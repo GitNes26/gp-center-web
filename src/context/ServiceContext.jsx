@@ -51,7 +51,7 @@ const formDataInitialState = {
 };
 
 export default function ServiceContextProvider({ children }) {
-   const { auth } = useAuthContext();
+   const { auth, counterOfMenus } = useAuthContext();
    if (auth.role_id === 4) formDataInitialState.mechanic_id = auth.id;
    const singularName = "Servicio"; //Escribirlo siempre letra Capital
    const pluralName = "Servicios"; //Escribirlo siempre letra Capital
@@ -101,6 +101,23 @@ export default function ServiceContextProvider({ children }) {
       }
    };
 
+   const changeStatus = async (serviceId, status, statusCurrent = null) => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await Axios.get(`/services/${serviceId}/changeStatus/${status}`);
+         // console.log("🚀 ~ changeStatus ~ axiosData:", axiosData);
+         res = axiosData.data.data;
+         getServices(statusCurrent);
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+      return res;
+   };
+
    const getServices = async (status = null) => {
       try {
          setService([]);
@@ -122,6 +139,7 @@ export default function ServiceContextProvider({ children }) {
          // console.log(res.result);
          setServices(axiosData.data.data.result);
          // console.log("services", services);
+         await counterOfMenus();
 
          return res;
       } catch (error) {
@@ -197,7 +215,7 @@ export default function ServiceContextProvider({ children }) {
       return res;
    };
 
-   const updateService = async (service) => {
+   const updateService = async (service, statusCurrent) => {
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post(
@@ -210,7 +228,7 @@ export default function ServiceContextProvider({ children }) {
             // }
          );
          res = axiosData.data.data;
-         getServices();
+         getServices(statusCurrent);
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -221,12 +239,12 @@ export default function ServiceContextProvider({ children }) {
       return res;
    };
 
-   const deleteService = async (id) => {
+   const deleteService = async (id, statusCurrent) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/services/destroy/${id}`);
          // console.log("deleteService() axiosData", axiosData.data);
-         getServices();
+         getServices(statusCurrent);
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -269,7 +287,8 @@ export default function ServiceContextProvider({ children }) {
             setImgFile,
             imagePreview,
             setImagePreview,
-            formikRef
+            formikRef,
+            changeStatus
          }}
       >
          {children}

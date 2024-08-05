@@ -10,19 +10,33 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconCircleCheckFilled, IconSettingsSearch } from "@tabler/icons-react";
+import { IconCircleCheckFilled, IconSettingsSearch, IconSquareRoundedCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime, formatPhone, includesInArray } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IconEye, IconThumbDown } from "@tabler/icons";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { IconThumbUpFilled } from "@tabler/icons-react";
+import { useParams } from "react-router-dom";
 
 const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
+   const { status } = useParams();
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, services, setService, getServices, showService, deleteService, formData, resetFormData, setTextBtnSumbit, setFormTitle, formikRef } =
-      useServiceContext();
+   const {
+      singularName,
+      services,
+      setService,
+      getServices,
+      showService,
+      deleteService,
+      formData,
+      resetFormData,
+      setTextBtnSumbit,
+      setFormTitle,
+      formikRef,
+      changeStatus
+   } = useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
    // const [openService, setOpenService] = useState(false);
    const [objService, setObjService] = useState(null);
@@ -61,7 +75,7 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
       { field: "folio", header: "Folio", sortable: true, functionEdit: null, body: FolioBodyTemplate, filter: true, filterField: null },
       { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
       { field: "contact_name", header: "Contacto", sortable: true, functionEdit: null, body: ContactBodyTemplate, filter: true, filterField: null },
-      { field: "pre_diagnosis", header: "Pre Diagnostico", sortable: true, functionEdit: null, body: PreDiagnosisBodyTemplate, filter: true, filterField: null },
+      { field: "pre_diagnosis", header: "Pre Diagnóstico", sortable: true, functionEdit: null, body: PreDiagnosisBodyTemplate, filter: true, filterField: null },
       { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
@@ -109,10 +123,10 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
 
    const handleClickDelete = async (id, folio) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la Solicitu de Servicio con folio #${folio}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la Solicitud de Servicio con folio #${folio}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteService(id);
+               const axiosResponse = await deleteService(id, status);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -144,6 +158,20 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
       setService(obj);
       setOpenService(true);
    };
+   const handleClickChangeStatus = async (id, newStatus) => {
+      try {
+         setLoadingAction(true);
+         const axiosResponse = await changeStatus(id, newStatus, status);
+
+         // formikRef.current.setValues(axiosResponse.result);
+         setLoadingAction(false);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+      } catch (error) {
+         setLoadingAction(false);
+         console.log("🚀 ~ handleClickApprove ~ error:", error);
+         Toast.Error(error);
+      }
+   };
 
    const ButtonsAction = ({ id, folio, obj }) => {
       return (
@@ -154,31 +182,37 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
                </Button>
             </Tooltip>
             {includesInArray(auth.permissions.more_permissions, ["Aprobar Servicio", "todas"]) && obj.status === "ABIERTA" && (
-               <>
-                  <Tooltip title={`Aprobar ${singularName} #${folio}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickApprove(obj)}>
-                        <IconThumbUpFilled />
-                     </Button>
-                  </Tooltip>
-                  <Tooltip title={`Rechazar ${singularName} #${folio}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickReject(id, obj)}>
-                        <IconThumbDown />
-                     </Button>
-                  </Tooltip>
-               </>
+               <Tooltip title={`Aprobar ${singularName} #${folio}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickChangeStatus(id, "APROBADA")}>
+                     <IconThumbUpFilled />
+                  </Button>
+               </Tooltip>
             )}
-
-            {includesInArray(auth.permissions.more_permissions, ["Cargar Material", "todas"]) && obj.status === "ABIERTA" && (
-               <Tooltip title={`Iniciar Revisión al ${singularName} #${folio}`} placement="top">
-                  <Button color="error" onClick={() => handleClickInitReview(id, folio, obj)}>
+            {includesInArray(auth.permissions.more_permissions, ["Rechazar Servicio", "todas"]) && obj.status === "ABIERTA" && (
+               <Tooltip title={`Rechazar ${singularName} #${folio}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickChangeStatus(id, "RECHAZADA")}>
+                     <IconThumbDown />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, ["Revisar Unidad", "todas"]) && obj.status === "APROBADA" && (
+               <Tooltip title={`Iniciar Revisión a ${singularName} #${folio}`} placement="top">
+                  <Button color="error" onClick={() => handleClickChangeStatus(id, "EN REVISIÓN")}>
                      <IconSettingsSearch />
                   </Button>
                </Tooltip>
             )}
-            {includesInArray(auth.permissions.more_permissions, ["Cargar Material", "todas"]) && obj.status === "ABIERTA" && (
+            {includesInArray(auth.permissions.more_permissions, ["Cargar Material", "todas"]) && obj.status === "EN REVISIÓN" && (
                <Tooltip title={`Cargar Material al ${singularName} #${folio}`} placement="top">
                   <Button color="error" onClick={() => handleClickLoadMaterial(id, folio, obj)}>
                      <FileUploadIcon />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, ["Cerrar Servicio", "todas"]) && obj.status === "EN REVISIÓN" && (
+               <Tooltip title={`Cerrar ${singularName} #${folio}`} placement="top">
+                  <Button color="error" onClick={() => handleClickChangeStatus(id, "CERRADA")}>
+                     <IconSquareRoundedCheckFilled />
                   </Button>
                </Tooltip>
             )}
@@ -241,7 +275,7 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
          btnAdd={false /* auth.permissions.create */}
          handleClickAdd={handleClickAdd}
          rowEdit={false}
-         refreshTable={getServices}
+         refreshTable={() => getServices(status)}
       />
    );
 };

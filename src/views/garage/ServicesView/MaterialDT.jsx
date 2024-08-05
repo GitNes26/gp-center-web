@@ -19,37 +19,38 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "@mui/icons-material";
 import DataTableComponent from "../../../components/DataTableComponent";
-
-export let monthlyIncome = 0;
+import { useEffect, useState } from "react";
 
 const MaterialDT = ({ serviceId, setFieldValue, values }) => {
    let { folio, pagina = 0 } = useParams();
+   const [statuses] = useState(["EN STOCK", "STOCK BAJO", "AGOTADO"]);
 
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const {
-      singularName,
-      family,
-      families,
-      setFamilies,
-      getIndexByFolio,
-      createMaterial,
-      updateMaterial,
-      deleteMaterial,
-      DisEnableMaterial,
-      resetFormData,
-      resetMaterial,
-      setTextBtnSumbit,
-      setFormTitle
-      // setMonthlyIncome
-   } = useMaterialContext();
+   const materials = [];
+   // const {
+   //    singularName,
+   //    material,
+   //    materials,
+   //    setMaterials,
+   //    getIndexByFolio,
+   //    createMaterial,
+   //    updateMaterial,
+   //    deleteMaterial,
+   //    DisEnableMaterial,
+   //    resetFormData,
+   //    resetMaterial,
+   //    setTextBtnSumbit,
+   //    setFormTitle
+   //    // setMonthlyIncome
+   // } = useMaterialContext();
    const globalFilterFields = ["code", "description", "quantity", "stock", "active", "created_at"];
 
    // #region BodysTemplate
-   const RelationshipBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.relationship ? obj.relationship.toUpperCase() : ""} </Typography>;
-   const AgeBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.age}</Typography>;
-   const OccupationBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.occupation}</Typography>;
-   const MonthlyIcomeBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatCurrency(obj.monthly_income, true, true)}</Typography>;
+   const CodeBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.code ? obj.code : ""} </Typography>;
+   const DescriptionBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.description ? obj.description.toUpperCase() : ""} </Typography>;
+   const QuantityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.quantity}</Typography>;
+   const StockBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.stock}</Typography>;
    // #endregion BodysTemplate
 
    // #region BodysTemplateEditor
@@ -61,19 +62,19 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
 
    const numberEditor = (options) => <InputText type="number" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
 
-   // const statusEditor = (options) => {
-   //    return (
-   //       <Dropdown
-   //          value={options.value}
-   //          options={statuses}
-   //          onChange={(e) => options.editorCallback(e.value)}
-   //          placeholder="Select a Status"
-   //          itemTemplate={(option) => {
-   //             return <Tag value={option} severity={getSeverity(option)}></Tag>;
-   //          }}
-   //       />
-   //    );
-   // };
+   const statusEditor = (options) => {
+      return (
+         <Dropdown
+            value={options.value}
+            options={statuses}
+            onChange={(e) => options.editorCallback(e.value)}
+            placeholder="Selecciona un Estatus"
+            itemTemplate={(option) => {
+               return <Tag value={option} severity={getSeverity(option)}></Tag>;
+            }}
+         />
+      );
+   };
 
    const priceEditor = (options) => (
       <InputNumber value={options.value} onValueChange={(e) => options.editorCallback(e.value)} mode="currency" currency="MXN" locale="es-MX" />
@@ -81,10 +82,11 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
    // #endregion BodysTemplateEditor
 
    const columns = [
-      { field: "relationship", header: "Parentesco", sortable: true, functionEdit: textMayusEditor, body: RelationshipBodyTemplate, filterField: null },
-      { field: "age", header: "Edad (años)", sortable: true, functionEdit: numberEditor, body: AgeBodyTemplate, filterField: null },
-      { field: "occupation", header: "Ocupación", sortable: true, functionEdit: textMayusEditor, body: OccupationBodyTemplate, filterField: null },
-      { field: "monthly_income", header: "Ingresos Mensuales", sortable: true, functionEdit: priceEditor, body: MonthlyIcomeBodyTemplate, filterField: null }
+      { field: "code", header: "Código", sortable: true, functionEdit: textMayusEditor, body: CodeBodyTemplate, filterField: null },
+      { field: "description", header: "Material", sortable: true, functionEdit: textMayusEditor, body: DescriptionBodyTemplate, filterField: null },
+      { field: "quantity", header: "Cantidad", sortable: true, functionEdit: numberEditor, body: QuantityBodyTemplate, filterField: null },
+      { field: "stock", header: "Stock", sortable: true, functionEdit: numberEditor, body: StockBodyTemplate, filterField: null },
+      { field: "min_stock", header: "Algo", sortable: true, functionEdit: numberEditor, body: StockBodyTemplate, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);
@@ -95,7 +97,7 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
-         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+         // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -106,7 +108,7 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
       try {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
-         setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
+         // setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          await showMaterial(id);
          setOpenDialog(true);
          setLoadingAction(false);
@@ -121,8 +123,8 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
          let ids = selectedData.map((d) => d.id);
          if (ids.length < 1) console.log("no hay registros");
          let msg = `¿Estas seguro de eliminar `;
-         if (selectedData.length === 1) msg += `al familiar registrado como tu ${selectedData[0].relationship}?`;
-         else if (selectedData.length > 1) msg += `a los familiares registrados como tu ${selectedData.map((d) => d.relationship)}?`;
+         if (selectedData.length === 1) msg += `el material ${selectedData[0].code}?`;
+         else if (selectedData.length > 1) msg += `los materiales ${selectedData.map((d) => d.code)}?`;
          mySwal.fire(QuestionAlertConfig(msg)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
@@ -140,16 +142,16 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <IconButton color="info" onClick={() => handleClickEdit(id)}>
-                  {/* <IconEdit /> */}
-               </IconButton>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <IconButton color="error" onClick={() => handleClickDelete(id, name)}>
-                  {/* <IconDelete /> */}
-               </IconButton>
-            </Tooltip>
+            {/* <Tooltip title={`Editar ${singularName}`} placement="top"> */}
+            <IconButton color="info" onClick={() => handleClickEdit(id)}>
+               {/* <IconEdit /> */}
+            </IconButton>
+            {/* </Tooltip> */}
+            {/* <Tooltip title={`Eliminar ${singularName}`} placement="top"> */}
+            <IconButton color="error" onClick={() => handleClickDelete(id, name)}>
+               {/* <IconDelete /> */}
+            </IconButton>
+            {/* </Tooltip> */}
          </ButtonGroup>
       );
    };
@@ -157,27 +159,24 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
    const data = [];
    const formatData = async () => {
       try {
-         // console.log("cargar listado", families);
-         families.sort((a, b) => a.id - b.id);
-         monthlyIncome = 0;
+         // console.log("cargar listado", materials);
+         materials.sort((a, b) => a.id - b.id);
 
-         await families.map((obj, index) => {
+         await materials.map((obj, index) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            // register.actions = <ButtonsAction id={obj.id} name={obj.family} active={obj.active} />;
+            // register.actions = <ButtonsAction id={obj.id} name={obj.material} active={obj.active} />;
             data.push(register);
 
-            monthlyIncome += Number(obj.monthly_income);
+            // monthlyIncome += Number(obj.monthly_income);
          });
-         // console.log("monthlyIncome", monthlyIncome);
-         // console.log("values", values.monthly_income);
-         if (values.monthly_income != monthlyIncome + Number(values.extra_income)) {
-            monthlyIncome += Number(values.extra_income);
-            setFieldValue("monthly_income", monthlyIncome);
-         }
-         // if (data.length > 0) setGlobalFilterFields(Object.keys(families[0]));
-         // console.log("la data del formatData", globalFilterFields);
+         // // console.log("monthlyIncome", monthlyIncome);
+         // // console.log("values", values.monthly_income);
+         // if (values.monthly_income != monthlyIncome + Number(values.extra_income)) {
+         //    monthlyIncome += Number(values.extra_income);
+         //    setFieldValue("monthly_income", monthlyIncome);
+         // }
          setLoading(false);
       } catch (error) {
          console.log(error);
@@ -196,28 +195,28 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
    };
 
    useEffect(() => {
-      getIndexByFolio(folio);
+      // getIndexByFolio(folio);
       setLoading(false);
    }, []);
 
    return (
       <DataTableComponent
-         idName="dtFamilies"
+         idName="dtMaterials"
          columns={columns}
          data={data}
-         setData={setFamilies}
+         // setData={setMaterials}
          globalFilterFields={globalFilterFields}
          headerFilters={false}
          handleClickAdd={handleClickAdd}
          rowEdit={true}
-         // onRowEditCompleteContinue={onRowEditCompleteContinue}
-         createData={createMaterial}
-         updateData={updateMaterial}
+         // // onRowEditCompleteContinue={onRowEditCompleteContinue}
+         // createData={createMaterial}
+         // updateData={updateMaterial}
          btnAdd={true}
          newRow={newRow}
          btnDeleteMultiple={true}
          handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
-         refreshTable={(e) => getIndexByFolio(folio)}
+         // refreshTable={(e) => getIndexByFolio(folio)}
          btnsExport={false}
       />
    );

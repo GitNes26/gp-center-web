@@ -7,7 +7,7 @@ import Toast from "../../../utils/Toast";
 import { DatePickerComponent, DividerComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { useParams } from "react-router-dom";
 import ClockComponent from "../../../components/ClockComponent";
-import { Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Button, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import { useServiceContext } from "../../../context/ServiceContext";
 import { useVehicleContext } from "../../../context/VehicleContext";
@@ -15,9 +15,10 @@ import { setPropsOriginals } from "../../../utils/Formats";
 import UploadIcon from "@mui/icons-material/Upload";
 import ServiceMaterialDT from "../../garage/ServicesView/ServiceMaterialDT";
 import MaterialDT from "../../garage/ServicesView/MaterialDT";
+import { IconDeviceFloppy } from "@tabler/icons";
 
 function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons = true, obj = null }) {
-   const { stock_number = 0 } = useParams();
+   const { stock_number = 0, status = null } = useParams();
 
    const initialValues = {
       id: 0,
@@ -42,7 +43,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
 
    const { setLoadingAction } = useGlobalContext();
    const { vehicle, showVehicle, showVehicleBy } = useVehicleContext();
-   const { /* formData, setFormData,  resetFormData,*/ service, showService, createService, updateReport, textBtnSubmit, setTextBtnSumbit, formikRef } =
+   const { /* formData, setFormData,  resetFormData,*/ service, showService, createService, updateService, updateReport, textBtnSubmit, setTextBtnSumbit, formikRef } =
       useServiceContext();
 
    const [formData, setFormData] = useState(initialValues);
@@ -118,6 +119,18 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
       setFieldValue("vehicle_id", res.result.id);
    };
 
+   const handleClickSaveFinalDiagnosis = async () => {
+      try {
+         const final_diagnosis = formikRef.current.values.final_diagnosis;
+         if (final_diagnosis == null || final_diagnosis == "") return Toast.Info("No se ha escrito ningún diagnóstico.");
+         const axiosResponse = await updateService(formikRef.current.values, status);
+         Toast.Success("Diagnóstico guardado.");
+      } catch (error) {
+         console.log("🚀 ~ handleClickSaveFinalDiagnosis ~ error:", error);
+         Toast.Error(error);
+      }
+   };
+
    const validationSchema = Yup.object().shape({
       stock_number: Yup.number("Solo números").required("Número de Inventario requerido"),
       contact_name: Yup.string().trim().required("Nombre de contacto requerido"),
@@ -125,16 +138,16 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
          .trim()
          .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
          .required("Número telefónico requerido"),
-      pre_diagnosis: Yup.string().trim().required("Pre diagnostico requerido")
+      pre_diagnosis: Yup.string().trim().required("Pre diagnóstico requerido")
    });
 
    useEffect(() => {}, [formikRef]);
 
    useLayoutEffect(() => {
-      console.log("🚀 ~ useLayoutEffect ~ obj:", obj);
+      // console.log("🚀 ~ useLayoutEffect ~ obj:", obj);
       if (obj) setFormData(setPropsOriginals(formData, obj));
    }, [formikRef]);
-   console.log("🚀 ~ useLayoutEffect ~ formData:", formData);
+   // console.log("🚀 ~ useLayoutEffect ~ formData:", formData);
 
    return (
       <ModalComponent open={open} setOpen={setOpen} modalTitle={modalTitle} maxWidth={maxWidth} height={"65vh"}>
@@ -202,7 +215,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                      size="small"
                   />
 
-                  <DividerComponent title={"REPORTE"} fontWeight={"bolder"} mb={-1} />
+                  <DividerComponent title={"REPORTE"} fontWeight={"bolder"} mb={-1} mt={5} />
                </>
             )}
             {/* SECCION DE SOLICITUD */}
@@ -245,61 +258,51 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
             {/* SECCION DE REPORTE */}
 
             {/* SECCION DE EVALUACION APROB/RECHA. */}
-            <DividerComponent title={"EVALUACIÓN"} fontWeight={"bolder"} mb={-1} />
+            <DividerComponent title={"EVALUACIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
             <InputComponent
                col={4}
                idName={"status"}
-               label={"Estatus de la Solicitu de Servicio"}
+               label={"Estatus de la Solicitud de Servicio"}
                placeholder={"Estatus"}
                textStyleCase={true}
                styleInput={2}
                disabled={true}
                size="small"
             />
-            {formData.approved_user ||
-               (formData.rejected_user && (
-                  <>
-                     <InputComponent
-                        col={4}
-                        idName={formData.approved_user ? "approved_user" : formData.rejected_user ? "rejected_user" : ""}
-                        label={"Usuario Evaluador"}
-                        placeholder={"Nombre de Usuario"}
-                        styleInput={2}
-                        disabled={true}
-                        size="small"
-                     />
-                     <DatePickerComponent
-                        col={4}
-                        idName={formData.approved_at ? "approved_at" : formData.rejected_at ? "rejected_at" : ""}
-                        label={"Fecha y Hora de Evaluación"}
-                        format={"dddd d MMMM YYYY hh:mm a"}
-                        disabled={true}
-                        size="small"
-                        marginBottom={0}
-                     />
-                  </>
-               ))}
+            {(formData.approved_user || formData.rejected_user) && (
+               <>
+                  <InputComponent
+                     col={4}
+                     idName={formData.approved_user ? "approved_user" : formData.rejected_user ? "rejected_user" : ""}
+                     label={"Usuario Evaluador"}
+                     placeholder={"Nombre de Usuario"}
+                     styleInput={2}
+                     disabled={true}
+                     size="small"
+                  />
+                  <DatePickerComponent
+                     col={4}
+                     idName={formData.approved_at ? "approved_at" : formData.rejected_at ? "rejected_at" : ""}
+                     label={"Fecha y Hora de Evaluación"}
+                     format={"dddd d MMMM YYYY hh:mm a"}
+                     disabled={true}
+                     size="small"
+                     marginBottom={0}
+                  />
+               </>
+            )}
             {/* SECCION DE EVALUACION APROB/RECHA. */}
 
             {/* SECCION DE REVISIÓN. */}
             {!formData.reviewed_user && (
                <>
-                  <DividerComponent title={"REVISIÓN"} fontWeight={"bolder"} mb={-1} />
+                  <DividerComponent title={"REVISIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
                   <InputComponent
-                     col={4}
+                     col={8}
                      idName={"reviewed_user"}
                      label={"Mecánico"}
                      placeholder={"Nombre del Mecánico"}
                      textStyleCase={true}
-                     styleInput={2}
-                     disabled={true}
-                     size="small"
-                  />
-                  <InputComponent
-                     col={4}
-                     idName={"reviewed_user"}
-                     label={"Usuario Evaluador"}
-                     placeholder={"Nombre de Usuario"}
                      styleInput={2}
                      disabled={true}
                      size="small"
@@ -324,47 +327,20 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                      disabled={formData.status !== "EN REVISIÓN"}
                      size="small"
                   />
+                  <Grid container sm={12} justifyContent={"end"} mt={-3} mr={2} mb={2}>
+                     <Tooltip title="Guardar diagnóstico final" placement="left">
+                        <Button variant="contained" onClick={handleClickSaveFinalDiagnosis}>
+                           <IconDeviceFloppy />
+                           &nbsp; Guardar
+                        </Button>
+                     </Tooltip>
+                  </Grid>
 
                   <Grid container sm={12} justifyContent={"center"}>
                      <Typography variant="h4">Cargar Material</Typography>
                   </Grid>
-                  {/* <Select2Component col={3} idName={"code"} label={"Código"} options={[]} pluralName={"Materiales"} size="small" />
-                  <InputComponent
-                     col={4}
-                     idName={"description"}
-                     label={"Descripción del material"}
-                     placeholder={"Material..."}
-                     styleInput={2}
-                     disabled={true}
-                     size="small"
-                  />
-                  <InputComponent
-                     col={2}
-                     idName={"quantity"}
-                     label={"Cantidad"}
-                     placeholder={"999"}
-                     styleInput={2}
-                     disabled={formData.status !== "EN REVISIÓN"}
-                     size="small"
-                  />
-                  <Grid item xs={12} md={1} sx={{ mb: 1, mt: 1 }}>
-                     <Tooltip title="Cargar Material">
-                        <IconButton onClick={() => Toast.Success("Cargando material")}>
-                           <UploadIcon />
-                        </IconButton>
-                     </Tooltip>
-                  </Grid>
-                  <ServiceMaterialDT /> */}
                   <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
-                     <Grid xs={12} container spacing={2}>
-                        {/* LISTADO */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                           <Typography variant="h2" mb={2}>
-                              ¿Quienes viven actualmente con el alumno?
-                           </Typography>
-                           {/* <MaterialDT becaId={folio} setFieldValue={formik.setFieldValue} values={formik.values} /> */}
-                        </Grid>
-                     </Grid>
+                     <MaterialDT serviceId={1} setFieldValue={formikRef.setFieldValue} values={formikRef.values} />
                   </Grid>
                </>
             )}

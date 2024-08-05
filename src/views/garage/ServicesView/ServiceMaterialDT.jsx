@@ -17,8 +17,10 @@ import { useAuthContext } from "../../../context/AuthContext";
 import { IconEye, IconThumbDown } from "@tabler/icons";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { IconThumbUpFilled } from "@tabler/icons-react";
+import { useParams } from "react-router-dom";
 
 const ServiceMaterialDT = ({ openService, setOpenService, setShowActionButtons }) => {
+   const { status = null } = useParams();
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, services, setService, getServices, showService, deleteService, formData, resetFormData, setTextBtnSumbit, setFormTitle, formikRef } =
@@ -104,10 +106,10 @@ const ServiceMaterialDT = ({ openService, setOpenService, setShowActionButtons }
 
    const handleClickDelete = async (id, folio) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la Solicitu de Servicio con folio #${folio}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la Solicitud de Servicio con folio #${folio}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteService(id);
+               const axiosResponse = await deleteService(id, status);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }

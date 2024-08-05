@@ -14,9 +14,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Fragment, forwardRef, useEffect, useState } from "react";
-import { 
-   Grid,
-   ButtonGroup, CircularProgress, IconButton, ListItemButton, TextField, Tooltip } from "@mui/material";
+import { Grid, ButtonGroup, CircularProgress, IconButton, ListItemButton, TextField, Tooltip } from "@mui/material";
 import { useUserContext } from "../../../context/UserContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
 
@@ -325,7 +323,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
          .trim()
          .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
          .required("Número telefónico requerido"),
-      pre_diagnosis: Yup.string().trim().required("Pre diagnostico requerido")
+      pre_diagnosis: Yup.string().trim().required("Pre diagnóstico requerido")
       // folio: "",
       // vehicle_id: 0,
       // final_diagnosis: null,
@@ -478,7 +476,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                   touched={touched.contact_phone}
                />
             </Grid>
-            {/* Diagnostico inicial */}
+            {/* Diagnóstico inicial */}
             <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                <InputComponentv2
                   idName={"pre_diagnosis"}
@@ -552,12 +550,12 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                                  />
                               </Grid>
 
-                              {/* Diagnostico Final */}
+                              {/* Diagnóstico Final */}
                               <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                                  <InputComponentv2
                                     idName={"final_diagnosis"}
                                     label={"Diagnóstico Final"}
-                                    placeholder={"Describe la falla del diagnostico"}
+                                    placeholder={"Describe la falla del diagnóstico"}
                                     type="text"
                                     formData={formData}
                                     onChange={(e) => {

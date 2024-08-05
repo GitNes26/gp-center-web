@@ -63,7 +63,7 @@ const ServiceMaterialDT = () => {
       { field: "folio", header: "Folio", sortable: true, functionEdit: null, body: FolioBodyTemplate, filter: true, filterField: null },
       { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
       { field: "contact_name", header: "Contacto", sortable: true, functionEdit: null, body: ContactBodyTemplate, filter: true, filterField: null },
-      { field: "pre_diagnosis", header: "Pre Diagnostico", sortable: false, functionEdit: null, body: PreDiagnosisBodyTemplate, filter: true, filterField: null },
+      { field: "pre_diagnosis", header: "Pre Diagnóstico", sortable: false, functionEdit: null, body: PreDiagnosisBodyTemplate, filter: true, filterField: null },
       { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filter: true, filterField: null }
    ];
 
