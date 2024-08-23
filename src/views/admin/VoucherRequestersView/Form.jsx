@@ -2,9 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { 
-   Grid,
-   Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+import { Grid, Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -422,7 +420,7 @@ const VoucherRequesterForm = () => {
                            </FormControl>
                            {strength !== 0 && (
                               <FormControl fullWidth>
-                                 <Box sx={{ mb: 2 }}>
+                                 <Box sx={{ mb: 2, mt: 1 }}>
                                     <Grid container spacing={2} alignItems="center">
                                        <Grid>
                                           <Box
@@ -435,7 +433,7 @@ const VoucherRequesterForm = () => {
                                           />
                                        </Grid>
                                        <Grid>
-                                          <Typography variant="subtitle1" fontSize="0.75rem">
+                                          <Typography variant="subtitle1" ml={1} fontSize="0.75rem">
                                              {level?.label}
                                           </Typography>
                                        </Grid>

@@ -2,9 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Grid,
-    Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+import { Grid, Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -336,270 +334,270 @@ const DriverForm = () => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Foto de Perfil */}
-                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="avatar"
-                           label="Foto de Perfil"
-                           filePreviews={imgAvatar}
-                           setFilePreviews={setImgAvatar}
-                           error={errors.avatar}
-                           touched={touched.avatar}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-                     {/* Rol */}
-                     {/* <Field id="role_id" name="role_id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
-                     {/* Nombre de Usuario */}
-                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="username"
-                           name="username"
-                           label="Nombre de usuario *"
-                           type="text"
-                           value={values.username}
-                           placeholder="Ingrese su nombre de usuario"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // InputProps={{ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.username && touched.username}
-                           helperText={errors.username && touched.username && errors.username}
-                        />
-                     </Grid>
-                     {/* Correo Electronico */}
-                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
-                        <TextField
-                           id="email"
-                           name="email"
-                           label="Correo Electrónico *"
-                           type="email"
-                           value={values.email}
-                           placeholder="mi@correo.com"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
-                           // inputProps={{ maxLength: 2 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.email && touched.email}
-                           helperText={errors.email && touched.email && errors.email}
-                        />
-                     </Grid>
-
-                     {/* Switch para mostrar el cambiar contraseña */}
-                     {checkedShowSwitchPassword && (
-                        <Grid item xs={12} md={12} sx={{ mb: -2 }}>
-                           <FormControlLabel
-                              control={<Switch />}
-                              label="Cambiar Contraseña"
-                              checked={newPasswordChecked}
-                              onChange={() => setNewPasswordChecked(!newPasswordChecked)}
+                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                        {/* Foto de Perfil */}
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="avatar"
+                              label="Foto de Perfil"
+                              filePreviews={imgAvatar}
+                              setFilePreviews={setImgAvatar}
+                              error={errors.avatar}
+                              touched={touched.avatar}
+                              multiple={false}
+                              accept={"image/*"}
                            />
                         </Grid>
-                     )}
-                     {/* Contraseña */}
-                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                        <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
-                           <InputLabel htmlFor="password">Contraseña *</InputLabel>
-                           <OutlinedInput
-                              id="password"
-                              name="password"
-                              label="Contraseña *"
-                              type={showPassword ? "text" : "password"}
-                              value={values.password}
-                              placeholder="Ingrese su contraseña, minimo 6 dígitos"
+                        {/* Rol */}
+                        {/* <Field id="role_id" name="role_id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
+                        {/* Nombre de Usuario */}
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="username"
+                              name="username"
+                              label="Nombre de usuario *"
+                              type="text"
+                              value={values.username}
+                              placeholder="Ingrese su nombre de usuario"
+                              onChange={handleChange}
                               onBlur={handleBlur}
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 changePassword(e.target.value);
-                              }}
-                              endAdornment={
-                                 <InputAdornment position="end">
-                                    <IconButton
-                                       aria-label="toggle password visibility"
-                                       onClick={handleClickShowPassword}
-                                       onMouseDown={handleMouseDownPassword}
-                                       edge="end"
-                                       size="large"
-                                    >
-                                       {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                 </InputAdornment>
-                              }
-                              inputProps={{}}
+                              // InputProps={{ }}
                               fullWidth
-                              disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
                               // disabled={values.id == 0 ? false : true}
-                              error={errors.password && touched.password}
+                              error={errors.username && touched.username}
+                              helperText={errors.username && touched.username && errors.username}
                            />
-                           {touched.password && errors.password && (
-                              <FormHelperText error id="ht-password">
-                                 {errors.password}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                        {strength !== 0 && (
-                           <FormControl fullWidth>
-                              <Box sx={{ mb: 2 }}>
-                                 <Grid container spacing={2} alignItems="center">
-                                    <Grid>
-                                       <Box
-                                          style={{ backgroundColor: level?.color }}
-                                          sx={{
-                                             width: 85,
-                                             height: 8,
-                                             borderRadius: "7px"
-                                          }}
-                                       />
-                                    </Grid>
-                                    <Grid>
-                                       <Typography variant="subtitle1" fontSize="0.75rem">
-                                          {level?.label}
-                                       </Typography>
-                                    </Grid>
-                                 </Grid>
-                              </Box>
-                           </FormControl>
-                        )}
-                     </Grid>
+                        </Grid>
+                        {/* Correo Electronico */}
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
+                           <TextField
+                              id="email"
+                              name="email"
+                              label="Correo Electrónico *"
+                              type="email"
+                              value={values.email}
+                              placeholder="mi@correo.com"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
+                              // inputProps={{ maxLength: 2 }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.email && touched.email}
+                              helperText={errors.email && touched.email && errors.email}
+                           />
+                        </Grid>
 
-                     {/* Telefono */}
-                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
-                        <TextField
-                           id="phone"
-                           name="phone"
-                           label="Número Telefónico *"
-                           type="phone"
-                           value={values.phone}
-                           placeholder="10 dígitos"
+                        {/* Switch para mostrar el cambiar contraseña */}
+                        {checkedShowSwitchPassword && (
+                           <Grid item xs={12} md={12} sx={{ mb: -2 }}>
+                              <FormControlLabel
+                                 control={<Switch />}
+                                 label="Cambiar Contraseña"
+                                 checked={newPasswordChecked}
+                                 onChange={() => setNewPasswordChecked(!newPasswordChecked)}
+                              />
+                           </Grid>
+                        )}
+                        {/* Contraseña */}
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
+                           <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
+                              <InputLabel htmlFor="password">Contraseña *</InputLabel>
+                              <OutlinedInput
+                                 id="password"
+                                 name="password"
+                                 label="Contraseña *"
+                                 type={showPassword ? "text" : "password"}
+                                 value={values.password}
+                                 placeholder="Ingrese su contraseña, minimo 6 dígitos"
+                                 onBlur={handleBlur}
+                                 onChange={(e) => {
+                                    handleChange(e);
+                                    changePassword(e.target.value);
+                                 }}
+                                 endAdornment={
+                                    <InputAdornment position="end">
+                                       <IconButton
+                                          aria-label="toggle password visibility"
+                                          onClick={handleClickShowPassword}
+                                          onMouseDown={handleMouseDownPassword}
+                                          edge="end"
+                                          size="large"
+                                       >
+                                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                                       </IconButton>
+                                    </InputAdornment>
+                                 }
+                                 inputProps={{}}
+                                 fullWidth
+                                 disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
+                                 // disabled={values.id == 0 ? false : true}
+                                 error={errors.password && touched.password}
+                              />
+                              {touched.password && errors.password && (
+                                 <FormHelperText error id="ht-password">
+                                    {errors.password}
+                                 </FormHelperText>
+                              )}
+                           </FormControl>
+                           {strength !== 0 && (
+                              <FormControl fullWidth>
+                                 <Box sx={{ mb: 2, mt: 1 }}>
+                                    <Grid container spacing={2} alignItems="center">
+                                       <Grid>
+                                          <Box
+                                             style={{ backgroundColor: level?.color }}
+                                             sx={{
+                                                width: 85,
+                                                height: 8,
+                                                borderRadius: "7px"
+                                             }}
+                                          />
+                                       </Grid>
+                                       <Grid>
+                                          <Typography variant="subtitle1" ml={1} fontSize="0.75rem">
+                                             {level?.label}
+                                          </Typography>
+                                       </Grid>
+                                    </Grid>
+                                 </Box>
+                              </FormControl>
+                           )}
+                        </Grid>
+
+                        {/* Telefono */}
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
+                           <TextField
+                              id="phone"
+                              name="phone"
+                              label="Número Telefónico *"
+                              type="phone"
+                              value={values.phone}
+                              placeholder="10 dígitos"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              fullWidth
+                              inputProps={{ maxLength: 10 }}
+                              error={errors.phone && touched.phone}
+                              helperText={errors.phone && touched.phone && errors.phone}
+                           />
+                        </Grid>
+                        {/* Numero de Licencia */}
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
+                           <TextField
+                              id="license_number"
+                              name="license_number"
+                              label="Número de Licencia *"
+                              type="text"
+                              value={values.license_number}
+                              placeholder="99999999999"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              fullWidth
+                              inputProps={{ maxLength: 11 }}
+                              error={errors.license_number && touched.license_number}
+                              helperText={errors.license_number && touched.license_number && errors.license_number}
+                           />
+                        </Grid>
+                        {/* Tipo de Licencia */}
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
+                           <TextField
+                              id="license_type"
+                              name="license_type"
+                              label="Tipo de Licencia *"
+                              type="text"
+                              value={values.license_type}
+                              placeholder="A | B | C"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "license_type", true)}
+                              fullWidth
+                              inputProps={{ maxLength: 1 }}
+                              error={errors.license_type && touched.license_type}
+                              helperText={errors.license_type && touched.license_type && errors.license_type}
+                           />
+                        </Grid>
+                        {/* Fecha de Vencimiento */}
+                        <Grid item xs={12} md={4} sx={{ mb: 3 }}>
+                           <DatePickerComponent
+                              idName={"license_due_date"}
+                              label={"Fecha de Vencimiento *"}
+                              format={"DD/MM/YYYY"}
+                              value={values.license_due_date}
+                              setFieldValue={setFieldValue}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={errors.license_due_date}
+                              touched={touched.license_due_date}
+                              showErrorInput={null}
+                              formData={formData}
+                           />
+                        </Grid>
+                        {/* Foto Licencia de Conducir */}
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
+                           <InputFileComponent
+                              idName="img_license"
+                              label="Foto Licencia de Conducir *"
+                              filePreviews={imgLicense}
+                              setFilePreviews={setImgLicense}
+                              error={errors.img_license}
+                              touched={touched.img_license}
+                              multiple={false}
+                              accept={"image/*"}
+                           />
+                        </Grid>
+                        {/* Divisor */}
+                        <Grid item xs={12}>
+                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                        </Grid>
+                        {/* Número de Nómina */}
+                        <Field
+                           id="payroll_number_exist"
+                           name="payroll_number_exist"
+                           type="hidden"
+                           value={values.payroll_number_exist}
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           fullWidth
-                           inputProps={{ maxLength: 10 }}
-                           error={errors.phone && touched.phone}
-                           helperText={errors.phone && touched.phone && errors.phone}
                         />
-                     </Grid>
-                     {/* Numero de Licencia */}
-                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
-                        <TextField
-                           id="license_number"
-                           name="license_number"
-                           label="Número de Licencia *"
-                           type="text"
-                           value={values.license_number}
-                           placeholder="99999999999"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           fullWidth
-                           inputProps={{ maxLength: 11 }}
-                           error={errors.license_number && touched.license_number}
-                           helperText={errors.license_number && touched.license_number && errors.license_number}
-                        />
-                     </Grid>
-                     {/* Tipo de Licencia */}
-                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
-                        <TextField
-                           id="license_type"
-                           name="license_type"
-                           label="Tipo de Licencia *"
-                           type="text"
-                           value={values.license_type}
-                           placeholder="A | B | C"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "license_type", true)}
-                           fullWidth
-                           inputProps={{ maxLength: 1 }}
-                           error={errors.license_type && touched.license_type}
-                           helperText={errors.license_type && touched.license_type && errors.license_type}
-                        />
-                     </Grid>
-                     {/* Fecha de Vencimiento */}
-                     <Grid item xs={12} md={4} sx={{ mb: 3 }}>
-                        <DatePickerComponent
-                           idName={"license_due_date"}
-                           label={"Fecha de Vencimiento *"}
-                           format={"DD/MM/YYYY"}
-                           value={values.license_due_date}
-                           setFieldValue={setFieldValue}
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           error={errors.license_due_date}
-                           touched={touched.license_due_date}
-                           showErrorInput={null}
-                           formData={formData}
-                        />
-                     </Grid>
-                     {/* Foto Licencia de Conducir */}
-                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
-                        <InputFileComponent
-                           idName="img_license"
-                           label="Foto Licencia de Conducir *"
-                           filePreviews={imgLicense}
-                           setFilePreviews={setImgLicense}
-                           error={errors.img_license}
-                           touched={touched.img_license}
-                           multiple={false}
-                           accept={"image/*"}
-                        />
-                     </Grid>
-                     {/* Divisor */}
-                     <Grid item xs={12}>
-                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                     </Grid>
-                     {/* Número de Nómina */}
-                     <Field
-                        id="payroll_number_exist"
-                        name="payroll_number_exist"
-                        type="hidden"
-                        value={values.payroll_number_exist}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                     />
-                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
-                        <TextField
-                           id="payroll_number"
-                           name="payroll_number"
-                           label="Número de Nómina *"
-                           type="number"
-                           value={values.payroll_number}
-                           placeholder="99999"
-                           onChange={handleChange}
-                           onInput={(e) => handleInputPayRoll(e, setFieldValue, values)}
-                           onBlur={handleBlur}
-                           fullWidth
-                           // inputProps={{ maxLength: 11 }}
-                           error={(errors.payroll_number && touched.payroll_number) || (errors.payroll_number_exist && touched.payroll_number_exist)}
-                           helperText={
-                              (errors.payroll_number && touched.payroll_number && errors.payroll_number) ||
-                              (errors.payroll_number_exist && touched.payroll_number_exist && errors.payroll_number_exist)
-                           }
-                        />
-                     </Grid>
-                     {/* Departameto */}
-                     <Grid item xs={12} md={8} sx={{ mb: 1 }}>
-                        <TextField
-                           id="department"
-                           name="department"
-                           label="Departamento *"
-                           type="text"
-                           value={values.department}
-                           placeholder="Ingresa tu departamento"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
-                           InputProps={{ disabled: values.id == 0 ? false : true }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.department && touched.department}
-                           helperText={errors.department && touched.department && errors.department}
-                        />
-                        {/* <Select2Component
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
+                           <TextField
+                              id="payroll_number"
+                              name="payroll_number"
+                              label="Número de Nómina *"
+                              type="number"
+                              value={values.payroll_number}
+                              placeholder="99999"
+                              onChange={handleChange}
+                              onInput={(e) => handleInputPayRoll(e, setFieldValue, values)}
+                              onBlur={handleBlur}
+                              fullWidth
+                              // inputProps={{ maxLength: 11 }}
+                              error={(errors.payroll_number && touched.payroll_number) || (errors.payroll_number_exist && touched.payroll_number_exist)}
+                              helperText={
+                                 (errors.payroll_number && touched.payroll_number && errors.payroll_number) ||
+                                 (errors.payroll_number_exist && touched.payroll_number_exist && errors.payroll_number_exist)
+                              }
+                           />
+                        </Grid>
+                        {/* Departameto */}
+                        <Grid item xs={12} md={8} sx={{ mb: 1 }}>
+                           <TextField
+                              id="department"
+                              name="department"
+                              label="Departamento *"
+                              type="text"
+                              value={values.department}
+                              placeholder="Ingresa tu departamento"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
+                              InputProps={{ disabled: values.id == 0 ? false : true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.department && touched.department}
+                              helperText={errors.department && touched.department && errors.department}
+                           />
+                           {/* <Select2Component
                            idName={"department_id"}
                            label={"Departameto *"}
                            valueLabel={values.department}
@@ -618,71 +616,71 @@ const DriverForm = () => {
                            touched={touched.department_id}
                            disabled={false}
                         /> */}
-                     </Grid>
-                     {/* Divisor */}
-                     {/* <Grid item xs={12}>
+                        </Grid>
+                        {/* Divisor */}
+                        {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid> */}
 
-                     {/* Nombre */}
-                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="name"
-                           name="name"
-                           label="Nombre(s) *"
-                           type="text"
-                           value={values.name}
-                           placeholder="Ingrese tu(s) nombre(s)"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
-                           InputProps={{ disabled: true }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.name && touched.name}
-                           helperText={errors.name && touched.name && errors.name}
-                        />
-                     </Grid>
-                     {/* Apellido Paterno */}
-                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="paternal_last_name"
-                           name="paternal_last_name"
-                           label="Apellido Paterno *"
-                           type="text"
-                           value={values.paternal_last_name}
-                           placeholder="Ingrese tu primer apellido"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
-                           InputProps={{ disabled: true }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.paternal_last_name && touched.paternal_last_name}
-                           helperText={errors.paternal_last_name && touched.paternal_last_name && errors.paternal_last_name}
-                        />
-                     </Grid>
-                     {/* Apellido Materno */}
-                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="maternal_last_name"
-                           name="maternal_last_name"
-                           label="Apellido Materno *"
-                           type="text"
-                           value={values.maternal_last_name}
-                           placeholder="Ingrese tu segundo apellido"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
-                           InputProps={{ disabled: true }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.maternal_last_name && touched.maternal_last_name}
-                           helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
-                        />
-                     </Grid>
-                     {/* Divisor */}
-                     {/* <Grid item xs={12}>
+                        {/* Nombre */}
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
+                           <TextField
+                              id="name"
+                              name="name"
+                              label="Nombre(s) *"
+                              type="text"
+                              value={values.name}
+                              placeholder="Ingrese tu(s) nombre(s)"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
+                              InputProps={{ disabled: true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.name && touched.name}
+                              helperText={errors.name && touched.name && errors.name}
+                           />
+                        </Grid>
+                        {/* Apellido Paterno */}
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="paternal_last_name"
+                              name="paternal_last_name"
+                              label="Apellido Paterno *"
+                              type="text"
+                              value={values.paternal_last_name}
+                              placeholder="Ingrese tu primer apellido"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
+                              InputProps={{ disabled: true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.paternal_last_name && touched.paternal_last_name}
+                              helperText={errors.paternal_last_name && touched.paternal_last_name && errors.paternal_last_name}
+                           />
+                        </Grid>
+                        {/* Apellido Materno */}
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="maternal_last_name"
+                              name="maternal_last_name"
+                              label="Apellido Materno *"
+                              type="text"
+                              value={values.maternal_last_name}
+                              placeholder="Ingrese tu segundo apellido"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
+                              InputProps={{ disabled: true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.maternal_last_name && touched.maternal_last_name}
+                              helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
+                           />
+                        </Grid>
+                        {/* Divisor */}
+                        {/* <Grid item xs={12}>
                         <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                      </Grid>
 

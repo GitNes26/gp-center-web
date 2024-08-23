@@ -11,9 +11,20 @@ const NotFound = () => {
    const { setLoading, setLoadingAction } = useGlobalContext();
 
    const error = useRouteError();
-   // console.log(error);
+   console.log(error);
+   // alert(error);
    let errorText = "",
+      errorDetail = "",
+      errorStack = "",
       srcImg = ImgNotFound;
+   if (error) {
+      errorDetail = error.data;
+      errorStack = error.statusText;
+      if (error.error) {
+         errorDetail = error.error.message;
+         errorStack = error.error.stack;
+      }
+   }
 
    useEffect(() => {
       setLoading(false);
@@ -41,6 +52,10 @@ const NotFound = () => {
          </Typography>
          <Typography variant="body1" sx={{ width: "35%", textAlign: "center", mx: "auto", my: 3 }}>
             {errorText}
+         </Typography> */}
+         {/* <Typography variant="h6" sx={{ width: "75%", textAlign: "center", mx: "auto", mb: 3 }}>
+            {errorDetail} <br />
+            {errorStack}
          </Typography> */}
          <Button variant="contained" fullWidth size="large" sx={{ fontWeight: "bolder" }} component={Link} to="/" startIcon={<HomeTwoTone />}>
             REGRESAR AL INICIO

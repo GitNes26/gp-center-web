@@ -2,9 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { 
-   Grid,Box,
-   Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+import { Grid, Box, Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -198,8 +196,8 @@ const AdministratorForm = ({ dataRoles }) => {
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
             <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} >
-                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"}  overflow={"auto"} >
+                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
+                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* Nombre de Usuario */}
                         <Grid item xs={12} md={6} sx={{ mb: 2 }}>
@@ -294,7 +292,7 @@ const AdministratorForm = ({ dataRoles }) => {
                            </FormControl>
                            {strength !== 0 && (
                               <FormControl fullWidth>
-                                 <Box sx={{ mb: 2 }}>
+                                 <Box sx={{ mb: 2, mt: 1 }}>
                                     <Grid container spacing={2} alignItems="center">
                                        <Grid>
                                           <Box
@@ -307,7 +305,7 @@ const AdministratorForm = ({ dataRoles }) => {
                                           />
                                        </Grid>
                                        <Grid>
-                                          <Typography variant="subtitle1" fontSize="0.75rem">
+                                          <Typography variant="subtitle1" ml={1} fontSize="0.75rem">
                                              {level?.label}
                                           </Typography>
                                        </Grid>

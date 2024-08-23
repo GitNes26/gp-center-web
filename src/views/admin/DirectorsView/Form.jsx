@@ -2,9 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { 
-   Grid,
-   Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+import { Grid, Button, Divider, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -313,7 +311,7 @@ const DirectorForm = () => {
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)} className={cursorLoading ? "cursor-loading" : ""}>
-         <Box role="presentation" p={3} pt={5}  className="form">
+         <Box role="presentation" p={3} pt={5} className="form">
             <Typography variant="h2" mb={3}>
                {formTitle}
                <FormControlLabel
@@ -326,7 +324,7 @@ const DirectorForm = () => {
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
             <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, setSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} >
+                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* Foto de Perfil */}
@@ -436,7 +434,7 @@ const DirectorForm = () => {
                            </FormControl>
                            {strength !== 0 && (
                               <FormControl fullWidth>
-                                 <Box sx={{ mb: 2 }}>
+                                 <Box sx={{ mb: 2, mt: 1 }}>
                                     <Grid container spacing={2} alignItems="center">
                                        <Grid>
                                           <Box
@@ -449,7 +447,7 @@ const DirectorForm = () => {
                                           />
                                        </Grid>
                                        <Grid>
-                                          <Typography variant="subtitle1" fontSize="0.75rem">
+                                          <Typography variant="subtitle1" ml={1} fontSize="0.75rem">
                                              {level?.label}
                                           </Typography>
                                        </Grid>
