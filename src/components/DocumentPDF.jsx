@@ -20,7 +20,7 @@
  */
 
 // import logo from '../../assets/images/logo-gpd.png';
-import { Document, Font, Image, Page, StyleSheet, Text, View, usePDF } from "@react-pdf/renderer";
+import { Document, Font, Image, PDFDownloadLink, Page, StyleSheet, Text, View, usePDF } from "@react-pdf/renderer";
 import backgroundImage from "../assets/images/Oficio.jpg";
 import firmademo from "../assets/images/FirmaDemo.png";
 import sinFirma from "../assets/images/sinFirma.png";
@@ -32,13 +32,13 @@ import Slide from "@mui/material/Slide";
 
 import Typography from "@mui/material/Typography";
 import { cloneElement, forwardRef, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { IconButton, Toolbar, Tooltip } from "@mui/material";
+import { Button, IconButton, Toolbar, Tooltip } from "@mui/material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { PDFViewer } from "@react-pdf/renderer";
-import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
+import { IconDownload, IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 import { useAuthContext } from "../context/AuthContext";
-import { gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
+import { colorPrimaryMain, colorSecondaryDark, colorSecondaryLight, gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
 import { formatDatetime } from "../utils/Formats";
 
 import RobotoBold from "../assets/fonts/Roboto-Bold.ttf";
@@ -373,7 +373,7 @@ const formDataInitial = {
 };
 
 // Componente que representa el documento OficioPDF
-export const DocumentPDF = ({ children, watermark = "Departamento Emisor", arrayFormData = [formDataInitial], isOfficialDoc = true }) => {
+export const DocumentPDF = ({ children, watermark = "Departamento Emisor", arrayFormData = [formDataInitial], isOfficialDoc = true, fileName }) => {
    try {
       const DocRef = useRef(null);
       const DocPDF = (
@@ -497,7 +497,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", array
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="down" ref={ref} {...props} />;
 });
-export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, arrayFormData, isOfficialDoc = true }) => {
+export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, arrayFormData, isOfficialDoc = true, fileName }) => {
    const { auth } = useAuthContext();
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
    const { setLoadingAction } = useGlobalContext();
@@ -511,6 +511,7 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
    }, []);
    useLayoutEffect(() => {
       // console.log("estoy en el useLayoutEffect", drivers);
+      // console.log("estoy en el useLayoutEffect", arrayFormData);
    }, []);
 
    return (
@@ -544,6 +545,39 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
                      <IconPrinter />
                   </IconButton>
                </Tooltip> */}
+                  <Tooltip title={`Exportar Reporte a PDF`} placement="top">
+                     <IconButton color="inherit">
+                        <PDFDownloadLink
+                           document={
+                              <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc}>
+                                 {children}
+                              </DocumentPDF>
+                           }
+                           fileName={fileName && fileName}
+                           style={{ textDecoration: "none", marginTop: "10px" }}
+                        >
+                           <Button
+                              style={{
+                                 backgroundColor: colorSecondaryLight,
+                                 color: colorSecondaryDark,
+                                 borderRadius: "8px",
+                                 paddingInline: 10,
+                                 border: "none",
+                                 cursor: "pointer",
+                                 fontWeight: "bolder",
+                                 fontSize: "12px",
+                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                                 transition: "background-color 0.3s ease",
+                                 marginTop: -10
+                              }}
+                              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colorPrimaryMain)}
+                              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colorSecondaryLight)}
+                           >
+                              <IconDownload /> &nbsp; Descargar PDF
+                           </Button>
+                        </PDFDownloadLink>
+                     </IconButton>
+                  </Tooltip>
                   <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
                      <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
                         {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
@@ -558,7 +592,7 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
             </DialogTitle>
             <DialogContent sx={{ pb: 0, height: "90vh" }}>
                <PDFViewer width={"100%"} height={"99%"}>
-                  <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc}>
+                  <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc} fileName={fileName}>
                      {children}
                   </DocumentPDF>
                </PDFViewer>

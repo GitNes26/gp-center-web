@@ -2,24 +2,22 @@ import React, { useEffect, useRef, useState } from "react";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primeicons/primeicons.css";
-
 import { Button as Btn } from "primereact/button";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
-// import { IconField } from 'primereact/iconfield';
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
 import { Button, ButtonGroup, Card, IconButton, Tooltip } from "@mui/material";
-import { IconEdit, IconFile, IconFileSpreadsheet, IconSearch } from "@tabler/icons";
+import { IconEdit, IconFile, IconFileSpreadsheet, IconPlus, IconSearch } from "@tabler/icons";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Box } from "@mui/system";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 
-import { useGlobalContext } from "../context/GlobalContext";
+import { colorPrimaryMain, colorSecondaryLight, colorSecondaryMain, useGlobalContext } from "../context/GlobalContext";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import Toast from "../utils/Toast";
@@ -28,6 +26,7 @@ import IconDelete from "./icons/IconDelete";
 import { Toolbar } from "primereact/toolbar";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import * as XLSX from "xlsx";
+import { isMobile } from "react-device-detect";
 
 /* COMO IMPROTAR
 *    columns={columns}
@@ -42,8 +41,8 @@ import * as XLSX from "xlsx";
          rowEdit={false}
          // handleClickDeleteContinue={handleClickDeleteContinue}
          // ELIMINAR MULTIPLES REGISTROS
-         btnDeleteMultiple={true}
-         handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+         btnDeleteMultiple={false}
+         // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
          // PARA HACER FORMULARIO EN LA TABLA
          // AGREGAR
          // createData={createUser}
@@ -103,19 +102,17 @@ export default function DataTableComponent({
    refreshTable,
    btnAdd = true,
    titleBtnAdd = null,
-   setOpen = null,
    newRow = null,
    btnsExport = true,
    showGridlines = false,
    btnDeleteMultiple = false,
    handleClickDeleteMultipleContinue,
-   scrollHeight = "67vh",
-   exportPDFFunction = null,
-   exportExcelFunction = null
+   scrollHeight = "65vh"
 }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
    const [updating, setUpdating] = useState(false);
+   const [selectedProduct, setSelectedProduct] = useState(null);
 
    const dt = useRef(null);
    // columns.unshift({ id: 0, label: "Selecciona una opción..." });
@@ -127,7 +124,6 @@ export default function DataTableComponent({
    const [filters, setFilters] = useState(filtersColumns);
    const [loading, setLoading] = useState(false);
    const [globalFilterValue, setGlobalFilterValue] = useState("");
-
    // FILTROS
 
    const getSeverity = (value) => {
@@ -236,7 +232,6 @@ export default function DataTableComponent({
    };
 
    const exportPdf = async () => {
-      if (exportPDFFunction) return exportPDFFunction(data);
       import("jspdf").then((jsPDF) => {
          import("jspdf-autotable").then(() => {
             const doc = new jsPDF.default(0, 0);
@@ -247,7 +242,27 @@ export default function DataTableComponent({
       });
    };
 
-   const exportExcel = () => {
+   const exportExcel = (e) => {
+      // console.log("🚀 ~ onGlobalFilterChange ~ globalFilterFields:", globalFilterFields);
+      // console.log("🚀 ~ onGlobalFilterChange ~ filtersColumns:", filtersColumns);
+      // console.log("🚀 ~ onGlobalFilterChange ~ filters:", filters);
+      // // Obtener los datos filtrados aplicando los filtros actuales
+      // const filteredData = data.filter((rowData) => {
+      //    return Object.keys(filters).every((key) => {
+      //       const filterValue = filters[key].value;
+      //       if (!filterValue) return true;
+
+      //       const rowValue = rowData[key];
+      //       return rowValue?.toString().toLowerCase().includes(filterValue.toLowerCase());
+      //    });
+      // });
+      // console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
+
+      // if (filteredData.length === 0) {
+      //    Toast.Info("No hay datos filtrados para exportar.");
+      //    return;
+      // }
+
       if (data.length === 0) {
          Toast.Info("No hay datos para exportar.");
          return;
@@ -268,42 +283,8 @@ export default function DataTableComponent({
       //    saveAsExcelFile(excelBuffer, "data");
       // });
    };
-
-   const saveAsExcelFile = (buffer, fileName) => {
-      import("file-saver").then((module) => {
-         if (module && module.default) {
-            let EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-            let EXCEL_EXTENSION = ".xlsx";
-            const data = new Blob([buffer], {
-               type: EXCEL_TYPE
-            });
-
-            module.default.saveAs(data, fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION);
-         }
-      });
-   };
    //#endregion EXPORTAR
 
-   // const onGlobalFilterChange = (e) => {
-   //    const value = e.target.value;
-   //    let _filters = { ...filters };
-
-   //    _filters["global"].value = value;
-
-   //    setFilters(_filters);
-   //    setGlobalFilterValue(value);
-   // };
-
-   // const renderHeader = () => {
-   //    return (
-   //       <div className="flex justify-content-end">
-   //          <IconField iconPosition="left">
-   //             <InputIcon className="pi pi-search" />
-   //             <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
-   //          </IconField>
-   //       </div>
-   //    );
-   // };
    const onGlobalFilterChange = (e) => {
       try {
          let value = e.target.value;
@@ -320,13 +301,11 @@ export default function DataTableComponent({
          Toast.Error(error);
       }
    };
-   // const header = renderHeader();
 
    const handleClickRefresh = async () => {
       try {
          setLoading(true);
          await refreshTable();
-         setUpdating(false);
          setLoading(false);
          Toast.Success("Tabla Actualizada");
       } catch (error) {
@@ -341,7 +320,12 @@ export default function DataTableComponent({
       return (
          <div className="flex flex-wrap gap-2">
             {/* <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} /> */}
-            <Button variant="contained" color="error" startIcon={<IconDelete />} onClick={confirmDeleteSelected} disabled={!selectedData || !selectedData.length}>
+            <Button
+               variant="contained"
+               color="error"
+               startIcon={<IconDelete />}
+               onClick={confirmDeleteSelected} /* disabled={!selectedData || !selectedData.length} */
+            >
                Eliminar Seleccionados
             </Button>
          </div>
@@ -381,11 +365,11 @@ export default function DataTableComponent({
                   </IconButton>
                </Tooltip>
 
-               <Tooltip title="Exportar a PDF" placement="top">
+               {/* <Tooltip title="Exportar a PDF" placement="top">
                   <IconButton type="button" variant="text" color="error" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportPdf}>
                      <PictureAsPdfIcon />
                   </IconButton>
-               </Tooltip>
+               </Tooltip> */}
             </>
          )}
 
@@ -400,16 +384,22 @@ export default function DataTableComponent({
          </span>
          {btnAdd && (
             <Tooltip title={titleBtnAdd ? `AGREGAR ${titleBtnAdd}` : "AGREGAR"}>
-               <Button
-                  variant="contained"
-                  sx={{ width: 250 }}
-                  startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
-                  size="large"
-                  disabled={updating}
-                  onClick={() => (rowEdit ? addRow() : setOpen ? setOpen(true) : handleClickAdd())}
-               >
-                  {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
-               </Button>
+               {isMobile ? (
+                  <IconButton color="secondary" sx={{ backgroundColor: colorPrimaryMain }} disabled={updating} onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
+                     <IconPlus />
+                  </IconButton>
+               ) : (
+                  <Button
+                     variant="contained"
+                     sx={{ width: 250 }}
+                     startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
+                     size="large"
+                     disabled={updating}
+                     onClick={() => (rowEdit ? addRow() : handleClickAdd())}
+                  >
+                     {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
+                  </Button>
+               )}
             </Tooltip>
          )}
       </Box>
@@ -422,11 +412,11 @@ export default function DataTableComponent({
    useEffect(() => {
       // console.log("🚀 ~ useEffect ~ window.innerWidth:", window.innerWidth);
    }, [window]);
+
    return (
       <div className="card p-fluid">
          {/* <Tooltip target=".export-buttons>button" position="bottom" /> */}
          <Card>
-            {/* {rowEdit && <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>} */}
             {toolBar && (
                <Toolbar
                   className="mb-4"
@@ -461,15 +451,17 @@ export default function DataTableComponent({
                globalFilter={globalFilterValue}
                globalFilterFields={globalFilterFields}
                filterDisplay={headerFilters ? "row" : "menu"}
-               tableStyle={{ minWidth: "50rem" }}
+               tableStyle={{ minWidth: "5rem" }}
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                emptyMessage="No se encontraron registros."
                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+               selectionMode="single"
                selection={selectedData}
                onSelectionChange={(e) => setSelectedData(e.value)}
                onRowEditComplete={onRowEditComplete}
                onRowEditInit={handleOnRowEditIinit}
                onRowEditCancel={handleOnRowEditCancel}
+               metaKeySelection={true}
             >
                {btnDeleteMultiple && <Column selectionMode="multiple" exportable={false}></Column>}
                {columns.map((col, index) => (
@@ -477,27 +469,27 @@ export default function DataTableComponent({
                      key={index}
                      field={col.field}
                      header={col.header}
-                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
+                     headerStyle={{ backgroundColor: colorSecondaryLight, color: "#364152", textAlign: "center" }}
                      headerClassName="text-center"
                      filter={col.filter && headerFilters}
                      filterField={col.filterField}
-                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     filterHeaderStyle={{ backgroundColor: colorSecondaryLight, color: "#364152" }}
+                     filterHeaderClassName="custom-filter-header"
                      editor={(options) => col.functionEdit(options)}
                      sortable={col.sortable}
                      body={col.body}
                      style={{ minWidth: col.width ? col.width : col.filter ? "12rem" : "auto" }}
-                     footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-                     frozen={col.frozen && true}
+                     footerStyle={{ backgroundColor: colorSecondaryLight, color: "#364152" }}
                   ></Column>
                ))}
                {rowEdit ? (
                   <Column
                      rowEditor
                      // headerStyle={{ width: "10%", minWidth: "8rem" }}
-                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
+                     headerStyle={{ backgroundColor: colorSecondaryLight, color: "#364152", textAlign: "center" }}
                      headerClassName="text-center"
                      filter={false}
-                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     filterHeaderStyle={{ backgroundColor: colorSecondaryLight, color: "#364152" }}
                      bodyStyle={{ textAlign: "center" }}
                   ></Column>
                ) : (
@@ -506,15 +498,15 @@ export default function DataTableComponent({
                      field={"actions"}
                      header={"Acciones"}
                      headerClassName="text-center"
-                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     headerStyle={{ backgroundColor: colorSecondaryLight, color: "#364152" }}
+                     filterHeaderStyle={{ backgroundColor: colorSecondaryLight, color: "#364152" }}
                      // editor={(options) => col.functionEdit(options)}
                      // body={col.body}
                      sortable={false}
                      bodyStyle={{ textAlign: "center" }}
                      filter={false}
                      style={{ width: "auto" }}
-                     footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     footerStyle={{ backgroundColor: colorSecondaryLight /* "#E9ECEF" */, color: "#364152" }}
                      alignFrozen="right"
                      frozen={window.innerWidth > 900 ? true : false}
                   ></Column>

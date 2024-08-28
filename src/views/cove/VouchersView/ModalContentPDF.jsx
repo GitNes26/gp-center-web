@@ -166,6 +166,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          open={open}
          setOpen={setOpen}
          formTitle={"OFICIO DE VALES"}
+         fileName={`OFICIO DE VALES #${voucher?.id} ${voucher.requested_department}.pdf`}
          watermark={"Control Vehícular"}
          arrayFormData={arrayData.length > 1 ? arrayData : [formData]}
       >
