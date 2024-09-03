@@ -189,7 +189,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       { field: "internal_folio", header: "Folio Interno", sortable: true, functionEdit: null, body: InternalFolioBodyTemplate, filter: true, filterField: null },
 
       { field: "requested_fullname", header: "Solicitante", sortable: true, functionEdit: null, body: RequestedByBodyTemplate, filter: true, filterField: null },
-      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      { field: "requested_department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
       { field: "activity", header: "Actividad", sortable: true, functionEdit: null, body: ActivityBodyTemplate, filter: true, filterField: null },
       // { field: "vehicle", header: "Vehículo", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
       // { field: "requested_amount", header: "Cantidad Solicitada", sortable: true, functionEdit: null, body: RequestAmountBodyTemplate, filter: true, filterField: null },
