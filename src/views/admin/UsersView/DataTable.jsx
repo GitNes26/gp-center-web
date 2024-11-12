@@ -45,7 +45,7 @@ const UserDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "user", header: "Usuario", sortable: true, functionEdit: null, body: UserBodyTemplate, filter: true, filterField: null },
+      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: UserBodyTemplate, filter: true, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filter: true, filterField: null },
       { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null }
    ];

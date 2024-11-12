@@ -10,86 +10,44 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import LaptopMacIcon from "@mui/icons-material/LaptopMac";
 import HotelIcon from "@mui/icons-material/Hotel";
 import RepeatIcon from "@mui/icons-material/Repeat";
-import Typography from "@mui/material/Typography";
+import { IconSteeringWheel, IconTemplate, IconTool, IconUserStar } from "@tabler/icons-react";
+import { formatDatetime } from "./../utils/Formats";
+import { Typography } from "@mui/material";
 
-const TimeLineComponent = () => {
-   const elements = (
+const TimeLineComponent = ({ items = [] }) => {
+   console.log("🚀 ~ TimeLineComponent ~ items:", items);
+   // date, action, km, user
+   const element = {
+      ALTA: { icon: <IconTemplate />, timelineDotVariant: "transparent", timelineDotColor: "#fff" },
+      DISPONIBLE: { icon: <FastfoodIcon />, timelineDotVariant: "filled", timelineDotColor: "#128129" },
+      ASIGNADO: { icon: <IconUserStar />, timelineDotVariant: "filled", timelineDotColor: "#083691" },
+      PRESTADO: { icon: <IconSteeringWheel />, timelineDotVariant: "filled", timelineDotColor: "#99860A" },
+      "EN SERVICIO": { icon: <IconTool />, timelineDotVariant: "outline", timelineDotColor: "#59575C" }
+   };
+   const elements = items.map((item, index) => (
       <>
-         <TimelineItem>
+         <TimelineItem key={`Key-TimelineItem-${index}`}>
             <TimelineOppositeContent sx={{ m: "auto 0", fontSize: 30 }} variant="h3" color="#1F2227" align="right">
-               9:30 am
+               {item.action}
             </TimelineOppositeContent>
             <TimelineSeparator>
-               <TimelineConnector />
-               <TimelineDot>
-                  <FastfoodIcon />
-               </TimelineDot>
-               <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent sx={{ py: "35px", px: 2, color: "#070E18" }}>
-               <Typography variant="h2" component="span" sx={{ color: "#070E18" }}>
-                  Eat
-               </Typography>
-               <Typography>Because you need strength</Typography>
-            </TimelineContent>
-         </TimelineItem>
-         <TimelineItem>
-            <TimelineOppositeContent sx={{ m: "auto 0", fontSize: 30 }} variant="h3" color="#1F2227">
-               10:00 am
-            </TimelineOppositeContent>
-            <TimelineSeparator>
-               <TimelineConnector />
-               <TimelineDot color="primary">
-                  <LaptopMacIcon />
-               </TimelineDot>
-               <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent sx={{ py: "35px", px: 2, color: "#070E18" }}>
-               <Typography variant="h2" component="span" sx={{ color: "#070E18" }}>
-                  Code
-               </Typography>
-               <Typography>Because it&apos;s awesome!</Typography>
-            </TimelineContent>
-         </TimelineItem>
-         <TimelineItem>
-            <TimelineSeparator>
-               <TimelineConnector />
-               <TimelineDot color="primary" variant="outlined">
-                  <HotelIcon />
+               <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
+               <TimelineDot sx={{ backgroundColor: element[item.action].timelineDotColor }} variant={element[item.action].timelineDotVariant}>
+                  {element[item.action].icon}
                </TimelineDot>
                <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
             </TimelineSeparator>
-            <TimelineContent sx={{ py: "25px", px: 2, color: "#070E18" }}>
-               <Typography variant="h2" component="span" sx={{ color: "#070E18" }}>
-                  Sleep
+            <TimelineContent sx={{ py: "35px", px: 2, color: "#070E18" }}>
+               <Typography variant="h3" component="span" sx={{ color: "#070E18" }}>
+                  {item.user} <br />
+                  <Typography>Km: {item.km}</Typography>
                </Typography>
-               <Typography>Because you need rest</Typography>
-            </TimelineContent>
-         </TimelineItem>
-         <TimelineItem>
-            <TimelineSeparator>
-               <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
-               <TimelineDot color="secondary">
-                  <RepeatIcon />
-               </TimelineDot>
-               <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent sx={{ py: "12px", px: 2, color: "#070E18" }}>
-               <Typography variant="h2" component="span" sx={{ color: "#070E18" }}>
-                  Repeat
-               </Typography>
-               <Typography>Because this is the life you love!</Typography>
+               <Typography fontSize={14}>{formatDatetime(item.date)}</Typography>
             </TimelineContent>
          </TimelineItem>
       </>
-   );
-   return (
-      <Timeline position="alternate">
-         {elements}
-         {elements}
-         {elements}
-      </Timeline>
-   );
+   ));
+   return <Timeline position="alternate">{elements}</Timeline>;
 };
 
 export default TimeLineComponent;
