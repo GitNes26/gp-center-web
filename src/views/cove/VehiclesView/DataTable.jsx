@@ -25,13 +25,15 @@ import { useAuthContext } from "../../../context/AuthContext";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { Box } from "@mui/system";
 import { Link } from "react-router-dom";
+import { IconEye } from "@tabler/icons";
 
 const VehicleDT = () => {
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { setLoading, setLoadingAction, setOpenDialog, setOpenCardInfo } = useGlobalContext();
    const {
       singularName,
       vehicle,
+      setVehicle,
       vehicles,
       getVehicles,
       showVehicle,
@@ -49,6 +51,7 @@ const VehicleDT = () => {
       "model",
       "year",
       "plates",
+      "shelter_to",
       "vehicle_status",
       "serial_number",
       "circulation_card",
@@ -100,6 +103,11 @@ const VehicleDT = () => {
          />
       </Box>
    );
+   const ShelterBodyTemplate = (obj) => (
+      <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
+         {obj.shelter_to}
+      </Typography>
+   );
    const SerialNumberBodyTemplate = (obj) => (
       <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
          {obj.serial_number}
@@ -136,6 +144,7 @@ const VehicleDT = () => {
       { field: "stock_number", header: "N° Económico", sortable: true, functionEdit: null, body: StockNumberBodyTemplate, filter: true, filterField: null },
       { field: "plates", header: "Placas", sortable: true, functionEdit: null, body: PlatesBodyTemplate, filter: true, filterField: null },
       { field: "vehicle_status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate, filter: true, filterField: null },
+      { field: "shelter_to", header: "Resguardante en Korima", sortable: true, functionEdit: null, body: ShelterBodyTemplate, filter: true, filterField: null },
       { field: "serial_number", header: "N° de Serie", sortable: true, functionEdit: null, body: SerialNumberBodyTemplate, filter: true, filterField: null },
       {
          field: "circulation_card",
@@ -180,6 +189,17 @@ const VehicleDT = () => {
       }
    };
 
+   const handleClickView = async (id) => {
+      try {
+         setLoadingAction(true);
+         await showVehicle(id);
+         setOpenCardInfo(true);
+         setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
    const handleClickEdit = async (id) => {
       try {
          setLoadingAction(true);
@@ -247,6 +267,11 @@ const VehicleDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
+            <Tooltip title={`Ver ${singularName}`} placement="top">
+               <Button color="dark" onClick={() => handleClickView(id)}>
+                  <IconEye />
+               </Button>
+            </Tooltip>
             {auth.permissions.update && (
                <Tooltip title={`Editar ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>

@@ -2,9 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { 
-   Grid,
-   Button, Divider, FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
+import { Grid, Button, Divider, FormControlLabel, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormHelperText } from "@mui/material";
@@ -43,6 +41,7 @@ const VehicleForm = () => {
       formTitle,
       setFormTitle
    } = useVehicleContext();
+   const { employees, getEmployees } = useGlobalContext();
    const { brands, getBrandsSelectIndex } = useBrandContext();
    const { models } = useModelContext();
    const { vehicleStatuss, getVehicleStatussSelectIndex } = useVehicleStatusContext();
@@ -484,6 +483,23 @@ const VehicleForm = () => {
                                  helperText={errors.acceptable_license_type && touched.acceptable_license_type && errors.acceptable_license_type}
                               />
                            </Tooltip>
+                        </Grid>
+                        <Grid item xs={12} md={12} sx={{ mb: 1 }}>
+                           <Select2Component
+                              idName={"shelter_to"}
+                              label={"¿Esta unidad tiene resguardante en Korima?"}
+                              valueLabel={values.shelter_to}
+                              formDataLabel={"shelter_to"}
+                              placeholder={"Selecciona una opción..."}
+                              options={employees}
+                              fullWidth={true}
+                              handleBlur={handleBlur}
+                              error={errors.shelter_to}
+                              touched={touched.shelter_to}
+                              disabled={false}
+                              pluralName={"Empleados"}
+                              refreshSelect={getEmployees}
+                           />
                         </Grid>
 
                         {/* Imagen PREVIEW del vehículo */}

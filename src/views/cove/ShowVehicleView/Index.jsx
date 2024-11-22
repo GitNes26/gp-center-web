@@ -372,7 +372,13 @@ const ShowVehicleView = () => {
                                  </Paper>
                               </Typography>
                               <Box textAlign={"center"} mt={2}>
-                                 <Tooltip title={vehicle.vehicle_status_description}>
+                                 <Tooltip
+                                    title={
+                                       <Typography fontSize={15} color={"whitesmoke"}>
+                                          {vehicle.vehicle_status_description}
+                                       </Typography>
+                                    }
+                                 >
                                     <Chip
                                        sx={{
                                           height: "auto",

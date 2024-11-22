@@ -13,6 +13,7 @@ const formDataInitialState = {
    model_id: 0,
    model: "Selecciona una opción...",
    year: "",
+   shelter_to: null,
    registration_date: "",
    vehicle_status_id: 0,
    vehicle_status: "Selecciona una opción...",

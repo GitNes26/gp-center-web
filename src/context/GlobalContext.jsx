@@ -3,6 +3,7 @@ import { createContext, forwardRef, useContext, useEffect, useState } from "reac
 import Toast from "../utils/Toast";
 import axios from "axios";
 import { Slide } from "@mui/material";
+import { CorrectRes, ErrorRes } from "../utils/Response";
 
 //mis colores
 export const gpcLight = "#E9ECEF";
@@ -55,8 +56,10 @@ export const GlobalContextProvider = ({ children }) => {
    // const [loadingAction, setLoadingAction] = useState(false);
    const [cursorLoading, setCursorLoading] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
+   const [openCardInfo, setOpenCardInfo] = useState(false);
    const [bgImage, setBgImage] = useState("none");
    const [counters, setCounters] = useState(initialStateCounters);
+   const [employees, setEmployees] = useState([]);
 
    const toggleDrawer =
       (open, setOpenSwiper = null) =>
@@ -118,6 +121,36 @@ export const GlobalContextProvider = ({ children }) => {
       setCounters(initialStateCounters);
    };
 
+   const getEmployees = async () => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await axios.get(import.meta.env.VITE_API_RH_EMPLEADOS);
+         console.log("🚀 ~ changeStatus ~ axiosData:", axiosData);
+         res = axiosData.data.RESPONSE;
+
+         const data = res.recordset;
+         const dataSelectIndex = [];
+         data.map((item) => {
+            const obj = { id: 0, label: "" };
+            obj.id = `${item.codigoEmpleado} - ${item.nombreE} ${item.apellidoP} ${item.apellidoM}`;
+            obj.label = `${item.codigoEmpleado} - ${item.nombreE} ${item.apellidoP} ${item.apellidoM}`;
+            dataSelectIndex.push(obj);
+         });
+         console.log("🚀 ~ getEmployees ~ data:", data);
+         console.log("🚀 ~ getEmployees ~ dataSelectIndex:", dataSelectIndex);
+         setEmployees(dataSelectIndex);
+
+         return res;
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+      return res;
+   };
+
    return (
       <GlobalContext.Provider
          value={{
@@ -128,6 +161,8 @@ export const GlobalContextProvider = ({ children }) => {
             // loading,
             setLoading,
             // loadingAction,
+            openCardInfo,
+            setOpenCardInfo,
             setLoadingAction,
             cursorLoading,
             setCursorLoading,
@@ -158,7 +193,10 @@ export const GlobalContextProvider = ({ children }) => {
             setDataColoniesComplete,
             counters,
             setCounters,
-            resetCounters
+            resetCounters,
+            getEmployees,
+            employees,
+            setEmployees
          }}
       >
          {children}

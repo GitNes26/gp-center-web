@@ -32,6 +32,7 @@ import NotificationList from "./NotificationList";
 
 // assets
 import { IconBell } from "@tabler/icons";
+// import SSEListener from "../../../../components/SEEListener";
 
 // notification status options
 const status = [
@@ -55,7 +56,7 @@ const status = [
 
 // ==============================|| NOTIFICATION ||============================== //
 
-const NotificationSection = () => {
+const NotificationSection = ({ channel }) => {
    const theme = useTheme();
    const matchesXs = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -65,6 +66,40 @@ const NotificationSection = () => {
     * anchorRef is used on different componets and specifying one type leads to other components throwing an error
     * */
    const anchorRef = useRef(null);
+
+   const [message, setMessage] = useState("sin mensajes...");
+   const [isConnected, setIsConnected] = useState(false);
+   const [error, setError] = useState(null);
+
+   useEffect(() => {
+      // Establecer la conexión SSE al canal
+      const eventSource = new EventSource(`${import.meta.env.VITE_API}/sse/${channel}`);
+
+      // Manejar cuando la conexión se abre
+      eventSource.onopen = () => {
+         console.log("Conexión abierta");
+         setIsConnected(true); // Establecer como conectado
+         setError(null); // Limpiar cualquier error anterior
+      };
+
+      // Manejar los mensajes recibidos
+      eventSource.onmessage = (event) => {
+         const data = JSON.parse(event.data);
+         setMessage(data.message); // Actualizar el mensaje
+      };
+
+      // Manejar errores de conexión
+      // eventSource.onerror = (event) => {
+      //   console.error('Error en la conexión SSE', event);
+      //   setError('Error en la conexión SSE. Intenta nuevamente.');
+      //   setIsConnected(false); // Establecer como desconectado
+      // };
+
+      // Limpiar la conexión cuando el componente se desmonte
+      return () => {
+         eventSource.close();
+      };
+   }, [channel]);
 
    const handleToggle = () => {
       setOpen((prevOpen) => !prevOpen);
@@ -154,7 +189,7 @@ const NotificationSection = () => {
                                  <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2, px: 2 }}>
                                     <Grid item>
                                        <Stack direction="row" spacing={2}>
-                                          <Typography variant="subtitle1">All Notification</Typography>
+                                          <Typography variant="subtitle1">{isConnected ? "conectado" : "sin conexion"}</Typography>
                                           <Chip
                                              size="small"
                                              label="01"
@@ -205,7 +240,13 @@ const NotificationSection = () => {
                                           <Divider sx={{ my: 0 }} />
                                        </Grid>
                                     </Grid>
-                                    <NotificationList />
+                                    <Typography textAlign={"center"} justifyContent={"center"}>
+                                       {message}
+                                    </Typography>
+                                    <Typography textAlign={"center"} justifyContent={"center"} color={"red"}>
+                                       {error}
+                                    </Typography>
+                                    {/* <NotificationList /> */}
                                  </PerfectScrollbar>
                               </Grid>
                            </Grid>

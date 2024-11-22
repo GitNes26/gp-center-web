@@ -14,10 +14,11 @@ import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import { useBrandContext } from "../../../context/BrandContext";
 import { useModelContext } from "../../../context/ModelContext";
 import { useVehicleStatusContext } from "../../../context/VehicleStatusContext";
+import VehicleCardInfo from "./CardInfo";
 
 const VehiclesView = () => {
    // const { result } = useLoaderData();
-   const { setLoading } = useGlobalContext();
+   const { setLoading, getEmployees } = useGlobalContext();
    const { pluralName, vehicle, getVehicles } = useVehicleContext();
    const { getBrandsSelectIndex } = useBrandContext();
    // const { getModelsSelectIndex } = useModelContext();
@@ -29,6 +30,7 @@ const VehiclesView = () => {
          getVehicles();
          getBrandsSelectIndex();
          // getModelsSelectIndex();
+         getEmployees();
          getVehicleStatussSelectIndex(["ASIGNADO", "PRESTADO", "EN SERVICIO"]);
       } catch (error) {
          console.log(error);
@@ -51,6 +53,7 @@ const VehiclesView = () => {
          {/* </MainCard> */}
 
          <VehicleForm />
+         <VehicleCardInfo />
       </>
    );
 };
