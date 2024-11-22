@@ -60,6 +60,7 @@ export default function VehicleContextProvider({ children }) {
    const [imagePreview, setImagePreview] = useState(null);
 
    const [dataList, setDataList] = useState([]);
+   const [history, setHistory] = useState([]);
 
    const resetFormData = () => {
       try {
@@ -78,6 +79,25 @@ export default function VehicleContextProvider({ children }) {
          setImagePreview(null);
       } catch (error) {
          console.log("Error en resetVehicle:", error);
+         Toast.Error(error);
+      }
+   };
+
+   const getHistory = async (vehicle_id) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/vehicleMovements/history/${vehicle_id}`);
+         // console.log("axiosData", axiosData);
+         res = axiosData.data.data;
+         setHistory(res.result);
+         // fillFormData(res.result);
+         // console.log(res);
+
+         return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
          Toast.Error(error);
       }
    };
@@ -229,7 +249,10 @@ export default function VehicleContextProvider({ children }) {
             imagePreview,
             setImagePreview,
             dataList,
-            setDataList
+            setDataList,
+            getHistory,
+            history,
+            setHistory
          }}
       >
          {children}

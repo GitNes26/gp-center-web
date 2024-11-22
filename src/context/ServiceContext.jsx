@@ -118,6 +118,23 @@ export default function ServiceContextProvider({ children }) {
       return res;
    };
 
+   const loadMaterial = async (serviceId, requestMaterial, statusCurrent = null) => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await Axios.get(`/services/${serviceId}/loadMaterial/${Boolean(requestMaterial)}`);
+         // console.log("🚀 ~ changeStatus ~ axiosData:", axiosData);
+         res = axiosData.data.data;
+         getServices(statusCurrent);
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+      return res;
+   };
+
    const getServices = async (status = null) => {
       try {
          setService([]);
@@ -288,7 +305,8 @@ export default function ServiceContextProvider({ children }) {
             imagePreview,
             setImagePreview,
             formikRef,
-            changeStatus
+            changeStatus,
+            loadMaterial
          }}
       >
          {children}

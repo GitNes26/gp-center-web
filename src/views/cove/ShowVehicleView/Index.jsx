@@ -81,8 +81,20 @@ const ShowVehicleView = () => {
    const mySwal = withReactContent(Swal);
 
    const { setLoading, setLoadingAction, setOpenDialog, setBgImage } = useGlobalContext();
-   const { singularName, vehicles, getVehicles, resetFormData, setTextBtnSumbit, setFormTitle, showVehicle, showVehicleBy, vehicle, dataList, setDataList } =
-      useVehicleContext();
+   const {
+      singularName,
+      vehicles,
+      getVehicles,
+      resetFormData,
+      setTextBtnSumbit,
+      setFormTitle,
+      showVehicle,
+      showVehicleBy,
+      vehicle,
+      dataList,
+      setDataList,
+      getHistory
+   } = useVehicleContext();
    const { vehiclePlates, setVehiclePlates, historyByVehicleId } = useVehiclePlateContext();
    const { directors, getDirectors } = useDirectorContext();
    const { drivers, getDrivers } = useDriverContext();
@@ -116,9 +128,10 @@ const ShowVehicleView = () => {
       }
    };
 
-   const handleClickViewHistory = () => {
+   const handleClickViewHistory = async () => {
       try {
          // resetFormData();
+         await getHistory(vehicle.id);
          setOpenDialogHistory(true);
          // setTextBtnSumbit("AGREGAR");
          // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -294,8 +307,8 @@ const ShowVehicleView = () => {
                            </Grid>
                         )}
                         <Grid item xs alignItems={"center"}>
-                           {auth.permissions.more_permissions.includes("Devolver Vehículo") && (
-                              <Tooltip title={"Devolver Vehículo"} placement="right" arrow>
+                           {auth.permissions.more_permissions.includes("Entregar Vehículo") && vehicle?.vehicle_status_id === 3 && (
+                              <Tooltip title={"Entregar a Patrimonio"} placement="right" arrow>
                                  <Button
                                     variant="contained"
                                     color="error"
@@ -307,11 +320,11 @@ const ShowVehicleView = () => {
                                     sx={{ fontWeight: "bolder" }}
                                     className={"btn-action"}
                                  >
-                                    DEVOLVER VEHÍCULO
+                                    ENTREGAR A PATRIMONIO
                                  </Button>
                               </Tooltip>
                            )}
-                           {auth.permissions.more_permissions.includes("Devolver Préstamo") && (
+                           {auth.permissions.more_permissions.includes("Devolver Préstamo") && vehicle?.vehicle_status_id === 4 && (
                               <Tooltip title={"Devolver préstamo"} placement="right" arrow>
                                  <Button
                                     variant="contained"
@@ -359,23 +372,25 @@ const ShowVehicleView = () => {
                                  </Paper>
                               </Typography>
                               <Box textAlign={"center"} mt={2}>
-                                 <Chip
-                                    sx={{
-                                       height: "auto",
-                                       "& .MuiChip-label": {
-                                          display: "block",
-                                          whiteSpace: "normal"
-                                       },
-                                       fontSize: "18px",
-                                       fontWeight: "bolder",
-                                       p: 1,
-                                       // color: "#F3F3F3",
-                                       color: vehicle.letter_black ? "#3E3E3E" : "#F3F3F3",
-                                       backgroundColor: vehicle.bg_color
-                                       // backgroundColor: "#3E3E3E"
-                                    }}
-                                    label={vehicle.vehicle_status}
-                                 />
+                                 <Tooltip title={vehicle.vehicle_status_description}>
+                                    <Chip
+                                       sx={{
+                                          height: "auto",
+                                          "& .MuiChip-label": {
+                                             display: "block",
+                                             whiteSpace: "normal"
+                                          },
+                                          fontSize: "18px",
+                                          fontWeight: "bolder",
+                                          p: 1,
+                                          // color: "#F3F3F3",
+                                          color: vehicle.letter_black ? "#3E3E3E" : "#F3F3F3",
+                                          backgroundColor: vehicle.bg_color
+                                          // backgroundColor: "#3E3E3E"
+                                       }}
+                                       label={vehicle.vehicle_status}
+                                    />
+                                 </Tooltip>
                               </Box>
                            </CardContent>
                         </Card>

@@ -171,6 +171,7 @@ const DriverDT = () => {
          data={data}
          globalFilterFields={globalFilterFields}
          headerFilters={true}
+         btnAdd={auth.permissions.create}
          handleClickAdd={handleClickAdd}
          refreshTable={getDrivers}
       />

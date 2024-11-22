@@ -360,12 +360,29 @@ export const numberToText = (number) => {
  */
 export const includesInArray = (array1, array2, allValues = false) => {
    try {
-      if (allValues) return array2.every((element) => array1.includes(element));
-      else return array2.map((element) => array1.includes(element));
+      let res = false;
+      if (allValues) {
+         res = array2.every((element) => array1.includes(element));
+         // console.log("🚀 ~ includesInArray ~ allValues ~ res:", res);
+      } else {
+         const results = array2.map((element) => array1.includes(element));
+         res = results.some((result) => result === true);
+         // console.log("🚀 ~ includesInArray ~ res:", res);
+      }
+      return res;
    } catch (error) {
       console.log("🚀 ~ includesInArray ~ error:", error);
       Toast.Error(error);
    }
+};
+
+/**
+ * Esta función nos ayuda a quitar los datos duplicados de un array
+ * @param {Array} array - Lista de elementos a remover
+ * @returns
+ */
+export const removeDuplicates = (array) => {
+   return [...new Set(array)];
 };
 
 /**

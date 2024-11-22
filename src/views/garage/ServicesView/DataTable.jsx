@@ -35,7 +35,8 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
       setTextBtnSumbit,
       setFormTitle,
       formikRef,
-      changeStatus
+      changeStatus,
+      loadMaterial
    } = useServiceContext();
    const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
    // const [openService, setOpenService] = useState(false);
@@ -172,8 +173,23 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
          Toast.Error(error);
       }
    };
+   const handleClickLoadMaterial = async (id, requestMaterial) => {
+      try {
+         setLoadingAction(true);
+         const axiosResponse = await loadMaterial(id, requestMaterial, status);
+
+         // formikRef.current.setValues(axiosResponse.result);
+         setLoadingAction(false);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+      } catch (error) {
+         setLoadingAction(false);
+         console.log("🚀 ~ handleClickApprove ~ error:", error);
+         Toast.Error(error);
+      }
+   };
 
    const ButtonsAction = ({ id, folio, obj }) => {
+      console.log("🚀 ~ ButtonsAction ~ obj:", obj);
       return (
          <ButtonGroup variant="outlined">
             <Tooltip title={`Ver Solicitud de ${singularName} #${folio}`} placement="top">
@@ -204,18 +220,33 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
             )}
             {includesInArray(auth.permissions.more_permissions, ["Cargar Material", "todas"]) && obj.status === "EN REVISIÓN" && (
                <Tooltip title={`Cargar Material al ${singularName} #${folio}`} placement="top">
-                  <Button color="error" onClick={() => handleClickLoadMaterial(id, folio, obj)}>
+                  <Button color="error" onClick={() => handleClickLoadMaterial(id, true)}>
                      <FileUploadIcon />
                   </Button>
                </Tooltip>
             )}
-            {includesInArray(auth.permissions.more_permissions, ["Cerrar Servicio", "todas"]) && obj.status === "EN REVISIÓN" && (
-               <Tooltip title={`Cerrar ${singularName} #${folio}`} placement="top">
-                  <Button color="error" onClick={() => handleClickChangeStatus(id, "CERRADA")}>
-                     <IconSquareRoundedCheckFilled />
+            {includesInArray(auth.permissions.more_permissions, ["Aprobar Material", "todas"]) && obj.status === "EN REVISIÓN" && obj.request_material && (
+               <Tooltip title={`Aprobar Material al ${singularName} #${folio}`} placement="top">
+                  <Button color="warning" onClick={() => handleClickChangeStatus(id, "APROBADA POR CV")}>
+                     <IconThumbUpFilled />
                   </Button>
                </Tooltip>
             )}
+            {includesInArray(auth.permissions.more_permissions, ["Rechazar Material", "todas"]) && obj.status === "EN REVISIÓN" && obj.request_material && (
+               <Tooltip title={`Rechazar Material al ${singularName} #${folio}`} placement="top">
+                  <Button color="warning" onClick={() => handleClickChangeStatus(id, "RECHAZADA POR CV")}>
+                     <IconThumbDown />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, ["Cerrar Servicio", "todas"]) &&
+               ["EN REVISIÓN", "APROBADA POR CV", "RECHAZADA POR CV"].includes(obj.status) && (
+                  <Tooltip title={`Cerrar ${singularName} #${folio}`} placement="top">
+                     <Button color="error" onClick={() => handleClickChangeStatus(id, "CERRADA")}>
+                        <IconSquareRoundedCheckFilled />
+                     </Button>
+                  </Tooltip>
+               )}
             {auth.permissions.update && (
                <Tooltip title={`Editar ${singularName} #${folio}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>
