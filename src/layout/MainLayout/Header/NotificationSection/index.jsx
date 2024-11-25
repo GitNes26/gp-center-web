@@ -32,6 +32,7 @@ import NotificationList from "./NotificationList";
 
 // assets
 import { IconBell } from "@tabler/icons";
+import { formatDatetime } from "../../../../utils/Formats";
 // import SSEListener from "../../../../components/SEEListener";
 
 // notification status options
@@ -67,7 +68,7 @@ const NotificationSection = ({ channel }) => {
     * */
    const anchorRef = useRef(null);
 
-   const [message, setMessage] = useState("sin mensajes...");
+   const [messages, setMessages] = useState([]);
    const [isConnected, setIsConnected] = useState(false);
    const [error, setError] = useState(null);
 
@@ -85,7 +86,9 @@ const NotificationSection = ({ channel }) => {
       // Manejar los mensajes recibidos
       eventSource.onmessage = (event) => {
          const data = JSON.parse(event.data);
-         setMessage(data.message); // Actualizar el mensaje
+         console.log("🚀 ~ useEffect ~ data:", data);
+
+         setMessages(data.message); // Actualizar el mensaje
       };
 
       // Manejar errores de conexión
@@ -135,7 +138,7 @@ const NotificationSection = ({ channel }) => {
                }
             }}
          >
-            <Badge color="secondary" badgeContent={5} max={999}>
+            <Badge color="secondary" badgeContent={messages.length} max={999}>
                <ButtonBase sx={{ borderRadius: "12px" }}>
                   <Avatar
                      variant="rounded"
@@ -240,9 +243,19 @@ const NotificationSection = ({ channel }) => {
                                           <Divider sx={{ my: 0 }} />
                                        </Grid>
                                     </Grid>
-                                    <Typography textAlign={"center"} justifyContent={"center"}>
-                                       {message}
-                                    </Typography>
+                                    {messages.map((msg) => (
+                                       <Box sx={{ backgroundColor: "cyan", py: 1, px: 2, borderBottom: 0.5, borderColor: "skyblue" }}>
+                                          <Typography textAlign={"center"} justifyContent={"center"} fontWeight={"bold"}>
+                                             {msg.title}
+                                          </Typography>
+                                          <Typography textAlign={"center"} justifyContent={"start"} variant="p" my={3}>
+                                             {msg.message}
+                                          </Typography>
+                                          <Typography textAlign={"end"} justifyContent={"end"} fontStyle={"italic"} fontSize={11}>
+                                             {formatDatetime(msg.created_at, true)}
+                                          </Typography>
+                                       </Box>
+                                    ))}
                                     <Typography textAlign={"center"} justifyContent={"center"} color={"red"}>
                                        {error}
                                     </Typography>
