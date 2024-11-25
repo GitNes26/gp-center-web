@@ -8,7 +8,7 @@ import { Avatar, Box, ButtonBase } from "@mui/material";
 import LogoSection from "../LogoSection";
 import SearchSection from "./SearchSection";
 import ProfileSection from "./ProfileSection";
-import NotificationSection from "./NotificationSection";
+// import NotificationSection from "./NotificationSection";
 
 // assets
 import { IconMenu2 } from "@tabler/icons";
@@ -71,7 +71,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
          </Box>
 
          {/* notification & profile */}
-         <NotificationSection channel={"notifications"} />
+         {/* <NotificationSection channel={"notifications"} /> */}
          <ProfileSection />
       </>
    );

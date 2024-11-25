@@ -119,7 +119,7 @@ export const FormikComponent = forwardRef(
 
       return (
          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef == null ? ref : formikRef}>
-            {({ handleSubmit, isSubmitting, resetForm }) => (
+            {({ handleSubmit, isSubmitting, resetForm, values }) => (
                <Grid
                   container
                   spacing={2}
