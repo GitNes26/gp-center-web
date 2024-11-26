@@ -74,35 +74,35 @@ const NotificationSection = ({ channel }) => {
 
    useEffect(() => {
       // Establecer la conexión SSE al canal
-      // const eventSource = new EventSource(`${import.meta.env.VITE_API}/sse/${channel}`);
+      const eventSource = new EventSource(`${import.meta.env.VITE_API}/sse/${channel}`);
 
-      // // Manejar cuando la conexión se abre
-      // eventSource.onopen = () => {
-      //    console.log("Conexión abierta");
-      //    setIsConnected(true); // Establecer como conectado
-      //    setError(null); // Limpiar cualquier error anterior
+      // Manejar cuando la conexión se abre
+      eventSource.onopen = () => {
+         console.log("Conexión abierta");
+         setIsConnected(true); // Establecer como conectado
+         setError(null); // Limpiar cualquier error anterior
+      };
+
+      // Manejar los mensajes recibidos
+      eventSource.onmessage = (event) => {
+         const data = JSON.parse(event.data);
+         console.log("🚀 ~ useEffect ~ data:", data);
+
+         setMessages(data.message); // Actualizar el mensaje
+      };
+
+      // Manejar errores de conexión
+      // eventSource.onerror = (event) => {
+      //   console.error('Error en la conexión SSE', event);
+      // //   setError('Error en la conexión SSE. Intenta nuevamente.');
+      // //   setIsConnected(false); // Establecer como desconectado
       // };
 
-      // // Manejar los mensajes recibidos
-      // eventSource.onmessage = (event) => {
-      //    const data = JSON.parse(event.data);
-      //    console.log("🚀 ~ useEffect ~ data:", data);
-
-      //    setMessages(data.message); // Actualizar el mensaje
-      // };
-
-      // // Manejar errores de conexión
-      // // eventSource.onerror = (event) => {
-      // //   console.error('Error en la conexión SSE', event);
-      // // //   setError('Error en la conexión SSE. Intenta nuevamente.');
-      // // //   setIsConnected(false); // Establecer como desconectado
-      // // };
-
-      // // Limpiar la conexión cuando el componente se desmonte
-      // return () => {
-      //    // console.log("aquiii cerrando")
-      //    eventSource.close();
-      // };
+      // Limpiar la conexión cuando el componente se desmonte
+      return () => {
+         // console.log("aquiii cerrando")
+         eventSource.close();
+      };
    }, []);
    // useEffect(() => {
    //    let eventSource;
@@ -295,6 +295,7 @@ const NotificationSection = ({ channel }) => {
                                           <Divider sx={{ my: 0 }} />
                                        </Grid>
                                     </Grid>
+                                    <NotificationList />
                                     {messages.map((msg) => (
                                        <Box sx={{ backgroundColor: "cyan", py: 1, px: 2, borderBottom: 0.5, borderColor: "skyblue" }}>
                                           <Typography textAlign={"center"} justifyContent={"center"} fontWeight={"bold"}>
@@ -311,7 +312,6 @@ const NotificationSection = ({ channel }) => {
                                     <Typography textAlign={"center"} justifyContent={"center"} color={"red"}>
                                        {error}
                                     </Typography>
-                                    {/* <NotificationList /> */}
                                  </PerfectScrollbar>
                               </Grid>
                            </Grid>
