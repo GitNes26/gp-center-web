@@ -72,89 +72,38 @@ const NotificationSection = ({ channel }) => {
    const [isConnected, setIsConnected] = useState(false);
    const [error, setError] = useState(null);
 
-   useEffect(() => {
-      // Establecer la conexión SSE al canal
-      const eventSource = new EventSource(`${import.meta.env.VITE_API}/sse/${channel}`);
-
-      // Manejar cuando la conexión se abre
-      eventSource.onopen = () => {
-         console.log("Conexión abierta");
-         setIsConnected(true); // Establecer como conectado
-         setError(null); // Limpiar cualquier error anterior
-      };
-
-      // Manejar los mensajes recibidos
-      eventSource.onmessage = (event) => {
-         const data = JSON.parse(event.data);
-         console.log("🚀 ~ useEffect ~ data:", data);
-
-         setMessages(data.message); // Actualizar el mensaje
-      };
-
-      // Manejar errores de conexión
-      // eventSource.onerror = (event) => {
-      //   console.error('Error en la conexión SSE', event);
-      // //   setError('Error en la conexión SSE. Intenta nuevamente.');
-      // //   setIsConnected(false); // Establecer como desconectado
-      // };
-
-      // Limpiar la conexión cuando el componente se desmonte
-      return () => {
-         // console.log("aquiii cerrando")
-         eventSource.close();
-      };
-   }, []);
    // useEffect(() => {
-   //    let eventSource;
+   //    // Establecer la conexión SSE al canal
+   //    const eventSource = new EventSource(`${import.meta.env.VITE_API}/sse/${channel}`);
 
-   //    const connect = () => {
-   //       // Establecer la conexión SSE
-   //       eventSource = new EventSource(`${import.meta.env.VITE_API}/sse/${channel}`);
-
-   //       // Manejar cuando la conexión se abre
-   //       eventSource.onopen = () => {
-   //          console.log("Conexión abierta");
-   //          setIsConnected(true); // Establecer como conectado
-   //          setError(null); // Limpiar cualquier error anterior
-   //       };
-
-   //       // Manejar los mensajes recibidos
-   //       eventSource.onmessage = (event) => {
-   //          const data = JSON.parse(event.data);
-   //          console.log("🚀 ~ useEffect ~ data:", data);
-
-   //          setMessages(data.message); // Actualizar el mensaje
-   //       };
-
-   //       // Manejar errores de conexión
-   //       eventSource.onerror = (event) => {
-   //          console.log("🚀 ~ onerror ~ event:", event);
-   //          console.error("Error en la conexión SSE. Intentando reconectar...");
-   //          setError("Error en la conexión SSE. Intentando reconectar...");
-   //          setIsConnected(false); // Establecer como desconectado
-
-   //          // Cerrar la conexión actual antes de intentar reconectar
-   //          if (eventSource) eventSource.close();
-
-   //          // Intentar reconectar después de 5 segundos
-   //          setTimeout(() => {
-   //             console.log("Intentando reconectar...");
-   //             connect();
-   //          }, 5000);
-   //       };
+   //    // Manejar cuando la conexión se abre
+   //    eventSource.onopen = () => {
+   //       console.log("Conexión abierta");
+   //       setIsConnected(true); // Establecer como conectado
+   //       setError(null); // Limpiar cualquier error anterior
    //    };
 
-   //    // Iniciar la conexión
-   //    connect();
+   //    // Manejar los mensajes recibidos
+   //    eventSource.onmessage = (event) => {
+   //       const data = JSON.parse(event.data);
+   //       console.log("🚀 ~ useEffect ~ data:", data);
 
-   //    // Limpiar al desmontar el componente
+   //       setMessages(data.message); // Actualizar el mensaje
+   //    };
+
+   //    // Manejar errores de conexión
+   //    // eventSource.onerror = (event) => {
+   //    //   console.error('Error en la conexión SSE', event);
+   //    // //   setError('Error en la conexión SSE. Intenta nuevamente.');
+   //    // //   setIsConnected(false); // Establecer como desconectado
+   //    // };
+
+   //    // Limpiar la conexión cuando el componente se desmonte
    //    return () => {
-   //       if (eventSource) eventSource.close();
+   //       // console.log("aquiii cerrando")
+   //       eventSource.close();
    //    };
-   // }, [channel]); // Reconectar si el canal cambia
-
-   //     return { isConnected, messages, error };
-   //   };
+   // }, []);
 
    const handleToggle = () => {
       setOpen((prevOpen) => !prevOpen);
@@ -296,7 +245,7 @@ const NotificationSection = ({ channel }) => {
                                        </Grid>
                                     </Grid>
                                     <NotificationList />
-                                    {messages.map((msg) => (
+                                    {/* {messages.map((msg) => (
                                        <Box sx={{ backgroundColor: "cyan", py: 1, px: 2, borderBottom: 0.5, borderColor: "skyblue" }}>
                                           <Typography textAlign={"center"} justifyContent={"center"} fontWeight={"bold"}>
                                              {msg.title}
@@ -308,7 +257,7 @@ const NotificationSection = ({ channel }) => {
                                              {formatDatetime(msg.created_at, true)}
                                           </Typography>
                                        </Box>
-                                    ))}
+                                    ))} */}
                                     <Typography textAlign={"center"} justifyContent={"center"} color={"red"}>
                                        {error}
                                     </Typography>

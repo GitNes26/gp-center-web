@@ -136,8 +136,8 @@ export const GlobalContextProvider = ({ children }) => {
             obj.label = `${item.codigoEmpleado} - ${item.nombreE} ${item.apellidoP} ${item.apellidoM}`;
             dataSelectIndex.push(obj);
          });
-         console.log("🚀 ~ getEmployees ~ data:", data);
-         console.log("🚀 ~ getEmployees ~ dataSelectIndex:", dataSelectIndex);
+         // console.log("🚀 ~ getEmployees ~ data:", data);
+         // console.log("🚀 ~ getEmployees ~ dataSelectIndex:", dataSelectIndex);
          setEmployees(dataSelectIndex);
 
          return res;

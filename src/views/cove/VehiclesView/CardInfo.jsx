@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Box, Card, CardContent, CardMedia, Typography, Grid, Paper, Divider, ThemeProvider, createTheme, styled } from "@mui/material";
 import { DirectionsCar, Speed, LocalGasStation, Today, Scale, Settings, AttachMoney, EmojiEvents, Security, FlashOn } from "@mui/icons-material";
