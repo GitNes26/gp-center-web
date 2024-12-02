@@ -38,6 +38,8 @@ import VoucherContextProvider from "../context/VoucherContext";
 import VoucherRequestersView from "../views/admin/VoucherRequestersView/Index";
 import VoucherRequesterContextProvider from "../context/VoucherRequesterContext";
 import VoucherDetailContextProvider from "../context/VoucherDetailContext";
+import MechanicContextProvider from "../context/MechanicContext";
+import MechanicsView from "../views/admin/MechanicsView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -143,6 +145,15 @@ const MainRoutes = {
          // loader: loaderIndex
       },
       {
+         path: "mecanicos",
+         element: (
+            <MechanicContextProvider>
+               <MechanicsView />
+            </MechanicContextProvider>
+         )
+         // loader: loaderIndex
+      },
+      {
          path: "directores",
          element: (
             <DirectorContextProvider>
@@ -174,6 +185,7 @@ const MainRoutes = {
          )
          // loader: loaderIndex
       },
+      // TALLER
       {
          path: "taller",
          children: [
@@ -224,6 +236,7 @@ const MainRoutes = {
             }
          ]
       },
+      // CoVe
       {
          path: "cove",
          children: [
@@ -273,6 +286,7 @@ const MainRoutes = {
             }
          ]
       },
+      // CONTROL DE VALES
       {
          path: "vales",
          children: [

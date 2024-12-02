@@ -9,6 +9,7 @@ import { gpcDark, ROLE_DIRECTOR, useGlobalContext } from "../../../context/Globa
 import { useParams } from "react-router-dom";
 import { useAuthContext } from "../../../context/AuthContext";
 import ModalService from "../../cove/ShowVehicleView/ModalService";
+import RequestServiceCardInfo from "./RequestServiceCardInfo";
 // import ModalService from "./ModalService";
 
 const ServicesView = () => {
@@ -65,6 +66,8 @@ const ServicesView = () => {
          {openService && (
             <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} obj={service} showActionButtons={showActionButtons} />
          )}
+
+         <RequestServiceCardInfo />
       </>
    );
 };

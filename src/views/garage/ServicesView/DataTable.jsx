@@ -22,7 +22,8 @@ import { useParams } from "react-router-dom";
 const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
    const { status } = useParams();
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { setLoading, setLoadingAction, setOpenDialog, setOpenCardInfo } = useGlobalContext();
+
    const {
       singularName,
       services,
@@ -151,13 +152,14 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
    //    }
    // };
 
-   const handleClickShowRequest = (id, folio, obj) => {
+   const handleClickShowRequest = async (id, folio, obj) => {
       Toast.Info("Solicitud: Folio " + folio);
       setShowActionButtons(false);
       setTextBtnSumbit("SOLICITAR");
       setObjService(obj);
-      setService(obj);
-      setOpenService(true);
+      await setService(obj);
+      setOpenCardInfo(true);
+      // setOpenService(true);
    };
    const handleClickChangeStatus = async (id, newStatus) => {
       try {
@@ -189,7 +191,7 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
    };
 
    const ButtonsAction = ({ id, folio, obj }) => {
-      console.log("🚀 ~ ButtonsAction ~ obj:", obj);
+      // console.log("🚀 ~ ButtonsAction ~ obj:", obj);
       return (
          <ButtonGroup variant="outlined">
             <Tooltip title={`Ver Solicitud de ${singularName} #${folio}`} placement="top">

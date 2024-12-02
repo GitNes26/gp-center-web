@@ -14,7 +14,7 @@ const formDataInitialState = {
    maternal_last_name: "",
    email: "",
    phone: "",
-   active: active
+   active: true
 };
 const voucherRequesterInitialState = {
    id: 0,
@@ -25,7 +25,7 @@ const voucherRequesterInitialState = {
    maternal_last_name: "",
    email: "",
    phone: "",
-   active: active
+   active: true
 };
 
 export default function MechanicContextProvider({ children }) {
@@ -78,7 +78,7 @@ export default function MechanicContextProvider({ children }) {
    const showMechanic = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/mechanics/${id}`);
+         const axiosData = await Axios.get(`/mechanics/id/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
 
@@ -161,8 +161,26 @@ export default function MechanicContextProvider({ children }) {
    const deleteMechanic = async (user_id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/mechanics/delete/${user_id}`);
+         const axiosData = await Axios.get(`/mechanics/delete/${user_id}`);
          // console.log("deleteMechanic() axiosData", axiosData.data);
+         getMechanics();
+         res = axiosData.data.data;
+         // console.log("res", res);
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
+   const disEnableMechanic = async (id, active) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`mechanics/disEnable/${id}/${active ? "reactivar" : "desactivar"}`);
+         // console.log("deleteUser() axiosData", axiosData.data);
          getMechanics();
          res = axiosData.data.data;
          // console.log("res", res);
@@ -200,6 +218,7 @@ export default function MechanicContextProvider({ children }) {
             createMechanic,
             updateMechanic,
             deleteMechanic,
+            disEnableMechanic,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
