@@ -22,7 +22,7 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import Toast from "../../../utils/Toast";
 import { useAssignedVehicleContext } from "../../../context/AssignedVehicleContext";
-import { formatDatetimeToSQL } from "../../../utils/Formats";
+import { formatDatetimeToSQL, searcher } from "../../../utils/Formats";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -168,14 +168,16 @@ const ModalAssign = ({ open, setOpen }) => {
          setDataList(directors);
          const value = e.target.value;
          if (value.length == 0) return setDataList(directors);
-         const filter1 = await directors.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
-         const filter2 = await directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
-         const filter3 = await directors.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
-         const result = [];
-         result.push(...filter1);
-         result.push(...filter2);
-         result.push(...filter3);
-         const data = [...new Set(result)];
+         // const filter1 = await directors.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
+         // const filter2 = await directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
+         // const filter3 = await directors.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
+         // const result = [];
+         // result.push(...filter1);
+         // result.push(...filter2);
+         // result.push(...filter3);
+         // const data = [...new Set(result)];
+         const data = await searcher(directors, value);
+         console.log("🚀 ~ handleKeyUpSearchSuccess ~ data:", data);
          setDataList(data);
          // setDataList(directors.filter((d) => d.department.toUpperCase().includes(value.toUpperCase())));
       } catch (error) {

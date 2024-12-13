@@ -247,7 +247,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
             <InputComponent
                col={12}
                idName={"pre_diagnosis"}
-               label={"Diagnóstico Inicial *"}
+               label={"Quiero reportar que... *"}
                placeholder={"Describa la falla en la unidad..."}
                textStyleCase={null}
                rows={3}

@@ -20,7 +20,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
-import { useDirectorContext } from "../../../context/DirectorContext";
+// import { useDirectorContext } from "../../../context/DirectorContext";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { formatPhone } from "../../../utils/Formats";
@@ -31,7 +31,7 @@ const DriverDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, driver, drivers, getDrivers, showDriver, deleteDriver, resetFormData, resetDriver, setTextBtnSumbit, setFormTitle } =
       useDriverContext();
-   const { directors } = useDirectorContext();
+   // const { directors } = useDirectorContext();
    const globalFilterFields = ["payroll_number", "username", "email", "phone", "license_number", "department", "director"];
 
    // #region BodysTemplate

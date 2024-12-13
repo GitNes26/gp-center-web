@@ -12,21 +12,21 @@ import Toast from "../../../utils/Toast";
 import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import DriverDT from "./DataTable";
 // import { useDepartmentContext } from "../../../context/DepartmentContext";
-import { useDirectorContext } from "../../../context/DirectorContext";
+// import { useDirectorContext } from "../../../context/DirectorContext";
 
 const DriversView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, driver, getDrivers } = useDriverContext();
    // const { getDepartmentsSelectIndex } = useDepartmentContext();
-   const { getDirectorsSelectIndex } = useDirectorContext();
+   // const { getDirectorsSelectIndex } = useDirectorContext();
 
    useEffect(() => {
       try {
          setLoading(true);
          getDrivers();
          // getDepartmentsSelectIndex();
-         getDirectorsSelectIndex();
+         // getDirectorsSelectIndex();
       } catch (error) {
          console.log(error);
          Toast.Error(error);

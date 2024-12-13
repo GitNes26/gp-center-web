@@ -48,7 +48,7 @@ export default function RequestServiceCardInfo() {
    console.log("🚀 ~ RequestServiceCardInfo ~ service:", service);
 
    return (
-      <ModalComponent open={openCardInfo} setOpen={setOpenCardInfo}>
+      <ModalComponent open={openCardInfo} setOpen={setOpenCardInfo} modalTitle={`SOLICITUD DE SERVICIO #${service?.folio}`}>
          {service == null || service.length < 1 ? (
             <p>CARGANDO INFORMACIÓN...</p>
          ) : (
@@ -65,42 +65,58 @@ export default function RequestServiceCardInfo() {
                <Divider sx={{ my: 3 }} />
 
                <Grid container spacing={3}>
-                  <InfoSection
-                     title="Información del Cliente"
-                     icon={<Person />}
-                     items={[
-                        { icon: <Person />, label: "Nombre", value: service.contact_name },
-                        // { icon: <Email />, label: "Email", value: service.cliente.email },
-                        { icon: <Phone />, label: "Teléfono", value: service.contact_phone }
-                     ]}
-                  />
+                  <Grid item xs={12} md={6} display={"flex"} alignContent={"space-between"} sx={{ flexWrap: "wrap" }}>
+                     <InfoSection
+                        widthMd={12}
+                        title="Información del Solicitante"
+                        icon={<Person />}
+                        items={[
+                           { icon: <Person />, label: "Nombre", value: service.contact_name },
+                           // { icon: <Email />, label: "Email", value: service.cliente.email },
+                           { icon: <Phone />, label: "Teléfono", value: service.contact_phone }
+                        ]}
+                     />
+                     <InfoSection
+                        widthMd={12}
+                        title="Detalles del Servicio"
+                        icon={<Build />}
+                        items={[
+                           { label: "Tipo de Servicio", value: "Servicio" }
+                           // { icon: <EventAvailable />, label: "Fecha Programada", value: service.servicio.fecha }
+                        ]}
+                     />
+                  </Grid>
 
                   <InfoSection
                      title="Detalles del Vehículo"
                      icon={<DirectionsCar />}
                      items={[
+                        { label: "No. Económico", value: service.stock_number },
                         { label: "Marca", value: service.brand },
                         { label: "Modelo", value: service.model },
                         { label: "Año", value: service.year },
-                        { label: "Placa", value: service.plates }
+                        { label: "Placa", value: service.plates },
+                        { label: "Descripción", value: service.description }
                      ]}
                   />
 
-                  <InfoSection
-                     title="Detalles del Servicio"
-                     icon={<Build />}
-                     items={[
-                        { icon: <Build />, label: "Tipo de Servicio", value: service.pre_diagnosis }
-                        // { icon: <EventAvailable />, label: "Fecha Programada", value: service.servicio.fecha }
-                     ]}
-                  />
+                  {/* <Grid item xs={12} md={6}>
+                     <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        Unidad
+                     </Typography>
+                     <Paper variant="outlined" sx={{ p: 2 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                           <img src={`${import.meta.env.VITE_HOST}/${service.img_preview}`} />
+                        </Box>
+                     </Paper>
+                  </Grid> */}
 
                   <Grid item xs={12}>
                      <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        <Description /> Descripción del Problema
+                        <Description /> Reportan que...
                      </Typography>
                      <Paper variant="outlined" sx={{ p: 2, mb: 1, bgcolor: "background.default" }}>
-                        <Typography variant="body1">{service.description}</Typography>
+                        <Typography variant="body1">{service.pre_diagnosis}</Typography>
                      </Paper>
                   </Grid>
                </Grid>
@@ -110,9 +126,9 @@ export default function RequestServiceCardInfo() {
    );
 }
 
-function InfoSection({ title, icon, items }) {
+function InfoSection({ title, icon, items, widthMd = 6 }) {
    return (
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={widthMd}>
          <Typography variant="h6" gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {icon} {title}
          </Typography>

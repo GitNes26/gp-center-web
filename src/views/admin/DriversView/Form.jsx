@@ -21,7 +21,7 @@ import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
 import DatePickerComponent from "../../../components/Form/DatePickerComponent";
-import { useDirectorContext } from "../../../context/DirectorContext";
+// import { useDirectorContext } from "../../../context/DirectorContext";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 import axios from "axios";
 import { useAuthContext } from "../../../context/AuthContext";
@@ -33,7 +33,7 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 const DriverForm = () => {
    const { auth } = useAuthContext();
    // const { departments } = useDepartmentContext();
-   const { directors } = useDirectorContext();
+   // const { directors } = useDirectorContext();
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);

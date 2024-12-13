@@ -401,3 +401,22 @@ export function setPropsOriginals(original, newArray) {
       return obj;
    }, {});
 }
+
+/**
+ *
+ * @param {array} data - Arreglo donde buscará la información
+ * @param {string} termino - Se refiere al valor de busqueda
+ * @param {[string]} filtros - Introducir los nombres de las propiedades o propiedad por filtrar
+ * @returns
+ */
+export async function searcher(data, termino, filtros = []) {
+   // Convertir el término de búsqueda a minúsculas para una búsqueda insensible a mayúsculas
+   const query = termino.toLowerCase();
+
+   return data.filter((item) => {
+      return filtros.length > 0
+         ? filtros.some((filtro) => String(item[filtro]).toLowerCase().includes(query))
+         : Object.values(item).some((value) => String(value).toLowerCase().includes(query));
+   });
+   // console.log("🚀 ~ returndata.filter ~ data:", data);
+}
