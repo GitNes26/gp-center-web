@@ -6,7 +6,7 @@ import { useParams } from "react-router";
 
 import { Axios } from "../../../context/AuthContext";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useVoucherContext } from "../../../context/VoucherContext";
 import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
@@ -29,6 +29,7 @@ const VouchersView = () => {
    const [openModalCancel, setOpenModalCancel] = useState(false);
    const [arrayData, setArrayData] = useState([]);
    const { getVoucherRequestersSelectIndex } = useVoucherRequesterContext();
+   const [counterModalWarning, setCounterModalWarning] = useState(0);
 
    useEffect(() => {
       try {
@@ -40,6 +41,11 @@ const VouchersView = () => {
          Toast.Error(error);
       }
    }, [voucher, status]);
+
+   useLayoutEffect(() => {
+      console.log("🚀 ~ useLayoutEffect ~ useLayoutEffect:", counterModalWarning);
+      setCounterModalWarning(Number(counterModalWarning) + 1);
+   }, []);
 
    return (
       <>
@@ -66,6 +72,10 @@ const VouchersView = () => {
          {openModalShowRequest && <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} arrayData={arrayData} setArrayData={setArrayData} />}
          {openModalShowRecived && <ModalContentRecivedPDF open={openModalShowRecived} setOpen={setOpenModalShowRecived} />}
          <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} currentStatus={status} />
+         {counterModalWarning === 1 &&
+            sAlert.Info(`⚠️AVISO IMPORTANTE⚠️ <br><br>
+         <Typography variant="h3">DE ACUERDO AL CONTENIDO DEL OFICIO No. OM/CV-6499/2024 POR PERIODO VACACIONAL NO HAY ENTREGA DE VALES</Typography>
+            `)}
       </>
    );
 };
