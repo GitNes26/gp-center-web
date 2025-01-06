@@ -44,7 +44,7 @@ const VouchersView = () => {
 
    useLayoutEffect(() => {
       console.log("🚀 ~ useLayoutEffect ~ useLayoutEffect:", counterModalWarning);
-      setCounterModalWarning(Number(counterModalWarning) + 1);
+      // setCounterModalWarning(Number(counterModalWarning) + 1);
    }, []);
 
    return (
@@ -72,10 +72,10 @@ const VouchersView = () => {
          {openModalShowRequest && <ModalContentPDF open={openModalShowRequest} setOpen={setOpenModalShowRequest} arrayData={arrayData} setArrayData={setArrayData} />}
          {openModalShowRecived && <ModalContentRecivedPDF open={openModalShowRecived} setOpen={setOpenModalShowRecived} />}
          <ModalCancelComments open={openModalCancel} setOpen={setOpenModalCancel} currentStatus={status} />
-         {counterModalWarning === 1 &&
+         {/* {counterModalWarning === 1 &&
             sAlert.Info(`⚠️AVISO IMPORTANTE⚠️ <br><br>
          <Typography variant="h3">DE ACUERDO AL CONTENIDO DEL OFICIO No. OM/CV-6499/2024 POR PERIODO VACACIONAL NO HAY ENTREGA DE VALES</Typography>
-            `)}
+            `)} */}
       </>
    );
 };

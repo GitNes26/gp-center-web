@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Button, ButtonGroup, Chip, Tooltip, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Button, ButtonGroup, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
@@ -22,6 +22,8 @@ import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 import { IconFileTypePdf } from "@tabler/icons-react";
 import { Text, View } from "@react-pdf/renderer";
 import { stylesPDF } from "../../../components/DocumentPDF";
+import Select2Component from "../../../components/Form/Select2Component";
+import { Formik } from "formik";
 
 const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setOpenModalCancel, setArrayData, currentStatus }) => {
    const { auth } = useAuthContext();
@@ -80,6 +82,8 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       "viewed_by",
       "viewed_at"
    ];
+   const [yearForm, setYearForm] = useState(new Date().getFullYear());
+   const years = [2024, 2025];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -451,9 +455,39 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       );
    };
 
+   const onSubmit = () => {
+      console.log("enviar año");
+   };
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
+            <Formik initialValues={yearForm} onSubmit={onSubmit} >
+               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
+                  <Grid container component={"form"} onSubmit={handleSubmit}>
+                     <Select2Component
+                        idName={"year"}
+                        label={"Ejercicio *"}
+                        valueLabel={values.year}
+                        values={values}
+                        formData={yearForm}
+                        setFormData={setYearForm}
+                        formDataLabel={"year"}
+                        placeholder={"Selecciona una opción..."}
+                        options={years}
+                        fullWidth={true}
+                        handleChange={handleChange}
+                        // handleChangeValueSuccess={handleChangeRole}
+                        setValues={setValues}
+                        handleBlur={handleBlur}
+                        error={errors.year}
+                        touched={touched.year}
+                        disabled={false}
+                        pluralName={"Ejercicios"}
+                        // refreshSelect={(e) => getVehicleStatussSelectIndex(["ASIGNADO", "PRESTADO", "EN SERVICIO"])}
+                     />
+                  </Grid>
+               )}
+            </Formik>
             {(auth.permissions.more_permissions.includes(`Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
                location.hash.includes("vales/aprobadas") && (
                   <Button variant="contained" color="error" startIcon={<IconFileTypePdf />} onClick={() => exportPDFFunction(data)} sx={{ mx: 1 }}>
@@ -579,6 +613,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       setLoading(false);
       // console.log("location.hash.includes('vales/aprobadas')", location.hash, location.hash.includes("vales/aprobadas"));
    }, [voucher]);
+
    return (
       <>
          <DataTableComponent
@@ -606,10 +641,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             // setData={setVehicles}
             // updateData={updateVehicle}
             // exportPDFFunction={exportPDFFunction}
-            toolBar={
-               (auth.permissions.more_permissions.includes(`Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
-               location.hash.includes("vales/aprobadas")
-            }
+            toolBar={true}
             toolbarContent={toolbarContent}
          />
          {/* <VoucherContextProvider>
