@@ -82,8 +82,13 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       "viewed_by",
       "viewed_at"
    ];
-   const [yearForm, setYearForm] = useState(new Date().getFullYear());
-   const years = [2024, 2025];
+   const [yearForm, setYearForm] = useState({
+      year: new Date().getFullYear()
+   });
+   const years = [
+      { id: "2024", label: "2024" },
+      { id: "2025", label: "2025" }
+   ];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -458,12 +463,17 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    const onSubmit = () => {
       console.log("enviar año");
    };
+   const handleChangeYear = (value, setFieldValue) => {
+      console.log("🚀 ~ VoucherDT ~ value:", value);
+   };
+
    const toolbarContent = () => {
       return (
-         <div className="flex flex-wrap gap-2">
-            <Formik initialValues={yearForm} onSubmit={onSubmit} >
+         <div className="flex flex-wrap gap-2" style={{ display: "flex", width: "450px" }}>
+            <Formik initialValues={yearForm} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container component={"form"} onSubmit={handleSubmit}>
+                  <Grid container onSubmit={handleSubmit}>
+                     {/* <Grid item fullWidth> */}
                      <Select2Component
                         idName={"year"}
                         label={"Ejercicio *"}
@@ -476,7 +486,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                         options={years}
                         fullWidth={true}
                         handleChange={handleChange}
-                        // handleChangeValueSuccess={handleChangeRole}
+                        handleChangeValueSuccess={handleChangeYear}
                         setValues={setValues}
                         handleBlur={handleBlur}
                         error={errors.year}
@@ -485,13 +495,14 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                         pluralName={"Ejercicios"}
                         // refreshSelect={(e) => getVehicleStatussSelectIndex(["ASIGNADO", "PRESTADO", "EN SERVICIO"])}
                      />
+                     {/* </Grid> */}
                   </Grid>
                )}
             </Formik>
             {(auth.permissions.more_permissions.includes(`Exportar Todas Las Solicitudes En PDF`) || auth.permissions.more_permissions.includes(`todas`)) &&
                location.hash.includes("vales/aprobadas") && (
                   <Button variant="contained" color="error" startIcon={<IconFileTypePdf />} onClick={() => exportPDFFunction(data)} sx={{ mx: 1 }}>
-                     Exprotar todas las solicitudes en PDF
+                     Exportar todas las solicitudes en PDF
                   </Button>
                )}
          </div>
