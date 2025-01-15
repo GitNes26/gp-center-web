@@ -86,8 +86,8 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       year: new Date().getFullYear()
    });
    const years = [
-      { id: "2024", label: "2024" },
-      { id: "2025", label: "2025" }
+      { id: "2025", label: "2025" },
+      { id: "2024", label: "2024" }
    ];
 
    // #region BodysTemplate
@@ -463,9 +463,13 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    const onSubmit = () => {
       console.log("enviar año");
    };
-   const handleChangeYear = (value, setFieldValue) => {
-      console.log("🚀 ~ VoucherDT ~ value:", value);
-      
+   const handleChangeYear = async (value, setFieldValue) => {
+      // console.log("🚀 ~ VoucherDT ~ value:", value);
+      setLoadingAction(true);
+      setFieldValue("year", value.id);
+      setYearForm({ year: value.id });
+      getVouchers(currentStatus);
+      setLoadingAction(false);
    };
 
    const toolbarContent = () => {

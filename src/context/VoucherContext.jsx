@@ -95,7 +95,7 @@ export default function VoucherContextProvider({ children }) {
       return res;
    };
 
-   const getVouchers = async (status = null) => {
+   const getVouchers = async (status = null, year = null) => {
       try {
          const res = CorrectRes;
          let pathApi = `/vouchers`;
@@ -120,8 +120,18 @@ export default function VoucherContextProvider({ children }) {
          }
 
          const axiosData = await Axios.get(pathApi);
-         res.result.vouchers = axiosData.data.data.result;
-         setVouchers(axiosData.data.data.result);
+
+         let dataResult = axiosData.data.data.result;
+         if (year) {
+            console.log("entrre al years");
+            dataResult = dataResult.filter((i) => {
+               const voucherYear = new Date(i.created_at).getFullYear(); // Extrae el año
+               return voucherYear === year;
+            });
+         }
+         console.log("🚀 ~ dataResult=dataResult.filter ~ dataResult:", dataResult);
+         res.result.vouchers = dataResult;
+         setVouchers(dataResult);
          // setCounters({ ...counters, vouchers: axiosData.data.data.result.length });
          // console.log("vouchers", vouchers);
          counterOfMenus();

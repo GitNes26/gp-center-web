@@ -22,7 +22,7 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import { useVehicleContext } from "../../../context/VehicleContext";
 import Toast from "../../../utils/Toast";
 import { useLoanedVehicleContext } from "../../../context/LoanedVehicleContext";
-import { formatDatetimeToSQL } from "../../../utils/Formats";
+import { formatDatetimeToSQL, searcher } from "../../../utils/Formats";
 import { useGlobalContext } from "../../../context/GlobalContext";
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -178,14 +178,16 @@ const ModalLoan = ({ open, setOpen }) => {
          setDataList(drivers);
          const value = e.target.value;
          if (value.length == 0) return setDataList(drivers);
-         const filter1 = await drivers.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
-         const filter2 = await drivers.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
-         const filter3 = await drivers.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
-         const result = [];
-         result.push(...filter1);
-         result.push(...filter2);
-         result.push(...filter3);
-         const data = [...new Set(result)];
+         // const filter1 = await drivers.filter((d) => d.email.toUpperCase().includes(value.toUpperCase()));
+         // const filter2 = await drivers.filter((d) => d.department.toUpperCase().includes(value.toUpperCase()));
+         // const filter3 = await drivers.filter((d) => d.full_name.toUpperCase().includes(value.toUpperCase()));
+         // const result = [];
+         // result.push(...filter1);
+         // result.push(...filter2);
+         // result.push(...filter3);
+         // const data = [...new Set(result)];
+         const data = await searcher(drivers, value);
+
          setDataList(data);
          // setDataList(drivers.filter((d) => d.department.toUpperCase().includes(value.toUpperCase())));
       } catch (error) {
