@@ -123,13 +123,12 @@ export default function VoucherContextProvider({ children }) {
 
          let dataResult = axiosData.data.data.result;
          if (year) {
-            console.log("entrre al years");
             dataResult = dataResult.filter((i) => {
                const voucherYear = new Date(i.created_at).getFullYear(); // Extrae el año
-               return voucherYear === year;
+               return Number(voucherYear) === Number(year);
             });
          }
-         console.log("🚀 ~ dataResult=dataResult.filter ~ dataResult:", dataResult);
+         // console.log("🚀 ~ dataResult=dataResult.filter ~ dataResult:", dataResult);
          res.result.vouchers = dataResult;
          setVouchers(dataResult);
          // setCounters({ ...counters, vouchers: axiosData.data.data.result.length });

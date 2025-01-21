@@ -34,7 +34,7 @@ const VouchersView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getVouchers(status);
+         getVouchers(status, new Date().getFullYear());
          getVoucherRequestersSelectIndex();
       } catch (error) {
          console.log(error);

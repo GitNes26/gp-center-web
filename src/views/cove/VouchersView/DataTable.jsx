@@ -464,11 +464,10 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       console.log("enviar año");
    };
    const handleChangeYear = async (value, setFieldValue) => {
-      // console.log("🚀 ~ VoucherDT ~ value:", value);
       setLoadingAction(true);
       setFieldValue("year", value.id);
       setYearForm({ year: value.id });
-      getVouchers(currentStatus);
+      getVouchers(currentStatus, value.id);
       setLoadingAction(false);
    };
 
@@ -638,7 +637,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             globalFilterFields={globalFilterFields}
             headerFilters={true}
             handleClickAdd={handleClickAdd}
-            refreshTable={() => getVouchers(currentStatus)}
+            refreshTable={() => getVouchers(currentStatus, yearForm.year)}
             btnAdd={auth.permissions.create}
             titleBtnAdd="SOLICITAR VALE"
             setOpen={false}
