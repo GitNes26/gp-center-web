@@ -60,6 +60,9 @@ export default function VoucherContextProvider({ children }) {
 
    const [inAprobation, setInAprobation] = useState(false);
    const [inEdit, setInEdit] = useState(false);
+   const [yearForm, setYearForm] = useState({
+      year: new Date().getFullYear()
+   });
 
    const resetFormData = () => {
       try {
@@ -287,7 +290,9 @@ export default function VoucherContextProvider({ children }) {
             inEdit,
             setInEdit,
             setInAprobation,
-            seenVoucher
+            seenVoucher,
+            yearForm,
+            setYearForm
          }}
       >
          {children}

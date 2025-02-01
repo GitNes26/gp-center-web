@@ -22,7 +22,7 @@ const VouchersView = () => {
    const { status } = useParams();
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, voucher, getVouchers } = useVoucherContext();
+   const { pluralName, voucher, getVouchers, yearForm } = useVoucherContext();
    const [openForm, setOpenForm] = useState(false);
    const [openModalShowRequest, setOpenModalShowRequest] = useState(false);
    const [openModalShowRecived, setOpenModalShowRecived] = useState(false);
@@ -34,7 +34,7 @@ const VouchersView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getVouchers(status, new Date().getFullYear());
+         getVouchers(status, yearForm.year);
          getVoucherRequestersSelectIndex();
       } catch (error) {
          console.log(error);

@@ -47,7 +47,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       inEdit,
       setInEdit,
       seenVoucher,
-      updateStatus
+      updateStatus,
+      yearForm,
+      setYearForm
    } = useVoucherContext();
    const { getIndexByVoucher, voucherId, setVoucherId, resetVoucherDetails, getVouchersDetails } = useVoucherDetailContext();
    const globalFilterFields = [
@@ -82,9 +84,6 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       "viewed_by",
       "viewed_at"
    ];
-   const [yearForm, setYearForm] = useState({
-      year: new Date().getFullYear()
-   });
    const years = [
       { id: "2025", label: "2025" },
       { id: "2024", label: "2024" }
