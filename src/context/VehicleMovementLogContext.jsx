@@ -105,7 +105,10 @@ export default function VehicleMovementLogContextProvider({ children }) {
    const createVehicleMovementLog = async (vehicleMovementLog) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/vehicleMovementsLog/create", vehicleMovementLog);
+         const axiosData = await Axios.post(
+            `/vehicleMovementsLog/${vehicleMovementLog.vehicle_status_id}/${vehicleMovementLog.vehicle_id}/${vehicleMovementLog.movement}`,
+            vehicleMovementLog
+         );
          res = axiosData.data.data;
          getVehicleMovementsLog();
       } catch (error) {

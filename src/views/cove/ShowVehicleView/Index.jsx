@@ -42,6 +42,7 @@ import ModalDeliver from "./ModalDeliver";
 import ModalReturnLoan from "./ModalReturnLoan";
 import { useNavigate, useParams } from "react-router-dom";
 import { eventEnterKeyUp } from "../../../utils/Events";
+import ModalVehicleMovementLog from "./ModalVehicleMovementLog";
 
 const Item = styled(Paper)(({ theme }) => ({
    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#f1f1f1",
@@ -493,9 +494,33 @@ const ShowVehicleView = () => {
          </MainCard>
 
          <UserContextProvider>
+            {openAssign && (
+               <ModalVehicleMovementLog
+                  open={openAssign}
+                  setOpen={setOpenAssign}
+                  dataListResponsibles={directors}
+                  getDataListResponsibles={getDirectors}
+                  movement="Assign"
+                  vehicleStatusId={3}
+                  modalTitle={"ASIGNAR VEHÍCULO"}
+                  textBtnSubmit={"ASIGNAR"}
+               />
+            )}
+            {openLoan && (
+               <ModalVehicleMovementLog
+                  open={openLoan}
+                  setOpen={setOpenLoan}
+                  dataListResponsibles={drivers}
+                  getDataListResponsibles={getDrivers}
+                  movement="Loan"
+                  vehicleStatusId={4}
+                  modalTitle={"PRESTAR VEHÍCULO"}
+                  textBtnSubmit={"PRESTAR"}
+               />
+            )}
             {openService && <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} />}
-            {openAssign && <ModalAssign open={openAssign} setOpen={setOpenAssign} />}
-            {openLoan && <ModalLoan open={openLoan} setOpen={setOpenLoan} />}
+            {/* {openAssign && <ModalAssign open={openAssign} setOpen={setOpenAssign} />} */}
+            {/* {openLoan && <ModalLoan open={openLoan} setOpen={setOpenLoan} />} */}
             {openDeliver && <ModalDeliver open={openDeliver} setOpen={setOpenDeliver} />}
             {openReturnLoan && <ModalReturnLoan open={openReturnLoan} setOpen={setOpenReturnLoan} />}
          </UserContextProvider>

@@ -40,6 +40,7 @@ import VoucherRequesterContextProvider from "../context/VoucherRequesterContext"
 import VoucherDetailContextProvider from "../context/VoucherDetailContext";
 import MechanicContextProvider from "../context/MechanicContext";
 import MechanicsView from "../views/admin/MechanicsView/Index";
+import VehicleMovementLogContextProvider from "../context/VehicleMovementLogContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -62,15 +63,17 @@ const MainRoutes = {
                <VehiclePlateContextProvider>
                   <ServiceContextProvider>
                      <DirectorContextProvider>
-                        <AssignedVehicleContextProvider>
-                           <DriverContextProvider>
-                              <LoanedVehicleContextProvider>
-                                 <DeliveredVehicleContextProvider>
-                                    <ShowVehicleView />
-                                 </DeliveredVehicleContextProvider>
-                              </LoanedVehicleContextProvider>
-                           </DriverContextProvider>
-                        </AssignedVehicleContextProvider>
+                        <VehicleMovementLogContextProvider>
+                           <AssignedVehicleContextProvider>
+                              <DriverContextProvider>
+                                 <LoanedVehicleContextProvider>
+                                    <DeliveredVehicleContextProvider>
+                                       <ShowVehicleView />
+                                    </DeliveredVehicleContextProvider>
+                                 </LoanedVehicleContextProvider>
+                              </DriverContextProvider>
+                           </AssignedVehicleContextProvider>
+                        </VehicleMovementLogContextProvider>
                      </DirectorContextProvider>
                   </ServiceContextProvider>
                </VehiclePlateContextProvider>
