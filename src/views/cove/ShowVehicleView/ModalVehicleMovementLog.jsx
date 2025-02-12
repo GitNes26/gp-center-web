@@ -26,9 +26,7 @@ import { formatDatetimeToSQL, searcher } from "../../../utils/Formats";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
 import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
-import { Formik } from "formik";
 import * as Yup from "yup";
-import { LoadingButton } from "@mui/lab";
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
@@ -124,12 +122,13 @@ const initialValues = {
 const ModalVehicleMovementLog = ({
    open,
    setOpen,
+   dataListResponsibles = [],
+   getDataListResponsibles = null,
    movement = "Assign",
    vehicleStatusId,
+   closeListInit = false,
    modalTitle,
-   textBtnSubmit,
-   dataListResponsibles,
-   getDataListResponsibles
+   textBtnSubmit
 }) => {
    const mySwal = withReactContent(Swal);
    const [search, setSearch] = useState("");
@@ -137,7 +136,7 @@ const ModalVehicleMovementLog = ({
    // const { dataListResponsibles, getDataListResponsibles } = useDirectorContext();
    const { vehicle, showVehicle, dataList, setDataList } = useVehicleContext();
    const { createVehicleMovementLog } = useVehicleMovementLogContext();
-   const [closeList, setCloseList] = useState(false);
+   const [closeList, setCloseList] = useState(closeListInit);
    const [formData, setFormData] = useState(initialValues);
 
    const handleClose = () => {
@@ -189,7 +188,11 @@ const ModalVehicleMovementLog = ({
          mySwal
             .fire(
                QuestionAlertConfig(
-                  `Estas por ${textBtnSubmit.toLowerCase()} el vehículo con N° económico ${vehicle.stock_number} a ${formData.itemSelected.full_name}`,
+                  movement === "ReturnLoan"
+                     ? `Estas por devolver el prestamo del vehículo con N° económico ${vehicle.stock_number}`
+                     : movement === "ReturnAssign"
+                       ? `Estas por terminar la asignación del vehículo con N° económico ${vehicle.stock_number}`
+                       : `Estas por ${textBtnSubmit.toLowerCase()} el vehículo con N° económico ${vehicle.stock_number} a ${formData.itemSelected.full_name}`,
                   textBtnSubmit,
                   "CANCELAR",
                   "info"
@@ -247,7 +250,12 @@ const ModalVehicleMovementLog = ({
    }, []);
    useLayoutEffect(() => {
       // console.log("estoy en el useLayoutEffect", dataListResponsibles);
-      getDataListResponsibles();
+      if (getDataListResponsibles) getDataListResponsibles();
+      if (movement.includes("Return"))
+         setFormData({
+            ...formData,
+            vehicle_id: vehicle.id
+         });
    }, []);
 
    return (
@@ -268,15 +276,17 @@ const ModalVehicleMovementLog = ({
                   {modalTitle}
                </Typography>
 
-               <SearchInput
-                  idName="search"
-                  search={search}
-                  setSearch={setSearch}
-                  placeholder={"Buscar director"}
-                  titleTooltip={"Buscar por Departamento"}
-                  handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
-                  showOptions={false}
-               />
+               {dataListResponsibles.length > 1 && (
+                  <SearchInput
+                     idName="search"
+                     search={search}
+                     setSearch={setSearch}
+                     placeholder={"Buscar director"}
+                     titleTooltip={"Buscar por Departamento"}
+                     handleKeyUpSearchSuccess={handleKeyUpSearchSuccess}
+                     showOptions={false}
+                  />
+               )}
             </DialogTitle>
             <DialogContent sx={{ maxHeight: "500px" }}>
                {!closeList ? (
@@ -311,16 +321,18 @@ const ModalVehicleMovementLog = ({
                      // formikRef={formikRef}
                      handleCancel={handleCancel}
                   >
-                     <Grid item xs={12} md={12} sx={{ my: 2 }}>
-                        <ItemUser
-                           key={"key-item"}
-                           id={formData.user_id}
-                           full_name={formData.itemSelected.full_name}
-                           department={formData.itemSelected.department}
-                           email={formData.itemSelected.email}
-                           readOnly={true}
-                        />
-                     </Grid>
+                     {dataListResponsibles.length > 1 && (
+                        <Grid item xs={12} md={12} sx={{ my: 2 }}>
+                           <ItemUser
+                              key={"key-item"}
+                              id={formData.user_id}
+                              full_name={formData.itemSelected.full_name}
+                              department={formData.itemSelected.department}
+                              email={formData.itemSelected.email}
+                              readOnly={true}
+                           />
+                        </Grid>
+                     )}
                      {/* <InputComponent col={12} idName={"vehicle_status_id"} label={"vehicle_status_id"} hidden={true} value={vehicleStatusId} /> */}
                      {/* <InputComponent col={12} idName={"movement"} label={"movement"} hidden={true} value={movement} /> */}
 

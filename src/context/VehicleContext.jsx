@@ -87,7 +87,7 @@ export default function VehicleContextProvider({ children }) {
    const getHistory = async (vehicle_id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/vehicleMovements/history/${vehicle_id}`);
+         const axiosData = await Axios.get(`/vehicleMovementsLog/history/${vehicle_id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          setHistory(res.result);

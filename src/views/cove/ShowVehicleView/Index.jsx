@@ -518,14 +518,32 @@ const ShowVehicleView = () => {
                   textBtnSubmit={"PRESTAR"}
                />
             )}
+            {openReturnLoan && (
+               <ModalVehicleMovementLog
+                  open={openReturnLoan}
+                  setOpen={setOpenReturnLoan}
+                  closeListInit={true}
+                  movement="ReturnLoan"
+                  vehicleStatusId={3}
+                  modalTitle={"KILOMETRAJE Y COMENTARIOS DE LA DEVOLUCIÓN DEL PRESTAMO"}
+                  textBtnSubmit={"DEVOLVER"}
+               />
+            )}
+            {openDeliver && (
+               <ModalVehicleMovementLog
+                  open={openDeliver}
+                  setOpen={setOpenDeliver}
+                  closeListInit={true}
+                  movement="ReturnAssign"
+                  vehicleStatusId={2}
+                  modalTitle={"REGISTRAR ENTREGA DE VEHÍCULO A PATRIMONIO"}
+                  textBtnSubmit={"ENTREGAR"}
+               />
+            )}
             {openService && <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} />}
-            {/* {openAssign && <ModalAssign open={openAssign} setOpen={setOpenAssign} />} */}
-            {/* {openLoan && <ModalLoan open={openLoan} setOpen={setOpenLoan} />} */}
-            {openDeliver && <ModalDeliver open={openDeliver} setOpen={setOpenDeliver} />}
-            {openReturnLoan && <ModalReturnLoan open={openReturnLoan} setOpen={setOpenReturnLoan} />}
          </UserContextProvider>
          {openDialogPlates && <PlatesRegisters openDialog={openDialogPlates} setOpenDialog={setOpenDialogPlates} />}
-         {openDialogHistory && <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} />}
+         {openDialogHistory && <HistoryRegister openDialog={openDialogHistory} setOpenDialog={setOpenDialogHistory} stockNumber={vehicle.stock_number} />}
          {/* <VehicleForm dataBrands={result.brands} dataVehicleStatus={result.vehicleStatus} /> */}
       </>
    );

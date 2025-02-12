@@ -36,7 +36,7 @@ const DrawerComponent = ({ title, openDialog, setOpenDialog, anchor, content, bg
    return (
       <SwipeableDrawer anchor={anchor || "right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="drawer-max-width" sx={{ bgcolor: bgColor ? bgColor : "#E9ECEF" }}>
-            <Typography variant="h2" mb={3}>
+            <Typography variant="h2" textAlign={"center"} mb={3}>
                {title}
             </Typography>
             <Paper sx={{ width: "100%", overflow: "hidden", bgcolor: bgColor ? bgColor : "whitesmoke" }}>{content}</Paper>

@@ -131,7 +131,7 @@ export const FormikComponent = forwardRef(
                   style={{ alignContent: "space-between" }}
                >
                   {!showActionButtons ? (
-                     <Grid xs={12} container spacing={2} className={className}>
+                     <Grid xs={12} container spacing={2} className={className} pt={2}>
                         {children}
                      </Grid>
                   ) : (
@@ -196,6 +196,7 @@ export const InputComponent = ({
    hidden,
    mask,
    variant = "outlined",
+   marginTop,
    marginBottom,
    textStyleCase = null,
    styleInput = 1,
