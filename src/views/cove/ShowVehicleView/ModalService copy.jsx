@@ -21,28 +21,24 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
    const { stock_number = 0, status = null } = useParams();
 
    const initialValues = {
-      //variables para crear registro
       id: 0,
-      folio: 0,
       vehicle_id: 0,
+      stock_number: stock_number,
       contact_name: "",
       contact_phone: "",
       pre_diagnosis: "",
-      final_diagnosis: "",
-      evidence_img_path: null,
 
-      stock_number: stock_number,
-      km: 0,
-
-      mechanic_id: 0,
+      folio: 0,
       status: "",
       vehicle: "",
-      requested_by: 0,
+      requested_user: "",
       requested_at: "",
-      approved_by: 0,
+      approved_user: "",
       approved_at: "",
-      rejected_by: 0,
-      rejected_at: ""
+      rejected_user: "",
+      rejected_at: "",
+
+      final_diagnosis: ""
    };
 
    const { setLoadingAction } = useGlobalContext();
@@ -185,55 +181,45 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                styleInput={2}
                size={formData.folio == 0 ? "medium" : "small"}
             />
-            <InputComponent
-               col={4}
-               idName={"km"}
-               label={"Kilometraje Actual *"}
-               placeholder={"0"}
-               type={"number"}
-               styleInput={2}
-               disabled={formData.status == "ABIERTA"}
-               size={formData.folio == 0 ? "medium" : "small"}
-            />
-            {formData.folio == 0 ? (
-               <Grid container sm={5} justifyContent={"end"}>
+            {formData.folio == 0 && (
+               <Grid container sm={9} justifyContent={"end"}>
                   <ClockComponent stylesBox={{}} textColor={colorPrimaryDark} />
                </Grid>
-            ) : (
-               <>
-                  <InputComponent
-                     col={4}
-                     idName={"folio"}
-                     label={"Folio de Servicio"}
-                     placeholder={"000"}
-                     type={"number"}
-                     styleInput={2}
-                     disabled={true}
-                     size="small"
-                  />
-                  <DatePickerComponent
-                     col={5}
-                     idName={"requested_at"}
-                     label={"Fecha y Hora de Registro"}
-                     format={"dddd d MMMM YYYY hh:mm a"}
-                     disabled={true}
-                     size="small"
-                     marginBottom={0}
-                  />
-                  <InputComponent col={7} idName={"vehicle"} label={"Unidad"} placeholder={"FORD FOCUS 2020"} styleInput={2} disabled={true} size="small" />
-                  <InputComponent
-                     col={5}
-                     idName={"requested_user"}
-                     label={"Usuario Solicitante"}
-                     placeholder={"Nombre de Usuario"}
-                     styleInput={2}
-                     disabled={true}
-                     size="small"
-                  />
-
-                  <DividerComponent title={"REPORTE"} fontWeight={"bolder"} mb={-1} mt={5} />
-               </>
             )}
+            <>
+               <InputComponent
+                  col={4}
+                  idName={"folio"}
+                  label={"Folio de Servicio"}
+                  placeholder={"000"}
+                  type={"number"}
+                  styleInput={2}
+                  disabled={true}
+                  size="small"
+                  hidden={true}
+               />
+               {/* <DatePickerComponent
+                  col={5}
+                  idName={"requested_at"}
+                  label={"Fecha y Hora de Registro"}
+                  format={"dddd d MMMM YYYY hh:mm a"}
+                  disabled={true}
+                  size="small"
+                  marginBottom={0}
+               /> */}
+               <InputComponent col={7} idName={"vehicle"} label={"Unidad"} placeholder={"FORD FOCUS 2020"} styleInput={2} disabled={true} size="small" />
+               <InputComponent
+                  col={5}
+                  idName={"requested_user"}
+                  label={"Usuario Solicitante"}
+                  placeholder={"Nombre de Usuario"}
+                  styleInput={2}
+                  disabled={true}
+                  size="small"
+               />
+
+               <DividerComponent title={"REPORTE"} fontWeight={"bolder"} mb={-1} mt={5} />
+            </>
 
             {/* SECCION DE SOLICITUD */}
 
@@ -245,7 +231,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                placeholder={"Ingresa un nombre para contactar"}
                textStyleCase={true}
                styleInput={2}
-               disabled={formData.status == "ABIERTA"}
+               disabled={!showActionButtons}
                size="small"
             />
 
@@ -257,7 +243,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                textStyleCase={true}
                inputProps={{ maxLength: 10 }}
                styleInput={2}
-               disabled={formData.status == "ABIERTA"}
+               disabled={!showActionButtons}
                size="small"
             />
 
@@ -269,107 +255,100 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                textStyleCase={null}
                rows={3}
                styleInput={2}
-               disabled={formData.status == "ABIERTA"}
+               disabled={!showActionButtons}
                size="small"
             />
             {/* SECCION DE REPORTE */}
 
-            {formData.folio > 0 && (
+            {/* SECCION DE EVALUACION APROB/RECHA. */}
+            <DividerComponent title={"EVALUACIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
+            <InputComponent
+               col={4}
+               idName={"status"}
+               label={"Estatus de la Solicitud de Servicio"}
+               placeholder={"Estatus"}
+               textStyleCase={true}
+               styleInput={2}
+               disabled={true}
+               size="small"
+            />
+            {(formData.approved_user || formData.rejected_user) && (
                <>
-                  {/* SECCION DE EVALUACION APROB/RECHA. */}
-                  {formData.status !== "ABIERTA" && (
-                     <>
-                        <DividerComponent title={"EVALUACIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
-                        <InputComponent
-                           col={4}
-                           idName={"status"}
-                           label={"Estatus de la Solicitud de Servicio"}
-                           placeholder={"Estatus"}
-                           textStyleCase={true}
-                           styleInput={2}
-                           disabled={true}
-                           size="small"
-                        />
-                     </>
-                  )}
-                  {(formData.approved_by || formData.rejected_by) && (
-                     <>
-                        <InputComponent
-                           col={4}
-                           idName={formData.approved_by ? "approved_by" : formData.rejected_by ? "rejected_by" : ""}
-                           label={"Usuario Evaluador"}
-                           placeholder={"Nombre de Usuario"}
-                           styleInput={2}
-                           disabled={true}
-                           size="small"
-                        />
-                        <DatePickerComponent
-                           col={4}
-                           idName={formData.approved_at ? "approved_at" : formData.rejected_at ? "rejected_at" : ""}
-                           label={"Fecha y Hora de Evaluación"}
-                           format={"dddd d MMMM YYYY hh:mm a"}
-                           disabled={true}
-                           size="small"
-                           marginBottom={0}
-                        />
-                     </>
-                  )}
-                  {/* SECCION DE EVALUACION APROB/RECHA. */}
-
-                  {/* SECCION DE REVISIÓN. */}
-                  {!formData.reviewed_by && (
-                     <>
-                        <DividerComponent title={"REVISIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
-                        <InputComponent
-                           col={8}
-                           idName={"reviewed_by"}
-                           label={"Mecánico"}
-                           placeholder={"Nombre del Mecánico"}
-                           textStyleCase={true}
-                           styleInput={2}
-                           disabled={true}
-                           size="small"
-                        />
-                        <DatePickerComponent
-                           col={4}
-                           idName={"reviewed_at"}
-                           label={"Fecha y Hora de Evaluación"}
-                           format={"dddd d MMMM YYYY hh:mm a"}
-                           disabled={true}
-                           size="small"
-                           marginBottom={0}
-                        />
-                        <InputComponent
-                           col={12}
-                           idName={"final_diagnosis"}
-                           label={"Diagnóstico Final *"}
-                           placeholder={"Diagonistico del mecánico..."}
-                           textStyleCase={null}
-                           rows={3}
-                           styleInput={2}
-                           disabled={formData.status !== "EN REVISIÓN"}
-                           size="small"
-                        />
-                        <Grid container sm={12} justifyContent={"end"} mt={-3} mr={2} mb={2}>
-                           <Tooltip title="Guardar diagnóstico final" placement="left">
-                              <Button variant="contained" onClick={handleClickSaveFinalDiagnosis}>
-                                 <IconDeviceFloppy />
-                                 &nbsp; Guardar
-                              </Button>
-                           </Tooltip>
-                        </Grid>
-
-                        <Grid container sm={12} justifyContent={"center"}>
-                           <Typography variant="h4">Cargar Material</Typography>
-                        </Grid>
-                        <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
-                           <MaterialDT serviceId={1} setFieldValue={formikRef.setFieldValue} values={formikRef.values} />
-                        </Grid>
-                     </>
-                  )}
-                  {/* SECCION DE REVISIÓN. */}
+                  <InputComponent
+                     col={4}
+                     idName={formData.approved_user ? "approved_user" : formData.rejected_user ? "rejected_user" : ""}
+                     label={"Usuario Evaluador"}
+                     placeholder={"Nombre de Usuario"}
+                     styleInput={2}
+                     disabled={true}
+                     size="small"
+                  />
+                  <DatePickerComponent
+                     col={4}
+                     idName={formData.approved_at ? "approved_at" : formData.rejected_at ? "rejected_at" : ""}
+                     label={"Fecha y Hora de Evaluación"}
+                     format={"dddd d MMMM YYYY hh:mm a"}
+                     disabled={true}
+                     size="small"
+                     marginBottom={0}
+                  />
                </>
             )}
+            {/* SECCION DE EVALUACION APROB/RECHA. */}
+
+            {/* SECCION DE REVISIÓN. */}
+            {!formData.reviewed_user && (
+               <>
+                  <DividerComponent title={"REVISIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
+                  <InputComponent
+                     col={8}
+                     idName={"reviewed_user"}
+                     label={"Mecánico"}
+                     placeholder={"Nombre del Mecánico"}
+                     textStyleCase={true}
+                     styleInput={2}
+                     disabled={true}
+                     size="small"
+                  />
+                  <DatePickerComponent
+                     col={4}
+                     idName={"reviewed_at"}
+                     label={"Fecha y Hora de Evaluación"}
+                     format={"dddd d MMMM YYYY hh:mm a"}
+                     disabled={true}
+                     size="small"
+                     marginBottom={0}
+                  />
+                  <InputComponent
+                     col={12}
+                     idName={"final_diagnosis"}
+                     label={"Diagnóstico Final *"}
+                     placeholder={"Diagonistico del mecánico..."}
+                     textStyleCase={null}
+                     rows={3}
+                     styleInput={2}
+                     disabled={formData.status !== "EN REVISIÓN"}
+                     size="small"
+                  />
+                  <Grid container sm={12} justifyContent={"end"} mt={-3} mr={2} mb={2}>
+                     <Tooltip title="Guardar diagnóstico final" placement="left">
+                        <Button variant="contained" onClick={handleClickSaveFinalDiagnosis}>
+                           <IconDeviceFloppy />
+                           &nbsp; Guardar
+                        </Button>
+                     </Tooltip>
+                  </Grid>
+
+                  <Grid container sm={12} justifyContent={"center"}>
+                     <Typography variant="h4">Cargar Material</Typography>
+                  </Grid>
+                  <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
+                     <MaterialDT serviceId={1} setFieldValue={formikRef.setFieldValue} values={formikRef.values} />
+                  </Grid>
+               </>
+            )}
+
+            {/* SECCION DE REVISIÓN. */}
          </FormikComponent>
       </ModalComponent>
    );

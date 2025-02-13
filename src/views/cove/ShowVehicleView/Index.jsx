@@ -35,11 +35,7 @@ import { IconUserPentagon } from "@tabler/icons-react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { useDirectorContext } from "../../../context/DirectorContext";
-import ModalAssign from "./ModalAssign";
-import ModalLoan from "./ModalLoan";
 import { useDriverContext } from "../../../context/DriverContext";
-import ModalDeliver from "./ModalDeliver";
-import ModalReturnLoan from "./ModalReturnLoan";
 import { useNavigate, useParams } from "react-router-dom";
 import { eventEnterKeyUp } from "../../../utils/Events";
 import ModalVehicleMovementLog from "./ModalVehicleMovementLog";
@@ -278,7 +274,7 @@ const ShowVehicleView = () => {
                         }}
                      > */}
                   <Grow in={growOn} style={{ transformOrigin: "250px 50px" }} {...(growOn ? { timeout: 1500 } : { timeout: 600 })}>
-                     <Grid item xs={12} md={12} spacing={2} sx={{ mb: 0, pb: 0, height: "66vh", overflowY: "auto", scrollbarWidth: "none" }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 0, pb: 0, height: "66vh", overflowY: "auto", scrollbarWidth: "none" }}>
                         {/* <Grid container spacing={3}> */}
                         {auth.permissions.more_permissions.includes("Solicitar Servicio") && (
                            <Grid item xs alignItems={"center"}>
