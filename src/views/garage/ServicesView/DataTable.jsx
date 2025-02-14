@@ -178,11 +178,17 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
    const handleClickLoadMaterial = async (id, requestMaterial) => {
       try {
          setLoadingAction(true);
-         const axiosResponse = await loadMaterial(id, requestMaterial, status);
+         const axiosResponse = await showService(id);
+         console.log("🚀 ~ handleClickLoadMaterial ~ axiosResponse:", axiosResponse);
+         setService(axiosResponse.result);
+         setOpenService(true);
+         console.log("🚀 ~ handleClickLoadMaterial ~ (res.result:", axiosResponse.result);
 
+         // const axiosResponse = await loadMaterial(id, requestMaterial, status);
          // formikRef.current.setValues(axiosResponse.result);
+
          setLoadingAction(false);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
       } catch (error) {
          setLoadingAction(false);
          console.log("🚀 ~ handleClickApprove ~ error:", error);
@@ -249,7 +255,14 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
                      </Button>
                   </Tooltip>
                )}
-            {auth.permissions.update && (
+            {auth.permissions.update && obj.status === "ABIERTA" && auth.role_id > ROLE_SUPER_ADMIN && (
+               <Tooltip title={`Editar ${singularName} #${folio}`} placement="top">
+                  <Button color="info" onClick={() => handleClickEdit(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.update && auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={`Editar ${singularName} #${folio}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>
                      <IconEdit />

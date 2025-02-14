@@ -64,7 +64,13 @@ const ServicesView = () => {
 
          {/* <ServiceForm /> */}
          {openService && (
-            <ModalService open={openService} setOpen={setOpenService} modalTitle={"SOLICITUD DE SERVICIO"} obj={service} showActionButtons={showActionButtons} />
+            <ModalService
+               open={openService}
+               setOpen={setOpenService}
+               modalTitle={`SOLICITUD DE SERVICIO #${service.folio}`}
+               obj={service}
+               showActionButtons={showActionButtons}
+            />
          )}
 
          <RequestServiceCardInfo />

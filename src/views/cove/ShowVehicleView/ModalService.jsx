@@ -150,8 +150,9 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
    useEffect(() => {}, [formikRef]);
 
    useLayoutEffect(() => {
-      // console.log("🚀 ~ useLayoutEffect ~ obj:", obj);
-      if (obj) setFormData(setPropsOriginals(formData, obj));
+      console.log("🚀 ~ useLayoutEffect ~ obj:", obj);
+      // if (obj) setFormData(setPropsOriginals(formData, obj));
+      if (obj) setFormData(obj);
    }, [formikRef]);
    // console.log("🚀 ~ useLayoutEffect ~ formData:", formData);
 
@@ -192,7 +193,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                placeholder={"0"}
                type={"number"}
                styleInput={2}
-               disabled={formData.status == "ABIERTA"}
+               disabled={formData.status === "ABIERTA" ? false : true}
                size={formData.folio == 0 ? "medium" : "small"}
             />
             {formData.folio == 0 ? (
@@ -231,6 +232,19 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                      size="small"
                   />
 
+                  {formData.status !== "ABIERTA" && (
+                     <InputComponent
+                        col={7}
+                        idName={"status"}
+                        label={"Estatus de la Solicitud de Servicio"}
+                        placeholder={"Estatus"}
+                        textStyleCase={true}
+                        styleInput={2}
+                        disabled={true}
+                        size="small"
+                     />
+                  )}
+
                   <DividerComponent title={"REPORTE"} fontWeight={"bolder"} mb={-1} mt={5} />
                </>
             )}
@@ -245,7 +259,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                placeholder={"Ingresa un nombre para contactar"}
                textStyleCase={true}
                styleInput={2}
-               disabled={formData.status == "ABIERTA"}
+               disabled={formData.status == "ABIERTA" ? false : true}
                size="small"
             />
 
@@ -257,7 +271,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                textStyleCase={true}
                inputProps={{ maxLength: 10 }}
                styleInput={2}
-               disabled={formData.status == "ABIERTA"}
+               disabled={formData.status == "ABIERTA" ? false : true}
                size="small"
             />
 
@@ -269,7 +283,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                textStyleCase={null}
                rows={3}
                styleInput={2}
-               disabled={formData.status == "ABIERTA"}
+               disabled={formData.status == "ABIERTA" ? false : true}
                size="small"
             />
             {/* SECCION DE REPORTE */}
@@ -277,34 +291,20 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
             {formData.folio > 0 && (
                <>
                   {/* SECCION DE EVALUACION APROB/RECHA. */}
-                  {formData.status !== "ABIERTA" && (
-                     <>
-                        <DividerComponent title={"EVALUACIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
-                        <InputComponent
-                           col={4}
-                           idName={"status"}
-                           label={"Estatus de la Solicitud de Servicio"}
-                           placeholder={"Estatus"}
-                           textStyleCase={true}
-                           styleInput={2}
-                           disabled={true}
-                           size="small"
-                        />
-                     </>
-                  )}
+                  {formData.status !== "ABIERTA" && <DividerComponent title={"APROBADA POR"} fontWeight={"bolder"} mb={-1} mt={5} />}
                   {(formData.approved_by || formData.rejected_by) && (
                      <>
                         <InputComponent
-                           col={4}
-                           idName={formData.approved_by ? "approved_by" : formData.rejected_by ? "rejected_by" : ""}
-                           label={"Usuario Evaluador"}
+                           col={6}
+                           idName={formData.approved_by ? "approved_user" : formData.rejected_by ? "rejected_by" : ""}
+                           label={"Usuario"}
                            placeholder={"Nombre de Usuario"}
                            styleInput={2}
                            disabled={true}
                            size="small"
                         />
                         <DatePickerComponent
-                           col={4}
+                           col={6}
                            idName={formData.approved_at ? "approved_at" : formData.rejected_at ? "rejected_at" : ""}
                            label={"Fecha y Hora de Evaluación"}
                            format={"dddd d MMMM YYYY hh:mm a"}
@@ -317,7 +317,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                   {/* SECCION DE EVALUACION APROB/RECHA. */}
 
                   {/* SECCION DE REVISIÓN. */}
-                  {!formData.reviewed_by && (
+                  {formData.status === "EN REVISIÓN" && (
                      <>
                         <DividerComponent title={"REVISIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
                         <InputComponent
@@ -327,7 +327,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                            placeholder={"Nombre del Mecánico"}
                            textStyleCase={true}
                            styleInput={2}
-                           disabled={true}
+                           disabled={formData.status !== "EN REVISIÓN" ? true : false}
                            size="small"
                         />
                         <DatePickerComponent
@@ -335,7 +335,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                            idName={"reviewed_at"}
                            label={"Fecha y Hora de Evaluación"}
                            format={"dddd d MMMM YYYY hh:mm a"}
-                           disabled={true}
+                           disabled={formData.status !== "EN REVISIÓN" ? true : false}
                            size="small"
                            marginBottom={0}
                         />
@@ -347,7 +347,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                            textStyleCase={null}
                            rows={3}
                            styleInput={2}
-                           disabled={formData.status !== "EN REVISIÓN"}
+                           disabled={formData.status !== "EN REVISIÓN" ? true : false}
                            size="small"
                         />
                         <Grid container sm={12} justifyContent={"end"} mt={-3} mr={2} mb={2}>
