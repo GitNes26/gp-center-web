@@ -207,7 +207,9 @@ const MainRoutes = {
                   <UserContextProvider>
                      <VehicleContextProvider>
                         <ServiceContextProvider>
-                           <ServicesView />
+                           <MechanicContextProvider>
+                              <ServicesView />
+                           </MechanicContextProvider>
                         </ServiceContextProvider>
                      </VehicleContextProvider>
                   </UserContextProvider>
@@ -219,7 +221,9 @@ const MainRoutes = {
                         <UserContextProvider>
                            <VehicleContextProvider>
                               <ServiceContextProvider>
-                                 <ServicesView />
+                                 <MechanicContextProvider>
+                                    <ServicesView />
+                                 </MechanicContextProvider>
                               </ServiceContextProvider>
                            </VehicleContextProvider>
                         </UserContextProvider>

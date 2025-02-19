@@ -16,6 +16,7 @@ import UploadIcon from "@mui/icons-material/Upload";
 import ServiceMaterialDT from "../../garage/ServicesView/ServiceMaterialDT";
 import MaterialDT from "../../garage/ServicesView/MaterialDT";
 import { IconDeviceFloppy } from "@tabler/icons";
+import { useMechanicContext } from "../../../context/MechanicContext";
 
 function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons = true, obj = null }) {
    const { stock_number = 0, status = null } = useParams();
@@ -47,6 +48,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
 
    const { setLoadingAction } = useGlobalContext();
    const { vehicle, showVehicle, showVehicleBy } = useVehicleContext();
+   const { mechanics, getMechanicsSelectIndex } = useMechanicContext();
    const { /* formData, setFormData,  resetFormData,*/ service, showService, createService, updateService, updateReport, textBtnSubmit, setTextBtnSumbit, formikRef } =
       useServiceContext();
 
@@ -150,9 +152,12 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
    useEffect(() => {}, [formikRef]);
 
    useLayoutEffect(() => {
-      console.log("🚀 ~ useLayoutEffect ~ obj:", obj);
+      // console.log("🚀 ~ useLayoutEffect ~ obj:", obj);
       // if (obj) setFormData(setPropsOriginals(formData, obj));
-      if (obj) setFormData(obj);
+      if (obj) {
+         setFormData(obj);
+         getMechanicsSelectIndex();
+      }
    }, [formikRef]);
    // console.log("🚀 ~ useLayoutEffect ~ formData:", formData);
 
@@ -193,7 +198,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                placeholder={"0"}
                type={"number"}
                styleInput={2}
-               disabled={formData.status === "ABIERTA" ? false : true}
+               disabled={formData.folio > 0 ? true : false}
                size={formData.folio == 0 ? "medium" : "small"}
             />
             {formData.folio == 0 ? (
@@ -259,7 +264,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                placeholder={"Ingresa un nombre para contactar"}
                textStyleCase={true}
                styleInput={2}
-               disabled={formData.status == "ABIERTA" ? false : true}
+               disabled={formData.folio > 0 ? true : false}
                size="small"
             />
 
@@ -271,7 +276,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                textStyleCase={true}
                inputProps={{ maxLength: 10 }}
                styleInput={2}
-               disabled={formData.status == "ABIERTA" ? false : true}
+               disabled={formData.folio > 0 ? true : false}
                size="small"
             />
 
@@ -283,7 +288,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                textStyleCase={null}
                rows={3}
                styleInput={2}
-               disabled={formData.status == "ABIERTA" ? false : true}
+               disabled={formData.folio > 0 ? true : false}
                size="small"
             />
             {/* SECCION DE REPORTE */}
@@ -320,7 +325,17 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                   {formData.status === "EN REVISIÓN" && (
                      <>
                         <DividerComponent title={"REVISIÓN"} fontWeight={"bolder"} mb={-1} mt={5} />
-                        <InputComponent
+                        <Select2Component
+                           col={8}
+                           idName={"mechanic_id"}
+                           label={"Mecánico"}
+                           options={mechanics}
+                           pluralName={"Mécanicos"}
+                           refreshSelect={getMechanicsSelectIndex}
+                           styleInput={2}
+                           disabled={formData.status !== "EN REVISIÓN" ? true : false}
+                        />
+                        {/* <InputComponent
                            col={8}
                            idName={"reviewed_by"}
                            label={"Mecánico"}
@@ -329,7 +344,7 @@ function ModalService({ open, setOpen, modalTitle, maxWidth, showActionButtons =
                            styleInput={2}
                            disabled={formData.status !== "EN REVISIÓN" ? true : false}
                            size="small"
-                        />
+                        /> */}
                         <DatePickerComponent
                            col={4}
                            idName={"reviewed_at"}

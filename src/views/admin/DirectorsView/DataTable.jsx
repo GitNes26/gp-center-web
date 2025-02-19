@@ -102,6 +102,9 @@ const DirectorDT = () => {
 
    const handleClickDelete = async (id, name) => {
       try {
+         // CONSULTAR SI TIENEN UNA ASIGANACIÓN ACTIVA
+         
+
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);

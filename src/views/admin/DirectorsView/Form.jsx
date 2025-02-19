@@ -93,6 +93,7 @@ const DirectorForm = () => {
       setImgAvatar([]);
       setImgLicense([]);
       setImgFirm([]);
+      setStrength(0);
    };
 
    const handleChangeRole = (value2, setFieldValue) => {

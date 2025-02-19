@@ -101,7 +101,7 @@ export default function MechanicContextProvider({ children }) {
          const axiosData = await Axios.get(`/mechanics/selectIndex`);
          // console.log("el selectedDeRoles", axiosData);
          res.result.mechanics = axiosData.data.data.result;
-         res.result.mechanics.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.mechanics.unshift({ id: 0, label: "Selecciona una opción..." });
          setMechanics(axiosData.data.data.result);
          // console.log("mechanics", mechanics);
 

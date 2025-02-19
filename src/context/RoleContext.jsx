@@ -142,7 +142,7 @@ export default function RoleContextProvider({ children }) {
          // console.log("showRoleSelect");
          let res = CorrectRes;
          const axiosData = await Axios.get(`/roles/${id}`);
-         console.log(axiosData.data.data.result);
+         // console.log(axiosData.data.data.result);
          let page_index_id = 0;
 
          const axiosDataMenu =

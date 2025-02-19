@@ -45,7 +45,7 @@ const solicitudServicio = {
 export default function RequestServiceCardInfo() {
    const { openCardInfo, setOpenCardInfo } = useGlobalContext();
    const { service } = useServiceContext();
-   console.log("🚀 ~ RequestServiceCardInfo ~ service:", service);
+   // console.log("🚀 ~ RequestServiceCardInfo ~ service:", service);
 
    return (
       <ModalComponent open={openCardInfo} setOpen={setOpenCardInfo} modalTitle={`SOLICITUD DE SERVICIO #${service?.folio}`}>
