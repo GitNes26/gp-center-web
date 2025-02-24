@@ -127,7 +127,7 @@ export const FormikComponent = forwardRef(
                   onSubmit={handleSubmit}
                   onBlur={onBlur}
                   onChangeCapture={onChange}
-                  height={"100%"}
+                  height={"80vh"}
                   style={{ alignContent: "space-between" }}
                >
                   {!showActionButtons ? (
@@ -517,17 +517,17 @@ export const PasswordCompnent = ({
             // border: 1,
             display: hidden ? "none" : "flex",
             flexDirection: "column",
-            alignItems: "end",
+            alignItems: "start",
             position: "relative",
             pt: 0,
             p: 0,
             mb: marginBottom ? `${marginBottom} 0` : 2,
-            mt: checkedShowSwitchPassword ? -3 : -0
+            mt: checkedShowSwitchPassword ? -3.5 : -0
          }}
       >
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 0, pt: 0, mb: -1.75 }}>
+            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 0, pt: 0, mb: -1.25 }}>
                <FormControlLabel
                   control={<Switch />}
                   label={"Cambiar Contraseña"}

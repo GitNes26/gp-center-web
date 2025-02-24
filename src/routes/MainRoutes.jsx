@@ -103,11 +103,13 @@ const MainRoutes = {
       {
          path: "usuarios",
          element: (
-            <RoleContextProvider>
-               <UserContextProvider>
-                  <UsersView />
-               </UserContextProvider>
-            </RoleContextProvider>
+            <DepartmentContextProvider>
+               <RoleContextProvider>
+                  <UserContextProvider>
+                     <UsersView />
+                  </UserContextProvider>
+               </RoleContextProvider>
+            </DepartmentContextProvider>
          ),
          loader: loaderIndexUsersView
       },
@@ -124,7 +126,9 @@ const MainRoutes = {
          path: "departamentos",
          element: (
             <DepartmentContextProvider>
-               <DepartmentsView />
+               <DirectorContextProvider>
+                  <DepartmentsView />
+               </DirectorContextProvider>
             </DepartmentContextProvider>
          )
          // loader: loaderIndex

@@ -11,16 +11,19 @@ import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
+import { useDirectorContext } from "../../../context/DirectorContext";
 
 const DepartmentsView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, department, getDepartments } = useDepartmentContext();
+   const { getDirectorsSelectIndex } = useDirectorContext();
 
    useEffect(() => {
       try {
          setLoading(true);
          getDepartments();
+         getDirectorsSelectIndex();
       } catch (error) {
          console.log(error);
          Toast.Error(error);

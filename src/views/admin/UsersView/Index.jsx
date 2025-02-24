@@ -2,7 +2,7 @@ import UserForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../../context/AuthContext";
+import { Axios, AxiosDepa } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
 import { useUserContext } from "../../../context/UserContext";
@@ -11,6 +11,7 @@ import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import UserDT from "./DataTable";
+import { dataDepartamentosSelectIndex } from "../../../context/DepartmentContext";
 
 const UsersView = () => {
    const { result } = useLoaderData();
@@ -54,13 +55,16 @@ export const loaderIndexUsersView = async () => {
 
       const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/${auth.role_id}`);
       res.result.roles = axiosRoles.data.data.result;
-      res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
-      res.result.roles = res.result.roles.filter((r) => ![4, 5, 6].includes(r.id));
+      // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
+      // res.result.roles = res.result.roles.filter((r) => r.label.includes("Admin"));
+      res.result.roles = res.result.roles.filter((r) => !["Director", "Conductor", "Solicitador de Vales", "Mecánico"].includes(r.label));
 
-      const axiosDepartments = await Axios.get("/departments/selectIndex");
-      res.result.departments = axiosDepartments.data.data.result;
-      res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
-      // // console.log(res);
+      // const axiosDepartments = await AxiosDepa.get("/selectIndex");
+      // res.result.departments = axiosDepartments.data.data.result;
+      // // res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
+      // // // console.log(res);
+      const axiosDepartments = dataDepartamentosSelectIndex;
+      res.result.departments = axiosDepartments.data.result;
 
       return res;
    } catch (error) {

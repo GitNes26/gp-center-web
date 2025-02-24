@@ -2,9 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Grid,
-    Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
+import { Grid, Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormHelperText } from "@mui/material";
@@ -16,20 +14,37 @@ import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { formatToLowerCase, formatToUpperCase, handleInputFormik } from "../../../utils/Formats";
+import { FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
+import { useDirectorContext } from "../../../context/DirectorContext";
+import DirectoriesHistory from "./DirectoriesHistory";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const DepartmentForm = () => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   const { singularName, createDepartment, updateDepartment, formData, setFormData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useDepartmentContext();
+   const {
+      singularName,
+      createDepartment,
+      updateDepartment,
+      formData,
+      setFormData,
+      textBtnSubmit,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle,
+      formikRef,
+      createDepartmentDirector,
+      directorsHistory
+   } = useDepartmentContext();
+   const { directors, getDirectorsSelectIndex } = useDirectorContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    // const inputsRef = useRef([]);
    // const [doFocus, setdoFocus] = useState(false);
    // const inputRefDepartment = useRef(null);
    // const inputRefDescription = useRef(null);
+   const [rows, setRows] = useState([]);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -46,11 +61,12 @@ const DepartmentForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // console.log(values);
+         // return console.log(values);
          setLoadingAction(true);
-         let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDepartment(values);
-         else axiosResponse = await updateDepartment(values);
+         values.department_id = values.id;
+         let axiosResponse = await createDepartmentDirector(values);
+         // if (values.id == 0) axiosResponse = await createDepartment(values);
+         // else axiosResponse = await updateDepartment(values);
          if (axiosResponse.status_code == 200) {
             resetForm();
             setTextBtnSumbit("AGREGAR");
@@ -80,18 +96,6 @@ const DepartmentForm = () => {
       }
    };
 
-   const handleModify = async (setValues, setFieldValue) => {
-      try {
-         setLoadingAction(true);
-         if (!formData.description) formData.description = "";
-         setValues(formData);
-         setLoadingAction(false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const handleCancel = (resetForm) => {
       try {
          resetForm();
@@ -103,13 +107,28 @@ const DepartmentForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      department: Yup.string().trim().required("Nombre del departamento requerido")
+      // id: Yup.string().trim().required("Departamento requerido"),
+      director_id: Yup.string().trim().required("Director requerido")
    });
 
    useEffect(() => {
       try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
+         setRows(
+            directorsHistory.map((i) => {
+               return {
+                  id: i.relation_id,
+                  avatar: i.avatar,
+                  img_firm: i.img_firm,
+                  payroll_number: i.payroll_number,
+                  full_name: i.full_name,
+                  created_at: i.created_at,
+                  relation_active: i.relation_active
+               };
+            })
+         );
+
+         // const btnModify = document.getElementById("btnModify");
+         // if (btnModify != null) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -148,7 +167,7 @@ const DepartmentForm = () => {
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-         <Box role="presentation" p={3} pt={5} className="form">
+         <Box role="presentation" p={3} pt={5} className="form" sx={{ "max-width": "50vw" }}>
             <Typography variant="h2" mb={3}>
                {formTitle}
                <FormControlLabel
@@ -156,95 +175,31 @@ const DepartmentForm = () => {
                   control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                   label="Seguir Agregando"
                />
-            </Typography>{" "}
-            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Departamento */}
-                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="department"
-                           name="department"
-                           label="Nombre del Departamento *"
-                           type="text"
-                           value={values.department}
-                           placeholder="Ingrese el nombre del department"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
-                           // InputProps={{ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[0] = el)}
-                           // inputRef={inputRefDepartment}
-                           error={errors.department && touched.department}
-                           helperText={errors.department && touched.department && showErrorAndFocusInput(0, errors.department, false)}
-                        />
-                     </Grid>
-                     {/* Descripcion */}
-                     <Grid item xs={12} md={12} sx={{ mb: 2 }}>
-                        <TextField
-                           id="description"
-                           name="description"
-                           label="Descripción"
-                           type="text"
-                           value={values.description}
-                           placeholder="Inserte una breve descripción del department"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "description", false)}
-                           inputProps={{ maxLength: 1500 }}
-                           fullWidth
-                           multiline
-                           rows={3}
-                           // disabled={values.id == 0 ? false : true}
-                           // inputRef={(el) => (inputsRef.current[1] = el)}
-                           error={errors.description && touched.description}
-                           helperText={errors.description && touched.description && showErrorAndFocusInput(1, errors.description, false)}
-                        />
-                     </Grid>
+            </Typography>
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchema}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
+               <InputComponent col={12} idName={"id"} label={"id"} placeholder={"id"} hidden={true} />
+               <InputComponent col={6} idName={"organismo"} label={"Organismo"} placeholder={"Organismo correspondinete"} disabled={true} />
+               <InputComponent col={6} idName={"departamento"} label={"Departamento"} placeholder={"Nombre del departamento"} disabled={true} />
+               <InputComponent col={12} idName={"department_id"} label={"department_id"} placeholder={"ingresar el id del departamento"} hidden={true} />
+               <Select2Component
+                  col={12}
+                  idName={"director_id"}
+                  label={"Director Actual *"}
+                  options={directors}
+                  pluralName={"Directores"}
+                  refreshSelect={getDirectorsSelectIndex}
+               />
 
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        {/* <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1 }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                        >
-                           LIMPIAR
-                        </Button> */}
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button
-                        type="button"
-                        color="info"
-                        fullWidth
-                        id="btnModify"
-                        sx={{ mt: 1, display: "none" }}
-                        onClick={() => handleModify(setValues, setFieldValue)}
-                     >
-                        setValues
-                     </Button>
-                  </Grid>
-               )}
-            </Formik>
+               <DirectoriesHistory rows={rows} />
+            </FormikComponent>
          </Box>
       </SwipeableDrawer>
    );

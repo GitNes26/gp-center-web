@@ -35,6 +35,7 @@ const UserDT = () => {
    const UserBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
+   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.departamento?.departamento}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
@@ -47,7 +48,8 @@ const UserDT = () => {
    const columns = [
       { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: UserBodyTemplate, filter: true, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filter: true, filterField: null },
-      { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null }
+      { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
+      { field: "departamento.departamento", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -168,7 +170,7 @@ const UserDT = () => {
       try {
          // console.log("cargar listado", users);
          await users.map((obj, index) => {
-            // console.log(obj);
+            console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.username} active={obj.active} />;

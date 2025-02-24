@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+import { dataDepartamentos } from "./DepartmentContext";
 
 const UserContext = createContext();
 
@@ -68,6 +69,7 @@ export default function UserContextProvider({ children }) {
    const [user, setUser] = useState(userInitialState);
    const [users, setUsers] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef();
 
    const DisEnableUser = async (id, active) => {
       try {
@@ -107,9 +109,13 @@ export default function UserContextProvider({ children }) {
    const getUsers = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/users/role_id/${auth.role_id}`);
+         // const axiosData = await Axios.get(`/users/role_id/${auth.role_id}`);
+         const axiosData = await Axios.get(`/users`);
          res.result.users = axiosData.data.data.result;
-         setUsers(axiosData.data.data.result);
+         res.result.users.map((u) => (u.departamento = dataDepartamentos.data.result.find((i) => i.id == u.department_id) ?? null));
+         console.log("🚀 ~ getUsers ~ res.result.users:", res.result.users);
+
+         setUsers(res.result.users);
          // console.log("users", users);
 
          return res;
@@ -143,7 +149,8 @@ export default function UserContextProvider({ children }) {
    const createUser = async (user) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/create/role_id/${user.role_id}`, user);
+         // const axiosData = await Axios.post(`/users/create/role_id/${user.role_id}`, user);
+         const axiosData = await Axios.post(`/users/create/${user.id}`, user);
          // console.log(axiosData);
          res = axiosData.data.data;
          getUsers();
@@ -160,7 +167,8 @@ export default function UserContextProvider({ children }) {
    const updateUser = async (user) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/update/role_id/${user.role_id}`, user);
+         // const axiosData = await Axios.post(`/users/update/role_id/${user.role_id}`, user);
+         const axiosData = await Axios.post(`/users/update/${user.id}`, user);
          res = axiosData.data.data;
          getUsers();
       } catch (error) {
@@ -234,7 +242,8 @@ export default function UserContextProvider({ children }) {
             formTitle,
             setFormTitle,
             DisEnableUser,
-            deleteMultiple
+            deleteMultiple,
+            formikRef
          }}
       >
          {children}

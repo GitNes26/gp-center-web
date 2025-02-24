@@ -15,6 +15,12 @@ Axios.defaults.headers.common = {
    Authorization: `Bearer ${localStorage.getItem("token") || ""}`
 };
 
+export const AxiosDepa = axios.create({
+   baseURL: import.meta.env.VITE_API_DEPA,
+   responseType: "json",
+   headers: { Accept: "application/json", "Content-Type": "application/json" }
+});
+
 export let idPage = 0;
 const AuthinitialStatate = {
    id: null,

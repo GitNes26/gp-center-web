@@ -7,7 +7,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
@@ -23,6 +23,8 @@ import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import SwitchComponent from "../../../components/SwitchComponent";
+import { useDirectorContext } from "../../../context/DirectorContext";
+import { IconCirclesRelation } from "@tabler/icons";
 
 const DepartmentDT = () => {
    const { auth } = useAuthContext();
@@ -39,31 +41,59 @@ const DepartmentDT = () => {
       resetFormData,
       resetDepartment,
       setTextBtnSumbit,
-      setFormTitle
+      setFormTitle,
+      formikRef,
+      setDirectorsHistory
    } = useDepartmentContext();
-   const globalFilterFields = ["department", "description"];
+   // const { setDirectors } = useDirectorContext();
+   const globalFilterFields = ["clave_org", "organismo", "departamento", "description"];
 
    // #region BodysTemplate
-   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
-   const DescriptionBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.description}</Typography>;
-   const ActiveBodyTemplate = (obj) => (
+   const SelloBodyTemplate = (obj) => (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+         <Avatar
+            sx={{ width: 56, height: 56 }}
+            src={obj.img_sello !== null ? `${import.meta.env.VITE_HOST}/${obj.img_sello}` : ""}
+            alt={`Sello de ${obj.departamento}`}
+         />
+      </Box>
+   );
+   const OrganismoBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
+         <b>({obj.clave_org})</b> {obj.organismo}
       </Typography>
    );
-   const CreatedAtBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at, true)}</Typography>;
+   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.departamento}</Typography>;
+   const DirectorBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         {obj.director && (
+            <>
+               <b>{obj.director.payroll_number}</b>
+               <br />
+               {obj.director.full_name}
+            </>
+         )}
+      </Typography>
+   );
+   const ActiveBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         {obj.activo ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
+      </Typography>
+   );
+   const CreatedAtBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.creado, true)}</Typography>;
 
    // #endregion BodysTemplate
 
    const columns = [
-      // { field: "department", header: "Usuario", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
-      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filter: true, filterField: null }
+      { field: "Sello", header: "Sello", sortable: true, functionEdit: null, body: SelloBodyTemplate, filter: false, filterField: null },
+      { field: "organismo", header: "Organismo", sortable: true, functionEdit: null, body: OrganismoBodyTemplate, filter: true, filterField: null },
+      { field: "departamento", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      { field: "director", header: "Director", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
-         { field: "created_at", header: "Resgistrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
+         { field: "activo", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
+         { field: "creado", header: "Registrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);
@@ -82,12 +112,33 @@ const DepartmentDT = () => {
       }
    };
 
+   const handleClickAttach = async (department_id) => {
+      console.log("🚀 ~ handleClickAttach ~ department_id:", department_id);
+      try {
+         setLoadingAction(true);
+         setTextBtnSumbit("GUARDAR");
+         setFormTitle(`VINCULAR DIRECTOR-${singularName.toUpperCase()}`);
+         const res = await showDepartment(department_id);
+         console.log("🚀 ~ handleClickAttach ~ res:", res);
+         formikRef.current.setValues(res);
+         setDirectorsHistory(res.directors);
+         setOpenDialog(true);
+         setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const handleClickEdit = async (id) => {
+      console.log("🚀 ~ handleClickEdit ~ id:", id);
       try {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showDepartment(id);
+         const res = await showDepartment(id);
+         formikRef.current.setValues(res);
+         setDirectorsHistory(res.directors);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -149,11 +200,16 @@ const DepartmentDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
+            <Tooltip title={`Vincular Director-${singularName}`} placement="top">
+               <Button color="info" onClick={() => handleClickAttach(id)}>
+                  <IconCirclesRelation />
+               </Button>
+            </Tooltip>
+            {/* <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
@@ -202,7 +258,7 @@ const DepartmentDT = () => {
          headerFilters={false}
          handleClickAdd={handleClickAdd}
          refreshTable={getDepartments}
-         btnAdd={true}
+         btnAdd={false}
          showGridlines={false}
          btnsExport={true}
          rowEdit={false}

@@ -150,7 +150,7 @@ export default function DirectorContextProvider({ children }) {
          const axiosData = await Axios.get(`/directors/selectIndex`);
          // console.log("el selectedDeRoles", axiosData);
          res.result.directors = axiosData.data.data.result;
-         res.result.directors.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.directors.unshift({ id: 0, label: "Selecciona una opción..." });
          setDirectors(axiosData.data.data.result);
          // console.log("directors", directors);
 

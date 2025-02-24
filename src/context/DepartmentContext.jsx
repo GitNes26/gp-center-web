@@ -1,16 +1,25 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { Axios } from "./AuthContext";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+// import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+
+import departamentos from "../assets/db/departamentos.json";
+import departamentosSelectIndex from "../assets/db/departamentos-selectIndex.json";
+import { Axios } from "./AuthContext";
+export const dataDepartamentos = departamentos;
+export const dataDepartamentosSelectIndex = departamentosSelectIndex;
 
 const DepartmentContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   department: "",
-   description: ""
+   organismo: "",
+   departamento: "",
+   department_id: 0,
+   director_id: 0
 };
 
+const prefix = "/cp/departamentos";
 export default function DepartmentContextProvider({ children }) {
    const singularName = "Departamento"; //Escribirlo siempre letra Capital
    const pluralName = "Departamentos"; //Escribirlo siempre letra Capital
@@ -21,6 +30,8 @@ export default function DepartmentContextProvider({ children }) {
    const [departments, setDepartments] = useState([]);
    const [department, setDepartment] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const [directorsHistory, setDirectorsHistory] = useState([]);
+   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -42,10 +53,12 @@ export default function DepartmentContextProvider({ children }) {
    const getDepartments = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/departments`);
+         const axiosData = await Axios.get(`/depDir`);
+         // const axiosData = await Axios.get(`${prefix}`);
+
+         // console.log("🚀 ~ getDepartments ~ axiosData:", axiosData);
          res.result.departments = axiosData.data.data.result;
          setDepartments(axiosData.data.data.result);
-         // console.log("departments", departments);
 
          return res;
       } catch (error) {
@@ -59,12 +72,19 @@ export default function DepartmentContextProvider({ children }) {
    const getDepartmentsSelectIndex = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/departments/selectIndex`);
-         // console.log("el selectedDeRoles", axiosData);
+         const axiosData = await Axios.get(`${prefix}/selectIndex`);
+         console.log("solicitud de departamentos", axiosData);
          res.result.departments = axiosData.data.data.result;
-         res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
          setDepartments(axiosData.data.data.result);
          // console.log("departments", departments);
+
+         // const axiosData = departamentosSelectIndex;
+         // console.log("solicitud de departamentos", axiosData);
+         // res.result.departments = axiosData.data.result;
+         // // res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
+         // setDepartments(axiosData.data.result);
+         // // console.log("departments", departments);
 
          return res;
       } catch (error) {
@@ -75,14 +95,17 @@ export default function DepartmentContextProvider({ children }) {
       }
    };
 
-   const showDepartment = async (id) => {
+   const showDepartment = async (department_id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/departments/${id}`);
-         res = axiosData.data.data;
+         // const axiosData = await Axios.get(`${prefix}/${id}`);
+         const axiosData = await Axios.get(`depDir/${department_id}`);
+         // const axiosData = departamentos.data.result.find((i) => i.id == id);
+         // console.log("🚀 ~ showDepartment ~ axiosData:", axiosData);
+         res = axiosData.data.data.result;
          // console.log(res);
-         setDepartment(res.result);
-         setFormData(res.result);
+         setDepartment(res);
+         setFormData(res);
 
          return res;
       } catch (error) {
@@ -93,10 +116,29 @@ export default function DepartmentContextProvider({ children }) {
       }
    };
 
-   const createDepartment = async (department) => {
+   const createDepartmentDirector = async (department) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/departments/create", department);
+         // const axiosData = await Axios.post("/create", department);
+         const axiosData = await Axios.post("/depDir/create", department);
+         res = axiosData.data.data;
+         getDepartments();
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+      return res;
+   };
+
+   const createDepartment = async (depDir) => {
+      console.log("🚀 ~ createDepartment ~ depDir:", depDir);
+      let res = CorrectRes;
+      try {
+         // const axiosData = await Axios.post("/create", depDir);
+         const axiosData = await Axios.post("/depDir/create", depDir);
          res = axiosData.data.data;
          getDepartments();
       } catch (error) {
@@ -112,7 +154,7 @@ export default function DepartmentContextProvider({ children }) {
    const updateDepartment = async (department) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/departments/update", department);
+         const axiosData = await Axios.post("/update", department);
          res = axiosData.data.data;
          getDepartments();
       } catch (error) {
@@ -128,7 +170,7 @@ export default function DepartmentContextProvider({ children }) {
    const deleteDepartment = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/departments/destroy/${id}`);
+         const axiosData = await Axios.post(`/destroy/${id}`);
          // console.log("deleteDepartment() axiosData", axiosData.data);
          getDepartments();
          res = axiosData.data.data;
@@ -168,7 +210,11 @@ export default function DepartmentContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            formikRef,
+            createDepartmentDirector,
+            directorsHistory,
+            setDirectorsHistory
          }}
       >
          {children}
