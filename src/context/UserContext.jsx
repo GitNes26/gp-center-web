@@ -12,23 +12,9 @@ const formDataInitialState = {
    email: "",
    password: "",
    role_id: 0,
-   phone: "",
-   license_number: "",
-   license_due_date: "",
-   payroll_number: "",
-   department_id: "",
-   name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
-   community_id: 0,
-   street: "",
-   num_ext: "",
-   num_int: "",
-
-   zip: "",
-   state: 0,
-   city: 0,
-   colony: 0
+   department_id: 0,
+   employee_id: 0,
+   active: true
 };
 const userInitialState = {
    id: 0,
@@ -113,7 +99,7 @@ export default function UserContextProvider({ children }) {
          const axiosData = await Axios.get(`/users`);
          res.result.users = axiosData.data.data.result;
          res.result.users.map((u) => (u.departamento = dataDepartamentos.data.result.find((i) => i.id == u.department_id) ?? null));
-         console.log("🚀 ~ getUsers ~ res.result.users:", res.result.users);
+         // console.log("🚀 ~ getUsers ~ res.result.users:", res.result.users);
 
          setUsers(res.result.users);
          // console.log("users", users);
@@ -150,7 +136,7 @@ export default function UserContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/create/role_id/${user.role_id}`, user);
-         const axiosData = await Axios.post(`/users/create/${user.id}`, user);
+         const axiosData = await Axios.post(`/users/create`, user);
          // console.log(axiosData);
          res = axiosData.data.data;
          getUsers();

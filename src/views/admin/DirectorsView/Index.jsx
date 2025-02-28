@@ -17,13 +17,13 @@ const DirectorsView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, director, getDirectors } = useDirectorContext();
-   // const { getDepartmentsSelectIndex } = useDepartmentContext();
+   const { getDepartmentsSelectIndex } = useDepartmentContext();
 
    useEffect(() => {
       try {
          setLoading(true);
          getDirectors();
-         // getDepartmentsSelectIndex();
+         getDepartmentsSelectIndex();
       } catch (error) {
          console.log(error);
          Toast.Error(error);

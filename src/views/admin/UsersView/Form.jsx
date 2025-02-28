@@ -25,32 +25,12 @@ import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useRoleContext } from "../../../context/RoleContext";
 import { DividerComponent, FormikComponent, InputComponent, PasswordCompnent, Select2Component, SwitchComponent } from "../../../components/Form/FormikComponents";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
+import { useEmployeeContext } from "../../../context/EmployeeContext";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const UserForm = ({ dataRoles, dataDepartments }) => {
-   // // #region Boton de Contraseña
-   // const [showPassword, setShowPassword] = useState(false);
-   // const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
-
-   // const [strength, setStrength] = useState(0);
-   // const [level, setLevel] = useState();
-   // const handleClickShowPassword = () => {
-   //    setShowPassword(!showPassword);
-   // };
-
-   // const handleMouseDownPassword = (event) => {
-   //    event.preventDefault();
-   // };
-
-   // const changePassword = (value) => {
-   //    const temp = strengthIndicator(value);
-   //    setStrength(temp);
-   //    setLevel(strengthColor(temp));
-   // };
-   // // #endregion Boton de Contraseña
-
+const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
    const {
       setLoadingAction,
       openDialog,
@@ -83,39 +63,23 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
    } = useUserContext();
    const { getRolesSelectIndex } = useRoleContext();
    const { getDepartmentsSelectIndex } = useDepartmentContext();
-   getDepartmentsSelectIndex;
+   const { getEmployeesSelectIndex } = useEmployeeContext();
+
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [isAdmin, setIsAdmin] = useState(true);
-   const [isGarage, setIsGarage] = useState(false);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(false);
 
-   const handleChangeRole = (value2, setFieldValue) => {
+   const handleChangeRole = (idName, values) => {
       try {
-         // console.log("amanas", value2);
-         setIsAdmin(true); //false
-         // setIsGarage(false);
-         const role_id = Number(value2.id);
-         // setIsAdmin(role_id <= 2 ? true : false);
-         // setIsGarage(role_id == 4 ? true : false);
+         const role = values.label;
+         setIsAdmin(role.includes("Admin") ? true : false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
    };
-
-   // const handleChangeUser = (e) => {
-   //    // Validar si el carácter "@" está presente antes de actualizar el estado
-   //    if (!e.target.value.includes("@")) {
-   //       formik.handleChange(e);
-   //    }
-   // };
-   // const handleInputUsername = (e) => {
-
-   //    // if (e.key === "@") return;
-   //    // const value = e.target.value;
-   // };
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -136,7 +100,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          // console.log("values", values);
          // values.community_id = values.colony_id;
          values.change_password = newPasswordChecked;
-         values.num_int = values.num_int === "" ? "S/N" : values.num_int;
+         // values.num_int = values.num_int === "" ? "S/N" : values.num_int;
          setFormData(values);
          setLoadingAction(true);
          let axiosResponse;
@@ -162,7 +126,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
       }
    };
 
-   const handleModify = async (values, setValues, setFieldValue) => {
+   const handleModify = async () => {
       try {
          if (formData.community_id > 0) {
             // // setShowLoading(true);
@@ -184,9 +148,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
             // );
          }
          if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-         // setIsAdmin(formData.role_id <= 2 ? true : false);
-         // setIsGarage(formData.role_id == 4 ? true : false);
+         // setIsAdmin(formData.includes("Admin") ? true : false);
+
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -214,8 +177,8 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
             .required("Nombre de usario requerido"),
          email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
-         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido"),
-         department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido")
+         role_id: Yup.number().min(1, "Esta opción no es valida").required("Rol requerido")
+         // department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido")
       });
       return validationSchema;
    };
@@ -228,6 +191,7 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
          if (textBtnSubmit == "GUARDAR") {
             setNewPasswordChecked(false);
             setCheckedShowSwitchPassword(true);
+            handleModify();
          } else {
             setNewPasswordChecked(true);
             setCheckedShowSwitchPassword(false);
@@ -262,17 +226,37 @@ const UserForm = ({ dataRoles, dataDepartments }) => {
             >
                <Grid container spacing={2} mt={2}>
                   <InputComponent col={12} idName={"id"} label={"id"} placeholder={"el id"} hidden={true} />
-                  <Select2Component col={12} idName={"role_id"} label={"Rol *"} options={dataRoles} pluralName={"Roles"} refreshSelect={getRolesSelectIndex} />
+                  <Select2Component
+                     col={12}
+                     idName={"role_id"}
+                     label={"Rol *"}
+                     options={dataRoles}
+                     pluralName={"Roles"}
+                     refreshSelect={getRolesSelectIndex}
+                     handleChangeValueSuccess={handleChangeRole}
+                  />
                   <DividerComponent title={"DATOS DEL USUARIO"} />
-                  {formData.role_id > 1 && (
-                     <Select2Component
-                        col={12}
-                        idName={"department_id"}
-                        label={"Departamento *"}
-                        options={dataDepartments}
-                        pluralName={"Departamentos"}
-                        refreshSelect={getDepartmentsSelectIndex}
-                     />
+                  {!isAdmin && (
+                     <>
+                        <Select2Component
+                           col={12}
+                           idName={"department_id"}
+                           label={"Departamento"}
+                           options={dataDepartments}
+                           pluralName={"Departamentos"}
+                           refreshSelect={getDepartmentsSelectIndex}
+                           required
+                        />
+                        <Select2Component
+                           col={12}
+                           idName={"employee_id"}
+                           label={"Empleado"}
+                           options={dataEmployees}
+                           pluralName={"Empleados"}
+                           refreshSelect={getEmployeesSelectIndex}
+                           required
+                        />
+                     </>
                   )}
                   <InputComponent col={6} idName={"username"} label={"Nombre de usuario *"} placeholder={"Ingrese el nombre de usuario"} textStyleCase={null} />
                   <InputComponent col={6} idName={"email"} label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />

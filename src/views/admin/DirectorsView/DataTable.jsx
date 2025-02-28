@@ -24,12 +24,26 @@ import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatPhone } from "../../../utils/Formats";
+import { setObjImg } from "../../../components/Form/FormikComponents";
 
 const DirectorDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, pluralName, director, directors, getDirectors, showDirector, deleteDirector, resetFormData, resetDirector, setTextBtnSumbit, setFormTitle } =
-      useDirectorContext();
+   const {
+      singularName,
+      pluralName,
+      director,
+      directors,
+      getDirectors,
+      showDirector,
+      deleteDirector,
+      resetFormData,
+      resetDirector,
+      setTextBtnSumbit,
+      setFormTitle,
+      formData,
+      formikRef
+   } = useDirectorContext();
    const globalFilterFields = ["payroll_number", "username", "email", "phone", "license_number", "department"];
 
    // #region BodysTemplate
@@ -75,8 +89,8 @@ const DirectorDT = () => {
    const handleClickAdd = () => {
       try {
          resetDirector();
-         director.role = "Selecciona una opción...";
          resetFormData();
+         formikRef.current.setValues(formikRef.current.initialValues);
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -91,10 +105,13 @@ const DirectorDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showDirector(id);
+         const res = await showDirector(id);
+         console.log("🚀 ~ handleClickEdit ~ res:", res);
+         formikRef.current.setValues(res.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -103,7 +120,6 @@ const DirectorDT = () => {
    const handleClickDelete = async (id, name) => {
       try {
          // CONSULTAR SI TIENEN UNA ASIGANACIÓN ACTIVA
-         
 
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {

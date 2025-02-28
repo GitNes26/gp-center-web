@@ -67,7 +67,9 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 export const DividerComponent = ({ title, fontWeight, textAlign = "center", orientation = "horizontal", mb = 2, mt = null }) => (
    <Grid xs={12}>
       <Divider sx={{ flexGrow: 1, mb: mb, mt: mt }} orientation={orientation} textAlign={textAlign}>
-         <div style={{ fontWeight: fontWeight }}>{title}</div>
+         <div style={{ fontWeight: fontWeight }}>
+            <b>{title}</b>
+         </div>
       </Divider>
    </Grid>
 );
@@ -187,6 +189,7 @@ export const InputComponent = ({
    idName = "idName",
    label,
    type = null,
+   required = false,
    disabled,
    placeholder,
    helperText,
@@ -205,6 +208,7 @@ export const InputComponent = ({
    icon = null,
    handleChangeExtra = null,
    handleBlurExtra = null,
+   handleInputExtra = null,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -235,6 +239,9 @@ export const InputComponent = ({
    };
    const handleOnBlurExtra = (e) => {
       return handleBlurExtra(e.target.value);
+   };
+   const handleOnInputExtra = (e, setFieldValue) => {
+      return handleInputExtra(e.target.value, setFieldValue);
    };
 
    useEffect(() => {
@@ -272,7 +279,7 @@ export const InputComponent = ({
                         <TextField
                            key={idName}
                            name={idName}
-                           label={label}
+                           label={`${label} ${required ? "*" : ""}`}
                            type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
                            variant={variant}
                            onChange={(e) => {
@@ -285,6 +292,7 @@ export const InputComponent = ({
                            }}
                            onInput={(e) => {
                               textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                              handleInputExtra != null ? handleOnInputExtra(e, formik.setFieldValue) : null;
                            }}
                            fullWidth
                            error={error}
@@ -306,7 +314,7 @@ export const InputComponent = ({
                      <OutlineInputStyle
                         key={idName}
                         name={idName}
-                        label={styleInput == 1 && label}
+                        label={styleInput == 1 && `${label} ${required ? "*" : ""}`}
                         placeholder={placeholder}
                         type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
                         ref={inputRef}
@@ -331,6 +339,7 @@ export const InputComponent = ({
                         }}
                         onInput={(e) => {
                            textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                           handleInputExtra != null ? handleOnInputExtra(e, formik.setFieldValue) : null;
                         }}
                         {...props}
                         disabled={loading || disabled}
@@ -347,7 +356,7 @@ export const InputComponent = ({
                         startAdornment={
                            // <Tooltip title={""} placement={"top"}>
                            <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                              <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
+                              <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{`${label} ${required ? "*" : ""}`}</Typography>
                               {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
                            </InputAdornment>
                            // </Tooltip>
@@ -361,7 +370,7 @@ export const InputComponent = ({
                   <TextField
                      key={idName}
                      name={idName}
-                     label={styleInput == 1 && label}
+                     label={styleInput == 1 && `${label} ${required ? "*" : ""}`}
                      placeholder={placeholder}
                      type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
                      ref={inputRef}
@@ -388,6 +397,7 @@ export const InputComponent = ({
                      }}
                      onInput={(e) => {
                         textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                        handleInputExtra != null ? handleOnInputExtra(e, formik.setFieldValue) : null;
                      }}
                      {...props}
                      disabled={loading || disabled}
@@ -404,7 +414,7 @@ export const InputComponent = ({
                      startAdornment={
                         // <Tooltip title={""} placement={"top"}>
                         <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                           <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
+                           <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{`${label} ${required ? "*" : ""}`}</Typography>
                            {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
                            {icon ?? icon}
                         </InputAdornment>
@@ -414,7 +424,7 @@ export const InputComponent = ({
                )}
                {styleInput == 3 && (
                   <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
-                     {label}
+                     {`${label} ${required ? "*" : ""}`}
                   </Typography>
                )}
             </>
@@ -452,6 +462,7 @@ export const PasswordCompnent = ({
    col,
    label,
    idName,
+   required = false,
    disabled,
    placeholder,
    helperText,
@@ -539,13 +550,13 @@ export const PasswordCompnent = ({
          {/* Contraseña */}
          <Grid xs={12} sx={{ backgroundColor: "", p: 1 }}>
             <FormControl fullWidth error={isError}>
-               <InputLabel htmlFor={idName}>{label || "Contraseña *"}</InputLabel>
+               <InputLabel htmlFor={idName}>{`${label} ${required ? "*" : ""}` || "Contraseña *"}</InputLabel>
                <OutlinedInput
                   key={idName}
                   id={idName}
                   name={idName}
                   ref={inputRef}
-                  label={label || "Contraseña *"}
+                  label={`${label} ${required ? "*" : ""}` || "Contraseña *"}
                   placeholder={placeholder || "Ingrese su contraseña, minimo 6 dígitos"}
                   type={showPassword ? "text" : "password"}
                   variant={variant}
@@ -562,6 +573,7 @@ export const PasswordCompnent = ({
                   }}
                   onInput={(e) => {
                      textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                     // handleInputExtra != null ? handleOnInputExtra(e, formik.setFieldValue) : null;
                   }}
                   {...props}
                   disabled={newPasswordChecked ? false : true}
@@ -642,6 +654,7 @@ export const Select2Component = ({
    col,
    idName,
    label,
+   required = false,
    placeholder,
    options = [],
    disabled,
@@ -784,7 +797,7 @@ export const Select2Component = ({
                               // filterSelectedOptions
                               disablePortal
                               openOnFocus
-                              label={label}
+                              label={`${label} ${required ? "*" : ""}`}
                               placeholder={placeholder}
                               options={dataOptions}
                               size={size}
@@ -806,7 +819,7 @@ export const Select2Component = ({
                               onBlur={formik.handleBlur}
                               fullWidth={fullWidth || true}
                               isOptionEqualToValue={isOptionEqualToValue}
-                              renderInput={(params) => <TextField {...params} label={label} error={isError} />}
+                              renderInput={(params) => <TextField {...params} label={`${label} ${required ? "*" : ""}`} error={isError} />}
                               // renderTags={(value, getTagProps) =>
                               //    value.map((option, index) => {
                               //       const { key, ...tagProps } = getTagProps({ index });
@@ -883,6 +896,7 @@ export const SwitchComponent = ({
    col,
    idName,
    label,
+   required = false,
    disabled,
    textEnable = "Activo",
    textDisable = "Inactivo",
@@ -916,7 +930,7 @@ export const SwitchComponent = ({
       <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "start", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
          <Tooltip title={formik.values[idName] ? textEnable : textDisable} placement="right">
             <Button color="dark" onClick={() => formik.setFieldValue(idName, !Boolean(formik.values[idName]))}>
-               <SwitchIOSComponent checked={Boolean(formik.values[idName])} label={label} ref={inputRef} />
+               <SwitchIOSComponent checked={Boolean(formik.values[idName])} label={`${label} ${required ? "*" : ""}`} ref={inputRef} />
             </Button>
          </Tooltip>
          {loading && <CircularProgress sx={{ position: "relative", top: "-50%", left: "20%" }} />}
@@ -942,6 +956,7 @@ export const RadioButtonComponent = ({
    col,
    idName,
    title,
+   required = false,
    options,
    helperText,
    hidden,
@@ -997,7 +1012,7 @@ export const RadioButtonComponent = ({
          mb={marginBottom ?? 2}
       >
          <Typography variant="subtitle1" align="center" sx={{ mb: 0, display: "block" }}>
-            {title}
+            {`${title} ${required ? "*" : ""}`}
          </Typography>
          <RadioGroup
             name={idName}
@@ -1075,6 +1090,7 @@ export const CheckboxComponent = ({
    loading = false,
    col,
    label,
+   required = false,
    idName,
    checked = null,
    value,
@@ -1116,7 +1132,7 @@ export const CheckboxComponent = ({
                      color={color}
                   />
                }
-               label={label}
+               label={`${label} ${required ? "*" : ""}`}
                sx={{
                   marginRight: rowLayout ? "16px" : 0,
                   marginBottom: rowLayout ? 0 : "8px",
@@ -1150,7 +1166,19 @@ export const CheckboxComponent = ({
 //#endregion IMPORTS
 
 // =================== COMPONENTE =======================
-export const DatePickerComponent = ({ loading = false, col, idName, label, format = "DD/MM/YYYY", disabled, hidden, marginBottom, size = "medium", ...props }) => {
+export const DatePickerComponent = ({
+   loading = false,
+   col,
+   idName,
+   label,
+   required = false,
+   format = "DD/MM/YYYY",
+   disabled,
+   hidden,
+   marginBottom,
+   size = "medium",
+   ...props
+}) => {
    const formik = useFormikContext();
    const { errors, touched } = formik;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
@@ -1161,12 +1189,12 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
 
    return (
       <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
-         <FormControl fullWidth sx={{ margin: size == "small" ? "0rem 0" : "1rem 0" }} size={size}>
+         <FormControl fullWidth sx={{ margin: size == "small" ? "0rem 0" : "0rem 0" }} size={size}>
             <Field name={idName} id={idName}>
                {({ field, form }) => (
                   <>
                      <DatePicker
-                        label={label}
+                        label={`${label} ${required ? "*" : ""}`}
                         value={dayjs(field.value) || null}
                         format={format}
                         onChange={(date) => form.setFieldValue(field.name, dayjs(date).format("YYYY-MM-DD"))}
@@ -1686,6 +1714,7 @@ export const FileInputComponent = ({
    col,
    idName,
    label,
+   required = false,
    helperText,
    disabled,
    hidden,
@@ -1875,7 +1904,7 @@ export const FileInputComponent = ({
       // console.log("🚀 ~ useEffect ~ filePreviews:", filePreviews);
       if (filePreviews.length == 0) setConfirmRemove(true);
       else setConfirmRemove(false);
-   }, [idName, formik.values[idName]]);
+   }, [idName, formik.values[idName], confirmRemove]);
 
    const RenderFileComponent = ({ file }) => {
       console.log("🚀 ~ RenderFileComponent ~ filePreviews:", filePreviews);
@@ -1909,7 +1938,7 @@ export const FileInputComponent = ({
          >
             <FormControl fullWidth sx={{}}>
                <Typography variant="p" mb={1} sx={{ fontWeight: "bolder" }} htmlFor={idName} color={color}>
-                  {label}
+                  {`${label} ${required ? "*" : ""}`}
                </Typography>
 
                <Field name={idName} id={idName}>
@@ -1919,8 +1948,8 @@ export const FileInputComponent = ({
                            <div {...getRootProps({ className: color === "red" ? "dropzone-error" : "dropzone" })}>
                               <input
                                  {...getInputProps()}
-                                 onChange={confirmRemove ? handleOnChangeFileInput : undefined}
-                                 type={confirmRemove ? "file" : "text"}
+                                 onChange={filePreviews.length == 0 ? handleOnChangeFileInput : undefined}
+                                 type={filePreviews.length == 0 ? "file" : "text"}
                                  multiple={multiple}
                                  accept={accept}
                                  disabled={disabled}
@@ -2407,4 +2436,4 @@ export const InputCameraComponent = ({ getFile }) => {
       </div>
    );
 };
-//#region INPUT CAMERA COMPONENT
+//#endregion INPUT CAMERA COMPONENT

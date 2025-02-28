@@ -72,8 +72,9 @@ export default function DepartmentContextProvider({ children }) {
    const getDepartmentsSelectIndex = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`${prefix}/selectIndex`);
-         console.log("solicitud de departamentos", axiosData);
+         // const axiosData = await Axios.get(`${prefix}/selectIndex`);
+         const axiosData = await Axios.get(`depDir/selectIndex`);
+         // console.log("solicitud de departamentos", axiosData);
          res.result.departments = axiosData.data.data.result;
          // res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
          setDepartments(axiosData.data.data.result);
@@ -101,6 +102,27 @@ export default function DepartmentContextProvider({ children }) {
          // const axiosData = await Axios.get(`${prefix}/${id}`);
          const axiosData = await Axios.get(`depDir/${department_id}`);
          // const axiosData = departamentos.data.result.find((i) => i.id == id);
+         // console.log("🚀 ~ showDepartment ~ axiosData:", axiosData);
+         res = axiosData.data.data.result;
+         // console.log(res);
+         setDepartment(res);
+         setFormData(res);
+
+         return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
+   const showDepartmentDirector = async (department_id) => {
+      try {
+         let res = CorrectRes;
+         // const axiosData = await Axios.get(`${prefix}/${id}`);
+         // const axiosData = departamentos.data.result.find((i) => i.id == id);
+         const axiosData = await Axios.get(`depDir/department/${department_id}`);
          // console.log("🚀 ~ showDepartment ~ axiosData:", axiosData);
          res = axiosData.data.data.result;
          // console.log(res);
@@ -212,6 +234,7 @@ export default function DepartmentContextProvider({ children }) {
             formTitle,
             setFormTitle,
             formikRef,
+            showDepartmentDirector,
             createDepartmentDirector,
             directorsHistory,
             setDirectorsHistory

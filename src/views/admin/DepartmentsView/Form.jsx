@@ -187,15 +187,16 @@ const DepartmentForm = () => {
             >
                <InputComponent col={12} idName={"id"} label={"id"} placeholder={"id"} hidden={true} />
                <InputComponent col={6} idName={"organismo"} label={"Organismo"} placeholder={"Organismo correspondinete"} disabled={true} />
-               <InputComponent col={6} idName={"departamento"} label={"Departamento"} placeholder={"Nombre del departamento"} disabled={true} />
+               <InputComponent col={6} idName={"departamento"} label={"Departamento"} placeholder={"Nombre del departamento"} disabled={true}  />
                <InputComponent col={12} idName={"department_id"} label={"department_id"} placeholder={"ingresar el id del departamento"} hidden={true} />
                <Select2Component
                   col={12}
                   idName={"director_id"}
-                  label={"Director Actual *"}
+                  label={"Director Actual"}
                   options={directors}
                   pluralName={"Directores"}
                   refreshSelect={getDirectorsSelectIndex}
+                  required
                />
 
                <DirectoriesHistory rows={rows} />

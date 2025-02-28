@@ -41,6 +41,7 @@ import VoucherDetailContextProvider from "../context/VoucherDetailContext";
 import MechanicContextProvider from "../context/MechanicContext";
 import MechanicsView from "../views/admin/MechanicsView/Index";
 import VehicleMovementLogContextProvider from "../context/VehicleMovementLogContext";
+import EmployeeContextProvider from "../context/EmployeeContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -105,9 +106,11 @@ const MainRoutes = {
          element: (
             <DepartmentContextProvider>
                <RoleContextProvider>
-                  <UserContextProvider>
-                     <UsersView />
-                  </UserContextProvider>
+                  <EmployeeContextProvider>
+                     <UserContextProvider>
+                        <UsersView />
+                     </UserContextProvider>
+                  </EmployeeContextProvider>
                </RoleContextProvider>
             </DepartmentContextProvider>
          ),
@@ -164,7 +167,9 @@ const MainRoutes = {
          path: "directores",
          element: (
             <DirectorContextProvider>
-               <DirectorsView />
+               <DepartmentContextProvider>
+                  <DirectorsView />
+               </DepartmentContextProvider>
             </DirectorContextProvider>
          )
          // loader: loaderIndex

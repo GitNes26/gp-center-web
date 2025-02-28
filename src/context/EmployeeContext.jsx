@@ -3,7 +3,7 @@ import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
-const DirectorContext = createContext();
+const EmployeeContext = createContext();
 
 const formDataInitialState = {
    id: 0,
@@ -37,7 +37,7 @@ const formDataInitialState = {
    colony: 0,
    payroll_number_exist: false
 };
-const directorInitialState = {
+const employeeInitialState = {
    id: 0,
    user_id: 0,
    username: "",
@@ -71,17 +71,17 @@ const directorInitialState = {
    payroll_number_exist: false
 };
 
-export default function DirectorContextProvider({ children }) {
+export default function EmployeeContextProvider({ children }) {
    const { auth } = useAuthContext();
 
-   const singularName = "Director"; //Escribirlo siempre letra Capital
-   const pluralName = "Directores"; //Escribirlo siempre letra Capital
+   const singularName = "Empleado"; //Escribirlo siempre letra Capital
+   const pluralName = "Empleados"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [director, setDirector] = useState(directorInitialState);
-   const [directors, setDirectors] = useState([]);
+   const [employee, setEmployee] = useState(employeeInitialState);
+   const [employees, setEmployees] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
    const formikRef = useRef(null);
 
@@ -93,22 +93,22 @@ export default function DirectorContextProvider({ children }) {
          Toast.Error(error);
       }
    };
-   const resetDirector = () => {
+   const resetEmployee = () => {
       try {
-         setDirector(directorInitialState);
+         setEmployee(employeeInitialState);
       } catch (error) {
-         console.log("Error en resetDirector:", error);
+         console.log("Error en resetEmployee:", error);
          Toast.Error(error);
       }
    };
 
-   const getDirectors = async () => {
+   const getEmployees = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/directors`);
-         res.result.directors = axiosData.data.data.result;
-         setDirectors(axiosData.data.data.result);
-         // console.log("directors", directors);
+         const axiosData = await Axios.get(`/employees`);
+         res.result.employees = axiosData.data.data.result;
+         setEmployees(axiosData.data.data.result);
+         // console.log("employees", employees);
 
          return res;
       } catch (error) {
@@ -119,10 +119,10 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const showDirector = async (id) => {
+   const showEmployee = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/directors/${id}`);
+         const axiosData = await Axios.get(`/employees/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          res.result.zip = "";
@@ -132,9 +132,9 @@ export default function DirectorContextProvider({ children }) {
          res.result.payroll_number_exist = true;
          if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
 
-         setDirector(res.result);
+         setEmployee(res.result);
          setFormData(res.result);
-         // console.log("showDirector", res);
+         // console.log("showEmployee", res);
 
          return res;
       } catch (error) {
@@ -145,15 +145,15 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const getDirectorsSelectIndex = async () => {
+   const getEmployeesSelectIndex = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/directors/selectIndex`);
+         const axiosData = await Axios.get(`/employees/selectIndex`);
          // console.log("el selectedDeRoles", axiosData);
-         res.result.directors = axiosData.data.data.result;
-         // res.result.directors.unshift({ id: 0, label: "Selecciona una opción..." });
-         setDirectors(axiosData.data.data.result);
-         // console.log("directors", directors);
+         res.result.employees = axiosData.data.data.result;
+         // res.result.employees.unshift({ id: 0, label: "Selecciona una opción..." });
+         setEmployees(axiosData.data.data.result);
+         // console.log("employees", employees);
 
          return res;
       } catch (error) {
@@ -164,23 +164,23 @@ export default function DirectorContextProvider({ children }) {
       }
    };
 
-   const createDirector = async (director) => {
-      // return console.log("🚀 ~ createDirector ~ director:", director);
-      director.isEmployee = true;
-      director.objName = "Director";
-      director.dir = "/directors";
+   const createEmployee = async (employee) => {
+      // return console.log("🚀 ~ createEmployee ~ employee:", employee);
+      employee.isEmployee = true;
+      employee.objName = "Employee";
+      employee.dir = "/employees";
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post(`/users/create/5`, director);
-         // const axiosData = await Axios.post(`/employees/create/user_id/${director.user_id}`, director, {
-         const axiosData = await Axios.post(`/users/create/director`, director, {
+         // const axiosData = await Axios.post(`/users/create/5`, employee);
+         // const axiosData = await Axios.post(`/employees/create/user_id/${employee.user_id}`, employee, {
+         const axiosData = await Axios.post(`/users/create/employee`, employee, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
          });
          // console.log(axiosData);
          res = axiosData.data.data;
-         getDirectors();
+         getEmployees();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -191,21 +191,21 @@ export default function DirectorContextProvider({ children }) {
       return res;
    };
 
-   const updateDirector = async (director) => {
-      director.isEmployee = true;
-      director.objName = "Director";
-      director.dir = "/directors";
+   const updateEmployee = async (employee) => {
+      employee.isEmployee = true;
+      employee.objName = "Employee";
+      employee.dir = "/employees";
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post("/directors/update", director);
-         // const axiosData = await Axios.post(`/users/update/${director.user_id}`, director);
-         const axiosData = await Axios.post(`/users/update/role_id/5`, director, {
+         // const axiosData = await Axios.post("/employees/update", employee);
+         // const axiosData = await Axios.post(`/users/update/${employee.user_id}`, employee);
+         const axiosData = await Axios.post(`/users/update/role_id/5`, employee, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
          });
          res = axiosData.data.data;
-         getDirectors();
+         getEmployees();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -216,12 +216,12 @@ export default function DirectorContextProvider({ children }) {
       return res;
    };
 
-   const deleteDirector = async (user_id) => {
+   const deleteEmployee = async (user_id) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/users/destroy/${user_id}`);
-         // console.log("deleteDirector() axiosData", axiosData.data);
-         getDirectors();
+         // console.log("deleteEmployee() axiosData", axiosData.data);
+         getEmployees();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -235,29 +235,29 @@ export default function DirectorContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de DirectorContext");
-   //    getDirectors();
+   //    console.log("el useEffect de EmployeeContext");
+   //    getEmployees();
    // });
 
    return (
-      <DirectorContext.Provider
+      <EmployeeContext.Provider
          value={{
             singularName,
             pluralName,
-            directors,
-            setDirectors,
-            director,
-            setDirector,
-            resetDirector,
+            employees,
+            setEmployees,
+            employee,
+            setEmployee,
+            resetEmployee,
             formData,
             setFormData,
             resetFormData,
-            getDirectors,
-            showDirector,
-            getDirectorsSelectIndex,
-            createDirector,
-            updateDirector,
-            deleteDirector,
+            getEmployees,
+            showEmployee,
+            getEmployeesSelectIndex,
+            createEmployee,
+            updateEmployee,
+            deleteEmployee,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
@@ -266,7 +266,7 @@ export default function DirectorContextProvider({ children }) {
          }}
       >
          {children}
-      </DirectorContext.Provider>
+      </EmployeeContext.Provider>
    );
 }
-export const useDirectorContext = () => useContext(DirectorContext);
+export const useEmployeeContext = () => useContext(EmployeeContext);

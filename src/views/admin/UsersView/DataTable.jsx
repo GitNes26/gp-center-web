@@ -1,12 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
@@ -14,7 +6,7 @@ import IconDelete from "../../../components/icons/IconDelete";
 import { useUserContext } from "../../../context/UserContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -27,14 +19,32 @@ import SwitchComponent from "../../../components/SwitchComponent";
 const UserDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, user, users, getUsers, showUser, deleteUser, deleteMultiple, DisEnableUser, resetFormData, resetUser, setTextBtnSumbit, setFormTitle } =
-      useUserContext();
-   const globalFilterFields = ["username", "email", "role", "active", "created_at"];
+   const {
+      singularName,
+      user,
+      users,
+      getUsers,
+      showUser,
+      deleteUser,
+      deleteMultiple,
+      DisEnableUser,
+      resetFormData,
+      resetUser,
+      setTextBtnSumbit,
+      setFormTitle,
+      formikRef
+   } = useUserContext();
+   const globalFilterFields = ["username", "email", "role", "departamento.departamento", "payroll_number", "full_name", "full_name_reverse", "active", "created_at"];
 
    // #region BodysTemplate
    const UserBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
+   const EmployeeBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.payroll_number}</b> <br /> {obj.full_name}
+      </Typography>
+   );
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.departamento?.departamento}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -49,6 +59,7 @@ const UserDT = () => {
       { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: UserBodyTemplate, filter: true, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filter: true, filterField: null },
       { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
+      { field: "full_name", header: "Empleado", sortable: true, functionEdit: null, body: EmployeeBodyTemplate, filter: true, filterField: null },
       { field: "departamento.departamento", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
@@ -62,8 +73,8 @@ const UserDT = () => {
    const handleClickAdd = () => {
       try {
          resetUser();
-         // user.role = "Selecciona una opción...";
          resetFormData();
+         formikRef.current.setValues(formikRef.current.initialValues);
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -78,7 +89,8 @@ const UserDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showUser(id);
+         const res = await showUser(id);
+         formikRef.current.setValues(res.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -170,7 +182,7 @@ const UserDT = () => {
       try {
          // console.log("cargar listado", users);
          await users.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.username} active={obj.active} />;

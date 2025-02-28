@@ -58,7 +58,26 @@ const App = () => {
                CARGANDO... <CircularProgress color="inherit" />
             </Typography> */}
             </Backdrop>
-            <RouterProvider router={router} />
+            <RouterProvider
+               router={router}
+               fallbackElement={
+                  <>
+                     <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={load}>
+                        <img className="loader" src={imgLoading} style={{ height: "20vh" }} />
+                        {/* <Typography variant="h1" sx={{ color: "#fff" }}>
+               CARGANDO... <CircularProgress color="inherit" />
+            </Typography> */}
+                     </Backdrop>
+                     <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1000000, backgroundColor: "#000000c0" }} open={loadAction}>
+                        <img className="loader" src={imgLoading} style={{ height: "20vh" }} />
+
+                        {/* <Typography variant="h1" sx={{ color: "#fff" }}>
+               CARGANDO... <CircularProgress color="inherit" />
+            </Typography> */}
+                     </Backdrop>
+                  </>
+               }
+            />
          </LocalizationProvider>
 
          {/* </NavigationSroll> */}

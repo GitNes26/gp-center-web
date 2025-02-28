@@ -12,6 +12,7 @@ import Toast from "../../../utils/Toast";
 import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 import UserDT from "./DataTable";
 import { dataDepartamentosSelectIndex } from "../../../context/DepartmentContext";
+import { removeDuplicates } from "../../../utils/Formats";
 
 const UsersView = () => {
    const { result } = useLoaderData();
@@ -43,7 +44,7 @@ const UsersView = () => {
          <UserDT />
          {/* </MainCard> */}
 
-         <UserForm dataRoles={result.roles} dataDepartments={result.departments} />
+         <UserForm dataRoles={result.roles} dataDepartments={result.departments} dataEmployees={result.employees} />
       </>
    );
 };
@@ -55,16 +56,13 @@ export const loaderIndexUsersView = async () => {
 
       const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/${auth.role_id}`);
       res.result.roles = axiosRoles.data.data.result;
-      // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
-      // res.result.roles = res.result.roles.filter((r) => r.label.includes("Admin"));
-      res.result.roles = res.result.roles.filter((r) => !["Director", "Conductor", "Solicitador de Vales", "Mecánico"].includes(r.label));
 
-      // const axiosDepartments = await AxiosDepa.get("/selectIndex");
-      // res.result.departments = axiosDepartments.data.data.result;
-      // // res.result.departments.unshift({ id: 0, label: "Selecciona una opción..." });
-      // // // console.log(res);
-      const axiosDepartments = dataDepartamentosSelectIndex;
-      res.result.departments = axiosDepartments.data.result;
+      const axiosDepartments = await Axios.get("/depDir/selectIndex");
+      res.result.departments = removeDuplicates(axiosDepartments.data.data.result);
+
+      const axiosEmployees = await Axios.get(`/employees/selectIndex`);
+      // console.log("🚀 ~ loaderIndexUsersView ~ axiosEmployees:", axiosEmployees);
+      res.result.employees = axiosEmployees.data.data.result;
 
       return res;
    } catch (error) {

@@ -43,6 +43,7 @@ const DepartmentDT = () => {
       setTextBtnSumbit,
       setFormTitle,
       formikRef,
+      showDepartmentDirector,
       setDirectorsHistory
    } = useDepartmentContext();
    // const { setDirectors } = useDirectorContext();
@@ -113,18 +114,18 @@ const DepartmentDT = () => {
    };
 
    const handleClickAttach = async (department_id) => {
-      console.log("🚀 ~ handleClickAttach ~ department_id:", department_id);
+      // console.log("🚀 ~ handleClickAttach ~ department_id:", department_id);
       try {
          setLoadingAction(true);
-         setTextBtnSumbit("GUARDAR");
+         setTextBtnSumbit("VINCULAR");
          setFormTitle(`VINCULAR DIRECTOR-${singularName.toUpperCase()}`);
-         const res = await showDepartment(department_id);
-         console.log("🚀 ~ handleClickAttach ~ res:", res);
+         const res = await showDepartmentDirector(department_id);
          formikRef.current.setValues(res);
          setDirectorsHistory(res.directors);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -142,6 +143,7 @@ const DepartmentDT = () => {
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -197,11 +199,12 @@ const DepartmentDT = () => {
       }
    };
 
-   const ButtonsAction = ({ id, name, active }) => {
+   const ButtonsAction = ({ id, name, active, obj }) => {
+      // console.log("🚀 ~ ButtonsAction ~ obj:", obj)
       return (
          <ButtonGroup variant="outlined">
             <Tooltip title={`Vincular Director-${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickAttach(id)}>
+               <Button color="info" onClick={() => handleClickAttach(obj.id)}>
                   <IconCirclesRelation />
                </Button>
             </Tooltip>
@@ -234,7 +237,7 @@ const DepartmentDT = () => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.department} active={obj.active} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.department} active={obj.active} obj={obj} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(departments[0]));
