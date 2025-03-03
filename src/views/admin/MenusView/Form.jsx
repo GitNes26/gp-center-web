@@ -157,7 +157,8 @@ const MenuForm = () => {
                textBtnSubmit={textBtnSubmit}
                formikRef={formikRef}
                handleCancel={handleCancel}
-               maxHeight={"54.3vh"}
+               heightFormik={"66.5vh"}
+               maxHeight={"54vh"}
             >
                <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 

@@ -42,6 +42,7 @@ import MechanicContextProvider from "../context/MechanicContext";
 import MechanicsView from "../views/admin/MechanicsView/Index";
 import VehicleMovementLogContextProvider from "../context/VehicleMovementLogContext";
 import EmployeeContextProvider from "../context/EmployeeContext";
+import EmployeesView from "../views/admin/EmployeesView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -146,11 +147,13 @@ const MainRoutes = {
          // loader: loaderIndex
       },
       {
-         path: "encargados-de-almacen",
+         path: "empleados",
          element: (
-            <UserContextProvider>
-               <UsersView />
-            </UserContextProvider>
+            <DepartmentContextProvider>
+               <EmployeeContextProvider>
+                  <EmployeesView />
+               </EmployeeContextProvider>
+            </DepartmentContextProvider>
          )
          // loader: loaderIndex
       },

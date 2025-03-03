@@ -1,5 +1,5 @@
 {
-   "name": "GP-Center",
+   "name": "gp-center",
    "private": true,
    "version": "1.0.0",
    "type": "module",
@@ -28,6 +28,7 @@
       "ag-grid-react": "^30.2.1",
       "apexcharts": "^3.41.1",
       "axios": "^1.4.0",
+      "compressorjs": "^1.2.1",
       "dayjs": "^1.11.10",
       "dropzone": "^6.0.0-beta.2",
       "file-saver": "^2.0.5",

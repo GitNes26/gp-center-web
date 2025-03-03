@@ -125,10 +125,10 @@ export default function EmployeeContextProvider({ children }) {
          const axiosData = await Axios.get(`/employees/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
-         res.result.zip = "";
-         res.result.state = "Selecciona una opción...";
-         res.result.city = "Selecciona una opción...";
-         res.result.colony = "Selecciona una opción...";
+         // res.result.zip = "";
+         // res.result.state = "Selecciona una opción...";
+         // res.result.city = "Selecciona una opción...";
+         // res.result.colony = "Selecciona una opción...";
          res.result.payroll_number_exist = true;
          if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
 
@@ -173,7 +173,8 @@ export default function EmployeeContextProvider({ children }) {
       try {
          // const axiosData = await Axios.post(`/users/create/5`, employee);
          // const axiosData = await Axios.post(`/employees/create/user_id/${employee.user_id}`, employee, {
-         const axiosData = await Axios.post(`/users/create/employee`, employee, {
+         // const axiosData = await Axios.post(`/users/create/employee`, employee, {
+         const axiosData = await Axios.post(`/employees/create`, employee, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -197,9 +198,9 @@ export default function EmployeeContextProvider({ children }) {
       employee.dir = "/employees";
       let res = CorrectRes;
       try {
-         // const axiosData = await Axios.post("/employees/update", employee);
          // const axiosData = await Axios.post(`/users/update/${employee.user_id}`, employee);
-         const axiosData = await Axios.post(`/users/update/role_id/5`, employee, {
+         // const axiosData = await Axios.post(`/users/update/role_id/5`, employee, {
+         const axiosData = await Axios.post("/employees/update", employee, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -219,7 +220,7 @@ export default function EmployeeContextProvider({ children }) {
    const deleteEmployee = async (user_id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/users/destroy/${user_id}`);
+         const axiosData = await Axios.post(`/employees/destroy/${user_id}`);
          // console.log("deleteEmployee() axiosData", axiosData.data);
          getEmployees();
          res = axiosData.data.data;

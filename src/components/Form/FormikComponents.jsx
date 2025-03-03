@@ -97,6 +97,7 @@ export const FormikComponent = forwardRef(
          showActionButtons = true,
          activeStep = null,
          setStepFailed = null,
+         heightFormik = "80vh",
          maxHeight = "97%",
          className
       },
@@ -129,7 +130,7 @@ export const FormikComponent = forwardRef(
                   onSubmit={handleSubmit}
                   onBlur={onBlur}
                   onChangeCapture={onChange}
-                  height={"80vh"}
+                  height={heightFormik}
                   style={{ alignContent: "space-between" }}
                >
                   {!showActionButtons ? (
@@ -1788,13 +1789,36 @@ export const FileInputComponent = ({
          reader.readAsDataURL(file);
       });
    };
+
+   const imageCompress = async (file) => {
+      return new Promise((resolve, reject) => {
+         new Compressor(file, {
+            quality: 0.6,
+            convertSize: 2.5 * MB, // 3MB
+            maxWidth: 1920,
+            maxHeight: 1080,
+            success(result) {
+               // Convertir el Blob a un File
+               const compressedFile = new File([result], file.name, {
+                  type: result.type,
+                  lastModified: Date.now()
+               });
+
+               resolve(compressedFile); // Resolver la promesa con el archivo comprimido
+            },
+            error(err) {
+               reject(err); // Rechazar la promesa si ocurre un error
+            }
+         });
+      });
+   };
    const handleSetFile = async (file) => {
       // alert("entre al handleSetFile()");
       // console.log("🚀 ~ handleSetFile ~ file:", file);
 
       if (file.size >= fileSizeExceeded) {
          if (filePreviews.length == 0) setConfirmRemove(true);
-         return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+         Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB, se intentar minimizar su tamaño.`);
       }
       if (!file.type.includes("image")) {
          if (filePreviews.length == 0) setConfirmRemove(true);
@@ -1803,9 +1827,19 @@ export const FileInputComponent = ({
       // alert("handleSetFile() ~ pase los filtros");
 
       try {
-         const dataURL = await readFileAsDataURL(file);
+         let newFile = file;
+         if (file.size > MB * 3) {
+            const fileCompressed = await imageCompress(file);
+            // console.log("🚀 ~ handleSetFile ~ fileCompressed:", fileCompressed);
+            newFile = fileCompressed;
+         }
+
+         // console.log("🚀 ~ handleSetFile ~ newFile:", newFile);
+         const dataURL = await readFileAsDataURL(newFile);
+         // const dataURL = await readFileAsDataURL(file);
          const preview = {
-            file,
+            original: file,
+            file: newFile,
             dataURL
          };
          // console.log("🚀 ~ handleSetFile ~ preview:", preview);
