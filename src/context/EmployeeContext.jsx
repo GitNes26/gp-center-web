@@ -119,6 +119,25 @@ export default function EmployeeContextProvider({ children }) {
       }
    };
 
+   const getEmployeesSelectIndex = async () => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/employees/selectIndex`);
+         // console.log("el selectedDeRoles", axiosData);
+         res.result.employees = axiosData.data.data.result;
+         // res.result.employees.unshift({ id: 0, label: "Selecciona una opción..." });
+         setEmployees(axiosData.data.data.result);
+         // console.log("employees", employees);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const showEmployee = async (id) => {
       try {
          let res = CorrectRes;
@@ -142,25 +161,6 @@ export default function EmployeeContextProvider({ children }) {
          res.message = error;
          res.alert_text = error;
          Toast.Error(error);
-      }
-   };
-
-   const getEmployeesSelectIndex = async () => {
-      try {
-         const res = CorrectRes;
-         const axiosData = await Axios.get(`/employees/selectIndex`);
-         // console.log("el selectedDeRoles", axiosData);
-         res.result.employees = axiosData.data.data.result;
-         // res.result.employees.unshift({ id: 0, label: "Selecciona una opción..." });
-         setEmployees(axiosData.data.data.result);
-         // console.log("employees", employees);
-
-         return res;
-      } catch (error) {
-         const res = ErrorRes;
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
       }
    };
 
@@ -200,7 +200,7 @@ export default function EmployeeContextProvider({ children }) {
       try {
          // const axiosData = await Axios.post(`/users/update/${employee.user_id}`, employee);
          // const axiosData = await Axios.post(`/users/update/role_id/5`, employee, {
-         const axiosData = await Axios.post("/employees/update", employee, {
+         const axiosData = await Axios.post(`/employees/update/${employee.id}`, employee, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -220,8 +220,41 @@ export default function EmployeeContextProvider({ children }) {
    const deleteEmployee = async (user_id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/employees/destroy/${user_id}`);
+         const axiosData = await Axios.get(`/employees/destroy/${user_id}`);
          // console.log("deleteEmployee() axiosData", axiosData.data);
+         getEmployees();
+         res = axiosData.data.data;
+         // console.log("res", res);
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+   const deleteMultiple = async (ids) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.post(`/employees/destroyMultiple`, { ids });
+         // console.log("deleteMultiple() axiosData", axiosData.data);
+         getUsers();
+         res = axiosData.data.data;
+         // console.log("res", res);
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+   const disEnableEmployee = async (id, active) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/employees/${id}/disEnable/${active ? "1" : "0"}`);
+         // console.log("deleteUser() axiosData", axiosData.data);
          getEmployees();
          res = axiosData.data.data;
          // console.log("res", res);
@@ -259,6 +292,8 @@ export default function EmployeeContextProvider({ children }) {
             createEmployee,
             updateEmployee,
             deleteEmployee,
+            deleteMultiple,
+            disEnableEmployee,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,

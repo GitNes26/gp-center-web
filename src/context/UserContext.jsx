@@ -57,24 +57,6 @@ export default function UserContextProvider({ children }) {
    const [formData, setFormData] = useState(formDataInitialState);
    const formikRef = useRef();
 
-   const DisEnableUser = async (id, active) => {
-      try {
-         let res = CorrectRes;
-         const axiosData = await Axios.get(`/users/${id}/DisEnableUser/${active ? "1" : "0"}`);
-         // console.log("deleteUser() axiosData", axiosData.data);
-         getUsers();
-         res = axiosData.data.data;
-         // console.log("res", res);
-         return res;
-      } catch (error) {
-         const res = ErrorRes;
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
-         Toast.Error(error);
-      }
-   };
-
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
@@ -200,7 +182,23 @@ export default function UserContextProvider({ children }) {
          res.alert_text = error;
       }
    };
-
+   const disEnableUser = async (id, active) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/users/${id}/disEnableUser/${active ? "1" : "0"}`);
+         // console.log("deleteUser() axiosData", axiosData.data);
+         getUsers();
+         res = axiosData.data.data;
+         // console.log("res", res);
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
    // useEffect(() => {
    //    console.log("el useEffect de UserContext");
    //    getUsers();
@@ -227,7 +225,7 @@ export default function UserContextProvider({ children }) {
             setTextBtnSumbit,
             formTitle,
             setFormTitle,
-            DisEnableUser,
+            disEnableUser,
             deleteMultiple,
             formikRef
          }}

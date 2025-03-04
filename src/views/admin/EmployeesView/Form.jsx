@@ -319,6 +319,7 @@ const EmployeeForm = () => {
                   setFilePreviews={setImgAvatar}
                   multiple={false}
                   accept={"image/*"}
+                  fileSizeMax={3}
                />
                {/* <Select2Component
                   col={12}

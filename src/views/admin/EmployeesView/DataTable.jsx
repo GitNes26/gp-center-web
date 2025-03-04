@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
@@ -25,6 +25,7 @@ import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { formatPhone } from "../../../utils/Formats";
 import { setObjImg } from "../../../components/Form/FormikComponents";
+import SwitchComponent from "../../../components/SwitchComponent";
 
 const EmployeeDT = () => {
    const { auth } = useAuthContext();
@@ -37,6 +38,7 @@ const EmployeeDT = () => {
       getEmployees,
       showEmployee,
       deleteEmployee,
+      disEnableEmployee,
       resetFormData,
       resetEmployee,
       setTextBtnSumbit,
@@ -132,8 +134,41 @@ const EmployeeDT = () => {
          Toast.Error(error);
       }
    };
+   const handleClickDeleteMultipleContinue = async (selectedData) => {
+      try {
+         let ids = selectedData.map((d) => d.id);
+         // if (ids.length < 1) console.log("no hay registros");
+         let msg = `¿Estas seguro de eliminar `;
+         if (selectedData.length === 1) msg += `a: ${selectedData[0].full_name}?`;
+         else if (selectedData.length > 1) msg += `los siguientes usuarios: ${selectedData.map((d) => d.full_name)}?`;
+         mySwal.fire(QuestionAlertConfig(msg)).then(async (result) => {
+            if (result.isConfirmed) {
+               setLoadingAction(true);
+               const axiosResponse = await deleteMultiple(ids);
+               setLoadingAction(false);
+               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            }
+         });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
-   const ButtonsAction = ({ id, user_id, name }) => {
+   const handleClickDisEnable = async (id, active) => {
+      try {
+         let axiosResponse;
+         setTimeout(async () => {
+            axiosResponse = await disEnableEmployee(id, !active);
+            Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         }, 500);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
             {auth.permissions.update && (
@@ -145,8 +180,15 @@ const EmployeeDT = () => {
             )}
             {auth.permissions.delete && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
-                  <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
+                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
                      <IconDelete />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.role_id == ROLE_SUPER_ADMIN && (
+               <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
+                  <Button color="dark" onClick={() => handleClickDisEnable(id, active)} sx={{}}>
+                     <SwitchComponent checked={active} />
                   </Button>
                </Tooltip>
             )}
@@ -159,10 +201,10 @@ const EmployeeDT = () => {
       try {
          // console.log("cargar listado", employees);
          await employees.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.full_name} active={obj.active} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(employees[0]));

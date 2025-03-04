@@ -44,6 +44,7 @@ import { shouldForwardProp, styled } from "@mui/system";
 import { QuestionAlertConfig } from "../../utils/sAlert";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+// import Compressor from "compressorjs";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -1818,7 +1819,7 @@ export const FileInputComponent = ({
 
       if (file.size >= fileSizeExceeded) {
          if (filePreviews.length == 0) setConfirmRemove(true);
-         Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB, se intentar minimizar su tamaño.`);
+         return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB.`);
       }
       if (!file.type.includes("image")) {
          if (filePreviews.length == 0) setConfirmRemove(true);
@@ -1827,19 +1828,20 @@ export const FileInputComponent = ({
       // alert("handleSetFile() ~ pase los filtros");
 
       try {
-         let newFile = file;
-         if (file.size > MB * 3) {
-            const fileCompressed = await imageCompress(file);
-            // console.log("🚀 ~ handleSetFile ~ fileCompressed:", fileCompressed);
-            newFile = fileCompressed;
-         }
-
+         // let newFile = file;
+         // if (file.size > MB * 3) {
+         //    const fileCompressed = await imageCompress(file);
+         //    // console.log("🚀 ~ handleSetFile ~ fileCompressed:", fileCompressed);
+         //    newFile = fileCompressed;
+         // }
          // console.log("🚀 ~ handleSetFile ~ newFile:", newFile);
-         const dataURL = await readFileAsDataURL(newFile);
-         // const dataURL = await readFileAsDataURL(file);
+         // const dataURL = await readFileAsDataURL(newFile);
+
+         const dataURL = await readFileAsDataURL(file);
          const preview = {
-            original: file,
-            file: newFile,
+            // original: file,
+            // file: newFile,
+            file,
             dataURL
          };
          // console.log("🚀 ~ handleSetFile ~ preview:", preview);
@@ -2112,6 +2114,7 @@ import FlashOnIcon from "@mui/icons-material/FlashOn";
 import FlashOffIcon from "@mui/icons-material/FlashOff";
 import { json } from "react-router-dom";
 import { isMobile } from "react-device-detect";
+// import Compressor from "compressorjs";
 
 // export const InputCameraComponent = ({ getFile }) => {
 //    const videoRef = useRef(null);

@@ -22,7 +22,7 @@ import * as tablerIcons from "@tabler/icons";
 const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
+   const { singularName, menu, menus, getMenus, showMenu, deleteMenu, disEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
    const globalFilterFields = ["id", "icon", "menu", "caption", "patern", "order", "url", "others_permissions", "counter_name", "active", "created_at"];
 
    // #region BodysTemplate
@@ -162,7 +162,7 @@ const MenuDT = () => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await DisEnableMenu(id, !active);
+            axiosResponse = await disEnableMenu(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }, 500);
       } catch (error) {

@@ -186,7 +186,7 @@ const DepartmentDT = () => {
       }
    };
 
-   const handleClickdisEnable = async (id, name, active) => {
+   const handleClickDisEnable = async (id, name, active) => {
       try {
          let axiosResponse;
          setTimeout(async () => {
@@ -220,7 +220,7 @@ const DepartmentDT = () => {
             </Tooltip>
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
-                  <Button color="dark" onClick={() => handleClickdisEnable(id, name, active)} sx={{}}>
+                  <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
                      <SwitchComponent checked={active} />
                   </Button>
                </Tooltip>

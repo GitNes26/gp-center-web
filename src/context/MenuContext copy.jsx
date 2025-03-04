@@ -180,10 +180,10 @@ export default function MenuContextProvider({ children }) {
       }
    };
 
-   const DisEnableMenu = async (id, active) => {
+   const disEnableMenu = async (id, active) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/menus/${id}/DisEnableMenu/${active ? "1" : "0"}`);
+         const axiosData = await Axios.get(`/menus/${id}/disEnableMenu/${active ? "1" : "0"}`);
          // console.log("deleteUser() axiosData", axiosData.data);
          getMenus();
          res = axiosData.data.data;
@@ -424,7 +424,7 @@ export default function MenuContextProvider({ children }) {
             setTextBtnSumbit,
             formTitle,
             setFormTitle,
-            DisEnableMenu,
+            disEnableMenu,
             headerMenus,
             setHeaderMenus,
             getHeaderMenusSelectIndex,

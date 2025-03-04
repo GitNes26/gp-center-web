@@ -37,7 +37,7 @@ const MaterialDT = ({ serviceId, setFieldValue, values }) => {
    //    createMaterial,
    //    updateMaterial,
    //    deleteMaterial,
-   //    DisEnableMaterial,
+   //    disEnableMaterial,
    //    resetFormData,
    //    resetMaterial,
    //    setTextBtnSumbit,

@@ -27,7 +27,7 @@ const MenuDT = () => {
       getMenus,
       showMenu,
       deleteMenu,
-      DisEnableMenu,
+      disEnableMenu,
       formData,
       setFormData,
       resetFormData,
@@ -147,7 +147,7 @@ const MenuDT = () => {
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          const axiosResponse = await showMenu(id);
-         console.log("🚀 ~ handleClickEdit ~ axiosResponse:", axiosResponse)
+         console.log("🚀 ~ handleClickEdit ~ axiosResponse:", axiosResponse);
          setIsItem(axiosResponse.result.type == "item" ? true : false);
          if (axiosResponse.result.description) axiosResponse.result.description == null && (axiosResponse.result.description = "");
          formikRef.current.setValues(axiosResponse.result);
@@ -181,7 +181,7 @@ const MenuDT = () => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await DisEnableMenu(id, !active);
+            axiosResponse = await disEnableMenu(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }, 500);
       } catch (error) {

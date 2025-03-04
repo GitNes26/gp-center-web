@@ -192,10 +192,10 @@ export default function RoleContextProvider({ children }) {
       }
    };
 
-   const DisEnableRole = async (id, active) => {
+   const disEnableRole = async (id, active) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/roles/${id}/DisEnableRole/${active ? "1" : "0"}`);
+         const axiosData = await Axios.get(`/roles/${id}/disEnableRole/${active ? "1" : "0"}`);
          // console.log("deleteUser() axiosData", axiosData.data);
          getRoles();
          res = axiosData.data.data;
@@ -232,7 +232,7 @@ export default function RoleContextProvider({ children }) {
             createRole,
             updateRole,
             deleteRole,
-            DisEnableRole,
+            disEnableRole,
             openDialog,
             setOpenDialog,
             textBtnSubmit,

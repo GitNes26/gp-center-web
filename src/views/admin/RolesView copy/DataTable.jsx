@@ -19,7 +19,7 @@ import SwitchComponent from "../../../components/SwitchComponent";
 const RoleDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, role, roles, getRoles, showRole, deleteRole, DisEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle } = useRoleContext();
+   const { singularName, role, roles, getRoles, showRole, deleteRole, disEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle } = useRoleContext();
    const globalFilterFields = ["role", "description", "page_index", "active", "created_at"];
 
    // #region BodysTemplate
@@ -96,7 +96,7 @@ const RoleDT = () => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await DisEnableRole(id, !active);
+            axiosResponse = await disEnableRole(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }, 500);
       } catch (error) {

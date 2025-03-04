@@ -27,7 +27,7 @@ const UserDT = () => {
       showUser,
       deleteUser,
       deleteMultiple,
-      DisEnableUser,
+      disEnableUser,
       resetFormData,
       resetUser,
       setTextBtnSumbit,
@@ -140,7 +140,7 @@ const UserDT = () => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await DisEnableUser(id, !active);
+            axiosResponse = await disEnableUser(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }, 500);
       } catch (error) {

@@ -143,7 +143,7 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
    //    try {
    //       let axiosResponse;
    //       setTimeout(async () => {
-   //          axiosResponse = await DisEnableUser(id, !active);
+   //          axiosResponse = await disEnableUser(id, !active);
    //          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
    //       }, 500);
    //    } catch (error) {

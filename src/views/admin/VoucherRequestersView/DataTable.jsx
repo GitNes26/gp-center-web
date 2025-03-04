@@ -30,7 +30,7 @@ import { useUserContext } from "../../../context/UserContext";
 const VoucherRequesterDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { DisEnableUser } = useUserContext();
+   const { disEnableUser } = useUserContext();
    const {
       singularName,
       pluralName,
@@ -132,7 +132,7 @@ const VoucherRequesterDT = () => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await DisEnableUser(id, !active);
+            axiosResponse = await disEnableUser(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             getVoucherRequesters();
          }, 500);

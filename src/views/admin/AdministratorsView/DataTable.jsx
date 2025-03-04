@@ -34,7 +34,7 @@ const AdministratorDT = () => {
       getAdministrators,
       showAdministrator,
       deleteAdministrator,
-      DisEnableAdministrator,
+      disEnableAdministrator,
       resetFormData,
       resetAdministrator,
       setTextBtnSumbit,
@@ -119,7 +119,7 @@ const AdministratorDT = () => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await DisEnableAdministrator(id, !active);
+            axiosResponse = await disEnableAdministrator(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }, 500);
       } catch (error) {
