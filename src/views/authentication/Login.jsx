@@ -35,7 +35,7 @@ const Login = () => {
    const theme = useTheme();
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
 
-   return auth ? (
+   return auth && auth.id !== null ? (
       <Navigate to={auth.page_index ?? "/admin"} />
    ) : (
       <>

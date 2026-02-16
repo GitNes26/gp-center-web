@@ -44,7 +44,7 @@ const UsersView = () => {
          <UserDT />
          {/* </MainCard> */}
 
-         <UserForm dataRoles={result.roles} dataDepartments={result.departments} dataEmployees={result.employees} />
+         <UserForm dataRoles={result?.roles} dataDepartments={result?.departments} dataEmployees={result?.employees} />
       </>
    );
 };

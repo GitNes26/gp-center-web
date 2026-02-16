@@ -106,7 +106,7 @@ export default function EmployeeContextProvider({ children }) {
       try {
          const res = CorrectRes;
          const axiosData = await Axios.get(`/employees`);
-         res.result.employees = axiosData.data.data.result;
+         res.result.employees = axiosData.data.result;
          setEmployees(axiosData.data.data.result);
          // console.log("employees", employees);
 
@@ -141,7 +141,7 @@ export default function EmployeeContextProvider({ children }) {
    const showEmployee = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/employees/${id}`);
+         const axiosData = await Axios.get(`/employees/id/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          // res.result.zip = "";

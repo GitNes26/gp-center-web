@@ -56,6 +56,7 @@ export default function RoleContextProvider({ children }) {
    };
 
    const updatePermissions = async (role) => {
+      console.log("🚀 ~ updatePermissions ~ role:", role);
       let res = CorrectRes;
       try {
          const axiosData = await Axios.post("/roles/updatePermissions", role);

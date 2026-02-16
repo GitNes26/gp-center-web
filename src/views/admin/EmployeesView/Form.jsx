@@ -23,6 +23,7 @@ import {
    Select2Component
 } from "../../../components/Form/FormikComponents";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
+import useDebounce from "../../../hooks/useDebounce";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -91,10 +92,11 @@ const EmployeeForm = () => {
       try {
          if (value.length < 5) return;
          const axiosRH = axios;
-         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}/infraesctruturagobmxpalaciopeticioninsegura`);
-         // console.log("empleado", data.RESPONSE.recordset[0]);
-         if (data.RESPONSE.recordset[0]) {
-            const userFind = data.RESPONSE.recordset[0];
+         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}`);
+         console.log("🚀 ~ handleInputPayRoll ~ data:", data);
+         console.log("empleado", data.data.result);
+         if (data.data.result) {
+            const userFind = data.data.result;
             Toast.Success(`Número de nómina encontrado`);
             await setFieldValue("name", userFind.nombreE);
             await setFieldValue("paternal_last_name", userFind.apellidoP);
@@ -122,6 +124,7 @@ const EmployeeForm = () => {
          }
       }
    };
+   const debouncedHandleInputPayRoll = useDebounce(handleInputPayRoll, 1000);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -189,7 +192,7 @@ const EmployeeForm = () => {
 
    const handleModify = async () => {
       try {
-         console.log(formData);
+         // console.log(formData);
          if (formData.community_id > 0) {
             // // setShowLoading(true);
             // getCommunity(
@@ -368,7 +371,7 @@ const EmployeeForm = () => {
                   label={"Número de Nómina *"}
                   placeholder={"999999"}
                   type={"number"}
-                  handleInputExtra={handleInputPayRoll}
+                  handleInputExtra={debouncedHandleInputPayRoll}
                   // error={
                   //    (formikRef.current.errors.payroll_number && formikRef.current.touched.payroll_number) ||
                   //    (formikRef.current.errors.payroll_number_exist && formikRef.current.touched.payroll_number_exist)

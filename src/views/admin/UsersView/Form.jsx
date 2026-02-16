@@ -226,17 +226,8 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
             >
                <Grid container spacing={2} mt={2}>
                   <InputComponent col={12} idName={"id"} label={"id"} placeholder={"el id"} hidden={true} />
-                  <Select2Component
-                     col={12}
-                     idName={"role_id"}
-                     label={"Rol *"}
-                     options={dataRoles}
-                     pluralName={"Roles"}
-                     refreshSelect={getRolesSelectIndex}
-                     handleChangeValueSuccess={handleChangeRole}
-                  />
                   <DividerComponent title={"DATOS DEL USUARIO"} />
-                  {!isAdmin && (
+                  {/* {!isAdmin && (
                      <>
                         <Select2Component
                            col={12}
@@ -257,8 +248,8 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
                            required
                         />
                      </>
-                  )}
-                  <InputComponent col={6} idName={"username"} label={"Nombre de usuario *"} placeholder={"Ingrese el nombre de usuario"} textStyleCase={null} />
+                  )} */}
+                  <InputComponent col={6} idName={"username"} label={"Nombre de Usuario *"} placeholder={"Ingrese el nombre de usuario"} textStyleCase={null} />
                   <InputComponent col={6} idName={"email"} label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
                   <PasswordCompnent
                      col={6}
@@ -267,6 +258,25 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
                      newPasswordChecked={newPasswordChecked}
                      setNewPasswordChecked={setNewPasswordChecked}
                      checkedShowSwitchPassword={checkedShowSwitchPassword}
+                  />
+                  <Select2Component
+                     col={12}
+                     idName={"role_id"}
+                     label={"Rol *"}
+                     options={dataRoles}
+                     pluralName={"Roles"}
+                     refreshSelect={getRolesSelectIndex}
+                     handleChangeValueSuccess={handleChangeRole}
+                  />
+                  <DividerComponent title={"EMPLEADO"} />
+                  <Select2Component
+                     col={12}
+                     idName={"employee_id"}
+                     label={"Empleado"}
+                     options={dataEmployees}
+                     pluralName={"Empleados"}
+                     refreshSelect={getEmployeesSelectIndex}
+                     required
                   />
                </Grid>
             </FormikComponent>

@@ -73,11 +73,13 @@ const MainLayout = () => {
    const { cursorLoading } = useGlobalContext();
 
    useEffect(() => {
+      // if (auth != null || auth.id != null) validateAccessPage();
       validateAccessPage();
-   });
+   }, []);
 
    return (
-      auth && (
+      auth &&
+      auth.id !== null && (
          <>
             {permissionRead && (
                <>

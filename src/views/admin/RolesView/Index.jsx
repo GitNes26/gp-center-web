@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 const RolesView = () => {
    const classess = useStyles();
    // const { result } = useLoaderData();
-   const { setLoading, toggleDrawer } = useGlobalContext();
+   const { setLoad, toggleDrawer } = useGlobalContext();
    const { pluralName, role, roles, getRoles, roleSelect, getRolesSelectIndex } = useRoleContext();
    const { getMenus, getMenusSelectIndexToRoles } = useMenuContext();
 
@@ -43,7 +43,7 @@ const RolesView = () => {
 
    useEffect(() => {
       try {
-         setLoading(true);
+         setLoad(true);
          getRoles();
          getRolesSelectIndex();
          getMenusSelectIndexToRoles();

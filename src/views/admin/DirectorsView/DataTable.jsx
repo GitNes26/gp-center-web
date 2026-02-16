@@ -106,7 +106,7 @@ const DirectorDT = () => {
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          const res = await showDirector(id);
-         console.log("🚀 ~ handleClickEdit ~ res:", res);
+         // console.log("🚀 ~ handleClickEdit ~ res:", res);
          formikRef.current.setValues(res.result);
          setOpenDialog(true);
          setLoadingAction(false);

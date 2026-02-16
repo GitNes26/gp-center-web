@@ -15,6 +15,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import { handleInputFormik } from "../../../utils/Formats";
 import axios from "axios";
 import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
+import useDebounce from "../../../hooks/useDebounce";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -46,21 +47,22 @@ const MechanicForm = () => {
       setImgAvatar([]);
    };
 
-   const handleInputPayRoll = async (e, setFieldValue) => {
+   const handleInputPayRoll = useDebounce(async (e, setFieldValue) => {
       try {
          const value = e.target.value;
          if (value.length < 4) return;
          const axiosRH = axios;
-         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}/infraesctruturagobmxpalaciopeticioninsegura`);
-         // console.log("empleado", data.RESPONSE.recordset[0]);
-         if (data.RESPONSE.recordset[0]) {
-            const userFind = data.RESPONSE.recordset[0];
+         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}`);
+         // console.log("🚀 ~ handleInputPayRoll ~ data:", data);
+         const employee = data.data.result; //data.RESPONSE.recordset[0]
+
+         if (employee) {
             Toast.Success(`Número de nómina encontrado`);
-            await setFieldValue("name", userFind.nombreE);
-            await setFieldValue("paternal_last_name", userFind.apellidoP);
-            await setFieldValue("maternal_last_name", userFind.apellidoM);
+            await setFieldValue("name", employee.nombreE);
+            await setFieldValue("paternal_last_name", employee.apellidoP);
+            await setFieldValue("maternal_last_name", employee.apellidoM);
             // await setFieldValue("payroll_number_exist", true);
-            // await setFieldValue("department", userFind.departamento);
+            // await setFieldValue("department", employee.departamento);
          } else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
@@ -81,7 +83,7 @@ const MechanicForm = () => {
             await setFieldValue("department", "");
          }
       }
-   };
+   }, 1000);
 
    const handleChangeCheckAdd = (e) => {
       try {

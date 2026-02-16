@@ -23,6 +23,7 @@ import {
    Select2Component
 } from "../../../components/Form/FormikComponents";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
+import useDebounce from "../../../hooks/useDebounce";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -87,20 +88,20 @@ const DirectorForm = () => {
       }
    };
 
-   const handleInputPayRoll = async (value, setFieldValue) => {
+   const handleInputPayRoll = useDebounce(async (value, setFieldValue) => {
       try {
          if (value.length < 5) return;
          const axiosRH = axios;
-         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}/infraesctruturagobmxpalaciopeticioninsegura`);
-         // console.log("empleado", data.RESPONSE.recordset[0]);
-         if (data.RESPONSE.recordset[0]) {
-            const userFind = data.RESPONSE.recordset[0];
+         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}`);
+         // console.log("🚀 ~ handleInputPayRoll ~ data:", data);
+         const employee = data.data.result; //data.RESPONSE.recordset[0]
+         if (employee) {
             Toast.Success(`Número de nómina encontrado`);
-            await setFieldValue("name", userFind.nombreE);
-            await setFieldValue("paternal_last_name", userFind.apellidoP);
-            await setFieldValue("maternal_last_name", userFind.apellidoM);
+            await setFieldValue("name", employee.nombreE);
+            await setFieldValue("paternal_last_name", employee.apellidoP);
+            await setFieldValue("maternal_last_name", employee.apellidoM);
             await setFieldValue("payroll_number_exist", true);
-            await setFieldValue("department", userFind.departamento);
+            await setFieldValue("department", employee.departamento);
          } else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
@@ -121,7 +122,7 @@ const DirectorForm = () => {
             await setFieldValue("department", "");
          }
       }
-   };
+   }, 1000);
 
    const handleChangeCheckAdd = (e) => {
       try {

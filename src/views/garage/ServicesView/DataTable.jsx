@@ -112,7 +112,7 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
          const axiosResponse = await showService(id);
 
          if (formData.description) formData.description == null && (formData.description = "");
-         formikRef.current.setValues(axiosResponse.result);
+         // formikRef.current?.setValues(axiosResponse.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {

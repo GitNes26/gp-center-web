@@ -124,11 +124,14 @@ export const GlobalContextProvider = ({ children }) => {
    const getEmployees = async () => {
       let res = CorrectRes;
       try {
-         const axiosData = await axios.get(import.meta.env.VITE_API_RH_EMPLEADOS);
+         const axiosData = await axios.get(import.meta.env.VITE_API_RH);
          console.log("🚀 ~ changeStatus ~ axiosData:", axiosData);
-         res = axiosData.data.RESPONSE;
+         res = axiosData.data.data;
+         // res = axiosData.data.RESPONSE;
+         // console.log("🚀 ~ getEmployees ~ res:", res)
 
-         const data = res.recordset;
+         // const data = res.recordset;
+         const data = res.result;
          const dataSelectIndex = [];
          data.map((item) => {
             const obj = { id: 0, label: "" };
