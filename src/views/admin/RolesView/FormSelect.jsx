@@ -68,8 +68,8 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
             axiosResponse.result.more_permissions === "todas"
                ? "todas"
                : axiosResponse.result.more_permissions === null
-               ? []
-               : axiosResponse.result.more_permissions.split(",");
+                 ? []
+                 : axiosResponse.result.more_permissions.split(",");
          // console.log("permissions.more_permissions", permissions.more_permissions);
 
          let newCheckMenus = [];
@@ -264,6 +264,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          onSubmit={onSubmit}
          textBtnSubmit={textBtnSubmit}
          showActionButtons={false}
+         heightFormik={"25%"}
          // formikRef={formikRef}
          // ref={formikRef}
       >

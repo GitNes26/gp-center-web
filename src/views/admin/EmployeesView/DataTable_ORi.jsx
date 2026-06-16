@@ -11,44 +11,42 @@ import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
+import { useEmployeeContext } from "../../../context/EmployeeContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
-import { formatPhone, sleep } from "../../../utils/Formats";
+import { formatPhone } from "../../../utils/Formats";
+import { setObjImg } from "../../../components/Form/FormikComponents";
 import SwitchComponent from "../../../components/SwitchComponent";
-import { useUserContext } from "../../../context/UserContext";
-import EmployeeCardInfo from "./CardInfo";
-import { IconEye } from "@tabler/icons";
-import axios from "axios";
 
-const VoucherRequesterDT = () => {
+const EmployeeDT = () => {
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog, openCardInfo, setOpenCardInfo } = useGlobalContext();
-   const { disEnableUser } = useUserContext();
+   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
       singularName,
       pluralName,
-      voucherRequester,
-      setVoucherRequester,
-      voucherRequesters,
-      getVoucherRequesters,
-      showVoucherRequester,
-      deleteVoucherRequester,
+      employee,
+      employees,
+      getEmployees,
+      showEmployee,
+      deleteEmployee,
+      disEnableEmployee,
       resetFormData,
-      resetVoucherRequester,
+      resetEmployee,
       setTextBtnSumbit,
-      setFormTitle
-   } = useVoucherRequesterContext();
-   const globalFilterFields = ["payroll_number", "username", "email", "phone", "department"];
+      setFormTitle,
+      formData,
+      formikRef
+   } = useEmployeeContext();
+   const globalFilterFields = ["payroll_number", "full_name", "full_name_reverse", "phone", "license_number", "department"];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -62,10 +60,10 @@ const VoucherRequesterDT = () => {
          {obj.payroll_number}
       </Typography>
    );
-   const VoucherRequesterBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
-   const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
-   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
+   const EmployeeBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.full_name}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
+   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
+   const LicenseBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.license_number}</Typography>;
    // const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -78,44 +76,24 @@ const VoucherRequesterDT = () => {
    const columns = [
       { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filter: false, filterField: null },
       { field: "payroll_number", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filter: true, filterField: null },
-      { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: VoucherRequesterBodyTemplate, filter: true, filterField: null },
-      { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filter: true, filterField: null },
-      { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: false, filterField: null },
+      { field: "full_name", header: "Nombre", sortable: true, functionEdit: null, body: EmployeeBodyTemplate, filter: true, filterField: null },
       { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: true, filterField: null },
+      { field: "license_number", header: "No. Licencia", sortable: true, functionEdit: null, body: LicenseBodyTemplate, filter: true, filterField: null },
       // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: false, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);
 
-   const handleClickAdd = async () => {
+   const handleClickAdd = () => {
       try {
-         await resetVoucherRequester();
-         voucherRequester.role = "Selecciona una opción...";
-         await resetFormData();
-         await sleep(1500);
-         console.log("🚀 ~ handleClickAdd ~ handleClickAdd:")
+         resetEmployee();
+         resetFormData();
+         formikRef.current.setValues(formikRef.current.initialValues);
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
-   const handleClickView = async (obj) => {
-      try {
-         setLoadingAction(true);
-         // const res = await showVoucherRequester(obj.id);
-         // setVehicleShow(res.result);
-         const axiosRH = axios;
-         const data = await axiosRH.get(`${import.meta.env.VITE_API_GPC}/employees/getBy/employee_code/${obj.payroll_number}`);
-         setVoucherRequester(data);
-         console.log("🚀 ~ handleClickView ~ data:", data);
-         await sleep(1500);
-         setOpenCardInfo(true);
-         setLoadingAction(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -127,10 +105,13 @@ const VoucherRequesterDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showVoucherRequester(id);
+         const res = await showEmployee(id);
+         console.log("🚀 ~ handleClickEdit ~ res:", res);
+         formikRef.current.setValues(res.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -138,10 +119,32 @@ const VoucherRequesterDT = () => {
 
    const handleClickDelete = async (id, name) => {
       try {
+         // CONSULTAR SI TIENEN UNA ASIGANACIÓN ACTIVA
+
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteVoucherRequester(id);
+               const axiosResponse = await deleteEmployee(id);
+               setLoadingAction(false);
+               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            }
+         });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+   const handleClickDeleteMultipleContinue = async (selectedData) => {
+      try {
+         let ids = selectedData.map((d) => d.id);
+         // if (ids.length < 1) console.log("no hay registros");
+         let msg = `¿Estas seguro de eliminar `;
+         if (selectedData.length === 1) msg += `a: ${selectedData[0].full_name}?`;
+         else if (selectedData.length > 1) msg += `los siguientes usuarios: ${selectedData.map((d) => d.full_name)}?`;
+         mySwal.fire(QuestionAlertConfig(msg)).then(async (result) => {
+            if (result.isConfirmed) {
+               setLoadingAction(true);
+               const axiosResponse = await deleteMultiple(ids);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -152,13 +155,12 @@ const VoucherRequesterDT = () => {
       }
    };
 
-   const handleClickDisEnable = async (id, name, active) => {
+   const handleClickDisEnable = async (id, active) => {
       try {
          let axiosResponse;
          setTimeout(async () => {
-            axiosResponse = await disEnableUser(id, !active);
+            axiosResponse = await disEnableEmployee(id, !active);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-            getVoucherRequesters();
          }, 500);
       } catch (error) {
          console.log(error);
@@ -166,14 +168,9 @@ const VoucherRequesterDT = () => {
       }
    };
 
-   const ButtonsAction = ({ id, user_id, name, active, obj }) => {
+   const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Ver ${singularName}`} placement="top">
-               <Button color="dark" onClick={() => handleClickView(obj)}>
-                  <IconEye />
-               </Button>
-            </Tooltip>
             {auth.permissions.update && (
                <Tooltip title={`Editar ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>
@@ -181,16 +178,16 @@ const VoucherRequesterDT = () => {
                   </Button>
                </Tooltip>
             )}
-            {/* {auth.permissions.delete && (
+            {auth.permissions.delete && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
-                  <Button color="error" onClick={() => handleClickDelete(user_id, name)}>
+                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
                      <IconDelete />
                   </Button>
                </Tooltip>
-            )} */}
-            {(auth.permissions.more_permissions.includes("Activar y Desactivar Solicitador de Vales") || auth.permissions.more_permissions.includes(`todas`)) && (
+            )}
+            {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
-                  <Button color="dark" onClick={() => handleClickDisEnable(user_id, name, active)} sx={{}}>
+                  <Button color="dark" onClick={() => handleClickDisEnable(id, active)} sx={{}}>
                      <SwitchComponent checked={active} />
                   </Button>
                </Tooltip>
@@ -202,15 +199,15 @@ const VoucherRequesterDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         // console.log("cargar listado", voucherRequesters);
-         await voucherRequesters.map((obj, index) => {
+         // console.log("cargar listado", employees);
+         await employees.map((obj, index) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} user_id={obj.user_id} name={obj.username} active={obj.active} obj={obj} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.full_name} active={obj.active} />;
             data.push(register);
          });
-         // if (data.length > 0) setGlobalFilterFields(Object.keys(voucherRequesters[0]));
+         // if (data.length > 0) setGlobalFilterFields(Object.keys(employees[0]));
          // console.log("la data del formatData", globalFilterFields);
          setLoading(false);
       } catch (error) {
@@ -224,32 +221,29 @@ const VoucherRequesterDT = () => {
       setLoading(false);
    }, []);
    return (
-      <>
-         <DataTableComponent
-            columns={columns}
-            data={data}
-            globalFilterFields={globalFilterFields}
-            headerFilters={true}
-            handleClickAdd={handleClickAdd}
-            refreshTable={getVoucherRequesters}
-            btnAdd={auth.permissions.create}
-            showGridlines={false}
-            btnsExport={true}
-            rowEdit={false}
-            // handleClickDeleteContinue={handleClickDeleteContinue}
-            // ELIMINAR MULTIPLES REGISTROS
-            btnDeleteMultiple={false}
-            // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
-            // PARA HACER FORMULARIO EN LA TABLA
-            // AGREGAR
-            // createData={createVehicle}
-            // newRow={newRow}
-            // EDITAR
-            // setData={setVehicles}
-            // updateData={updateVehicle}
-         />
-         {openCardInfo && <EmployeeCardInfo />}
-      </>
+      <DataTableComponent
+         columns={columns}
+         data={data}
+         globalFilterFields={globalFilterFields}
+         headerFilters={true}
+         handleClickAdd={handleClickAdd}
+         refreshTable={getEmployees}
+         btnAdd={auth.permissions.create}
+         showGridlines={false}
+         btnsExport={true}
+         rowEdit={false}
+         // handleClickDeleteContinue={handleClickDeleteContinue}
+         // ELIMINAR MULTIPLES REGISTROS
+         btnDeleteMultiple={false}
+         // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+         // PARA HACER FORMULARIO EN LA TABLA
+         // AGREGAR
+         // createData={createVehicle}
+         // newRow={newRow}
+         // EDITAR
+         // setData={setVehicles}
+         // updateData={updateVehicle}
+      />
    );
 };
-export default VoucherRequesterDT;
+export default EmployeeDT;

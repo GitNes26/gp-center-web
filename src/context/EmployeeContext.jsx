@@ -164,6 +164,32 @@ export default function EmployeeContextProvider({ children }) {
       }
    };
 
+   const getInfoEmployee = async (field, value) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/employees/getBy/${field}/${value}`);
+         // console.log("axiosData", axiosData);
+         res = axiosData.data.data;
+         // res.result.zip = "";
+         // res.result.state = "Selecciona una opción...";
+         // res.result.city = "Selecciona una opción...";
+         // res.result.colony = "Selecciona una opción...";
+         res.result.payroll_number_exist = true;
+         if (res.result.employee_code.length < 3) res.result.payroll_number_exist = false;
+
+         setEmployee(res.result);
+         setFormData(res.result);
+         // console.log("showEmployee", res);
+
+         return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
    const createEmployee = async (employee) => {
       // return console.log("🚀 ~ createEmployee ~ employee:", employee);
       employee.isEmployee = true;
@@ -298,7 +324,8 @@ export default function EmployeeContextProvider({ children }) {
             setTextBtnSumbit,
             formTitle,
             setFormTitle,
-            formikRef
+            formikRef,
+            getInfoEmployee
          }}
       >
          {children}

@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { handleInputFormik, sleep } from "../../../utils/Formats";
+import { handleInputFormik } from "../../../utils/Formats";
 import { OutlinedInput } from "@mui/material";
 import { InputAdornment } from "@mui/material";
 import { IconButton } from "@mui/material";
@@ -106,40 +106,29 @@ const VoucherRequesterForm = () => {
       }
    };
 
-   const handleInputPayRoll = useDebounce(async (e, setFieldValue, values, resetForm) => {
+   const handleInputPayRoll = useDebounce(async (e, setFieldValue, values) => {
       try {
          const value = e.target.value;
-         // console.log("🚀 ~ VoucherRequesterForm ~ value:", value);
          if (value.length < 5) return;
-         setLoadingAction(true);
-         ResetForm(resetForm);
-         await sleep(500);
-
          const axiosRH = axios;
-         const data = await axiosRH.get(`${import.meta.env.VITE_API_GPC}/employees/getBy/employee_code/${value}`);
-         const employee = data; //data.RESPONSE.recordset[0]
-         // console.log("🚀 ~ VoucherRequesterForm ~ employee:", employee);
+         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}`);
+         const employee = data.data.result; //data.RESPONSE.recordset[0]
 
          if (employee) {
             Toast.Success(`Número de nómina encontrado`);
-            await setFieldValue("gpc_employee_id", employee.gpc_employee_id);
-            await setFieldValue("payroll_number", employee.employee_code);
-            await setFieldValue("name", employee.name);
-            await setFieldValue("paternal_last_name", employee.plast_name);
-            await setFieldValue("maternal_last_name", employee.mlast_name);
+            await setFieldValue("name", employee.nombreE);
+            await setFieldValue("paternal_last_name", employee.apellidoP);
+            await setFieldValue("maternal_last_name", employee.apellidoM);
             await setFieldValue("payroll_number_exist", true);
-            await setFieldValue("department", employee.department_name);
-            employee.avatar && setObjImg(employee.avatar, setImgAvatar, import.meta.env.VITE_API_GPC_ASSETS);
-            employee.signature_image && setObjImg(employee.signature_image, setImgFirm, import.meta.env.VITE_API_GPC_ASSETS);
-            employee.seal_image && setObjImg(employee.seal_image, setImgStamp, import.meta.env.VITE_API_GPC_ASSETS);
-
-            await setFieldValue("username", employee.username);
-            await setFieldValue("email", employee.email);
-            await setFieldValue("phone", employee.phone);
+            await setFieldValue("department", employee.departamento);
          } else {
             Toast.Error(`El Número de nómina no fue encontrado`);
+            await setFieldValue("name", "");
+            await setFieldValue("paternal_last_name", "");
+            await setFieldValue("maternal_last_name", "");
+            await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("department", "");
          }
-         setLoadingAction(false);
       } catch (error) {
          console.log(error);
          if (error.response.status !== 500) Toast.Error(error);
@@ -152,7 +141,7 @@ const VoucherRequesterForm = () => {
             await setFieldValue("department", "");
          }
       }
-   }, 1500);
+   }, 1000);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -169,15 +158,15 @@ const VoucherRequesterForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
       try {
-         // // console.log("formData", formData);
-         // // console.log("values", values);
-         // // values.community_id = values.colony_id;
-         // values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
-         // values.img_firm = imgFirm.length == 0 ? "" : imgFirm[0].file;
-         // values.img_stamp = imgStamp.length == 0 ? "" : imgStamp[0].file;
+         // console.log("formData", formData);
+         // console.log("values", values);
+         // values.community_id = values.colony_id;
+         values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
+         values.img_firm = imgFirm.length == 0 ? "" : imgFirm[0].file;
+         values.img_stamp = imgStamp.length == 0 ? "" : imgStamp[0].file;
 
-         // if (!validateImageRequired(values.img_firm, "La foto de la firma es requerida")) return;
-         // if (!validateImageRequired(values.img_stamp, "La foto del Sello es requerida")) return;
+         if (!validateImageRequired(values.img_firm, "La foto de la firma es requerida")) return;
+         if (!validateImageRequired(values.img_stamp, "La foto del Sello es requerida")) return;
 
          // return console.log("values", values);
 
@@ -326,122 +315,6 @@ const VoucherRequesterForm = () => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                        <Field id="gpc_employee_id" name="gpc_employee_id" type="hidden" value={values.gpc_employee_id} onChange={handleChange} onBlur={handleBlur} />
-
-                        {/* Divisor */}
-                        <Grid item xs={12}>
-                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"}>
-                              <b>DATOS DE EMPLEADO</b>
-                           </Divider>
-                        </Grid>
-                        {/* Número de Nómina */}
-                        <Field
-                           id="payroll_number_exist"
-                           name="payroll_number_exist"
-                           type="hidden"
-                           value={values.payroll_number_exist}
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                        />
-
-                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
-                           <TextField
-                              id="payroll_number"
-                              name="payroll_number"
-                              label="Número de Nómina *"
-                              type="number"
-                              value={values.payroll_number}
-                              placeholder="99999"
-                              onChange={handleChange}
-                              onInput={(e) => handleInputPayRoll(e, setFieldValue, values, resetForm)}
-                              onBlur={handleBlur}
-                              fullWidth
-                              // inputProps={{ maxLength: 11 }}
-                              error={(errors.payroll_number && touched.payroll_number) || (errors.payroll_number_exist && touched.payroll_number_exist)}
-                              helperText={
-                                 (errors.payroll_number && touched.payroll_number && errors.payroll_number) ||
-                                 (errors.payroll_number_exist && touched.payroll_number_exist && errors.payroll_number_exist)
-                              }
-                           />
-                        </Grid>
-                        {/* Departameto */}
-                        <Grid item xs={12} md={8} sx={{ mb: 1 }}>
-                           <TextField
-                              id="department"
-                              name="department"
-                              label="Departamento *"
-                              type="text"
-                              value={values.department}
-                              placeholder="Ingresa tu departamento"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
-                              InputProps={{ disabled: true }}
-                              // InputProps={{ disabled: values.id == 0 ? false : true }}
-                              fullWidth
-                              error={errors.department && touched.department}
-                              helperText={errors.department && touched.department && errors.department}
-                              disable={true}
-                           />
-                        </Grid>
-
-                        {/* Nombre */}
-                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
-                           <TextField
-                              id="name"
-                              name="name"
-                              label="Nombre(s) *"
-                              type="text"
-                              value={values.name}
-                              placeholder="Ingrese tu(s) nombre(s)"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
-                              InputProps={{ disabled: true }}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.name && touched.name}
-                              helperText={errors.name && touched.name && errors.name}
-                           />
-                        </Grid>
-                        {/* Apellido Paterno */}
-                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                           <TextField
-                              id="paternal_last_name"
-                              name="paternal_last_name"
-                              label="Apellido Paterno *"
-                              type="text"
-                              value={values.paternal_last_name}
-                              placeholder="Ingrese tu primer apellido"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
-                              InputProps={{ disabled: true }}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.paternal_last_name && touched.paternal_last_name}
-                              helperText={errors.paternal_last_name && touched.paternal_last_name && errors.paternal_last_name}
-                           />
-                        </Grid>
-                        {/* Apellido Materno */}
-                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                           <TextField
-                              id="maternal_last_name"
-                              name="maternal_last_name"
-                              label="Apellido Materno *"
-                              type="text"
-                              value={values.maternal_last_name}
-                              placeholder="Ingrese tu segundo apellido"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
-                              InputProps={{ disabled: true }}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.maternal_last_name && touched.maternal_last_name}
-                              helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
-                           />
-                        </Grid>
                         {/* Foto de Perfil */}
                         <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                            <InputFileComponent
@@ -470,7 +343,6 @@ const VoucherRequesterForm = () => {
                               onBlur={handleBlur}
                               // InputProps={{}}
                               fullWidth
-                              InputProps={{ disabled: true }}
                               // disabled={values.id == 0 ? false : true}
                               error={errors.username && touched.username}
                               helperText={errors.username && touched.username && errors.username}
@@ -490,7 +362,6 @@ const VoucherRequesterForm = () => {
                               onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
                               // inputProps={{ maxLength: 2 }}
                               fullWidth
-                              InputProps={{ disabled: true }}
                               // disabled={values.id == 0 ? false : true}
                               error={errors.email && touched.email}
                               helperText={errors.email && touched.email && errors.email}
@@ -586,10 +457,9 @@ const VoucherRequesterForm = () => {
                               onChange={handleChange}
                               onBlur={handleBlur}
                               fullWidth
-                              inputProps={{ maxLength: 10, disable: true }}
+                              inputProps={{ maxLength: 10 }}
                               error={errors.phone && touched.phone}
                               helperText={errors.phone && touched.phone && errors.phone}
-                              disabled
                            />
                         </Grid>
                         {/* Foto Firma */}
@@ -622,6 +492,140 @@ const VoucherRequesterForm = () => {
                               touched={touched.img_stamp}
                               multiple={false}
                               accept={"image/*"}
+                           />
+                        </Grid>
+                        {/* Divisor */}
+                        <Grid item xs={12}>
+                           <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                        </Grid>
+                        {/* Número de Nómina */}
+                        <Field
+                           id="payroll_number_exist"
+                           name="payroll_number_exist"
+                           type="hidden"
+                           value={values.payroll_number_exist}
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                        />
+
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
+                           <TextField
+                              id="payroll_number"
+                              name="payroll_number"
+                              label="Número de Nómina *"
+                              type="number"
+                              value={values.payroll_number}
+                              placeholder="99999"
+                              onChange={handleChange}
+                              onInput={(e) => handleInputPayRoll(e, setFieldValue, values)}
+                              onBlur={handleBlur}
+                              fullWidth
+                              // inputProps={{ maxLength: 11 }}
+                              error={(errors.payroll_number && touched.payroll_number) || (errors.payroll_number_exist && touched.payroll_number_exist)}
+                              helperText={
+                                 (errors.payroll_number && touched.payroll_number && errors.payroll_number) ||
+                                 (errors.payroll_number_exist && touched.payroll_number_exist && errors.payroll_number_exist)
+                              }
+                           />
+                        </Grid>
+                        {/* Departameto */}
+                        <Grid item xs={12} md={8} sx={{ mb: 1 }}>
+                           <TextField
+                              id="department"
+                              name="department"
+                              label="Departamento *"
+                              type="text"
+                              value={values.department}
+                              placeholder="Ingresa tu departamento"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "department", true)}
+                              InputProps={{ disabled: values.id == 0 ? false : true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.department && touched.department}
+                              helperText={errors.department && touched.department && errors.department}
+                           />
+                           {/* <Select2Component
+                           idName={"department_id"}
+                           label={"Departameto *"}
+                           valueLabel={values.department}
+                           values={values}
+                           formData={formData}
+                           setFormData={setFormData}
+                           formDataLabel={"department"}
+                           placeholder={"Selecciona una opción..."}
+                           options={departments}
+                           fullWidth={true}
+                           handleChange={handleChange}
+                           // handleChangeValueSuccess={handleChangeRole}
+                           setValues={setValues}
+                           handleBlur={handleBlur}
+                           error={errors.department_id}
+                           touched={touched.department_id}
+                           disabled={false}
+                        /> */}
+                        </Grid>
+                        {/* Divisor */}
+                        {/* <Grid item xs={12}>
+                        <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                     </Grid> */}
+
+                        {/* Nombre */}
+                        <Grid item xs={12} md={12} sx={{ mb: 2 }}>
+                           <TextField
+                              id="name"
+                              name="name"
+                              label="Nombre(s) *"
+                              type="text"
+                              value={values.name}
+                              placeholder="Ingrese tu(s) nombre(s)"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
+                              InputProps={{ disabled: true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.name && touched.name}
+                              helperText={errors.name && touched.name && errors.name}
+                           />
+                        </Grid>
+                        {/* Apellido Paterno */}
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="paternal_last_name"
+                              name="paternal_last_name"
+                              label="Apellido Paterno *"
+                              type="text"
+                              value={values.paternal_last_name}
+                              placeholder="Ingrese tu primer apellido"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
+                              InputProps={{ disabled: true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.paternal_last_name && touched.paternal_last_name}
+                              helperText={errors.paternal_last_name && touched.paternal_last_name && errors.paternal_last_name}
+                           />
+                        </Grid>
+                        {/* Apellido Materno */}
+                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
+                           <TextField
+                              id="maternal_last_name"
+                              name="maternal_last_name"
+                              label="Apellido Materno *"
+                              type="text"
+                              value={values.maternal_last_name}
+                              placeholder="Ingrese tu segundo apellido"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
+                              InputProps={{ disabled: true }}
+                              fullWidth
+                              // disabled={values.id == 0 ? false : true}
+                              error={errors.maternal_last_name && touched.maternal_last_name}
+                              helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
                            />
                         </Grid>
                      </Grid>

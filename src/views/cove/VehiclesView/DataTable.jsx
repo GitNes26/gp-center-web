@@ -20,16 +20,17 @@ import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalConte
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
-import { formatDatetime } from "../../../utils/Formats";
+import { formatDatetime, sleep } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { Box } from "@mui/system";
 import { Link } from "react-router-dom";
 import { IconEye } from "@tabler/icons";
+import VehicleCardInfo from "./CardInfo";
 
 const VehicleDT = () => {
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog, setOpenCardInfo } = useGlobalContext();
+   const { setLoading, setLoadingAction, setOpenDialog, openCardInfo, setOpenCardInfo } = useGlobalContext();
    const {
       singularName,
       vehicle,
@@ -59,6 +60,7 @@ const VehicleDT = () => {
       "description",
       "gasoline_code"
    ];
+   const [vehicleShow, setVehicleShow] = useState(null);
 
    // #region BodysTemplate
    const ImagePreviewBodyTemplate = (obj) => (
@@ -192,7 +194,9 @@ const VehicleDT = () => {
    const handleClickView = async (id) => {
       try {
          setLoadingAction(true);
-         await showVehicle(id);
+         const res = await showVehicle(id);
+         // setVehicleShow(res.result);
+         await sleep(1500);
          setOpenCardInfo(true);
          setLoadingAction(false);
       } catch (error) {
@@ -322,29 +326,32 @@ const VehicleDT = () => {
       setLoading(false);
    }, []);
    return (
-      <DataTableComponent
-         columns={columns}
-         data={data}
-         globalFilterFields={globalFilterFields}
-         headerFilters={true}
-         handleClickAdd={handleClickAdd}
-         refreshTable={getVehicles}
-         btnAdd={auth.permissions.create}
-         showGridlines={false}
-         btnsExport={true}
-         rowEdit={false}
-         // handleClickDeleteContinue={handleClickDeleteContinue}
-         // ELIMINAR MULTIPLES REGISTROS
-         btnDeleteMultiple={false}
-         // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
-         // PARA HACER FORMULARIO EN LA TABLA
-         // AGREGAR
-         // createData={createVehicle}
-         // newRow={newRow}
-         // EDITAR
-         // setData={setVehicles}
-         // updateData={updateVehicle}
-      />
+      <>
+         <DataTableComponent
+            columns={columns}
+            data={data}
+            globalFilterFields={globalFilterFields}
+            headerFilters={true}
+            handleClickAdd={handleClickAdd}
+            refreshTable={getVehicles}
+            btnAdd={auth.permissions.create}
+            showGridlines={false}
+            btnsExport={true}
+            rowEdit={false}
+            // handleClickDeleteContinue={handleClickDeleteContinue}
+            // ELIMINAR MULTIPLES REGISTROS
+            btnDeleteMultiple={false}
+            // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+            // PARA HACER FORMULARIO EN LA TABLA
+            // AGREGAR
+            // createData={createVehicle}
+            // newRow={newRow}
+            // EDITAR
+            // setData={setVehicles}
+            // updateData={updateVehicle}
+         />
+         {openCardInfo && <VehicleCardInfo vehicle={vehicleShow} />}
+      </>
    );
 };
 export default VehicleDT;

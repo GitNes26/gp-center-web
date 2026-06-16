@@ -123,14 +123,14 @@ import { QuestionAlertConfig } from "../../utils/sAlert";
 // /* CONTENEDOR DE IMAGENES */
 // #endregion
 
-export const setObjImg = (img, setImg) => {
+export const setObjImg = (img, setImg, HOST = null) => {
    if (["", null, undefined].includes(img)) return setImg([]);
    // console.log("setObjImg --> ", img, " <--");
    const imgObj = {
       file: {
          name: `${img}`
       },
-      dataURL: `${import.meta.env.VITE_HOST}/${img}`
+      dataURL: `${HOST ? HOST : import.meta.env.VITE_HOST}/${img}`
    };
    setImg([imgObj]);
 };

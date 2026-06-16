@@ -75,7 +75,7 @@ export default function VehicleContextProvider({ children }) {
    };
    const resetVehicle = () => {
       try {
-         setVehicle(formDataInitialState);
+         // setVehicle(formDataInitialState);
          setImgFile(null);
          setImagePreview(null);
       } catch (error) {
@@ -126,7 +126,9 @@ export default function VehicleContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/vehicles/${id}`);
+         // console.log("🚀 ~ showVehicle ~ axiosData:", axiosData)
          res = axiosData.data.data;
+         // console.log("🚀 ~ showVehicle ~ res:", res.result);
          // await setVehicle(res.result);
          setFormData(res.result);
          setVehicle(res.result);

@@ -109,44 +109,45 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          formData.voucher.requesterName = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
          formData.voucher.requesterStamp = voucher.img_stamp ? `${import.meta.env.VITE_HOST}/${voucher.img_stamp}` : null;
          formData.voucher.vobo_at = voucher.vobo_at;
-         formData.voucher.table = (
-            <View style={[stylesPDF.table, stylesPDF.center]} wrap={false}>
-               {/* <View style={stylesPDF.column}>
-<Text style={[stylesPDF.cell, stylesPDF.bolder]}>CANTIDAD</Text>
-{voucherDetails.map((vd) => (
-   <Text style={stylesPDF.cell}>{vd.requested_amount ?? "-"}</Text>
-   ))}
-   </View> */}
-               {/* <View style={stylesPDF.column}>
-<Text style={[stylesPDF.cell, stylesPDF.bolder]}>VALES</Text>
-<Text style={stylesPDF.cell}>{voucher.foliated_vouchers ? `${voucher.letter_folio} ${voucher.foliated_vouchers}` : "-"}</Text>
-</View> */}
-               <View style={stylesPDF.column}>
-                  <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VEHÍCULO</Text>
-                  {voucherDetails.map((vd) => (
-                     <Text style={stylesPDF.cell}>{vd.vehicle}</Text>
-                  ))}
-               </View>
-               <View style={stylesPDF.column}>
-                  <Text style={[stylesPDF.cell, stylesPDF.bolder]}>PLACAS</Text>
-                  {voucherDetails.map((vd) => (
-                     <Text style={stylesPDF.cell}>{vd.vehicle_plates}</Text>
-                  ))}
-               </View>
-               <View style={stylesPDF.column}>
-                  <Text style={[stylesPDF.cell, stylesPDF.bolder]}>EMPLEADO</Text>
-                  {voucherDetails.map((vd) => (
-                     <Text style={stylesPDF.cell}>{vd.creditor_fullname}</Text>
-                  ))}
-               </View>
-               <View style={stylesPDF.column}>
-                  <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>
-                  {voucherDetails.map((vd) => (
-                     <Text style={stylesPDF.cell}>{vd.payroll_number}</Text>
-                  ))}
-               </View>
-            </View>
-         );
+         formData.voucher.table = voucherDetails;
+         //          formData.voucher.table = (
+         //             <View style={[stylesPDF.table, stylesPDF.center]} wrap={false}>
+         //                {/* <View style={stylesPDF.column}>
+         // <Text style={[stylesPDF.cell, stylesPDF.bolder]}>CANTIDAD</Text>
+         // {voucherDetails.map((vd) => (
+         //    <Text style={stylesPDF.cell}>{vd.requested_amount ?? "-"}</Text>
+         //    ))}
+         //    </View> */}
+         //                {/* <View style={stylesPDF.column}>
+         // <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VALES</Text>
+         // <Text style={stylesPDF.cell}>{voucher.foliated_vouchers ? `${voucher.letter_folio} ${voucher.foliated_vouchers}` : "-"}</Text>
+         // </View> */}
+         //                <View style={stylesPDF.column}>
+         //                   <Text style={[stylesPDF.cell, stylesPDF.bolder]}>VEHÍCULO</Text>
+         //                   {voucherDetails.map((vd) => (
+         //                      <Text style={stylesPDF.cell}>{vd.vehicle}</Text>
+         //                   ))}
+         //                </View>
+         //                <View style={stylesPDF.column}>
+         //                   <Text style={[stylesPDF.cell, stylesPDF.bolder]}>PLACAS</Text>
+         //                   {voucherDetails.map((vd) => (
+         //                      <Text style={stylesPDF.cell}>{vd.vehicle_plates}</Text>
+         //                   ))}
+         //                </View>
+         //                <View style={stylesPDF.column}>
+         //                   <Text style={[stylesPDF.cell, stylesPDF.bolder]}>EMPLEADO</Text>
+         //                   {voucherDetails.map((vd) => (
+         //                      <Text style={stylesPDF.cell}>{vd.creditor_fullname}</Text>
+         //                   ))}
+         //                </View>
+         //                <View style={stylesPDF.column}>
+         //                   <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>
+         //                   {voucherDetails.map((vd) => (
+         //                      <Text style={stylesPDF.cell}>{vd.payroll_number}</Text>
+         //                   ))}
+         //                </View>
+         //             </View>
+         //          );
       }
       // console.log("estoy en el useLayoutEffect final", formData);
       setLoadingAction(false);

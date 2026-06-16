@@ -81,6 +81,22 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
       }
    };
 
+   const handleChangeEmployee = (idName, values) => {
+      try {
+         const employeeSelected = values;
+         const employee = dataEmployees.find((item) => item.id == employeeSelected.id);
+         if (employee) {
+            formikRef.current.setFieldValue("username", employee.username);
+            formikRef.current.setFieldValue("email", employee.email);
+            formikRef.current.setFieldValue("department_uuid", employee.department_uuid);
+            formikRef.current.setFieldValue("department_name", employee.department_name);
+         }
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const handleChangeCheckAdd = (e) => {
       try {
          const active = e.target.checked;
@@ -226,7 +242,7 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
             >
                <Grid container spacing={2} mt={2}>
                   <InputComponent col={12} idName={"id"} label={"id"} placeholder={"el id"} hidden={true} />
-                  <DividerComponent title={"DATOS DEL USUARIO"} />
+                  <InputComponent col={12} idName={"department_uuid"} label={"department_uuid"} placeholder={"el id"} hidden={true} />
                   {/* {!isAdmin && (
                      <>
                         <Select2Component
@@ -249,6 +265,26 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
                         />
                      </>
                   )} */}
+                  <DividerComponent title={"DATOS DE EMPLEADO"} />
+                  <Select2Component
+                     col={12}
+                     idName={"employee_id"}
+                     label={"Empleado"}
+                     options={dataEmployees}
+                     pluralName={"Empleados"}
+                     refreshSelect={getEmployeesSelectIndex}
+                     handleChangeValueSuccess={handleChangeEmployee}
+                     required
+                  />
+                  <InputComponent
+                     col={12}
+                     idName={"department_name"}
+                     label={"Departamento *"}
+                     placeholder={"Nombre del departmaento"}
+                     textStyleCase={false}
+                     disabled={true}
+                  />
+                  <DividerComponent title={"DATOS DE USUARIO"} />
                   <InputComponent col={6} idName={"username"} label={"Nombre de Usuario *"} placeholder={"Ingrese el nombre de usuario"} textStyleCase={null} />
                   <InputComponent col={6} idName={"email"} label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
                   <PasswordCompnent
@@ -267,16 +303,6 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
                      pluralName={"Roles"}
                      refreshSelect={getRolesSelectIndex}
                      handleChangeValueSuccess={handleChangeRole}
-                  />
-                  <DividerComponent title={"EMPLEADO"} />
-                  <Select2Component
-                     col={12}
-                     idName={"employee_id"}
-                     label={"Empleado"}
-                     options={dataEmployees}
-                     pluralName={"Empleados"}
-                     refreshSelect={getEmployeesSelectIndex}
-                     required
                   />
                </Grid>
             </FormikComponent>

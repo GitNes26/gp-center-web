@@ -192,11 +192,13 @@ const MainRoutes = {
       {
          path: "solicitadores-de-vales",
          element: (
-            <UserContextProvider>
-               <VoucherRequesterContextProvider>
-                  <VoucherRequestersView />
-               </VoucherRequesterContextProvider>
-            </UserContextProvider>
+            <EmployeeContextProvider>
+               <UserContextProvider>
+                  <VoucherRequesterContextProvider>
+                     <VoucherRequestersView />
+                  </VoucherRequesterContextProvider>
+               </UserContextProvider>
+            </EmployeeContextProvider>
          )
          // loader: loaderIndex
       },

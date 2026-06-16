@@ -47,54 +47,65 @@ const DepartmentDT = () => {
       setDirectorsHistory
    } = useDepartmentContext();
    // const { setDirectors } = useDirectorContext();
-   const globalFilterFields = ["clave_org", "organismo", "departamento", "description"];
+   // const globalFilterFields = ["organization_code", "organization_name", "name", "director.payroll_number", "director.full_name"];
+   const globalFilterFields = ["organization_code", "organization_name", "name", "director_employee_code", "director_name"];
 
    // #region BodysTemplate
+   const LogoBodyTemplate = (obj) => (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+         <Avatar
+            sx={{ width: 56, height: 56 }}
+            src={obj.department_logo !== null ? `${import.meta.env.VITE_API_GPC_ASSETS}/${obj.department_logo}` : ""}
+            alt={`Logo de ${obj.name}`}
+         />
+      </Box>
+   );
    const SelloBodyTemplate = (obj) => (
       <Box sx={{ display: "flex", justifyContent: "center" }}>
          <Avatar
             sx={{ width: 56, height: 56 }}
-            src={obj.img_sello !== null ? `${import.meta.env.VITE_HOST}/${obj.img_sello}` : ""}
-            alt={`Sello de ${obj.departamento}`}
+            src={obj.seal_image !== null ? `${import.meta.env.VITE_API_GPC_ASSETS}/${obj.seal_image}` : ""}
+            alt={`Sello de ${obj.name}`}
          />
       </Box>
    );
    const OrganismoBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         <b>({obj.clave_org})</b> {obj.organismo}
+         <b>({obj.organization_code})</b> {obj.organization_name}
       </Typography>
    );
-   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.departamento}</Typography>;
+   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.name}</Typography>;
    const DirectorBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         {obj.director && (
+         {obj.director_employee_id && (
             <>
-               <b>{obj.director.payroll_number}</b>
+               <b>{obj.director_employee_code}</b>
                <br />
-               {obj.director.full_name}
+               {obj.director_name}
             </>
          )}
       </Typography>
    );
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         {obj.activo ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
+         {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
       </Typography>
    );
-   const CreatedAtBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.creado, true)}</Typography>;
+   const CreatedAtBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at, true)}</Typography>;
 
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "Sello", header: "Sello", sortable: true, functionEdit: null, body: SelloBodyTemplate, filter: false, filterField: null },
-      { field: "organismo", header: "Organismo", sortable: true, functionEdit: null, body: OrganismoBodyTemplate, filter: true, filterField: null },
-      { field: "departamento", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
-      { field: "director", header: "Director", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filter: true, filterField: null }
+      { field: "department_logo", header: "Logo", sortable: true, functionEdit: null, body: LogoBodyTemplate, filter: false, filterField: null },
+      { field: "seal_image", header: "Sello", sortable: true, functionEdit: null, body: SelloBodyTemplate, filter: false, filterField: null },
+      { field: "organization_name", header: "Organismo", sortable: true, functionEdit: null, body: OrganismoBodyTemplate, filter: true, filterField: null },
+      { field: "name", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      { field: "director_name", header: "Director", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filter: true, filterField: "director_name" }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "activo", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
-         { field: "creado", header: "Registrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: true, filterField: null },
+         { field: "created_at", header: "Registrado", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filter: true, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);
@@ -203,21 +214,21 @@ const DepartmentDT = () => {
       // console.log("🚀 ~ ButtonsAction ~ obj:", obj)
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Vincular Director-${singularName}`} placement="top">
+            {/* <Tooltip title={`Vincular Director-${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickAttach(obj.id)}>
                   <IconCirclesRelation />
                </Button>
-            </Tooltip>
+            </Tooltip> */}
             {/* <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
             </Tooltip> */}
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
+            {/* <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
                </Button>
-            </Tooltip>
+            </Tooltip> */}
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>

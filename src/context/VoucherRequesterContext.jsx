@@ -7,6 +7,7 @@ const VoucherRequesterContext = createContext();
 
 const formDataInitialState = {
    id: 0,
+   gpc_employee_id: 0,
    user_id: 0,
    username: "",
    email: "",
@@ -27,6 +28,7 @@ const formDataInitialState = {
 };
 const voucherRequesterInitialState = {
    id: 0,
+   gpc_employee_id: 0,
    user_id: 0,
    username: "",
    email: "",
@@ -63,6 +65,7 @@ export default function VoucherRequesterContextProvider({ children }) {
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
+         console.log("🚀 ~ resetFormData ~ formDataInitialState:", formDataInitialState);
       } catch (error) {
          console.log("Error en resetFormData:", error);
          Toast.Error(error);

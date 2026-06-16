@@ -46,22 +46,22 @@ const EmployeeDT = () => {
       formData,
       formikRef
    } = useEmployeeContext();
-   const globalFilterFields = ["payroll_number", "full_name", "full_name_reverse", "phone", "license_number", "department"];
+   const globalFilterFields = ["employee_code", "full_name", "full_name_reverse", "phone", "license_number", "department_name"];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-         <Avatar sx={{ width: 56, height: 56 }} src={obj.avatar !== null ? `${import.meta.env.VITE_HOST}/${obj.avatar}` : ""} alt={obj.full_name} />
+         <Avatar sx={{ width: 56, height: 56 }} src={obj.avatar !== null ? `${import.meta.env.VITE_API_GPC_ASSETS}/${obj.avatar}` : ""} alt={obj.full_name} />
       </Box>
       // <Box textAlign={"center"}>{<img alt="Foto de Perfil" src={`${import.meta.env.VITE_HOST}/${obj.avatar}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
    );
    const PayRollBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"bolder"}>
-         {obj.payroll_number}
+         {obj.employee_code}
       </Typography>
    );
    const EmployeeBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.full_name}</Typography>;
-   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
+   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department_name}</Typography>;
    const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
    const LicenseBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.license_number}</Typography>;
    // const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
@@ -75,9 +75,9 @@ const EmployeeDT = () => {
 
    const columns = [
       { field: "avatar", header: "Foto", sortable: true, functionEdit: null, body: AvatarBodyTemplate, filter: false, filterField: null },
-      { field: "payroll_number", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filter: true, filterField: null },
+      { field: "employee_code", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filter: true, filterField: null },
       { field: "full_name", header: "Nombre", sortable: true, functionEdit: null, body: EmployeeBodyTemplate, filter: true, filterField: null },
-      { field: "department", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
+      { field: "department_name", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
       { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: true, filterField: null },
       { field: "license_number", header: "No. Licencia", sortable: true, functionEdit: null, body: LicenseBodyTemplate, filter: true, filterField: null },
       // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },

@@ -420,3 +420,12 @@ export async function searcher(data, termino, filtros = []) {
    });
    // console.log("🚀 ~ returndata.filter ~ data:", data);
 }
+
+/**
+ * Pausa la ejecución por un tiempo determinado.
+ * @param ms - Milisegundos.
+ * @returns Promise.
+ */
+export const sleep = (ms) => {
+   return new Promise((resolve) => setTimeout(resolve, ms));
+};

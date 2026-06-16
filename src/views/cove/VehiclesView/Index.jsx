@@ -19,7 +19,7 @@ import VehicleCardInfo from "./CardInfo";
 const VehiclesView = () => {
    // const { result } = useLoaderData();
    const { setLoading, getEmployees } = useGlobalContext();
-   const { pluralName, vehicle, getVehicles } = useVehicleContext();
+   const { pluralName, vehicle, setVehicle, getVehicles } = useVehicleContext();
    const { getBrandsSelectIndex } = useBrandContext();
    // const { getModelsSelectIndex } = useModelContext();
    const { getVehicleStatussSelectIndex } = useVehicleStatusContext();
@@ -53,7 +53,6 @@ const VehiclesView = () => {
          {/* </MainCard> */}
 
          <VehicleForm />
-         <VehicleCardInfo />
       </>
    );
 };
