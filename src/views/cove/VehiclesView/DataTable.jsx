@@ -350,7 +350,7 @@ const VehicleDT = () => {
             // setData={setVehicles}
             // updateData={updateVehicle}
          />
-         {openCardInfo && <VehicleCardInfo vehicle={vehicleShow} />}
+         <VehicleCardInfo vehicle={vehicleShow} />
       </>
    );
 };

@@ -341,8 +341,9 @@ function PersonRow({ avatarSrc, name, paternal, maternal, department, phone, ema
 // ─── Vista principal ──────────────────────────────────────────────────────────
 export default function VehicleCardInfo({ vehicle = null }) {
    const { openCardInfo, setOpenCardInfo } = useGlobalContext();
-   // const { vehicle: v } = useVehicleContext();
-   const v = vehicle;
+   const { vehicle: vContext } = useVehicleContext();
+   const v = vehicle ? vehicle : vContext;
+   console.log("🚀 ~ VehicleCardInfo ~ v:", v);
 
    if (!v) return null;
 
