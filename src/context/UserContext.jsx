@@ -13,7 +13,7 @@ const formDataInitialState = {
    password: "",
    role_id: 0,
    department_id: 0,
-   employee_id: 0,
+   gpc_employee_id: 0, //employee_id: 0,
    active: true
 };
 const userInitialState = {
@@ -23,10 +23,10 @@ const userInitialState = {
    password: "",
    role_id: 0,
    role: "Selecciona una opción...",
-   phone: "",
+   cellphone: "",
    license_number: "",
    license_due_date: "",
-   payroll_number: "",
+   employee_code: "",
    department_id: "",
    department: "Selecciona una opción...",
    name: "",
@@ -136,7 +136,7 @@ export default function UserContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/update/role_id/${user.role_id}`, user);
-         const axiosData = await Axios.post(`/users/update/${user.id}`, user);
+         const axiosData = await Axios.post(`/users/update`, user);
          res = axiosData.data.data;
          getUsers();
       } catch (error) {

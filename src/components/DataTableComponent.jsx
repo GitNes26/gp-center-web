@@ -309,6 +309,7 @@ export default function DataTableComponent({
          setLoading(false);
          Toast.Success("Tabla Actualizada");
       } catch (error) {
+         setLoading(false);
          console.log(error);
          Toast.Error(error);
       }

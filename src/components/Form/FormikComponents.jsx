@@ -208,10 +208,13 @@ export const InputComponent = ({
    size = "medium",
    focus,
    icon = null,
-   handleChangeExtra = null,
-   handleBlurExtra = null,
-   handleInputExtra = null,
-   ...props
+    handleChangeExtra = null,
+    handleBlurExtra = null,
+    handleInputExtra = null,
+    InputProps,
+    InputLabelProps,
+    inputProps,
+    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
@@ -343,27 +346,21 @@ export const InputComponent = ({
                            textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
                            handleInputExtra != null ? handleOnInputExtra(e, formik.setFieldValue) : null;
                         }}
-                        {...props}
-                        disabled={loading || disabled}
+                         disabled={loading || disabled}
                         fullWidth
                         multiline={rows > 0 ? true : false}
                         rows={rows && rows} // Establece las filas solo si type no está definido
                         error={isError}
-                        helperText={isError ? error : helperText}
-                        InputLabelProps={{
-                           style: color ? { color: color } : {}
-                        }}
-                        size={size}
-                        sx={sxInput}
-                        startAdornment={
-                           // <Tooltip title={""} placement={"top"}>
-                           <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                              <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{`${label} ${required ? "*" : ""}`}</Typography>
-                              {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
-                           </InputAdornment>
-                           // </Tooltip>
-                        }
-                     />
+                         startAdornment={
+                             <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                                <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{`${label} ${required ? "*" : ""}`}</Typography>
+                             </InputAdornment>
+                          }
+                         size={size}
+                         sx={sxInput}
+                         inputProps={inputProps}
+                         {...props}
+                      />
                      <FormHelperText error={isError} id={`ht-${idName}`} sx={{ display: "flex", width: "100%" }}>
                         {isError ? error : helperText}
                      </FormHelperText>
@@ -408,20 +405,22 @@ export const InputComponent = ({
                      rows={rows && rows} // Establece las filas solo si type no está definido
                      error={isError}
                      helperText={isError ? error : helperText}
+                     InputProps={{
+                        startAdornment: (
+                           // <Tooltip title={""} placement={"top"}>
+                           <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                              <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{`${required ? "*" : ""}`}</Typography>
+                              {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
+                              {icon ?? icon}
+                           </InputAdornment>
+                           // </Tooltip>
+                        )
+                     }}
                      InputLabelProps={{
                         style: color ? { color: color } : {}
                      }}
                      size={size}
                      sx={sxInput}
-                     startAdornment={
-                        // <Tooltip title={""} placement={"top"}>
-                        <InputAdornment position="start" sx={{ ml: 0.5 }}>
-                           <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{`${label} ${required ? "*" : ""}`}</Typography>
-                           {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
-                           {icon ?? icon}
-                        </InputAdornment>
-                        // </Tooltip>
-                     }
                   />
                )}
                {styleInput == 3 && (
@@ -1675,14 +1674,14 @@ export const InputsCommunityComponent = ({
 // /* CONTENEDOR DE IMAGENES */
 // #endregion
 
-export const setObjImg = (img, setImg) => {
+export const setObjImg = (img, setImg, HOST = null) => {
    if (["", null, undefined].includes(img)) return setImg([]);
    // console.log("setObjImg --> ", img, " <--");
    const imgObj = {
       file: {
          name: `${img}`
       },
-      dataURL: `${import.meta.env.VITE_HOST}/${img}`
+      dataURL: HOST ? `${import.meta.env.VITE_HOST}/${img}` : img
    };
    setImg([imgObj]);
 };

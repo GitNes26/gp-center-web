@@ -40,12 +40,12 @@ const AdministratorDT = () => {
       setTextBtnSumbit,
       setFormTitle
    } = useAdministratorContext();
-   const globalFilterFields = ["username", "email", "phone", "role", "active", "created_at"];
+   const globalFilterFields = ["username", "email", "cellphone", "role", "active", "created_at"];
 
    // #region BodysTemplate
    const AdministratorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
    const EmailBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.email}</Typography>;
-   // const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
+   // const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.cellphone)}</Typography>;
    // const InfoBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.}</Typography>;
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
@@ -60,7 +60,7 @@ const AdministratorDT = () => {
    const columns = [
       { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: AdministratorBodyTemplate, filter: true, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filter: true, filterField: null },
-      // { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: true, filterField: null },
+      // { field: "cellphone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: true, filterField: null },
       { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&

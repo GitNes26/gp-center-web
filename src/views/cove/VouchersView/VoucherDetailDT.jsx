@@ -56,12 +56,12 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       "voucher_id",
       "vehicle",
       "vehicle_plates",
-      "payroll_number",
+      "employee_code",
       "name",
-      "paternal_last_name",
-      "maternal_last_name",
+      "plast_name",
+      "mlast_name",
       // "acreditor_fullname",
-      "phone",
+      "cellphone",
       // "requested_amount",
       "active",
       "created_at"
@@ -70,12 +70,12 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    // #region BodysTemplate
    const VehicleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.vehicle ?? "-"} </Typography>;
    const VehiclePlatesBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.vehicle_plates ?? "-"} </Typography>;
-   const PayrollBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.payroll_number}</Typography>;
+   const PayrollBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.employee_code}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department}</Typography>;
    const NameBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.name}</Typography>;
-   const PaternalBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.paternal_last_name}</Typography>;
-   const MaternalBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.maternal_last_name}</Typography>;
-   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.phone ? formatPhone(obj.phone, true) : "-"}</Typography>;
+   const PaternalBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.plast_name}</Typography>;
+   const MaternalBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.mlast_name}</Typography>;
+   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.cellphone ? formatPhone(obj.cellphone, true) : "-"}</Typography>;
    // const AmountTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_amount}</Typography>;
    // #endregion BodysTemplate
 
@@ -117,7 +117,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
             value={options.value ? options.value : ""}
             onChange={(e) => {
                options.editorCallback(e.target.value.toUpperCase());
-               // if (options.field === "payroll_number") handleEditorValueChange(e, options);
+               // if (options.field === "employee_code") handleEditorValueChange(e, options);
             }}
             data-field-name={options.field}
             data-field-key={options.rowData.key}
@@ -140,7 +140,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       // console.log(value);
       // console.log(options);
    };
-   const phoneEditor = (options) => (
+   const cellphoneEditor = (options) => (
       <InputText
          type="text"
          value={options.value}
@@ -229,7 +229,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
                value={options.value}
                onChange={(e) => {
                   options.editorCallback(e.target.value);
-                  // if (options.field === "payroll_number") handleEditorValueChange(e, options);
+                  // if (options.field === "employee_code") handleEditorValueChange(e, options);
                }}
             />
          </Tooltip>
@@ -241,7 +241,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       { field: "vehicle", header: "VEHÍCULO", sortable: true, functionEdit: textMayusEditor, body: VehicleBodyTemplate, filter: true, filterField: null },
       { field: "vehicle_plates", header: "PLACAS", sortable: true, functionEdit: textMayusEditor, body: VehiclePlatesBodyTemplate, filter: true, filterField: null },
       {
-         field: "payroll_number",
+         field: "employee_code",
          header: "N° NÓMINA",
          sortable: true,
          functionEdit: PayrollBodyTemplateEditor,
@@ -252,7 +252,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       { field: "department", header: "DEPARTAMENTO", sortable: true, functionEdit: textMayusEditor, body: DepartmentBodyTemplate, filter: true, filterField: null },
       { field: "name", header: "NOMBRE", sortable: true, functionEdit: textMayusEditor, body: NameBodyTemplate, filter: true, filterField: null },
       {
-         field: "paternal_last_name",
+         field: "plast_name",
          header: "A. PATERNO",
          sortable: true,
          functionEdit: textMayusEditor,
@@ -261,7 +261,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
          filterField: null
       },
       {
-         field: "maternal_last_name",
+         field: "mlast_name",
          header: "A. MATERNO",
          sortable: true,
          functionEdit: textMayusEditor,
@@ -269,7 +269,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
          filter: true,
          filterField: null
       },
-      { field: "phone", header: "TELÉFONO", sortable: true, functionEdit: phoneEditor, body: PhoneBodyTemplate, filter: true, filterField: null }
+      { field: "cellphone", header: "TELÉFONO", sortable: true, functionEdit: cellphoneEditor, body: PhoneBodyTemplate, filter: true, filterField: null }
       // { field: "requested_amount", header: "CANTIDAD VALES", sortable: true, functionEdit: numberEditor, body: AmountTemplate, filter: true, filterField: null }
    ];
 

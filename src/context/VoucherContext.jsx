@@ -16,15 +16,15 @@ const voucherInitialState = {
    // vehicle_plates: "",
    // requested_amount: 0,
    workstation: "",
-   img_firm: "",
+   signature_image: "",
 
-   // payroll_number: "",
+   // employee_code: "",
    // department: "",
    // name: "",
    // paternal_last_name: "",
    // maternal_last_name: "",
-   // phone: "",
-   // payroll_number_exist: false,
+   // cellphone: "",
+   // employee_code_exist: false,
 
    activity: "",
    voucher_status: "",
@@ -99,8 +99,8 @@ export default function VoucherContextProvider({ children }) {
    };
 
    const getVouchers = async (status = null, year = null) => {
+      let res = CorrectRes;
       try {
-         const res = CorrectRes;
          let pathApi = `/vouchers`;
 
          if (status != null) {
@@ -147,13 +147,13 @@ export default function VoucherContextProvider({ children }) {
    };
 
    const showVoucher = async (id) => {
+      let res = CorrectRes;
       try {
-         let res = CorrectRes;
          const axiosData = await Axios.get(`/vouchers/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
-         // res.result.payroll_number_exist = true;
-         // if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
+         // res.result.employee_code_exist = true;
+         // if (res.result.employee_code.length < 3) res.result.employee_code_exist = false;
 
          setVoucher(res.result);
          setFormData(res.result);

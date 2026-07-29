@@ -21,7 +21,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
    const { voucher, vouchers } = useVoucherContext();
    const { getVouchersDetails, voucherDetails } = useVoucherDetailContext();
    const [formData, setFormData] = useState({
-      directorFrom: "LIC. MAURICIO GUERRERO FELIX",
+      directorFrom: "LIC. LUIS ALAN CARDOZA DE LA GARZA",
       departmentFrom: "JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
       directorTo1: "C. ING. RODRIGO DE LA TORRE VALLE",
       departmentTo1: "OFICIAL MAYOR",
@@ -62,9 +62,9 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          //    dataVoucher.voucher.internal_folio = voucher.internal_folio;
          //    dataVoucher.voucher.date = voucher.created_at;
          //    dataVoucher.voucher.requesterWorkstation = voucher.workstation;
-         //    dataVoucher.voucher.requesterFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
+         //    dataVoucher.voucher.requesterFirm = voucher.signature_image ? `${import.meta.env.VITE_HOST}/${voucher.signature_image}` : null;
          //    dataVoucher.voucher.requesterName = voucher.requested_role_id === 7 ? dataVoucher.directorFrom : voucher.requested_fullname;
-         //    dataVoucher.voucher.requesterStamp = voucher.img_stamp ? `${import.meta.env.VITE_HOST}/${voucher.img_stamp}` : null;
+         //    dataVoucher.voucher.requesterStamp = voucher.seal_image ? `${import.meta.env.VITE_HOST}/${voucher.seal_image}` : null;
          //    dataVoucher.voucher.vobo_at = voucher.vobo_at;
          //    dataVoucher.voucher.activity = <Text style={stylesPDF.p}>{voucher.activity}</Text>;
          //    dataVoucher.voucher.table = (
@@ -90,7 +90,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          //          <View style={stylesPDF.column}>
          //             <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>
          //             {voucherDetails.map((vd) => (
-         //                <Text style={stylesPDF.cell}>{vd.payroll_number}</Text>
+         //                <Text style={stylesPDF.cell}>{vd.employee_code}</Text>
          //             ))}
          //          </View>
          //       </View>
@@ -105,9 +105,9 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          formData.voucher.internal_folio = voucher.internal_folio;
          formData.voucher.date = voucher.created_at;
          formData.voucher.requesterWorkstation = voucher.workstation;
-         formData.voucher.requesterFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
+         formData.voucher.requesterFirm = voucher.signature_image ? voucher.signature_image : null;
          formData.voucher.requesterName = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
-         formData.voucher.requesterStamp = voucher.img_stamp ? `${import.meta.env.VITE_HOST}/${voucher.img_stamp}` : null;
+         formData.voucher.requesterStamp = voucher.seal_image ? voucher.seal_image : null;
          formData.voucher.vobo_at = voucher.vobo_at;
          formData.voucher.table = voucherDetails;
          //          formData.voucher.table = (
@@ -143,7 +143,7 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          //                <View style={stylesPDF.column}>
          //                   <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>
          //                   {voucherDetails.map((vd) => (
-         //                      <Text style={stylesPDF.cell}>{vd.payroll_number}</Text>
+         //                      <Text style={stylesPDF.cell}>{vd.employee_code}</Text>
          //                   ))}
          //                </View>
          //             </View>

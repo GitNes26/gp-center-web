@@ -11,7 +11,7 @@ const formDataInitialState = {
    folio: "",
    vehicle_id: 0,
    contact_name: "",
-   contact_phone: "",
+   contact_cellphone: "",
    pre_diagnosis: "",
    final_diagnosis: null,
 

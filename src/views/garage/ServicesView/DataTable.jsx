@@ -39,7 +39,7 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
       changeStatus,
       loadMaterial
    } = useServiceContext();
-   const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
+   const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_cellphone", "pre_diagnosis", "status"];
    // const [openService, setOpenService] = useState(false);
    const [objService, setObjService] = useState(null);
 
@@ -56,7 +56,7 @@ const ServiceDT = ({ openService, setOpenService, setShowActionButtons }) => {
    );
    const ContactBodyTemplate = (obj) => (
       <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.contact_name} - {formatPhone(obj.contact_phone)}
+         {obj.contact_name} - {formatPhone(obj.contact_cellphone)}
       </Typography>
    );
    const PreDiagnosisBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.pre_diagnosis}</Typography>;

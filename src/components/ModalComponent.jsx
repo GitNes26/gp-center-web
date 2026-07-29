@@ -77,7 +77,7 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
                   </Tooltip>
                </Toolbar>
             </DialogTitle>
-            <DialogContent sx={{ pb: 0, marginTop: 2, height: height, maxHeight: "90vh" }}>
+            <DialogContent sx={{ pb: 0, marginTop: 0, height: height, maxHeight: "90vh" }}>
                <Box sx={{ mt: 1, height: fullScreenDialog ? "100%" : height, maxHeight: "100%" }}>{children}</Box>
             </DialogContent>
             {dialogActions && (

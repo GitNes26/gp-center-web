@@ -63,21 +63,23 @@ const MainRoutes = {
          element: (
             <VehicleContextProvider>
                <VehiclePlateContextProvider>
-                  <ServiceContextProvider>
-                     <DirectorContextProvider>
-                        <VehicleMovementLogContextProvider>
-                           <AssignedVehicleContextProvider>
-                              <DriverContextProvider>
-                                 <LoanedVehicleContextProvider>
-                                    <DeliveredVehicleContextProvider>
-                                       <ShowVehicleView />
-                                    </DeliveredVehicleContextProvider>
-                                 </LoanedVehicleContextProvider>
-                              </DriverContextProvider>
-                           </AssignedVehicleContextProvider>
-                        </VehicleMovementLogContextProvider>
-                     </DirectorContextProvider>
-                  </ServiceContextProvider>
+                  <MechanicContextProvider>
+                     <ServiceContextProvider>
+                        <DirectorContextProvider>
+                           <VehicleMovementLogContextProvider>
+                              <AssignedVehicleContextProvider>
+                                 <DriverContextProvider>
+                                    <LoanedVehicleContextProvider>
+                                       <DeliveredVehicleContextProvider>
+                                          <ShowVehicleView />
+                                       </DeliveredVehicleContextProvider>
+                                    </LoanedVehicleContextProvider>
+                                 </DriverContextProvider>
+                              </AssignedVehicleContextProvider>
+                           </VehicleMovementLogContextProvider>
+                        </DirectorContextProvider>
+                     </ServiceContextProvider>
+                  </MechanicContextProvider>
                </VehiclePlateContextProvider>
             </VehicleContextProvider>
          )
@@ -160,31 +162,37 @@ const MainRoutes = {
       {
          path: "mecanicos",
          element: (
-            <MechanicContextProvider>
-               <MechanicsView />
-            </MechanicContextProvider>
+            <EmployeeContextProvider>
+               <MechanicContextProvider>
+                  <MechanicsView />
+               </MechanicContextProvider>
+            </EmployeeContextProvider>
          )
          // loader: loaderIndex
       },
       {
          path: "directores",
          element: (
-            <DirectorContextProvider>
-               <DepartmentContextProvider>
-                  <DirectorsView />
-               </DepartmentContextProvider>
-            </DirectorContextProvider>
+            <EmployeeContextProvider>
+               <DirectorContextProvider>
+                  <DepartmentContextProvider>
+                     <DirectorsView />
+                  </DepartmentContextProvider>
+               </DirectorContextProvider>
+            </EmployeeContextProvider>
          )
          // loader: loaderIndex
       },
       {
          path: "conductores",
          element: (
-            <DriverContextProvider>
-               <DirectorContextProvider>
-                  <DriversView />
-               </DirectorContextProvider>
-            </DriverContextProvider>
+            <EmployeeContextProvider>
+               <DriverContextProvider>
+                  <DirectorContextProvider>
+                     <DriversView />
+                  </DirectorContextProvider>
+               </DriverContextProvider>
+            </EmployeeContextProvider>
          )
          // loader: loaderIndex
       },

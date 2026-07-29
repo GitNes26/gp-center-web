@@ -19,12 +19,12 @@ const DirectoriesHistory = ({ rows }) => {
          format: (value) => <ImageZoomComponent imgUrl={value !== null ? `${import.meta.env.VITE_HOST}/${value}` : logo} width="25px" />
       },
       {
-         id: "img_firm",
+         id: "signature_image",
          label: "Firma",
          minWidth: 100,
          format: (value) => <ImageZoomComponent imgUrl={value !== null ? `${import.meta.env.VITE_HOST}/${value}` : sinFirma} width="25px" />
       },
-      { id: "payroll_number", label: "No. Nómina", minWidth: 100, align: "center", format: (value) => <b>{value}</b> },
+      { id: "employee_code", label: "No. Nómina", minWidth: 100, align: "center", format: (value) => <b>{value}</b> },
       { id: "full_name", label: "Director", minWidth: 100, align: "center", format: (value) => value.toUpperCase() },
       { id: "created_at", label: "Fecha de Registro", minWidth: 100, align: "center", format: (value) => formatDatetime(value, false) },
       { id: "relation_active", label: "Vigente", minWidth: 50, align: "center", format: (value) => platesCurrent(value) }
@@ -39,7 +39,7 @@ const DirectoriesHistory = ({ rows }) => {
    function createData(id, plates, initial_date, due_date, expired) {
       return { id, plates, initial_date, due_date, expired };
    }
-   // const rows = [{ id: 1, avatar: null, img_firm: null, payroll_number: 191817, full_name: "Director numero uno", created_at: "2020-01-05", active: true }];
+   // const rows = [{ id: 1, avatar: null, signature_image: null, employee_code: 191817, full_name: "Director numero uno", created_at: "2020-01-05", active: true }];
 
    useEffect(() => {
       try {

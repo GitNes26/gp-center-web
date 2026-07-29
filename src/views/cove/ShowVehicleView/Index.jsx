@@ -428,13 +428,7 @@ const ShowVehicleView = () => {
                            <Card>
                               <ComponentItem
                                  title="Asignado a"
-                                 icon={
-                                    vehicle.dir_avatar === null ? (
-                                       <IconUserPentagon />
-                                    ) : (
-                                       <Avatar alt={vehicle.dir_username} src={`${import.meta.env.VITE_HOST}/${vehicle.dir_avatar}`} />
-                                    )
-                                 }
+                                 icon={vehicle.dir_avatar === null ? <IconUserPentagon /> : <Avatar alt={vehicle.dir_username} src={vehicle.dir_avatar} />}
                                  text={
                                     <Typography variant="h4" component={"span"}>
                                        ASIGNADO A: {vehicle.dir_username}
@@ -443,13 +437,7 @@ const ShowVehicleView = () => {
                               />
                               <ComponentItem
                                  title="Prestado a"
-                                 icon={
-                                    vehicle.dri_username === null ? (
-                                       <IconAB2 />
-                                    ) : (
-                                       <Avatar alt={vehicle.dri_username} src={`${import.meta.env.VITE_HOST}/${vehicle.dri_avatar}`} />
-                                    )
-                                 }
+                                 icon={vehicle.dri_username === null ? <IconAB2 /> : <Avatar alt={vehicle.dri_username} src={vehicle.dri_avatar} />}
                                  text={
                                     <Typography variant="h4" component={"span"}>
                                        PRESTADO A: {vehicle.dri_username}
@@ -468,7 +456,7 @@ const ShowVehicleView = () => {
                <Box sx={{}}>
                   <img
                      // src={ImgCar}
-                     src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.img_preview}`}
+                     src={vehicle && vehicle.img_preview}
                      className={`vehicle-container ${classesImgVehicle}`}
                      style={{
                         left: `calc(45% - ${drawerWidth + 10}px)`,
@@ -481,7 +469,7 @@ const ShowVehicleView = () => {
             {/* IMAGEN INSIGNIA MARCA */}
             {vehicle && (
                <Box className={`brand-container ${classesImgVehicle}`}>
-                  <img src={vehicle && `${import.meta.env.VITE_HOST}/${vehicle.brand_img}`} style={{ maxHeight: "100px", objectFit: "cover" }} />
+                  <img src={vehicle && vehicle.brand_img} style={{ maxHeight: "100px", objectFit: "cover" }} />
                   <Typography variant="h1" sx={{ color: "whitesmoke", fontSize: "42px", textShadow: "2px 2px 4px rgba(0, 0, 0, 1)" }}>
                      {vehicle && vehicle.model}
                   </Typography>

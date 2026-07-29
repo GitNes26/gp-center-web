@@ -319,7 +319,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
    const validationSchema = Yup.object().shape({
       stock_number: Yup.number("Solo números").required("Número de Inventario requerido"),
       contact_name: Yup.string().trim().required("Nombre de contacto requerido"),
-      contact_phone: Yup.string()
+      contact_cellphone: Yup.string()
          .trim()
          .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
          .required("Número telefónico requerido"),
@@ -458,7 +458,7 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
             {/* Telefono de contacto */}
             <Grid item xs={12} md={5} sx={{ mb: 1 }}>
                <InputComponentv2
-                  idName={"contact_phone"}
+                  idName={"contact_cellphone"}
                   label={"Telefono de contacto"}
                   placeholder={"Ingresa un número telefonico"}
                   type="text"
@@ -471,9 +471,9 @@ const ModalService = ({ open, setOpen, stockNumber = null, objService = null, ti
                   disabled={disabled}
                   // sx={{ backgroundColor: "gray" }}
                   inputProps={{ maxLength: 10 }}
-                  value={values.contact_phone}
-                  error={errors.contact_phone}
-                  touched={touched.contact_phone}
+                  value={values.contact_cellphone}
+                  error={errors.contact_cellphone}
+                  touched={touched.contact_cellphone}
                />
             </Grid>
             {/* Diagnóstico inicial */}

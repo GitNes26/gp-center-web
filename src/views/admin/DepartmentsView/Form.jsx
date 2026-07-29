@@ -118,8 +118,8 @@ const DepartmentForm = () => {
                return {
                   id: i.relation_id,
                   avatar: i.avatar,
-                  img_firm: i.img_firm,
-                  payroll_number: i.payroll_number,
+                  signature_image: i.signature_image,
+                  employee_code: i.employee_code,
                   full_name: i.full_name,
                   created_at: i.created_at,
                   relation_active: i.relation_active

@@ -30,24 +30,15 @@ import { useEmployeeContext } from "../../../context/EmployeeContext";
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
+const UserForm = ({ dataRoles, dataEmployees }) => {
    const {
       setLoadingAction,
       openDialog,
       setOpenDialog,
       toggleDrawer,
-      setDisabledState,
-      setDisabledCity,
-      setDisabledColony,
-      setShowLoading,
-      setDataStates,
-      setDataCities,
-      setDataColonies,
-      setDataColoniesComplete,
       cursorLoading
    } = useGlobalContext();
    const {
-      user,
       resetFormData,
       resetUser,
       singularName,
@@ -110,7 +101,7 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
       }
    };
 
-   const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
+   const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          // console.log("formData", formData);
          // console.log("values", values);
@@ -243,32 +234,11 @@ const UserForm = ({ dataRoles, dataDepartments, dataEmployees }) => {
                <Grid container spacing={2} mt={2}>
                   <InputComponent col={12} idName={"id"} label={"id"} placeholder={"el id"} hidden={true} />
                   <InputComponent col={12} idName={"department_uuid"} label={"department_uuid"} placeholder={"el id"} hidden={true} />
-                  {/* {!isAdmin && (
-                     <>
-                        <Select2Component
-                           col={12}
-                           idName={"department_id"}
-                           label={"Departamento"}
-                           options={dataDepartments}
-                           pluralName={"Departamentos"}
-                           refreshSelect={getDepartmentsSelectIndex}
-                           required
-                        />
-                        <Select2Component
-                           col={12}
-                           idName={"employee_id"}
-                           label={"Empleado"}
-                           options={dataEmployees}
-                           pluralName={"Empleados"}
-                           refreshSelect={getEmployeesSelectIndex}
-                           required
-                        />
-                     </>
-                  )} */}
+    
                   <DividerComponent title={"DATOS DE EMPLEADO"} />
                   <Select2Component
                      col={12}
-                     idName={"employee_id"}
+                     idName={"gpc_employee_id"}
                      label={"Empleado"}
                      options={dataEmployees}
                      pluralName={"Empleados"}

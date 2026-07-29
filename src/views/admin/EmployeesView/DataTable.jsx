@@ -12,6 +12,7 @@ import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
 import { useEmployeeContext } from "../../../context/EmployeeContext";
+import EmployeeCardInfo from "./CardInfo";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
@@ -20,16 +21,17 @@ import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalConte
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
+import { IconEye } from "@tabler/icons";
 import { Box } from "@mui/system";
 import { Avatar } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
-import { formatPhone } from "../../../utils/Formats";
+import { formatPhone, sleep } from "../../../utils/Formats";
 import { setObjImg } from "../../../components/Form/FormikComponents";
 import SwitchComponent from "../../../components/SwitchComponent";
 
 const EmployeeDT = () => {
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { setLoading, setLoadingAction, setOpenDialog, openCardInfo, setOpenCardInfo } = useGlobalContext();
    const {
       singularName,
       pluralName,
@@ -44,9 +46,10 @@ const EmployeeDT = () => {
       setTextBtnSumbit,
       setFormTitle,
       formData,
-      formikRef
+      formikRef,
+      getInfoEmployee
    } = useEmployeeContext();
-   const globalFilterFields = ["employee_code", "full_name", "full_name_reverse", "phone", "license_number", "department_name"];
+   const globalFilterFields = ["employee_code", "full_name", "full_name_reverse", "cellphone", "license_number", "department_name"];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
@@ -62,7 +65,7 @@ const EmployeeDT = () => {
    );
    const EmployeeBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.full_name}</Typography>;
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department_name}</Typography>;
-   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
+   const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.cellphone)}</Typography>;
    const LicenseBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.license_number}</Typography>;
    // const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const ActiveBodyTemplate = (obj) => (
@@ -78,7 +81,7 @@ const EmployeeDT = () => {
       { field: "employee_code", header: "No. Nómina", sortable: true, functionEdit: null, body: PayRollBodyTemplate, filter: true, filterField: null },
       { field: "full_name", header: "Nombre", sortable: true, functionEdit: null, body: EmployeeBodyTemplate, filter: true, filterField: null },
       { field: "department_name", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null },
-      { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: true, filterField: null },
+      { field: "cellphone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filter: true, filterField: null },
       { field: "license_number", header: "No. Licencia", sortable: true, functionEdit: null, body: LicenseBodyTemplate, filter: true, filterField: null },
       // { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filter: false, filterField: null }
@@ -168,9 +171,27 @@ const EmployeeDT = () => {
       }
    };
 
-   const ButtonsAction = ({ id, name, active }) => {
+   const handleClickView = async (obj) => {
+      try {
+         setLoadingAction(true);
+         const res = await getInfoEmployee("employee_code", obj.employee_code);
+         setOpenCardInfo(true);
+         await sleep(500);
+         setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const ButtonsAction = ({ id, name, active, obj }) => {
       return (
          <ButtonGroup variant="outlined">
+            <Tooltip title={`Ver ${singularName}`} placement="top">
+               <Button color="dark" onClick={() => handleClickView(obj)}>
+                  <IconEye />
+               </Button>
+            </Tooltip>
             {auth.permissions.update && (
                <Tooltip title={`Editar ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickEdit(id)}>
@@ -204,7 +225,7 @@ const EmployeeDT = () => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.full_name} active={obj.active} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.full_name} active={obj.active} obj={obj} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(employees[0]));
@@ -221,29 +242,32 @@ const EmployeeDT = () => {
       setLoading(false);
    }, []);
    return (
-      <DataTableComponent
-         columns={columns}
-         data={data}
-         globalFilterFields={globalFilterFields}
-         headerFilters={true}
-         handleClickAdd={handleClickAdd}
-         refreshTable={getEmployees}
-         btnAdd={auth.permissions.create}
-         showGridlines={false}
-         btnsExport={true}
-         rowEdit={false}
-         // handleClickDeleteContinue={handleClickDeleteContinue}
-         // ELIMINAR MULTIPLES REGISTROS
-         btnDeleteMultiple={false}
-         // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
-         // PARA HACER FORMULARIO EN LA TABLA
-         // AGREGAR
-         // createData={createVehicle}
-         // newRow={newRow}
-         // EDITAR
-         // setData={setVehicles}
-         // updateData={updateVehicle}
-      />
+      <>
+         <DataTableComponent
+            columns={columns}
+            data={data}
+            globalFilterFields={globalFilterFields}
+            headerFilters={true}
+            handleClickAdd={handleClickAdd}
+            refreshTable={getEmployees}
+            btnAdd={auth.permissions.create}
+            showGridlines={false}
+            btnsExport={true}
+            rowEdit={false}
+            // handleClickDeleteContinue={handleClickDeleteContinue}
+            // ELIMINAR MULTIPLES REGISTROS
+            btnDeleteMultiple={false}
+            // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+            // PARA HACER FORMULARIO EN LA TABLA
+            // AGREGAR
+            // createData={createVehicle}
+            // newRow={newRow}
+            // EDITAR
+            // setData={setVehicles}
+            // updateData={updateVehicle}
+         />
+         {openCardInfo && <EmployeeCardInfo />}
+      </>
    );
 };
 export default EmployeeDT;

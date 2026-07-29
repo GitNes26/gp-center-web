@@ -429,3 +429,32 @@ export async function searcher(data, termino, filtros = []) {
 export const sleep = (ms) => {
    return new Promise((resolve) => setTimeout(resolve, ms));
 };
+
+/**
+ * Convierte un objeto plano a FormData.
+ * @param objForm - Objeto con valores.
+ * @returns FormData.
+ */
+export const convertToFormData = async (objForm) => {
+   const formData = new FormData();
+   Object.keys(objForm).forEach((key) => {
+      const value = objForm[key];
+      // console.log("🚀 ~ convertToFormData ~ key:", key, "| value:", value, " | type:", typeof value);
+      if (value instanceof File || value instanceof Blob) {
+         formData.append(key, value);
+      } else if (typeof value === "object" && value != null) {
+         if (includesInArray(Object.keys(value), ["uri", "name", "type"], true)) {
+            formData.append(key, {
+               uri: value.uri,
+               name: value.name,
+               type: value.type
+            });
+         } else {
+            formData.append(key, JSON.stringify(value));
+         }
+      } else {
+         formData.append(key, value);
+      }
+   });
+   return formData;
+};

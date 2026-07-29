@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
@@ -15,12 +15,12 @@ const formDataInitialState = {
    // director: "Selecciona una opción...",
    role_id: 0,
    avatar: "",
-   phone: "",
+   cellphone: "",
    license_number: "",
    license_type: "",
    license_due_date: "",
    img_lincense: "",
-   payroll_number: "",
+   employee_code: "",
    // department_id: "",
    // department: "Selecciona una opción...",
    department: "",
@@ -36,7 +36,7 @@ const formDataInitialState = {
    state: 0,
    city: 0,
    colony: 0,
-   payroll_number_exist: false
+   employee_code_exist: false
 };
 const driverInitialState = {
    id: 0,
@@ -49,12 +49,12 @@ const driverInitialState = {
    role_id: 0,
    role: "Selecciona una opción...",
    avatar: "",
-   phone: "",
+   cellphone: "",
    license_number: "",
    license_type: "",
    license_due_date: "",
    img_lincense: "",
-   payroll_number: "",
+   employee_code: "",
    // department_id: "",
    // department: "Selecciona una opción...",
    department: "",
@@ -70,7 +70,7 @@ const driverInitialState = {
    state: "Selecciona una opción...",
    city: "Selecciona una opción...",
    colony: "Selecciona una opción...",
-   payroll_number_exist: false
+   employee_code_exist: false
 };
 
 export default function DriverContextProvider({ children }) {
@@ -85,6 +85,7 @@ export default function DriverContextProvider({ children }) {
    const [driver, setDriver] = useState(driverInitialState);
    const [drivers, setDrivers] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef(null);
 
    const resetFormData = () => {
       try {
@@ -130,8 +131,8 @@ export default function DriverContextProvider({ children }) {
          res.result.state = "Selecciona una opción...";
          res.result.city = "Selecciona una opción...";
          res.result.colony = "Selecciona una opción...";
-         res.result.payroll_number_exist = true;
-         if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
+         res.result.employee_code_exist = true;
+         if (res.result.employee_code.length < 3) res.result.employee_code_exist = false;
 
          setDriver(res.result);
          setFormData(res.result);
@@ -232,7 +233,8 @@ export default function DriverContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            formikRef
          }}
       >
          {children}

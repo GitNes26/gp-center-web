@@ -78,7 +78,7 @@ const ServiceForm = () => {
       // colony_id: Yup.string().trim().required("Colonia requerida"),
       street: Yup.string().trim().required("Calle requerida"),
       num_ext: Yup.string().trim().required("Número exterior requerida"),
-      phone: Yup.string()
+      cellphone: Yup.string()
          .trim()
          .matches("[0-9]{10}", "Formato invalido - teléfono a 10 digitos")
          .max(10, "Formato invalido - teléfono a 10 digitos")
@@ -145,7 +145,7 @@ const ServiceForm = () => {
                <InputsCommunityComponent formData={formData} setFormData={setFormData} columnsByTextField={6} />
 
                {/* Telefono */}
-               <InputComponent col={4} idName={"phone"} label={"Número Telefónico *"} placeholder={"10 dígitos"} inputProps={{ maxLength: 10 }} />
+               <InputComponent col={4} idName={"cellphone"} label={"Número Telefónico *"} placeholder={"10 dígitos"} inputProps={{ maxLength: 10 }} />
 
                {/* Director */}
                <InputComponent col={8} idName={"director"} label={"Nombre del director *"} placeholder={"Lic. Nombre Completo"} textStyleCase={true} />

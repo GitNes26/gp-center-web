@@ -2,20 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Grid,
-   Button,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Grid, Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -120,7 +107,7 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
       city_id: Yup.string().trim().required("Ciudad requerido"),
       colony_id: Yup.string().trim().required("Colonia requerida"),
       street: Yup.string().trim().required("Dirección requerida"),
-      phone: Yup.string()
+      cellphone: Yup.string()
          .trim()
          .matches("[0-9]{10}", "Formato invalido - teléfono a 10 digitos")
          .max(10, "Formato invalido - teléfono a 10 digitos")
@@ -339,16 +326,16 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                         </FormControl>
                         {/* <FormControl
                      fullWidth
-                     error={Boolean(touched.phone && errors.phone)}
+                     error={Boolean(touched.cellphone && errors.cellphone)}
                      sx={{ height: "auto" }}
                      // sx={{ ...theme.typography.customInput }}
                   >
                      <Autocomplete
                         disablePortal
-                        id="phone"
-                        name="phone"
+                        id="cellphone"
+                        name="cellphone"
                         label="Colonia / Localidad"
-                        defaultValue={{ label: values.phone }}
+                        defaultValue={{ label: values.cellphone }}
                         isOptionEqualToValue={(option, value) => option.id == value.id}
                         // onChange={handleChange}
                         onBlur={handleBlur}
@@ -362,9 +349,9 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                            }
                         }}
                      />
-                     {touched.phone && errors.phone && (
-                        <FormHelperText error id="ht-phone">
-                           {errors.phone}
+                     {touched.cellphone && errors.cellphone && (
+                        <FormHelperText error id="ht-cellphone">
+                           {errors.cellphone}
                         </FormHelperText>
                      )}
                   </FormControl> */}
@@ -388,18 +375,18 @@ const FormComponent = ({ dataCities, dataColonies, dataLevels }) => {
                      {/* Telefono */}
                      <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                         <TextField
-                           id="phone"
-                           name="phone"
+                           id="cellphone"
+                           name="cellphone"
                            label="Número Telefónico *"
-                           type="phone"
-                           value={values.phone}
+                           type="cellphone"
+                           value={values.cellphone}
                            placeholder="10 dígitos"
                            onChange={handleChange}
                            onBlur={handleBlur}
                            fullWidth
                            inputProps={{ maxLength: 10 }}
-                           error={errors.phone && touched.phone}
-                           helperText={errors.phone && touched.phone && errors.phone}
+                           error={errors.cellphone && touched.cellphone}
+                           helperText={errors.cellphone && touched.cellphone && errors.cellphone}
                         />
                      </Grid>
                      {/* Director */}

@@ -34,7 +34,7 @@ const UserDT = () => {
       setFormTitle,
       formikRef
    } = useUserContext();
-   const globalFilterFields = ["username", "email", "role", "departamento.departamento", "payroll_number", "full_name", "full_name_reverse", "active", "created_at"];
+   const globalFilterFields = ["username", "email", "role", "department_name", "employee_code", "full_name", "full_name_reverse", "active", "created_at"];
 
    // #region BodysTemplate
    const UserBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
@@ -42,10 +42,10 @@ const UserDT = () => {
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
    const EmployeeBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         <b>{obj.payroll_number}</b> <br /> {obj.full_name}
+         <b>{obj.employee_code}</b> <br /> {obj.full_name}
       </Typography>
    );
-   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.departamento?.departamento}</Typography>;
+   const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.department_name}</Typography>;
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
@@ -60,7 +60,7 @@ const UserDT = () => {
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filter: true, filterField: null },
       { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filter: true, filterField: null },
       { field: "full_name", header: "Empleado", sortable: true, functionEdit: null, body: EmployeeBodyTemplate, filter: true, filterField: null },
-      { field: "departamento.departamento", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null }
+      { field: "department_name", header: "Departamento", sortable: true, functionEdit: null, body: DepartmentBodyTemplate, filter: true, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -90,6 +90,7 @@ const UserDT = () => {
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          const res = await showUser(id);
+         console.log("🚀 ~ handleClickEdit ~ res:", res)
          formikRef.current.setValues(res.result);
          setOpenDialog(true);
          setLoadingAction(false);

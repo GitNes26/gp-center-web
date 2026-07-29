@@ -125,9 +125,9 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
          const value = e.target.value;
          if (value == "0") {
             await setFieldValue("name", "");
-            await setFieldValue("paternal_last_name", "");
-            await setFieldValue("maternal_last_name", "");
-            await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("plast_name", "");
+            await setFieldValue("mlast_name", "");
+            await setFieldValue("employee_code_exist", false);
             await setFieldValue("department", "");
             return setWorker(false);
          } else setWorker(true);
@@ -140,16 +140,16 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
          if (employee) {
             Toast.Success(`Número de nómina encontrado`);
             await setFieldValue("name", employee.nombreE);
-            await setFieldValue("paternal_last_name", employee.apellidoP);
-            await setFieldValue("maternal_last_name", employee.apellidoM);
-            await setFieldValue("payroll_number_exist", true);
+            await setFieldValue("plast_name", employee.apellidoP);
+            await setFieldValue("mlast_name", employee.apellidoM);
+            await setFieldValue("employee_code_exist", true);
             await setFieldValue("department", employee.departamento);
          } else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
-            await setFieldValue("paternal_last_name", "");
-            await setFieldValue("maternal_last_name", "");
-            await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("plast_name", "");
+            await setFieldValue("mlast_name", "");
+            await setFieldValue("employee_code_exist", false);
             await setFieldValue("department", "");
          }
       } catch (error) {
@@ -158,9 +158,9 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
          else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
-            await setFieldValue("paternal_last_name", "");
-            await setFieldValue("maternal_last_name", "");
-            await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("plast_name", "");
+            await setFieldValue("mlast_name", "");
+            await setFieldValue("employee_code_exist", false);
             await setFieldValue("department", "");
          }
       }
@@ -324,13 +324,13 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
          // approved_amount: inAprobation && Yup.number("Solo números").min(0, "Mínimo").required("Cantidad Aprobada requerida"),
          // vehicle_plates: Yup.string().trim().required("Placas del vehículo requerido"),
          // requested_amount: Yup.number("Solo números").min(0, "Mínimo"),
-         // payroll_number: Yup.number("Solo números"),
-         // // payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
+         // employee_code: Yup.number("Solo números"),
+         // // employee_code_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
          // // department: Yup.string().trim().required("Departamento requerido"),
          // name: Yup.string().trim().required("Nombre(s) requerido"),
-         // paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         // maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
-         // phone: Yup.string()
+         // plast_name: Yup.string().trim().required("Apellido Paterno requerido"),
+         // mlast_name: Yup.string().trim().required("Apellido Materno requerido"),
+         // cellphone: Yup.string()
          //    .trim()
          //    .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
          //    .required("Número telefónico requerido"),
@@ -711,20 +711,20 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                         )}
                         {/* Número de Nómina */}
                         <Field
-                           id="payroll_number_exist"
-                           name="payroll_number_exist"
+                           id="employee_code_exist"
+                           name="employee_code_exist"
                            type="hidden"
-                           value={values.payroll_number_exist}
+                           value={values.employee_code_exist}
                            onChange={handleChange}
                            onBlur={handleBlur}
                         />
                         {/* <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
-                              id="payroll_number"
-                              name="payroll_number"
+                              id="employee_code"
+                              name="employee_code"
                               label="Número de Nómina"
                               type="number"
-                              value={values.payroll_number}
+                              value={values.employee_code}
                               placeholder="99999"
                               onChange={handleChange}
                               onInput={(e) => handleInputPayRoll(e, setFieldValue, values)}
@@ -732,12 +732,12 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                               fullWidth
                               disabled={inAprobation}
                               // inputProps={{ maxLength: 11 }}
-                              error={errors.payroll_number && touched.payroll_number}
-                              helperText={errors.payroll_number && touched.payroll_number && errors.payroll_number}
-                              // error={(errors.payroll_number && touched.payroll_number) || (errors.payroll_number_exist && touched.payroll_number_exist)}
+                              error={errors.employee_code && touched.employee_code}
+                              helperText={errors.employee_code && touched.employee_code && errors.employee_code}
+                              // error={(errors.employee_code && touched.employee_code) || (errors.employee_code_exist && touched.employee_code_exist)}
                               // helperText={
-                              //    (errors.payroll_number && touched.payroll_number && errors.payroll_number) ||
-                              //    (errors.payroll_number_exist && touched.payroll_number_exist && errors.payroll_number_exist)
+                              //    (errors.employee_code && touched.employee_code && errors.employee_code) ||
+                              //    (errors.employee_code_exist && touched.employee_code_exist && errors.employee_code_exist)
                               // }
                            />
                         </Grid> */}
@@ -782,57 +782,57 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                         {/* Apellido Paterno */}
                         {/* <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
-                              id="paternal_last_name"
-                              name="paternal_last_name"
+                              id="plast_name"
+                              name="plast_name"
                               label="Apellido Paterno *"
                               type="text"
-                              value={values.paternal_last_name}
+                              value={values.plast_name}
                               placeholder="Ingrese tu primer apellido"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "plast_name", true)}
                               InputProps={{ disabled: worker }}
                               fullWidth
                               // disabled={values.id == 0 ? false : true}
-                              error={errors.paternal_last_name && touched.paternal_last_name}
-                              helperText={errors.paternal_last_name && touched.paternal_last_name && errors.paternal_last_name}
+                              error={errors.plast_name && touched.plast_name}
+                              helperText={errors.plast_name && touched.plast_name && errors.plast_name}
                            />
                         </Grid> */}
                         {/* Apellido Materno */}
                         {/* <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                            <TextField
-                              id="maternal_last_name"
-                              name="maternal_last_name"
+                              id="mlast_name"
+                              name="mlast_name"
                               label="Apellido Materno *"
                               type="text"
-                              value={values.maternal_last_name}
+                              value={values.mlast_name}
                               placeholder="Ingrese tu segundo apellido"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "mlast_name", true)}
                               InputProps={{ disabled: worker }}
                               fullWidth
                               // disabled={values.id == 0 ? false : true}
-                              error={errors.maternal_last_name && touched.maternal_last_name}
-                              helperText={errors.maternal_last_name && touched.maternal_last_name && errors.maternal_last_name}
+                              error={errors.mlast_name && touched.mlast_name}
+                              helperText={errors.mlast_name && touched.mlast_name && errors.mlast_name}
                            />
                         </Grid> */}
                         {/* Telefono */}
                         {/* <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <TextField
-                              id="phone"
-                              name="phone"
+                              id="cellphone"
+                              name="cellphone"
                               label="Número Telefónico *"
-                              type="phone"
-                              value={values.phone}
+                              type="cellphone"
+                              value={values.cellphone}
                               placeholder="10 dígitos"
                               onChange={handleChange}
                               onBlur={handleBlur}
                               fullWidth
                               disabled={inAprobation}
                               inputProps={{ maxLength: 10 }}
-                              error={errors.phone && touched.phone}
-                              helperText={errors.phone && touched.phone && errors.phone}
+                              error={errors.cellphone && touched.cellphone}
+                              helperText={errors.cellphone && touched.cellphone && errors.cellphone}
                            />
                         </Grid> */}
                      </Grid>

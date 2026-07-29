@@ -31,7 +31,7 @@ const ServiceMaterialDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, services, getServices, showService, deleteService, setTextBtnSumbit, setFormTitle } = useServiceContext();
-   const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_phone", "pre_diagnosis", "status"];
+   const globalFilterFields = ["folio", "stock_number", "contact_name", "contact_cellphone", "pre_diagnosis", "status"];
    const [openService, setOpenService] = useState(false);
    const [objService, setObjService] = useState(null);
 
@@ -48,7 +48,7 @@ const ServiceMaterialDT = () => {
    );
    const ContactBodyTemplate = (obj) => (
       <Typography textAlign={"center"} sx={{ fontWeight: "bolder" }}>
-         {obj.contact_name} - {formatPhone(obj.contact_phone)}
+         {obj.contact_name} - {formatPhone(obj.contact_cellphone)}
       </Typography>
    );
    const PreDiagnosisBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.pre_diagnosis}</Typography>;

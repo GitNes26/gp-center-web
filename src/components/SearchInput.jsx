@@ -89,6 +89,7 @@ const SearchInput = ({
                     Buscar Vehículo
                  </InputLabel> */}
             <Tooltip title={titleTooltip || "Presiona ENTER para comenzar la busqueda"} placement={positionTooltip || "top"}>
+               <span>
                <OutlineInputStyle
                   id={idName || "search"}
                   name={idName || "search"}
@@ -109,6 +110,7 @@ const SearchInput = ({
                   // // ref={ref}
                   {...prop}
                />
+               </span>
             </Tooltip>
 
             {showOptions && (

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
@@ -14,17 +14,18 @@ const formDataInitialState = {
    password: "",
    role_id: 0,
    avatar: "",
-   phone: "",
-   payroll_number: "",
+   cellphone: "",
+   employee_code: "",
    // department_id: "",
    // department: "Selecciona una opción...",
    department: "",
-   img_firm: "",
-   img_stamp: "",
+   position_name: "",
+   signature_image: "",
+   seal_image: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
-   payroll_number_exist: false
+   plast_name: "",
+   mlast_name: "",
+   employee_code_exist: false
 };
 const voucherRequesterInitialState = {
    id: 0,
@@ -36,17 +37,18 @@ const voucherRequesterInitialState = {
    role_id: 0,
    role: "Selecciona una opción...",
    avatar: "",
-   phone: "",
-   payroll_number: "",
+   cellphone: "",
+   employee_code: "",
    // department_id: "",
    // department: "Selecciona una opción...",
    department: "",
-   img_firm: "",
-   img_stamp: "",
+   position_name: "",
+   signature_image: "",
+   seal_image: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
-   payroll_number_exist: false
+   plast_name: "",
+   mlast_name: "",
+   employee_code_exist: false
 };
 
 export default function VoucherRequesterContextProvider({ children }) {
@@ -61,6 +63,7 @@ export default function VoucherRequesterContextProvider({ children }) {
    const [voucherRequester, setVoucherRequester] = useState(voucherRequesterInitialState);
    const [voucherRequesters, setVoucherRequesters] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef(null);
 
    const resetFormData = () => {
       try {
@@ -107,8 +110,8 @@ export default function VoucherRequesterContextProvider({ children }) {
          res.result.state = "Selecciona una opción...";
          res.result.city = "Selecciona una opción...";
          res.result.colony = "Selecciona una opción...";
-         res.result.payroll_number_exist = true;
-         if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
+         res.result.employee_code_exist = true;
+         if (res.result.employee_code.length < 3) res.result.employee_code_exist = false;
 
          setVoucherRequester(res.result);
          setFormData(res.result);
@@ -143,12 +146,14 @@ export default function VoucherRequesterContextProvider({ children }) {
    };
 
    const createVoucherRequester = async (voucherRequester) => {
+      console.log("🚀 ~ createVoucherRequester ~ voucherRequester:", voucherRequester);
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/create/5`, voucherRequester);
-         const axiosData = await Axios.post(`/users/create/role_id/8`, voucherRequester, {
+         const axiosData = await Axios.post(`/users/create/`, voucherRequester, {
             headers: {
-               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+               Accept: "application/json",
+               "Content-Type": "multipart/form-data"
             }
          });
          // console.log(axiosData);
@@ -169,7 +174,7 @@ export default function VoucherRequesterContextProvider({ children }) {
       try {
          // const axiosData = await Axios.post("/voucherRequesters/update", voucherRequester);
          // const axiosData = await Axios.post(`/users/update/${voucherRequester.user_id}`, voucherRequester);
-         const axiosData = await Axios.post(`/users/update/role_id/8`, voucherRequester, {
+         const axiosData = await Axios.post(`/users/update`, voucherRequester, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -231,7 +236,8 @@ export default function VoucherRequesterContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            formikRef
          }}
       >
          {children}

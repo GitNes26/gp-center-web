@@ -9,7 +9,7 @@ const formDataInitialState = {
    tutor_id: "",
    folio: "",
    tutor_full_name: "",
-   tutor_phone: "",
+   tutor_cellphone: "",
 
    student_data_id: 0,
    curp: "",
@@ -77,7 +77,7 @@ export default function RequestBecaContextProvider({ children }) {
          newData.city = values.city;
          newData.colony = values.colony;
          newData.street = values.street;
-         newData.phone = values.phone;
+         newData.cellphone = values.cellphone;
          newData.director = values.director;
          newData.loc_for = values.loc_for;
          newData.zone = values.zone;

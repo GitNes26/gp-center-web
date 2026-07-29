@@ -10,13 +10,13 @@ const voucherInitialState = {
    vehicle: "",
    vehicle_plates: "",
    // requested_amount: 0,
-   payroll_number: "",
+   employee_code: "",
    department: "",
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
-   phone: "",
-   payroll_number_exist: false,
+   cellphone: "",
+   employee_code_exist: false,
 
    creditor_fullname: ""
 };

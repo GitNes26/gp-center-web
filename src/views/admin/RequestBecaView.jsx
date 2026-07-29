@@ -322,7 +322,7 @@ const RequestBecaView = () => {
       // id: 0,
       // folio: Yup.number("solo números").required("Folio requerido"),
       tutor_full_name: Yup.string().trim().required("Nombre completo del tutor requerido"),
-      tutor_phone: Yup.string().trim().min(10, "El número telefónico debe ser a 10 digitos").required("Número telefonico del tutor requerido")
+      tutor_cellphone: Yup.string().trim().min(10, "El número telefónico debe ser a 10 digitos").required("Número telefonico del tutor requerido")
    });
    const validationSchema2 = Yup.object().shape({
       // id: 0,
@@ -438,19 +438,19 @@ const RequestBecaView = () => {
                                     {/* Tel Tutor */}
                                     <Grid item xs={12} md={3} sx={{ mb: 3 }}>
                                        <TextField
-                                          id="tutor_phone"
-                                          name="tutor_phone"
+                                          id="tutor_cellphone"
+                                          name="tutor_cellphone"
                                           label="Teléfono Tutor *"
                                           type="text"
-                                          value={values.tutor_phone}
+                                          value={values.tutor_cellphone}
                                           placeholder="10 dígitos"
                                           inputProps={{ maxLength: 10 }}
                                           onChange={handleChange}
                                           onBlur={handleBlur}
                                           fullWidth
                                           // disabled={values.id == 0 ? false : true}
-                                          error={errors.tutor_phone && touched.tutor_phone}
-                                          helperText={errors.tutor_phone && touched.tutor_phone && showErrorInput(1, errors.tutor_phone)}
+                                          error={errors.tutor_cellphone && touched.tutor_cellphone}
+                                          helperText={errors.tutor_cellphone && touched.tutor_cellphone && showErrorInput(1, errors.tutor_cellphone)}
                                        />
                                     </Grid>
                                  </Grid>

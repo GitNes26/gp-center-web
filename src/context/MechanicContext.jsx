@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
@@ -7,24 +7,24 @@ const MechanicContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   payroll_number: "",
+   employee_code: "",
    avatar: "",
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
    email: "",
-   phone: "",
+   cellphone: "",
    active: true
 };
 const voucherRequesterInitialState = {
    id: 0,
-   payroll_number: "",
+   employee_code: "",
    avatar: "",
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
    email: "",
-   phone: "",
+   cellphone: "",
    active: true
 };
 
@@ -40,6 +40,7 @@ export default function MechanicContextProvider({ children }) {
    const [voucherRequester, setMechanic] = useState(voucherRequesterInitialState);
    const [mechanics, setMechanics] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef(null);
 
    const resetFormData = () => {
       try {
@@ -222,7 +223,8 @@ export default function MechanicContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            formikRef
          }}
       >
          {children}

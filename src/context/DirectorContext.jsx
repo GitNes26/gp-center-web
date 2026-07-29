@@ -13,16 +13,16 @@ const formDataInitialState = {
    password: "",
    role_id: 0,
    avatar: "",
-   phone: "",
+   cellphone: "",
    license_number: "",
    license_type: "",
    license_due_date: "",
    img_lincense: "",
-   payroll_number: "",
+   employee_code: "",
    department_id: 0,
    // department: "Selecciona una opción...",
    department: "",
-   img_firm: "",
+   signature_image: "",
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
@@ -35,7 +35,7 @@ const formDataInitialState = {
    state: 0,
    city: 0,
    colony: 0,
-   payroll_number_exist: false
+   employee_code_exist: false
 };
 const directorInitialState = {
    id: 0,
@@ -46,16 +46,16 @@ const directorInitialState = {
    role_id: 0,
    role: "Selecciona una opción...",
    avatar: "",
-   phone: "",
+   cellphone: "",
    license_number: "",
    license_type: "",
    license_due_date: "",
    img_lincense: "",
-   payroll_number: "",
+   employee_code: "",
    department_id: 0,
    // department: "Selecciona una opción...",
    department: "",
-   img_firm: "",
+   signature_image: "",
    name: "",
    paternal_last_name: "",
    maternal_last_name: "",
@@ -68,7 +68,7 @@ const directorInitialState = {
    state: "Selecciona una opción...",
    city: "Selecciona una opción...",
    colony: "Selecciona una opción...",
-   payroll_number_exist: false
+   employee_code_exist: false
 };
 
 export default function DirectorContextProvider({ children }) {
@@ -129,8 +129,8 @@ export default function DirectorContextProvider({ children }) {
          res.result.state = "Selecciona una opción...";
          res.result.city = "Selecciona una opción...";
          res.result.colony = "Selecciona una opción...";
-         res.result.payroll_number_exist = true;
-         if (res.result.payroll_number.length < 3) res.result.payroll_number_exist = false;
+         res.result.employee_code_exist = true;
+         if (res.result.employee_code.length < 3) res.result.employee_code_exist = false;
 
          setDirector(res.result);
          setFormData(res.result);

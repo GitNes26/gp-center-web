@@ -47,7 +47,7 @@ const DepartmentDT = () => {
       setDirectorsHistory
    } = useDepartmentContext();
    // const { setDirectors } = useDirectorContext();
-   // const globalFilterFields = ["organization_code", "organization_name", "name", "director.payroll_number", "director.full_name"];
+   // const globalFilterFields = ["organization_code", "organization_name", "name", "director.employee_code", "director.full_name"];
    const globalFilterFields = ["organization_code", "organization_name", "name", "director_employee_code", "director_name"];
 
    // #region BodysTemplate

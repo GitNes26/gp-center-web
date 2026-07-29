@@ -496,6 +496,7 @@ import { colorPrimaryMain, colorSecondaryDark, colorSecondaryLight, gpcDark, gpc
 
 // import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import backgroundImage from "../assets/images/Oficio.jpg";
+import selloRecibido from "../assets/images/SEELO-Control-Vehicular-Recibido.png";
 import sinFirma from "../assets/images/sinFirma.png";
 import { formatDatetime } from "../utils/Formats";
 
@@ -516,13 +517,13 @@ Font.register({ family: "Barlow-Bold", src: BarlowBold });
 
 // ─── Paleta institucional ─────────────────────────────────────────────────────
 const COLOR = {
-   darkNavy: "#0D1F3C", // encabezados principales
-   midBlue: "#1A4080", // líneas y acentos
-   lightBlue: "#E8EFF8", // fondo de celdas de cabecera de tabla
-   tableRow: "#F4F7FB", // fondo de filas alternas
-   borderGray: "#C5CEDC", // bordes de tabla
+   darkNavy: "#1E090F", //"#0D1F3C", // encabezados principales
+   midBlue: "#37131C", //"#1A4080", // líneas y acentos
+   lightBlue: "#B3314B", //"#E8EFF8", // fondo de celdas de cabecera de tabla
+   tableRow: "#EBCDD425", //"#F4F7FB", // fondo de filas alternas
+   borderGray: "#EBCDD4", // bordes de tabla
    bodyText: "#1A1A2E", // texto corrido
-   mutedText: "#5A6378", // etiquetas y notas
+   mutedText: "#3D424A", //"#5A6378", // etiquetas y notas
    white: "#FFFFFF"
 };
 
@@ -534,6 +535,13 @@ export const stylesPDF = StyleSheet.create({
       paddingTop: 100,
       paddingBottom: 170,
       position: "absolute"
+   },
+
+   imageLogo: {
+      height: "1.30cm",
+      width: "auto",
+      objectFit: "contain",
+      marginVertical: 1
    },
 
    // ── Fondo y watermark ──
@@ -560,7 +568,7 @@ export const stylesPDF = StyleSheet.create({
    folioBlock: {
       flexDirection: "column",
       alignItems: "flex-end",
-      marginBottom: 14
+      marginBottom: 10
    },
    folioLine: {
       fontFamily: "Barlow-Bold",
@@ -617,7 +625,7 @@ export const stylesPDF = StyleSheet.create({
       fontSize: 10,
       color: COLOR.darkNavy,
       letterSpacing: 4,
-      marginTop: 6,
+      marginTop: -5,
       marginBottom: 2
    },
 
@@ -721,20 +729,24 @@ export const stylesPDF = StyleSheet.create({
    // ── Bloque de firma ──
    firmContainer: {
       position: "absolute",
-      bottom: 80,
+      bottom: 120,
       left: 42,
       right: 42,
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "flex-end"
+      alignItems: "flex-end",
+      border: "1 solid black"
    },
    firmBlock: {
       alignItems: "center",
-      width: "44%"
+      width: "100%",
+      border: "1 solid red"
    },
    firmBlockWide: {
       alignItems: "center",
-      width: "100%"
+      left: 0,
+      width: "100%",
+      border: "1 solid blue"
    },
    atentamenteTag: {
       fontFamily: "Barlow-Bold",
@@ -746,13 +758,14 @@ export const stylesPDF = StyleSheet.create({
    },
    firmImage: {
       width: 140,
-      marginBottom: -8,
+      height: 80,
+      // marginBottom: -8,
       opacity: 1,
       filter: "contrast(2.5)"
    },
    firmLine: {
       borderBottom: `1px solid ${COLOR.darkNavy}`,
-      width: "85%",
+      width: "80%",
       marginBottom: 3
    },
    firmName: {
@@ -771,21 +784,36 @@ export const stylesPDF = StyleSheet.create({
       marginTop: 1
    },
 
+   // ── Sello Departamento ──
+   stampDepartment: {
+      position: "absoulte",
+      transform: "translateX(-100%) rotate(-5deg)",
+      top: "-5%", //"65%",
+      left: "55%",
+      alignItems: "center",
+      justifyContent: "center"
+   },
+
    // ── Sello ──
    stampBlock: {
+      position: "absoulte",
+      transform: "translateX(-100%) rotate(-5deg)",
+      top: "-5%", //"65%",
+      left: "55%",
       alignItems: "center",
       justifyContent: "center"
    },
    stampImage: {
-      width: "3.8cm",
-      height: "3.8cm"
+      width: "4.5cm", // "3.8cm",
+      height: "3.7cm" // "3.8cm"
    },
    dateStampText: {
       fontFamily: "Barlow-Medium",
-      fontSize: 8,
+      fontSize: 12,
+      fontWeight: "bold",
       color: COLOR.mutedText,
       textAlign: "center",
-      marginTop: 2
+      marginTop: -55
    },
 
    // ── Pie de página ──
@@ -875,7 +903,7 @@ export function FuelVouchersTable({ rows = [], colWidths }) {
                <Text style={[stylesPDF.tableCell, stylesPDF.tableCellLeft, { width: W[1] }]}>{row.vehicle}</Text>
                <Text style={[stylesPDF.tableCell, { width: W[2] }]}>{row.vehicle_plates}</Text>
                <Text style={[stylesPDF.tableCell, stylesPDF.tableCellLeft, { width: W[3] }]}>{`${row?.creditor_fullname ?? ""}`}</Text>
-               <Text style={[stylesPDF.tableCell, { width: W[4] }]}>{row.payroll_number}</Text>
+               <Text style={[stylesPDF.tableCell, { width: W[4] }]}>{row.employee_code}</Text>
                {/* <Text style={[stylesPDF.tableCell, { width: W[4] }]}>{row.tipoCombustible}</Text>
                <Text style={[stylesPDF.tableCell, { width: W[5] }]}>{row.litros}</Text>
                <Text style={[stylesPDF.tableCell, { width: W[6] }]}>${row.importe}</Text> */}
@@ -929,11 +957,11 @@ export const DocumentPDF = ({
                         {/* ── Barra azul decorativa ── */}
                         <View style={stylesPDF.accentBar} />
                         {/* ── Remitente ── */}
-                        <RecipientBlock label="De:" name={formData.directorFrom} dept={formData.departmentFrom} />
+                        <RecipientBlock label="" name={formData.directorFrom} dept={formData.departmentFrom} />
                         <Text style={stylesPDF.presenteTag}>P R E S E N T E.-</Text>
                         <View style={stylesPDF.thinRule} />
                         {/* ── Destinatario(s) ── */}
-                        {formData.directorTo2 ? (
+                        {/* {formData.directorTo2 ? (
                            <View style={stylesPDF.row}>
                               <View style={[stylesPDF.col, stylesPDF.halfLeft]}>
                                  <RecipientBlock label="Con atención a:" name={formData.directorTo1} dept={formData.departmentTo1} />
@@ -944,14 +972,14 @@ export const DocumentPDF = ({
                            </View>
                         ) : (
                            <RecipientBlock label="Con atención a:" name={formData.directorTo1} dept={formData.departmentTo1} align="right" />
-                        )}
+                        )} */}
                         {/* ── Asunto ── */}
-                        <View style={stylesPDF.thinRule} />
+                        {/* <View style={stylesPDF.thinRule} />
                         <View style={stylesPDF.subjectLine}>
                            <Text style={stylesPDF.subjectLabel}>ASUNTO:</Text>
                            <Text style={stylesPDF.subjectText}>{asunto}</Text>
                         </View>
-                        <View style={stylesPDF.thinRule} />
+                        <View style={stylesPDF.thinRule} /> */}
                      </>
                   )}
                   {/* ── Cuerpo del mensaje ── */}
@@ -976,23 +1004,28 @@ export const DocumentPDF = ({
                         {/* ── Bloque de firma ── */}
                         <View style={stylesPDF.firmContainer} wrap={false}>
                            {/* Sello (izquierda) */}
-                           {formData.voucher.requesterStamp && (
+                           {formData.voucher.vobo_at && (
                               <View style={stylesPDF.stampBlock}>
-                                 <Image style={stylesPDF.stampImage} src={formData.voucher.requesterStamp} />
-                                 {formData.voucher.vobo_at && (
-                                    <Text style={stylesPDF.dateStampText}>Vo.Bo. {formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
-                                 )}
+                                 <Image style={stylesPDF.stampImage} src={selloRecibido} />
+                                 {formData.voucher.vobo_at && <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>}
                               </View>
                            )}
 
                            {/* Firma (derecha o centrada si no hay sello) */}
-                           <View style={formData.voucher.requesterStamp ? stylesPDF.firmBlock : stylesPDF.firmBlockWide}>
+                           <View style={!formData.voucher.vobo_at ? stylesPDF.firmBlock : stylesPDF.firmBlockWide}>
                               <Text style={stylesPDF.atentamenteTag}>A T E N T A M E N T E</Text>
+                              {/* <Text>{formData.voucher.requesterFirm}</Text> */}
                               <Image style={stylesPDF.firmImage} src={formData.voucher.requesterFirm ?? sinFirma} />
                               <View style={stylesPDF.firmLine} />
                               <Text style={stylesPDF.firmName}>{formData.voucher.requesterName}</Text>
                               <Text style={stylesPDF.firmTitle}>{formData.voucher.requesterWorkstation}</Text>
                            </View>
+                            {/* Sello departamento (derecha) */}
+                            {formData.voucher.requesterStamp && (
+                               <View style={stylesPDF.stampDepartment}>
+                                  <Image style={stylesPDF.stampImage} src={formData.voucher.requesterStamp} />
+                               </View>
+                            )}
                         </View>
                      </>
                   )}

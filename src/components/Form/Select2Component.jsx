@@ -1,9 +1,8 @@
-import { Autocomplete, FormControl, FormHelperText, IconButton, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Box, FormControl, FormHelperText, IconButton, TextField, Tooltip } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useEffect, useState } from "react";
 import { Field } from "formik";
 import { IconReload } from "@tabler/icons";
-import { Box } from "@mui/system";
 
 /**
  * 
@@ -122,6 +121,10 @@ const Select2Component = ({
                      label={label}
                      placeholder={placeholder}
                      options={options || ["Selecciona una opción..."]}
+                     getOptionLabel={(option) => {
+                        if (typeof option === "object" && option.label) return option.label;
+                        return String(option);
+                     }}
                      {...field}
                      value={valueLabel || "Selecciona una opción..."}
                      defaultValue={valueLabel || "Selecciona una opción..."}
@@ -262,6 +265,10 @@ const Select2Component1 = ({
                   label={label}
                   placeholder={placeholder}
                   options={options}
+                  getOptionLabel={(option) => {
+                     if (typeof option === "object" && option.label) return option.label;
+                     return String(option);
+                  }}
                   // value={field.value}
                   {...field}
                   value={valueLabel || "Selecciona una opción..."}

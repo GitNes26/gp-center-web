@@ -65,7 +65,7 @@ const VehicleDT = () => {
    // #region BodysTemplate
    const ImagePreviewBodyTemplate = (obj) => (
       <Box textAlign={"center"}>
-         <img alt="Vista previa del vehículo" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />
+         <img alt="Vista previa del vehículo" src={obj.img_preview} style={{ maxWidth: 100, maxHeight: 100 }} />
       </Box>
    );
    const InfoBodyTemplate = (obj) => (

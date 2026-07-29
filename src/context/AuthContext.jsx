@@ -75,8 +75,92 @@ Axios.interceptors.response.use(
    }
 );
 
+export const AxiosFiles = axios.create({
+   baseURL: import.meta.env.VITE_API,
+   responseType: "json",
+   withCredentials: true,
+   headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data"
+   }
+});
+AxiosFiles.interceptors.request.use(
+   (config) => {
+      // const token = useAuthStore.getState().token;
+      const token = localStorage.getItem("token") || "";
+
+      config.headers = {
+         Authorization: `Bearer ${token}`,
+         "Content-Type": "multipart/form-data"
+      };
+      // Puedes guardar meta info si quieres usarla luego
+      config.meta = { startTime: new Date() };
+      return config;
+   },
+   (error) => {
+      console.error("🚀 ~ error:", error);
+      // if (error.response?.status === 401) {
+      //    console.warn("⚠️ No autenticado, redirigiendo a login o cerrando sesión...");
+      //    localStorage.removeItem("token"); // o dispatch logout, etc.
+      //    // Redireccionar si aplica
+      //    window.location.href = "/login";
+      // } else if (error.response?.status === 403) {
+      //    console.warn("❌ No tienes permisos suficientes.");
+      // } else if (error.response?.status >= 500) {
+      //    console.error("💥 Error del servidor.");
+      // }
+      // return Promise.reject(error);
+   }
+);
+AxiosFiles.interceptors.response.use(
+   (response) => {
+      // Calcular tiempo de respuesta (si guardaste el meta)
+      // const end = new Date();
+      // if (response.config.meta?.startTime) {
+      //    const diff = end - response.config.meta.startTime;
+      //    console.log(`⏱️ ${response.config.url} → ${diff}ms`);
+      // }
+
+      // Puedes transformar la data si lo deseas
+      if (response.data?.result) {
+         return response.data.result; // devolver solo lo útil
+      }
+
+      return response;
+   },
+   (error) => {
+      const status = error?.response?.status;
+
+      if (status === 401) {
+         console.warn("⚠️ Sesión expirada. Cerrando sesión...");
+         localStorage.removeItem("token");
+         if (window.location.pathname !== "#/login") {
+            window.location.href = "#/login";
+         }
+      } else if (status === 403) {
+         console.warn("🚫 No tienes permisos suficientes.");
+      } else if (status >= 500) {
+         console.error("💥 Error interno del servidor:", error.response?.data);
+      }
+
+      return Promise.reject(error);
+   }
+);
+
 export const AxiosDepa = axios.create({
    baseURL: import.meta.env.VITE_API_DEPA,
+   responseType: "json",
+   headers: { Accept: "application/json", "Content-Type": "application/json" }
+});
+
+export const AxiosGPCentral = axios.create({
+   baseURL: import.meta.env.VITE_API_GPC,
+   responseType: "json",
+   headers: { Accept: "application/json", "Content-Type": "application/json" }
+});
+
+export const AxiosGPCentralAssets = axios.create({
+   baseURL: import.meta.env.VITE_API_GPC_ASSETS,
    responseType: "json",
    headers: { Accept: "application/json", "Content-Type": "application/json" }
 });
@@ -304,7 +388,6 @@ export default function AuthContextProvider({ children }) {
          const currentPath = location.hash.split("#").reverse()[0];
          const dataPost = { url: currentPath };
          let menu = null;
-         console.log("asdajhlksd");
          const { data } = await Axios.post(`/menus/getIdByUrl`, dataPost);
          menu = data.data.result;
          let pagesRead;

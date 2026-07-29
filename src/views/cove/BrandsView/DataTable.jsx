@@ -46,7 +46,7 @@ const BrandDT = () => {
    // #region BodysTemplate
    const ImagePreviewBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
-         {<img alt="Marca" src={`${import.meta.env.VITE_HOST}/${obj.img_path}`} style={{ maxWidth: 100, maxHeight: 100 }} />} <br />
+         {<img alt="Marca" src={obj.img_path} style={{ maxWidth: 100, maxHeight: 100 }} />} <br />
          <small>{obj.brand}</small>
       </Typography>
    );

@@ -3,8 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { ModalComponent } from "../../../components/ModalComponent";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useEmployeeContext } from "../../../context/EmployeeContext"; // ajusta según tu contexto
-import { formatDatetime, formatPhone } from "../../../utils/Formats";
-import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
+import { formatDatetime } from "../../../utils/Formats";
 
 // ─── Utilidades ───────────────────────────────────────────────────────────────
 
@@ -141,7 +140,7 @@ const HERO_BG = "#1D3461";
 const AVATAR_BG = "#2B5291";
 
 function EmployeeHero({ e, tenure }) {
-   const HOST = import.meta.env.VITE_HOST;
+   const HOST = import.meta.env.VITE_API_GPC_ASSETS;
    const initials = buildInitials(e.name, e.plast_name, e.mlast_name);
    const fullName = capitalize(e.full_name || [e.name, e.plast_name, e.mlast_name].filter(Boolean).join(" "));
    const posName = capitalize(e.position_name || "");
@@ -153,7 +152,7 @@ function EmployeeHero({ e, tenure }) {
          {e.avatar ? (
             <Box
                component="img"
-               src={e.avatar}
+               src={`${HOST}/${e.avatar}`}
                alt={fullName}
                sx={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: "1.5px solid rgba(255,255,255,0.2)", flexShrink: 0 }}
             />
@@ -227,7 +226,7 @@ function EmployeeHero({ e, tenure }) {
                         letterSpacing: 1
                      }}
                   >
-                     No. Nómina &nbsp;<b>{e.employee_code}</b>
+                     {e.employee_code}
                   </Box>
                )}
 
@@ -266,11 +265,9 @@ function EmployeeHero({ e, tenure }) {
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-export default function EmployeeCardInfo(data = null) {
+export default function EmployeeCardInfo() {
    const { openCardInfo, setOpenCardInfo } = useGlobalContext();
-   const { employee: e } = useEmployeeContext(); // ajusta tu contexto
-   // const { voucherRequester } = useVoucherRequesterContext(); // ajusta tu contexto
-   // const e = data ?? voucherRequester;
+   const { employee: e } = useEmployeeContext();
 
    const tenure = useMemo(() => calcTenure(e?.hire_date), [e?.hire_date]);
 
@@ -279,7 +276,7 @@ export default function EmployeeCardInfo(data = null) {
    return (
       <ModalComponent open={openCardInfo} setOpen={setOpenCardInfo}>
          {/* ── Hero ── */}
-         <Box sx={{ mx: -3, mt: -2, mb: 2 }}>
+         <Box sx={{ mx: -3, mt: -3, mb: 2 }}>
             <EmployeeHero e={e} tenure={tenure} />
          </Box>
 
@@ -297,13 +294,12 @@ export default function EmployeeCardInfo(data = null) {
                <Group icon="🪪" title="Datos personales" iconBg="#E6F1FB" iconColor="#185FA5">
                   <Row icon="🆔" label="RFC" value={e.rfc} mono />
                   <Row icon="🆔" label="CURP" value={e.curp} mono />
-                  <Row icon="📞" label="Teléfono" value={formatPhone(e.cellphone)} nullText="No registrado" />
+                  <Row icon="📞" label="Teléfono" value={e.cellphone} nullText="No registrado" />
                   <Row icon="✉️" label="Correo electrónico" value={e.email} valueColor="#185FA5" />
                </Group>
 
                <Group icon="🔐" title="Acceso al sistema" iconBg="#EEEDFE" iconColor="#534AB7">
                   <Row icon="👤" label="Nombre de usuario" value={e.username} mono />
-                  <Row icon="📜" label="Perfil" value={e.role} mono />
                   <Row icon="✓" label="Estado de cuenta" value={e.active ? "Activa" : "Inactiva"} valueColor={e.active ? "success.dark" : "error.dark"} />
                </Group>
             </Box>

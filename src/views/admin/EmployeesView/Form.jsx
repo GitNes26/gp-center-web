@@ -31,23 +31,9 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 const EmployeeForm = () => {
    // const { departments } = useDepartmentContext();
 
+   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer, cursorLoading } = useGlobalContext();
+   const { getInfoEmployee } = useEmployeeContext();
    const {
-      setLoadingAction,
-      openDialog,
-      setOpenDialog,
-      toggleDrawer,
-      setDisabledState,
-      setDisabledCity,
-      setDisabledColony,
-      setShowLoading,
-      setDataStates,
-      setDataCities,
-      setDataColonies,
-      setDataColoniesComplete,
-      cursorLoading
-   } = useGlobalContext();
-   const {
-      employee,
       resetEmployee,
       singularName,
       createEmployee,
@@ -68,49 +54,40 @@ const EmployeeForm = () => {
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(false);
    const [imgAvatar, setImgAvatar] = useState([]);
    const [imgLicense, setImgLicense] = useState([]);
-   const [imgFirm, setImgFirm] = useState([]);
+   const [signatureImage, setSignatureImage] = useState([]);
 
    const ResetForm = async (resetForm = null) => {
       if (resetForm) await resetForm();
       await resetFormData();
       setImgAvatar([]);
       setImgLicense([]);
-      setImgFirm([]);
-   };
-
-   const handleChangeRole = (value2, setFieldValue) => {
-      try {
-         // console.log("amanas", value2);
-         const role_id = Number(value2.id);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
+      setSignatureImage([]);
    };
 
    const handleInputPayRoll = async (value, setFieldValue) => {
       try {
          if (value.length < 5) return;
-         const axiosRH = axios;
-         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}`);
-         console.log("🚀 ~ handleInputPayRoll ~ data:", data);
-         console.log("empleado", data.data.result);
-         if (data.data.result) {
-            const userFind = data.data.result;
+         setLoadingAction(true);
+         ResetForm();
+         const res = await getInfoEmployee("employee_code", value);
+         const employee = res.result;
+
+         if (employee) {
             Toast.Success(`Número de nómina encontrado`);
-            await setFieldValue("name", userFind.nombreE);
-            await setFieldValue("paternal_last_name", userFind.apellidoP);
-            await setFieldValue("maternal_last_name", userFind.apellidoM);
-            await setFieldValue("payroll_number_exist", true);
-            await setFieldValue("department", userFind.departamento);
+            await setFieldValue("name", employee.nombreE);
+            await setFieldValue("paternal_last_name", employee.apellidoP);
+            await setFieldValue("maternal_last_name", employee.apellidoM);
+            await setFieldValue("employee_code_exist", true);
+            await setFieldValue("department", employee.departamento);
          } else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
             await setFieldValue("paternal_last_name", "");
             await setFieldValue("maternal_last_name", "");
-            await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("employee_code_exist", false);
             await setFieldValue("department", "");
          }
+         setLoadingAction(false);
       } catch (error) {
          console.log(error);
          if (error.response.status !== 500) Toast.Error(error);
@@ -119,7 +96,7 @@ const EmployeeForm = () => {
             await setFieldValue("name", "");
             await setFieldValue("paternal_last_name", "");
             await setFieldValue("maternal_last_name", "");
-            await setFieldValue("payroll_number_exist", false);
+            await setFieldValue("employee_code_exist", false);
             await setFieldValue("department", "");
          }
       }
@@ -139,14 +116,14 @@ const EmployeeForm = () => {
       }
    };
 
-   const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
+   const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          // console.log("formData", formData);
          // console.log("values", values);
          // values.community_id = values.colony_id;
          values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
          values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
-         values.img_firm = imgFirm.length == 0 ? "" : imgFirm[0].file;
+         values.signature_image = signatureImage.length == 0 ? "" : signatureImage[0].file;
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
          values.change_password = newPasswordChecked;
          // if (!validateImageRequired(values.img_license, "La foto de la licencia es requerida")) return;
@@ -178,18 +155,6 @@ const EmployeeForm = () => {
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id) => {
-      try {
-         ResetForm(resetForm);
-         resetEmployee();
-         // employee.role = "Selecciona una opción...";
-         setFieldValue("id", id);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const handleModify = async () => {
       try {
          // console.log(formData);
@@ -215,7 +180,7 @@ const EmployeeForm = () => {
          // setValues(formData);
          setObjImg(formData.avatar, setImgAvatar);
          setObjImg(formData.img_license, setImgLicense);
-         setObjImg(formData.img_firm, setImgFirm);
+         setObjImg(formData.signature_image, setSignatureImage);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -243,7 +208,7 @@ const EmployeeForm = () => {
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
          // department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
-         phone: Yup.string()
+         cellphone: Yup.string()
             .trim()
             .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
             .notRequired(),
@@ -252,10 +217,10 @@ const EmployeeForm = () => {
          license_type: Yup.string().trim().notRequired(), //.required("Tipo de licencia requerido"),
          license_due_date: Yup.date().notRequired(), //.required("Fecha de vencimiento requerida"),
          // imgLicense: Yup.mixed().required("Debe seleccionar un archivo"),
-         payroll_number: Yup.number("Solo números").test("payrollNumberExist", "El Número de Nómina no existe", (value) =>
-            Boolean(formikRef.current.values.payroll_number_exist)
+         employee_code: Yup.number("Solo números").test("employeeCodeExist", "El Número de Nómina no existe", () =>
+            Boolean(formikRef.current.values.employee_code_exist)
          ),
-         // payroll_number_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
+         // employee_code_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
          // department_id: Yup.number().min(1, "Esta opción no es valida").required("Departamento requerido"),
          department: Yup.string().trim().required("Departamento requerido"),
 
@@ -333,13 +298,20 @@ const EmployeeForm = () => {
                   refreshSelect={getDepartmentsSelectIndex}
                   required
                /> */}
-               <InputComponent col={12} idName={"phone"} label={"Número Telefónico"} placeholder={"10 dígitos"} type={"phone"} inputProps={{ maxLength: 10 }} />
+               <InputComponent
+                  col={12}
+                  idName={"cellphone"}
+                  label={"Número Telefónico"}
+                  placeholder={"10 dígitos"}
+                  type={"cellphone"}
+                  inputProps={{ maxLength: 10 }}
+               />
                <FileInputComponent
                   col="12"
-                  idName="img_firm"
+                  idName="signature_image"
                   label="Foto Firma"
-                  filePreviews={imgFirm}
-                  setFilePreviews={setImgFirm}
+                  filePreviews={signatureImage}
+                  setFilePreviews={setSignatureImage}
                   multiple={false}
                   accept={"image/*"}
                />
@@ -364,21 +336,21 @@ const EmployeeForm = () => {
                   accept={"image/*"}
                />
                <DividerComponent orientation="horizontal" title={"DATOS DE EMPLEADO"} />
-               <InputComponent col={12} idName={"payroll_number_exist"} label={"Existe el numero de empleado?"} placeholder={""} hidden={true} />
+               <InputComponent col={12} idName={"employee_code_exist"} label={"Existe el numero de empleado?"} placeholder={""} hidden={true} />
                <InputComponent
                   col={4}
-                  idName={"payroll_number"}
+                  idName={"employee_code"}
                   label={"Número de Nómina *"}
                   placeholder={"999999"}
                   type={"number"}
                   handleInputExtra={debouncedHandleInputPayRoll}
                   // error={
-                  //    (formikRef.current.errors.payroll_number && formikRef.current.touched.payroll_number) ||
-                  //    (formikRef.current.errors.payroll_number_exist && formikRef.current.touched.payroll_number_exist)
+                  //    (formikRef.current.errors.employee_code && formikRef.current.touched.employee_code) ||
+                  //    (formikRef.current.errors.employee_code_exist && formikRef.current.touched.employee_code_exist)
                   // }
                   // helperText={
-                  //    (formikRef.current.errors.payroll_number && formikRef.current.touched.payroll_number && formikRef.current.errors.payroll_number) ||
-                  //    (formikRef.current.errors.payroll_number_exist && formikRef.current.touched.payroll_number_exist && formikRef.current.errors.payroll_number_exist)
+                  //    (formikRef.current.errors.employee_code && formikRef.current.touched.employee_code && formikRef.current.errors.employee_code) ||
+                  //    (formikRef.current.errors.employee_code_exist && formikRef.current.touched.employee_code_exist && formikRef.current.errors.employee_code_exist)
                   // }
                />
                <InputComponent

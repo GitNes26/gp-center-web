@@ -130,7 +130,7 @@ export const setObjImg = (img, setImg, HOST = null) => {
       file: {
          name: `${img}`
       },
-      dataURL: `${HOST ? HOST : import.meta.env.VITE_HOST}/${img}`
+      dataURL: HOST ? `${import.meta.env.VITE_HOST}/${img}` : img
    };
    setImg([imgObj]);
 };

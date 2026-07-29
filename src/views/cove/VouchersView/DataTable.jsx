@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_ADMIN_VOUCHER, ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
@@ -59,14 +59,14 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       "foliated_vouchers",
       // "vehicle",
       // "vehicle_plates",
-      // "payroll_number",
+      // "employee_code",
       // "name",
-      // "paternal_last_name",
-      // "maternal_last_name",
+      // "plast_name",
+      // "mlast_name",
       "requested_fullname",
       "requested_department",
-      "requested_payroll_number",
-      "requested_phone",
+      "requested_employee_code",
+      "requested_cellphone",
       "activity",
       // "requested_amount",
       "voucher_status",
@@ -84,15 +84,12 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       "viewed_by",
       "viewed_at"
    ];
-   const years = [
-      { id: "2025", label: "2025" },
-      { id: "2024", label: "2024" }
-   ];
+   const years = [{ id: "2026", label: "2026" }];
 
    // #region BodysTemplate
    const AvatarBodyTemplate = (obj) => (
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-         <Avatar sx={{ width: 56, height: 56 }} src={obj.avatar !== null ? `${import.meta.env.VITE_HOST}/${obj.avatar}` : ""} alt={obj.full_name} />
+         <Avatar sx={{ width: 56, height: 56 }} src={obj.avatar !== null ? `${import.meta.env.VITE_API_GPC_ASSETS}/${obj.avatar}` : ""} alt={obj.full_name} />
       </Box>
       // <Box textAlign={"center"}>{<img alt="Foto de Perfil" src={`${import.meta.env.VITE_HOST}/${obj.avatar}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
    );
@@ -119,9 +116,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    );
    const RequestedByBodyTemplate = (obj) => (
       <Typography textAlign={"center"} fontWeight={"normal"}>
-         N° Nómina: <b>{obj.requested_payroll_number}</b> <br />
+         N° Nómina: <b>{obj.requested_employee_code}</b> <br />
          Nombre: <b>{obj.requested_fullname}</b> <br />
-         Tel: <b>{obj.requested_phone && formatPhone(obj.requested_phone)}</b>
+         Tel: <b>{obj.requested_cellphone && formatPhone(obj.requested_cellphone)}</b>
       </Typography>
    );
    const DepartmentBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.requested_department}</Typography>;
@@ -282,8 +279,10 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    };
 
    const handleClickGenerateVocuher = async (obj) => {
+      // console.log("🚀 ~ handleClickGenerateVocuher ~ obj:", obj);
       try {
          await setVoucher(obj);
+         // console.log("🚀 ~ handleClickGenerateVocuher ~ obj:", obj);
          // console.log("el voucher", voucher);
          // await getIndexByVoucher(obj.id);
          setOpenModalShowRecived(true);
@@ -294,10 +293,12 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
    };
 
    const handleClickShow = async (id, obj) => {
+      // console.log("🚀 ~ handleClickShow ~ obj:", obj);
       try {
+         setLoadingAction(true);
          setInAprobation(false);
          setArrayData([]);
-         if (auth.role_id === ROLE_VOUCHER_SUPERVISOR && obj.viewed_by < 1) {
+         if (auth.role_id === ROLE_ADMIN_VOUCHER /* ROLE_VOUCHER_SUPERVISOR */ && obj.viewed_by < 1) {
             // console.log("checar visto");
             const data = {
                id: obj.id,
@@ -311,7 +312,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
          await setVoucher(obj);
          await getIndexByVoucher(obj.id);
          setOpenModalRequest(true);
+         setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -321,7 +324,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       try {
          setInAprobation(false);
          await setVoucher(obj);
-         if (auth.role_id === ROLE_VOUCHER_SUPERVISOR) {
+         if (auth.role_id === ROLE_ADMIN_VOUCHER /* ROLE_VOUCHER_SUPERVISOR */) {
             mySwal.fire(QuestionAlertConfig(`Estas seguro de CANCELAR el vale #${id}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
                if (result.isConfirmed) {
                   setLoadingAction(true);
@@ -406,7 +409,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                   <IconEye />
                </Button>
             </Tooltip>
-            {obj.voucher_status === "CREADO" && auth.role_id != ROLE_VOUCHER_SUPERVISOR && (
+            {obj.voucher_status === "CREADO" && auth.role_id != ROLE_ADMIN_VOUCHER /* ROLE_VOUCHER_SUPERVISOR */ && (
                <Tooltip title={`Finalizar ${singularName}`} placement="top">
                   <Button color="dark" onClick={() => handleClickEditCREADO(id)}>
                      <IconEdit />
@@ -529,7 +532,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
          // console.log("🚀 ~ init ~ vouchersDetails:", vouchersDetails);
          await data.map((voucher) => {
             const dataVoucher = {
-               directorFrom: "LIC. MAURICIO GUERRERO FELIX",
+               directorFrom: "LIC. LUIS ALAN CARDOZA DE LA GARZA",
                departmentFrom: "JEFE DE DEPARTAMENTO DE CONTROL VEHICULAR",
                directorTo1: "C. ING. RODRIGO DE LA TORRE VALLE",
                departmentTo1: "OFICIAL MAYOR",
@@ -558,9 +561,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             dataVoucher.voucher.internal_folio = voucher.internal_folio;
             dataVoucher.voucher.date = voucher.created_at;
             dataVoucher.voucher.requesterWorkstation = voucher.workstation;
-            dataVoucher.voucher.requesterFirm = voucher.img_firm ? `${import.meta.env.VITE_HOST}/${voucher.img_firm}` : null;
+            dataVoucher.voucher.requesterFirm = voucher.signature_image ? `${import.meta.env.VITE_API_GPC_ASSETS}/${voucher.signature_image}` : null;
             dataVoucher.voucher.requesterName = voucher.requested_role_id === 7 ? dataVoucher.directorFrom : voucher.requested_fullname;
-            dataVoucher.voucher.requesterStamp = voucher.img_stamp ? `${import.meta.env.VITE_HOST}/${voucher.img_stamp}` : null;
+            dataVoucher.voucher.requesterStamp = voucher.seal_image ? `${import.meta.env.VITE_API_GPC_ASSETS}/${voucher.seal_image}` : null;
             dataVoucher.voucher.vobo_at = voucher.vobo_at;
             dataVoucher.voucher.activity = <Text style={stylesPDF.p}>{voucher.activity}</Text>;
             dataVoucher.voucher.table = (
@@ -586,7 +589,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                   <View style={stylesPDF.column}>
                      <Text style={[stylesPDF.cell, stylesPDF.bolder]}># NÓMINA</Text>
                      {voucherDetails.map((vd) => (
-                        <Text style={stylesPDF.cell}>{vd.payroll_number}</Text>
+                        <Text style={stylesPDF.cell}>{vd.employee_code}</Text>
                      ))}
                   </View>
                </View>

@@ -73,7 +73,7 @@
 //                         items={[
 //                            { icon: <Person />, label: "Nombre", value: service.contact_name },
 //                            // { icon: <Email />, label: "Email", value: service.cliente.email },
-//                            { icon: <Phone />, label: "Teléfono", value: service.contact_phone }
+//                            { icon: <Phone />, label: "Teléfono", value: service.contact_cellphone }
 //                         ]}
 //                      />
 //                      <InfoSection
@@ -348,7 +348,7 @@ export default function RequestServiceCardInfo() {
             <Grid item xs={12} sm={6}>
                <SectionCard icon={<Person />} title="Solicitante" accentColor="#1976d2">
                   <FieldRow icon={<Person />} label="Nombre" value={service.contact_name} />
-                  <FieldRow icon={<Phone />} label="Teléfono" value={service.contact_phone} />
+                  <FieldRow icon={<Phone />} label="Teléfono" value={service.contact_cellphone} />
                </SectionCard>
             </Grid>
 
