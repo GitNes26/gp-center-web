@@ -8,6 +8,7 @@ import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 import GPLogo from "../../../assets/images/icon.png";
 import GPEscudo from "../../../assets/images/escudo-gpd.png";
 import { formatDatetime } from "../../../utils/Formats";
+import { height } from "@mui/system";
 
 // ─── Paleta institucional 2025-2028 ──────────────────────────────────────────
 const C = {
@@ -247,6 +248,27 @@ const S = {
       objectFit: "contain",
       filter: "contrast(2.5)"
    },
+
+   firmArea: {
+      position: "relative",
+      height: 28,
+      borderBottomWidth: 0.5,
+      borderBottomColor: C.grisCool,
+      borderBottomStyle: "solid",
+      justifyContent: "flex-end",
+      marginBottom: 3
+   },
+   firmImage: {
+      position: "absoulte",
+      top: "-5%", //"65%",
+      left: "0%",
+      width: 140,
+      height: 120,
+      alignSelf: "center",
+      objectFit: "contain",
+      filter: "contrast(2.5)"
+   },
+
    sigName: {
       fontFamily: "Roboto-Bold",
       fontSize: 6.5,
@@ -268,12 +290,13 @@ const S = {
       alignItems: "flex-start"
    },
    stampBlock: {
-      alignItems: "center",
-      width: 180
+      alignItems: "center"
    },
    stampBox: {
-      width: 180,
-      height: 56,
+      // width: 180,
+      // height: 56,
+      width: "8cm", //180
+      height: "2.7cm",
       borderWidth: 1.5,
       borderColor: "#D4A0B0",
       borderStyle: "dashed",
@@ -282,8 +305,10 @@ const S = {
       alignItems: "center"
    },
    stampImg: {
-      width: 180,
-      height: 52,
+      // width: 180,
+      // height: 52,
+      width: "6.55cm", // "3.8cm",
+      height: "2.4cm",
       objectFit: "contain"
    },
    stampLbl: {
@@ -376,9 +401,9 @@ const ModalContentRecivedPDF = ({ open, setOpen }) => {
             internal_folio: voucher.internal_folio,
             date: voucher.created_at,
             requesterWorkstation: voucher.workstation,
-            requesterFirm: voucher.signature_image ? `${import.meta.env.VITE_API_GPC_ASSETS}/${voucher.signature_image}` : null,
+            requesterFirm: voucher.signature_image ? voucher.signature_image : null,
             requesterName: voucher.requested_role_id === 7 ? DIRECTOR_FROM : voucher.requested_fullname,
-            requesterStamp: voucher.seal_image ? `${import.meta.env.VITE_API_GPC_ASSETS}/${voucher.seal_image}` : null,
+            requesterStamp: voucher.seal_image ? voucher.seal_image : null,
             viewed_at: voucher.viewed_at
          }
       }));
@@ -416,7 +441,7 @@ const ModalContentRecivedPDF = ({ open, setOpen }) => {
             <View style={S.hdrTitle}>
                <Text style={S.hdrTitleText}>
                   Formato de recepción de vales de combustible{"\n"}
-                  Ayuntamiento de Gómez Palacio · Administración 2025–2028
+                  R. Ayuntamiento de Gómez Palacio · Administración 2025–2028
                </Text>
             </View>
 
@@ -496,16 +521,16 @@ const ModalContentRecivedPDF = ({ open, setOpen }) => {
                <View style={S.sigBox}>
                   <Text style={S.sigLbl}>Recibió conforme</Text>
                   <View style={S.sigArea} />
-                  <Text style={S.sigName}>________________________________</Text>
+                  <Text style={S.sigName}></Text>
                   <Text style={S.sigDept}>Nombre y firma</Text>
                </View>
 
                {/* Autorizador */}
                <View style={S.sigBox}>
                   <Text style={S.sigLbl}>Autorizó entrega</Text>
-                  <View style={S.sigArea}>{formData.voucher.requesterFirm && <Image style={S.sigImage} src={formData.voucher.requesterFirm} />}</View>
+                  <View style={S.firmArea}>{formData.voucher.requesterFirm && <Image style={S.firmImage} src={formData.voucher.requesterFirm} />}</View>
                   <Text style={S.sigName}>{formData.voucher.requesterName}</Text>
-                  <Text style={S.sigDept}>{formData.voucher.requesterWorkstation}</Text>
+                  <Text style={S.sigDept}>{formData.voucher.requesterWorkstation.toUpperCase()}</Text>
                </View>
             </View>
 
@@ -518,6 +543,7 @@ const ModalContentRecivedPDF = ({ open, setOpen }) => {
 
                <View style={S.obsBlock}>
                   <Text style={S.obsLbl}>Observaciones</Text>
+                  <View style={S.obsLine} />
                   <View style={S.obsLine} />
                   <View style={S.obsLine} />
                   <View style={S.obsLine} />

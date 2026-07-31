@@ -506,6 +506,7 @@ import BarlowBold from "../assets/fonts/Barlow-Bold.ttf";
 import RobotoBold from "../assets/fonts/Roboto-Bold.ttf";
 import RobotoRegular from "../assets/fonts/Roboto-Regular.ttf";
 import RobotoItalic from "../assets/fonts/Roboto-Italic.ttf";
+import { Box } from "@mui/system";
 
 // ─── Registro de fuentes ──────────────────────────────────────────────────────
 Font.register({ family: "Roboto-Bold", src: RobotoBold });
@@ -734,19 +735,19 @@ export const stylesPDF = StyleSheet.create({
       right: 42,
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "flex-end",
-      border: "1 solid black"
+      alignItems: "flex-end"
+      // border: "1 solid black"
    },
    firmBlock: {
       alignItems: "center",
-      width: "100%",
-      border: "1 solid red"
+      width: "100%"
+      // border: "1 solid red"
    },
    firmBlockWide: {
       alignItems: "center",
       left: 0,
-      width: "100%",
-      border: "1 solid blue"
+      width: "100%"
+      // border: "1 solid blue"
    },
    atentamenteTag: {
       fontFamily: "Barlow-Bold",
@@ -756,6 +757,30 @@ export const stylesPDF = StyleSheet.create({
       textTransform: "uppercase",
       marginBottom: 2
    },
+
+   // ── Sello Recibido ──
+   stampBlock: {
+      position: "absoulte",
+      transform: "translateX(-100%) rotate(-8deg)",
+      top: "-5%", //"65%",
+      left: "75%",
+      alignItems: "center",
+      justifyContent: "center"
+   },
+   stampImage: {
+      width: "4.5cm", // "3.8cm",
+      height: "3.7cm" // "3.8cm"
+   },
+   dateStampText: {
+      fontFamily: "Barlow-Medium",
+      fontSize: 12,
+      fontWeight: "bold",
+      color: COLOR.mutedText,
+      textAlign: "center",
+      marginTop: -55
+   },
+
+   // ── Firma ──
    firmImage: {
       width: 140,
       height: 80,
@@ -787,33 +812,15 @@ export const stylesPDF = StyleSheet.create({
    // ── Sello Departamento ──
    stampDepartment: {
       position: "absoulte",
-      transform: "translateX(-100%) rotate(-5deg)",
-      top: "-5%", //"65%",
-      left: "55%",
-      alignItems: "center",
-      justifyContent: "center"
-   },
-
-   // ── Sello ──
-   stampBlock: {
-      position: "absoulte",
-      transform: "translateX(-100%) rotate(-5deg)",
+      transform: "translateX(-100%) rotate(15deg)",
       top: "-5%", //"65%",
       left: "75%",
       alignItems: "center",
       justifyContent: "center"
    },
-   stampImage: {
-      width: "4.5cm", // "3.8cm",
-      height: "3.7cm" // "3.8cm"
-   },
-   dateStampText: {
-      fontFamily: "Barlow-Medium",
-      fontSize: 12,
-      fontWeight: "bold",
-      color: COLOR.mutedText,
-      textAlign: "center",
-      marginTop: -55
+   stampImageDepartment: {
+      width: "6.55cm", // "3.8cm",
+      height: "2.4cm" // "3.8cm"
    },
 
    // ── Pie de página ──
@@ -930,7 +937,7 @@ export const DocumentPDF = ({
    isOfficialDoc = true,
    asunto = "SOLICITUD DE VALES DE GASOLINA"
 }) => {
-   console.log("🚀 ~ DocumentPDF ~ arrayFormData:", arrayFormData);
+   // console.log("🚀 ~ DocumentPDF ~ arrayFormData:", arrayFormData);
    try {
       return (
          <Document>
@@ -1004,12 +1011,18 @@ export const DocumentPDF = ({
                         {/* ── Bloque de firma ── */}
                         <View style={stylesPDF.firmContainer} wrap={false}>
                            {/* Sello (izquierda) */}
-                           {formData.voucher.vobo_at && (
-                              <View style={stylesPDF.stampBlock}>
-                                 <Image style={stylesPDF.stampImage} src={selloRecibido} />
-                                 {formData.voucher.vobo_at && <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>}
-                              </View>
-                           )}
+                           <View style={stylesPDF.stampBlock}>
+                              {formData.voucher.vobo_at ? (
+                                 <>
+                                    <Image style={stylesPDF.stampImage} src={selloRecibido} />
+                                    {formData.voucher.vobo_at && (
+                                       <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text>
+                                    )}
+                                 </>
+                              ) : (
+                                 <View style={stylesPDF.stampImage}></View>
+                              )}
+                           </View>
 
                            {/* Firma (derecha o centrada si no hay sello) */}
                            <View style={!formData.voucher.vobo_at ? stylesPDF.firmBlock : stylesPDF.firmBlockWide}>
@@ -1020,12 +1033,12 @@ export const DocumentPDF = ({
                               <Text style={stylesPDF.firmName}>{formData.voucher.requesterName}</Text>
                               <Text style={stylesPDF.firmTitle}>{formData.voucher.requesterWorkstation}</Text>
                            </View>
-                            {/* Sello departamento (derecha) */}
-                            {formData.voucher.requesterStamp && (
-                               <View style={stylesPDF.stampDepartment}>
-                                  <Image style={stylesPDF.stampImage} src={formData.voucher.requesterStamp} />
-                               </View>
-                            )}
+                           {/* Sello departamento (derecha) */}
+                           {formData.voucher.requesterStamp && (
+                              <View style={stylesPDF.stampDepartment}>
+                                 <Image style={stylesPDF.stampImageDepartment} src={formData.voucher.requesterStamp} />
+                              </View>
+                           )}
                         </View>
                      </>
                   )}
@@ -1096,37 +1109,39 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
                      <IconPrinter />
                   </IconButton>
                </Tooltip> */}
-                   <Tooltip title={`Exportar Reporte a PDF`} placement="top">
-                      <PDFDownloadLink
-                         document={
-                            <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc}>
-                               {children}
-                            </DocumentPDF>
-                         }
-                         fileName={fileName && fileName}
-                         style={{ textDecoration: "none", marginTop: "10px" }}
-                      >
-                         <Button
-                            style={{
-                               backgroundColor: colorSecondaryLight,
-                               color: colorSecondaryDark,
-                               borderRadius: "8px",
-                               paddingInline: 10,
-                               border: "none",
-                               cursor: "pointer",
-                               fontWeight: "bolder",
-                               fontSize: "12px",
-                               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                               transition: "background-color 0.3s ease",
-                               marginTop: -10
-                            }}
-                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colorPrimaryMain)}
-                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colorSecondaryLight)}
-                         >
-                            <IconDownload /> &nbsp; Descargar PDF
-                         </Button>
-                      </PDFDownloadLink>
-                   </Tooltip>
+                  <Tooltip title={`Exportar Reporte a PDF`} placement="top">
+                     <span>
+                        <PDFDownloadLink
+                           document={
+                              <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc}>
+                                 {children}
+                              </DocumentPDF>
+                           }
+                           fileName={fileName && fileName}
+                           style={{ textDecoration: "none", marginTop: "10px" }}
+                        >
+                           <Button
+                              style={{
+                                 backgroundColor: colorSecondaryLight,
+                                 color: colorSecondaryDark,
+                                 borderRadius: "8px",
+                                 paddingInline: 10,
+                                 border: "none",
+                                 cursor: "pointer",
+                                 fontWeight: "bolder",
+                                 fontSize: "12px",
+                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                                 transition: "background-color 0.3s ease",
+                                 marginTop: -10
+                              }}
+                              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colorPrimaryMain)}
+                              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colorSecondaryLight)}
+                           >
+                              <IconDownload /> &nbsp; Descargar PDF
+                           </Button>
+                        </PDFDownloadLink>
+                     </span>
+                  </Tooltip>
                   <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
                      <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
                         {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
