@@ -140,7 +140,7 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
       <Typography textAlign={"center"}>
          Por: <b>{obj.username_canceled ?? "-"}</b> <br />
          El: <b>{formatDatetime(obj.canceled_at, true)}</b>
-         <p>{obj.canceled_comments}</p>
+         <span>{obj.canceled_comments}</span>
       </Typography>
    );
    const ViewedBodyTemplate = (obj) => (
@@ -561,9 +561,9 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
             dataVoucher.voucher.internal_folio = voucher.internal_folio;
             dataVoucher.voucher.date = voucher.created_at;
             dataVoucher.voucher.requesterWorkstation = voucher.workstation;
-            dataVoucher.voucher.requesterFirm = voucher.signature_image ? `${import.meta.env.VITE_API_GPC_ASSETS}/${voucher.signature_image}` : null;
+            dataVoucher.voucher.requesterFirm = voucher.signature_image ? voucher.signature_image : null;
             dataVoucher.voucher.requesterName = voucher.requested_role_id === 7 ? dataVoucher.directorFrom : voucher.requested_fullname;
-            dataVoucher.voucher.requesterStamp = voucher.seal_image ? `${import.meta.env.VITE_API_GPC_ASSETS}/${voucher.seal_image}` : null;
+            dataVoucher.voucher.requesterStamp = voucher.seal_image ? voucher.seal_image : null;
             dataVoucher.voucher.vobo_at = voucher.vobo_at;
             dataVoucher.voucher.activity = <Text style={stylesPDF.p}>{voucher.activity}</Text>;
             dataVoucher.voucher.table = (

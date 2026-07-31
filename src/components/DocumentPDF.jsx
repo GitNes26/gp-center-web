@@ -799,7 +799,7 @@ export const stylesPDF = StyleSheet.create({
       position: "absoulte",
       transform: "translateX(-100%) rotate(-5deg)",
       top: "-5%", //"65%",
-      left: "55%",
+      left: "75%",
       alignItems: "center",
       justifyContent: "center"
    },
@@ -1096,39 +1096,37 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
                      <IconPrinter />
                   </IconButton>
                </Tooltip> */}
-                  <Tooltip title={`Exportar Reporte a PDF`} placement="top">
-                     <IconButton color="inherit">
-                        <PDFDownloadLink
-                           document={
-                              <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc}>
-                                 {children}
-                              </DocumentPDF>
-                           }
-                           fileName={fileName && fileName}
-                           style={{ textDecoration: "none", marginTop: "10px" }}
-                        >
-                           <Button
-                              style={{
-                                 backgroundColor: colorSecondaryLight,
-                                 color: colorSecondaryDark,
-                                 borderRadius: "8px",
-                                 paddingInline: 10,
-                                 border: "none",
-                                 cursor: "pointer",
-                                 fontWeight: "bolder",
-                                 fontSize: "12px",
-                                 boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                                 transition: "background-color 0.3s ease",
-                                 marginTop: -10
-                              }}
-                              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colorPrimaryMain)}
-                              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colorSecondaryLight)}
-                           >
-                              <IconDownload /> &nbsp; Descargar PDF
-                           </Button>
-                        </PDFDownloadLink>
-                     </IconButton>
-                  </Tooltip>
+                   <Tooltip title={`Exportar Reporte a PDF`} placement="top">
+                      <PDFDownloadLink
+                         document={
+                            <DocumentPDF watermark={watermark} arrayFormData={arrayFormData} isOfficialDoc={isOfficialDoc}>
+                               {children}
+                            </DocumentPDF>
+                         }
+                         fileName={fileName && fileName}
+                         style={{ textDecoration: "none", marginTop: "10px" }}
+                      >
+                         <Button
+                            style={{
+                               backgroundColor: colorSecondaryLight,
+                               color: colorSecondaryDark,
+                               borderRadius: "8px",
+                               paddingInline: 10,
+                               border: "none",
+                               cursor: "pointer",
+                               fontWeight: "bolder",
+                               fontSize: "12px",
+                               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                               transition: "background-color 0.3s ease",
+                               marginTop: -10
+                            }}
+                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colorPrimaryMain)}
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colorSecondaryLight)}
+                         >
+                            <IconDownload /> &nbsp; Descargar PDF
+                         </Button>
+                      </PDFDownloadLink>
+                   </Tooltip>
                   <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
                      <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
                         {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}

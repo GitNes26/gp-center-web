@@ -105,9 +105,9 @@ const ModalContentPDF = ({ open, setOpen, formTitle = "titulo", arrayData = [], 
          formData.voucher.internal_folio = voucher.internal_folio;
          formData.voucher.date = voucher.created_at;
          formData.voucher.requesterWorkstation = voucher.workstation;
-         formData.voucher.requesterFirm = voucher.signature_image ? voucher.signature_image : null;
-         formData.voucher.requesterName = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
-         formData.voucher.requesterStamp = voucher.seal_image ? voucher.seal_image : null;
+          formData.voucher.requesterFirm = voucher.signature_image ? voucher.signature_image : null;
+          formData.voucher.requesterName = voucher.requested_role_id === 7 ? formData.directorFrom : voucher.requested_fullname;
+          formData.voucher.requesterStamp = voucher.seal_image ? voucher.seal_image : null;
          formData.voucher.vobo_at = voucher.vobo_at;
          formData.voucher.table = voucherDetails;
          //          formData.voucher.table = (
