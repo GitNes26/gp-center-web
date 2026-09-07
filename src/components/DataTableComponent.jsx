@@ -182,11 +182,10 @@ export default function DataTableComponent({
          let _data = [...data];
          let { newData, index } = e;
 
-         _data[index] = newData;
+         const newNewData = onRowEditCompleteContinue ? onRowEditCompleteContinue(newData) : newData;
+         _data[index] = newNewData;
 
          setData(_data);
-         // onRowEditCompleteContinue(newData);
-         const newNewData = newData;
          delete newNewData.actions;
          let ajaxResponse;
          if (newNewData.id > 0) ajaxResponse = await updateData(newNewData);

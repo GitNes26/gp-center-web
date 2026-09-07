@@ -323,15 +323,17 @@ const MainRoutes = {
                index: true,
                path: ":status?",
                element: (
-                  <VoucherContextProvider>
-                     <VehicleContextProvider>
-                        <VoucherRequesterContextProvider>
-                           <VoucherDetailContextProvider>
-                              <VouchersView />
-                           </VoucherDetailContextProvider>
-                        </VoucherRequesterContextProvider>
-                     </VehicleContextProvider>
-                  </VoucherContextProvider>
+                  <EmployeeContextProvider>
+                     <VoucherContextProvider>
+                        <VehicleContextProvider>
+                           <VoucherRequesterContextProvider>
+                              <VoucherDetailContextProvider>
+                                 <VouchersView />
+                              </VoucherDetailContextProvider>
+                           </VoucherRequesterContextProvider>
+                        </VehicleContextProvider>
+                     </VoucherContextProvider>
+                  </EmployeeContextProvider>
                )
                // loader: loaderIndexModelsView
             }

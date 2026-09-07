@@ -57,7 +57,7 @@ export default function VoucherRequesterContextProvider({ children }) {
    const singularName = "Solicitador de Vales"; //Escribirlo siempre letra Capital
    const pluralName = "Solicitadores de Vales"; //Escribirlo siempre letra Capital
 
-   const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
+   const [formTitle, setFormTitle] = useState(`REGISTRAR SOLICITADOR`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [voucherRequester, setVoucherRequester] = useState(voucherRequesterInitialState);

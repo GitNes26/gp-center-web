@@ -38,6 +38,7 @@ import Swal from "sweetalert2";
 import VoucherDetailDT from "./VoucherDetailDT";
 import { useVoucherDetailContext } from "../../../context/VoucherDetailContext";
 import { useVoucherRequesterContext } from "../../../context/VoucherRequesterContext";
+import { DatePickerComponent } from "../../../components/Form/FormikComponents";
 // import DialogComponent from "../../../components/DialogComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -285,14 +286,35 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
       }
    };
 
+   const normalizeFormValues = (data) => ({
+      ...data,
+      letter_folio: data.letter_folio ?? "",
+      foliated_vouchers: data.foliated_vouchers ?? "",
+      approved_amount: data.approved_amount ?? 0,
+      approved_liters: data.approved_liters ?? 0,
+      approved_combustible: data.approved_combustible ?? "",
+      internal_folio: data.internal_folio ?? "",
+      activity: data.activity ?? "",
+      employee_code: data.employee_code ?? "",
+      employee_code_exist: data.employee_code_exist ?? false,
+      department: data.department ?? "",
+      name: data.name ?? "",
+      plast_name: data.plast_name ?? "",
+      mlast_name: data.mlast_name ?? "",
+      cellphone: data.cellphone ?? "",
+      requested_by_name: data.requested_by_name ?? ""
+   });
+
    const handleModify = async (values, setValues, setFieldValue) => {
       try {
          if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
+         setValues(normalizeFormValues(formData));
          setEnableRequesterExternal(formData.requester_external != null ? true : false);
+         setVoucherId(formData.id);
          setLoadingAction(false);
          setOpen(true);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -422,7 +444,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                        name="letter_folio"
                                        label="Prefijo Vale *"
                                        type="text"
-                                       value={values.letter_folio}
+                                       value={values.letter_folio ?? ""}
                                        placeholder="S | C"
                                        onChange={handleChange}
                                        onBlur={(e) => {
@@ -446,7 +468,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                        name="foliated_vouchers"
                                        label="Vales Foliados *"
                                        type="text"
-                                       value={values.foliated_vouchers}
+                                       value={values.foliated_vouchers ?? ""}
                                        placeholder="1-6"
                                        onChange={handleChange}
                                        onBlur={(e) => {
@@ -487,7 +509,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                     name="approved_liters"
                                     label="Litros Aprobodos *"
                                     type="number"
-                                    value={values.approved_liters}
+                                    value={values.approved_liters ?? 0}
                                     placeholder="10"
                                     onChange={handleChange}
                                     onBlur={(e) => {
@@ -507,7 +529,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                     name="approved_combustible"
                                     label="Combustible *"
                                     type="text"
-                                    value={values.approved_combustible}
+                                    value={values.approved_combustible ?? ""}
                                     placeholder="GASOLINA"
                                     onChange={handleChange}
                                     onBlur={(e) => {
@@ -574,7 +596,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                               name="internal_folio"
                               label="Folio Interno *"
                               type="text"
-                              value={values.internal_folio}
+                              value={values.internal_folio ?? ""}
                               placeholder="FI-01"
                               onChange={handleChange}
                               onBlur={(e) => {
@@ -589,6 +611,9 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                               helperText={errors.internal_folio && touched.internal_folio && errors.internal_folio}
                            />
                         </Grid>
+                        <Grid item xs={12} md={2} sx={{ mb: 1 }}>
+                           <DatePickerComponent col={4} idName={"created_at"} label={"Fecha de Solicitud"} format={"DD/MM/YYYY"} required />
+                        </Grid>
                         {/* Actividad */}
                         <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                            <Tooltip title={"No olvides describir la cantidad de LITROS a solicitar"}>
@@ -597,7 +622,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                                  name="activity"
                                  label="Actvidad *"
                                  type="text"
-                                 value={values.activity}
+                                 value={values.activity ?? ""}
                                  placeholder="actividad..."
                                  onChange={handleChange}
                                  onBlur={handleBlur}
@@ -714,7 +739,7 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
                            id="employee_code_exist"
                            name="employee_code_exist"
                            type="hidden"
-                           value={values.employee_code_exist}
+                           value={values.employee_code_exist ?? false}
                            onChange={handleChange}
                            onBlur={handleBlur}
                         />

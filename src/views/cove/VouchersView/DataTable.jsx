@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_ADMIN_VOUCHER, ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_ADMIN_VOUCHER, ROLE_SUPER_ADMIN, ROLE_VOUCHER_SUPERVISOR, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
@@ -444,14 +444,15 @@ const VoucherDT = ({ setOpen, setOpenModalRequest, setOpenModalShowRecived, setO
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.update && (
-               <Tooltip title={`Editar ${singularName}`} placement="top">
-                  <Button color="info" onClick={() => handleClickEdit(id)}>
-                     <IconEdit />
-                  </Button>
-               </Tooltip>
-            )}
-            {auth.permissions.delete && (
+            {auth.role_id === ROLE_SUPER_ADMIN ||
+               (!["APROBADA", "CANCELADA"].includes(obj.voucher_status) && auth.permissions.update && (
+                  <Tooltip title={`Editar ${singularName}`} placement="top">
+                     <Button color="info" onClick={() => handleClickEdit(id)}>
+                        <IconEdit />
+                     </Button>
+                  </Tooltip>
+               ))}
+            {(auth.role_id === ROLE_SUPER_ADMIN || auth.permissions.delete) && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickDelete(id, name)}>
                      <IconDelete />

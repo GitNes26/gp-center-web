@@ -21,7 +21,10 @@ import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatCurrency, formatDatetime, formatPhone } from "../../../utils/Formats";
+import { getEmployeeVoucherFields, mergeEmployeeFieldsIntoVoucherDetail, updateVoucherDetailEmployee } from "../../../utils/employeeVoucherDetail";
 import { useAuthContext } from "../../../context/AuthContext";
+import { useEmployeeContext } from "../../../context/EmployeeContext";
+import useDebounce from "../../../hooks/useDebounce";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { useParams } from "react-router-dom";
 import { InputNumber } from "primereact/inputnumber";
@@ -37,6 +40,8 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
 
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { getInfoEmployee } = useEmployeeContext();
+   const [employeeFieldsByRow, setEmployeeFieldsByRow] = useState({});
    const {
       singularName,
       voucherDetails,
@@ -68,6 +73,8 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    ];
 
    // #region BodysTemplate
+   const getEditorValue = (options) => employeeFieldsByRow[options.rowData.key]?.[options.field] ?? options.value ?? "";
+
    const VehicleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.vehicle ?? "-"} </Typography>;
    const VehiclePlatesBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.vehicle_plates ?? "-"} </Typography>;
    const PayrollBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.employee_code}</Typography>;
@@ -114,7 +121,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
       return (
          <InputText
             type="text"
-            value={options.value ? options.value : ""}
+            value={getEditorValue(options).toUpperCase()}
             onChange={(e) => {
                options.editorCallback(e.target.value.toUpperCase());
                // if (options.field === "employee_code") handleEditorValueChange(e, options);
@@ -143,15 +150,14 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    const cellphoneEditor = (options) => (
       <InputText
          type="text"
-         value={options.value}
+         value={getEditorValue(options)}
          placeholder="10 dígitos"
          onChange={(e) => {
             if (!/^\d*$/.test(e.target.value) || e.target.value.length > 10) return;
             options.editorCallback(e.target.value);
             // handleChangePhone(e, options);
          }}
-         itemProp={{ maxLength: 10 }}
-         inputProps={{ maxLength: 10 }}
+         maxLength={10}
          data-field-name={options.field}
          data-field-key={options.rowData.key}
       />
@@ -221,19 +227,56 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
    // #endregion BodysTemplateEditor
 
    // #Region BodysTemplatesFunctionEditor
+   const handleInputPayRoll = useDebounce(async (value, rowKey) => {
+      const employeeCode = String(value ?? "").trim();
+
+      if (employeeCode === "0" || employeeCode.length < 5) return;
+
+      try {
+         setLoadingAction(true);
+         const res = await getInfoEmployee("employee_code", employeeCode);
+         const employee = res?.result;
+
+         if (!employee) {
+            Toast.Error("El Número de nómina no fue encontrado");
+            return;
+         }
+
+         const employeeFields = getEmployeeVoucherFields(employee);
+         setEmployeeFieldsByRow((currentFields) => ({ ...currentFields, [rowKey]: employeeFields }));
+         setVoucherDetails((currentDetails) => updateVoucherDetailEmployee(currentDetails, rowKey, employee));
+         Toast.Success("Número de nómina encontrado");
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      } finally {
+         setLoadingAction(false);
+      }
+   }, 1500);
+
    const PayrollBodyTemplateEditor = (options) => {
       return (
          <Tooltip title="Si no es empleado poner el N° 0">
             <InputText
                type="number"
-               value={options.value}
+               value={getEditorValue(options)}
                onChange={(e) => {
                   options.editorCallback(e.target.value);
-                  // if (options.field === "employee_code") handleEditorValueChange(e, options);
+                  handleInputPayRoll(e.target.value, options.rowData.key);
                }}
             />
          </Tooltip>
       );
+   };
+
+   const handleRowEditCompleteContinue = (newData) => {
+      const employeeFields = employeeFieldsByRow[newData.key] ?? {};
+      setEmployeeFieldsByRow((currentFields) => {
+         const nextFields = { ...currentFields };
+         delete nextFields[newData.key];
+         return nextFields;
+      });
+      return mergeEmployeeFieldsIntoVoucherDetail(newData, employeeFields);
    };
    // #endregion BodysTemplatesFunctionEditor
 
@@ -378,6 +421,7 @@ const VoucherDetailDT = ({ voucherId, setFieldValue, values }) => {
          handleClickAdd={handleClickAdd}
          rowEdit={values.voucher_status === "CREADO" ? true : false}
          // onRowEditCompleteContinue={onRowEditCompleteContinue}
+         onRowEditCompleteContinue={handleRowEditCompleteContinue}
          createData={createVoucherDetail}
          updateData={updateVoucherDetail}
          btnAdd={values.voucher_status === "CREADO" ? true : false}

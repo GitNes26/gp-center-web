@@ -549,10 +549,10 @@ export const stylesPDF = StyleSheet.create({
    viewBgImage: {
       position: "absolute",
       top: 0,
-      left: 25,
+      left: -11 ,//25,
       height: "148%",
-      width: "100%",
-      opacity: 0.78
+      width: "120%",
+      // opacity: 0.78
    },
    bgImage: { width: "100%", height: "100%" },
    watermarkText: {
@@ -837,7 +837,7 @@ export const stylesPDF = StyleSheet.create({
    },
    confidentialBand: {
       position: "absolute",
-      bottom: 52,
+      bottom: 23,
       left: 42,
       right: 42,
       height: 0.5,
