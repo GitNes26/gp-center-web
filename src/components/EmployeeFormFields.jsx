@@ -1,4 +1,5 @@
-import { InputComponent, DividerComponent, FileInputComponent } from "./Form/FormikComponents";
+import { InputComponent, DividerComponent, FileInputComponent, PasswordCompnent } from "./Form/FormikComponents";
+import PropTypes from "prop-types";
 
 export const EmployeeFormFields = ({
    handleInputPayRoll,
@@ -70,6 +71,51 @@ export const EmployeeFormFields = ({
          )}
       </>
    );
+};
+
+export const UserAccessFields = ({ newPasswordChecked, setNewPasswordChecked, checkedShowSwitchPassword, cellphoneRequired = false }) => (
+   <>
+      <DividerComponent title={"DATOS DE ACCESO"} />
+      <InputComponent col={6} idName={"username"} label={"Nombre de usuario"} placeholder={"Ingrese el nombre de usuario"} textStyleCase={null} required />
+      <InputComponent col={6} idName={"email"} label={"Correo electrónico"} placeholder={"mi@correo.com"} textStyleCase={false} type={"email"} required />
+      <PasswordCompnent
+         col={6}
+         idName={"password"}
+         label={"Contraseña"}
+         newPasswordChecked={newPasswordChecked}
+         setNewPasswordChecked={setNewPasswordChecked}
+         checkedShowSwitchPassword={checkedShowSwitchPassword}
+         required
+      />
+      <InputComponent
+         col={6}
+         idName={"cellphone"}
+         label={"Número telefónico"}
+         placeholder={"10 dígitos"}
+         type={"cellphone"}
+         inputProps={{ maxLength: 10 }}
+         required={cellphoneRequired}
+      />
+   </>
+);
+
+EmployeeFormFields.propTypes = {
+   handleInputPayRoll: PropTypes.func.isRequired,
+   imgAvatar: PropTypes.array.isRequired,
+   setImgAvatar: PropTypes.func.isRequired,
+   showGpcEmployeeId: PropTypes.bool,
+   showDividerEmployee: PropTypes.bool,
+   showAvatar: PropTypes.bool,
+   readonlyFields: PropTypes.bool,
+   showDepartment: PropTypes.bool,
+   showNameFields: PropTypes.bool
+};
+
+UserAccessFields.propTypes = {
+   newPasswordChecked: PropTypes.bool.isRequired,
+   setNewPasswordChecked: PropTypes.func.isRequired,
+   checkedShowSwitchPassword: PropTypes.bool.isRequired,
+   cellphoneRequired: PropTypes.bool
 };
 
 export default EmployeeFormFields;

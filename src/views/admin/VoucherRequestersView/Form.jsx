@@ -141,7 +141,7 @@ const VoucherRequesterForm = () => {
          if (axiosResponse.status_code == 200) {
             ResetForm(resetForm);
             setTextBtnSumbit("AGREGAR");
-            setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+            setFormTitle(`REGISTRAR SOLICITADOR`);
          }
          setSubmitting(false);
          setLoadingAction(false);
@@ -178,7 +178,7 @@ const VoucherRequesterForm = () => {
          resetVoucherRequester();
          formikRef.current.resetForm();
          formikRef.current.setValues(formikRef.current.initialValues);
-         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+         setFormTitle(`REGISTRAR SOLICITADOR`);
          if (!checkAdd) setOpenDialog(false);
          setOpenDialog(false);
       } catch (error) {

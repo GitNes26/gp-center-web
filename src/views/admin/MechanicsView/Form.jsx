@@ -8,10 +8,11 @@ import { useEffect } from "react";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { setObjImg } from "../../../components/Form/InputFileComponent";
-import { FormikComponent, InputComponent, FileInputComponent } from "../../../components/Form/FormikComponents";
-import EmployeeFormFields from "../../../components/EmployeeFormFields";
+import { FormikComponent } from "../../../components/Form/FormikComponents";
+import EmployeeFormFields, { UserAccessFields } from "../../../components/EmployeeFormFields";
 import { useEmployeeContext } from "../../../context/EmployeeContext";
 import useDebounce from "../../../hooks/useDebounce";
+import { convertToFormData } from "../../../utils/Formats";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -35,6 +36,8 @@ const MechanicForm = () => {
    } = useMechanicContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
+   const [newPasswordChecked, setNewPasswordChecked] = useState(true);
+   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(false);
    const [imgAvatar, setImgAvatar] = useState([]);
 
    const ResetForm = async (resetForm = null) => {
@@ -45,18 +48,23 @@ const MechanicForm = () => {
 
    const handleInputPayRoll = useDebounce(async (value, setFieldValue) => {
       try {
-         if (value.length < 4) return;
+         if (String(value).length < 5) return;
          setLoadingAction(true);
          ResetForm();
          const res = await getInfoEmployee("employee_code", value);
          const employee = res.result;
          if (employee) {
             Toast.Success(`Número de nómina encontrado`);
+            await setFieldValue("gpc_employee_id", employee.user_id);
+            await setFieldValue("employee_code", employee.employee_code);
             await setFieldValue("name", employee.name);
-            await setFieldValue("paternal_last_name", employee.plast_name);
-            await setFieldValue("maternal_last_name", employee.mlast_name);
+            await setFieldValue("plast_name", employee.plast_name);
+            await setFieldValue("mlast_name", employee.mlast_name);
             await setFieldValue("employee_code_exist", true);
-            employee.avatar && setObjImg(employee.avatar, setImgAvatar, import.meta.env.VITE_API_GPC_ASSETS);
+            await setFieldValue("department", employee.department_name);
+            await setFieldValue("position_name", employee.position_name);
+            await setFieldValue("username", employee.username);
+            employee.avatar && setObjImg(employee.avatar, setImgAvatar);
             await setFieldValue("email", employee.email);
             await setFieldValue("cellphone", employee.cellphone);
          } else {
@@ -69,8 +77,9 @@ const MechanicForm = () => {
          else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
-            await setFieldValue("paternal_last_name", "");
-            await setFieldValue("maternal_last_name", "");
+            await setFieldValue("plast_name", "");
+            await setFieldValue("mlast_name", "");
+            await setFieldValue("employee_code_exist", false);
          }
       }
    }, 1000);
@@ -90,13 +99,13 @@ const MechanicForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
-
-         setFormData(values);
+         const payload = { ...values, role_id: 4, avatar: imgAvatar.length == 0 ? "" : imgAvatar[0].file };
+         setFormData(payload);
          setLoadingAction(true);
+         const dataSend = await convertToFormData(payload);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createMechanic(values);
-         else axiosResponse = await updateMechanic(values);
+         if (values.id == 0) axiosResponse = await createMechanic(dataSend);
+         else axiosResponse = await updateMechanic(dataSend);
          if (axiosResponse.status_code == 200) {
             ResetForm(resetForm);
             setTextBtnSumbit("AGREGAR");
@@ -144,11 +153,16 @@ const MechanicForm = () => {
 
    const validationSchemas = () => {
       let validationSchema = Yup.object().shape({
-         employee_code: Yup.number("Solo números").notRequired(),
+         username: Yup.string().trim().matches(/^[^@]*$/, 'No se permite el carácter "@"').required("Nombre de usuario requerido"),
+         password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida"),
+         employee_code: Yup.number().typeError("Solo números").required("Número de nómina requerido"),
+         employee_code_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
+         department: Yup.string().trim().required("Departamento requerido"),
+         position_name: Yup.string().trim().required("Puesto requerido"),
          name: Yup.string().trim().required("Nombre(s) requerido"),
-         paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
-         email: Yup.string().trim().email("Formato de correo no valido").notRequired(),
+         plast_name: Yup.string().trim().required("Apellido Paterno requerido"),
+         mlast_name: Yup.string().trim().required("Apellido Materno requerido"),
+         email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
          cellphone: Yup.string()
             .trim()
             .matches(/^[0-9]{10}$/, "Formato invalido - teléfono a 10 dígitos")
@@ -161,6 +175,11 @@ const MechanicForm = () => {
       try {
          if (textBtnSubmit == "GUARDAR") {
             handleModify();
+            setNewPasswordChecked(false);
+            setCheckedShowSwitchPassword(true);
+         } else {
+            setNewPasswordChecked(true);
+            setCheckedShowSwitchPassword(false);
          }
       } catch (error) {
          console.log(error);
@@ -193,12 +212,13 @@ const MechanicForm = () => {
                   handleInputPayRoll={handleInputPayRoll}
                   imgAvatar={imgAvatar}
                   setImgAvatar={setImgAvatar}
-                  showGpcEmployeeId={false}
-                  readonlyFields={false}
-                  showDepartment={false}
+                  showGpcEmployeeId
                />
-               <InputComponent col={6} idName={"email"} label={"Correo Electrónico"} placeholder={"mi@correo.com"} textStyleCase={false} type={"email"} />
-               <InputComponent col={6} idName={"cellphone"} label={"Número Telefónico"} placeholder={"10 dígitos"} type={"cellphone"} inputProps={{ maxLength: 10 }} />
+               <UserAccessFields
+                  newPasswordChecked={newPasswordChecked}
+                  setNewPasswordChecked={setNewPasswordChecked}
+                  checkedShowSwitchPassword={checkedShowSwitchPassword}
+               />
             </FormikComponent>
          </Box>
       </SwipeableDrawer>

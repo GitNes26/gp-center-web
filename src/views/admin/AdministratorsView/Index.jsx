@@ -2,18 +2,15 @@ import AdministratorForm from "./Form";
 import AdministratorDT from "./DataTable";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
 import { useAdministratorContext } from "../../../context/AdministratorContext";
-import { Alert, AlertTitle, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { gpcDark, useGlobalContext } from "../../../context/GlobalContext";
 
 const AdministratorsView = () => {
-   const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, administrator, getAdministrators } = useAdministratorContext();
 
@@ -41,7 +38,7 @@ const AdministratorsView = () => {
          <AdministratorDT />
          {/* </MainCard> */}
 
-         <AdministratorForm dataRoles={result.roles} />
+         <AdministratorForm />
       </>
    );
 };
@@ -51,14 +48,6 @@ export const loaderIndexAdministratorsView = async () => {
       const res = CorrectRes;
       // const axiosData = await Axios.get("/administrators");
       // res.result.administrators = axiosData.data.data.result;
-      const auth = JSON.parse(localStorage.getItem("auth"));
-
-      const axiosRoles = await Axios.get(`/roles/selectIndex/role_id/${auth.role_id}`);
-      // console.log(axiosRoles.data.data);
-      res.result.roles = axiosRoles.data.data.result;
-      res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
-      // // console.log(res);
-
       return res;
    } catch (error) {
       const res = ErrorRes;

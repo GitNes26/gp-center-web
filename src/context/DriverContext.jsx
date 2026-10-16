@@ -1,32 +1,35 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { Axios, useAuthContext } from "./AuthContext";
+import { createContext, useContext, useRef, useState } from "react";
+import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+import PropTypes from "prop-types";
 
 const DriverContext = createContext();
 
 const formDataInitialState = {
    id: 0,
+   gpc_employee_id: 0,
    user_id: 0,
    username: "",
    email: "",
    password: "",
    // director_id: 0,
    // director: "Selecciona una opción...",
-   role_id: 0,
+   role_id: 6,
    avatar: "",
    cellphone: "",
    license_number: "",
    license_type: "",
    license_due_date: "",
-   img_lincense: "",
+   img_license: "",
    employee_code: "",
    // department_id: "",
    // department: "Selecciona una opción...",
    department: "",
+   position_name: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
+   plast_name: "",
+   mlast_name: "",
    community_id: 0,
    street: "",
    num_ext: "",
@@ -40,27 +43,29 @@ const formDataInitialState = {
 };
 const driverInitialState = {
    id: 0,
+   gpc_employee_id: 0,
    user_id: 0,
    username: "",
    email: "",
    password: "",
    // director_id: 0,
    // director: "Selecciona una opción...",
-   role_id: 0,
+   role_id: 6,
    role: "Selecciona una opción...",
    avatar: "",
    cellphone: "",
    license_number: "",
    license_type: "",
    license_due_date: "",
-   img_lincense: "",
+   img_license: "",
    employee_code: "",
    // department_id: "",
    // department: "Selecciona una opción...",
    department: "",
+   position_name: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
+   plast_name: "",
+   mlast_name: "",
    community_id: 0,
    street: "",
    num_ext: "",
@@ -74,8 +79,6 @@ const driverInitialState = {
 };
 
 export default function DriverContextProvider({ children }) {
-   const { auth } = useAuthContext();
-
    const singularName = "Conductor"; //Escribirlo siempre letra Capital
    const pluralName = "Conductores"; //Escribirlo siempre letra Capital
 
@@ -114,6 +117,7 @@ export default function DriverContextProvider({ children }) {
 
          return res;
       } catch (error) {
+         const res = ErrorRes;
          console.log(error);
          res.message = error;
          res.alert_text = error;
@@ -127,6 +131,7 @@ export default function DriverContextProvider({ children }) {
          const axiosData = await Axios.get(`/drivers/${id}`);
          // console.log(axiosData);
          res = axiosData.data.data;
+         res.result.employee_code_exist = true;
          res.result.zip = "";
          res.result.state = "Selecciona una opción...";
          res.result.city = "Selecciona una opción...";
@@ -151,7 +156,7 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/create/5`, driver);
-         const axiosData = await Axios.post(`/users/create/role_id/6`, driver, {
+         const axiosData = await Axios.post(`/users/create`, driver, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -173,7 +178,7 @@ export default function DriverContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/update/${driver.user_id}`, driver);
-         const axiosData = await Axios.post(`/users/update/role_id/6`, driver, {
+         const axiosData = await Axios.post(`/users/update`, driver, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -241,4 +246,5 @@ export default function DriverContextProvider({ children }) {
       </DriverContext.Provider>
    );
 }
+DriverContextProvider.propTypes = { children: PropTypes.node.isRequired };
 export const useDriverContext = () => useContext(DriverContext);

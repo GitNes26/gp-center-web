@@ -11,14 +11,14 @@ import { setObjImg } from "../../../components/Form/InputFileComponent";
 import {
    FormikComponent,
    InputComponent,
-   PasswordCompnent,
    FileInputComponent,
    DividerComponent,
    DatePickerComponent
 } from "../../../components/Form/FormikComponents";
-import EmployeeFormFields from "../../../components/EmployeeFormFields";
+import EmployeeFormFields, { UserAccessFields } from "../../../components/EmployeeFormFields";
 import { useEmployeeContext } from "../../../context/EmployeeContext";
 import useDebounce from "../../../hooks/useDebounce";
+import { convertToFormData } from "../../../utils/Formats";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -27,7 +27,6 @@ const DriverForm = () => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer, cursorLoading } = useGlobalContext();
    const { getInfoEmployee } = useEmployeeContext();
    const {
-      driver,
       resetDriver,
       singularName,
       createDriver,
@@ -64,11 +63,14 @@ const DriverForm = () => {
          const employee = res.result;
          if (employee) {
             Toast.Success(`Número de nómina encontrado`);
+            await setFieldValue("gpc_employee_id", employee.user_id);
+            await setFieldValue("employee_code", employee.employee_code);
             await setFieldValue("name", employee.name);
-            await setFieldValue("paternal_last_name", employee.plast_name);
-            await setFieldValue("maternal_last_name", employee.mlast_name);
+            await setFieldValue("plast_name", employee.plast_name);
+            await setFieldValue("mlast_name", employee.mlast_name);
             await setFieldValue("employee_code_exist", true);
             await setFieldValue("department", employee.department_name);
+            await setFieldValue("position_name", employee.position_name);
             employee.avatar && setObjImg(employee.avatar, setImgAvatar, import.meta.env.VITE_API_GPC_ASSETS);
             await setFieldValue("username", employee.username);
             await setFieldValue("email", employee.email);
@@ -83,8 +85,8 @@ const DriverForm = () => {
          else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
-            await setFieldValue("paternal_last_name", "");
-            await setFieldValue("maternal_last_name", "");
+            await setFieldValue("plast_name", "");
+            await setFieldValue("mlast_name", "");
             await setFieldValue("employee_code_exist", false);
             await setFieldValue("department", "");
          }
@@ -106,15 +108,18 @@ const DriverForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
-         values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
-         values.num_int = values.num_int === "" ? "S/N" : values.num_int;
-
-         setFormData(values);
+         const payload = {
+            ...values,
+            role_id: 6,
+            avatar: imgAvatar.length == 0 ? "" : imgAvatar[0].file,
+            img_license: imgLicense.length == 0 ? "" : imgLicense[0].file
+         };
+         setFormData(payload);
          setLoadingAction(true);
+         const dataSend = await convertToFormData(payload);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDriver(values);
-         else axiosResponse = await updateDriver(values);
+         if (values.id == 0) axiosResponse = await createDriver(dataSend);
+         else axiosResponse = await updateDriver(dataSend);
          if (axiosResponse.status_code == 200) {
             ResetForm(resetForm);
             setTextBtnSumbit("AGREGAR");
@@ -181,8 +186,9 @@ const DriverForm = () => {
          employee_code_exist: Yup.boolean().oneOf([true], "El Número de Nómina no existe."),
          department: Yup.string().trim().required("Departamento requerido"),
          name: Yup.string().trim().required("Nombre(s) requerido"),
-         paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
+         position_name: Yup.string().trim().required("Puesto requerido"),
+         plast_name: Yup.string().trim().required("Apellido Paterno requerido"),
+         mlast_name: Yup.string().trim().required("Apellido Materno requerido")
       });
       return validationSchema;
    };
@@ -224,27 +230,13 @@ const DriverForm = () => {
                formikRef={formikRef}
                handleCancel={handleCancel}
             >
-               <FileInputComponent
-                  col={12}
-                  idName="avatar"
-                  label="Foto de Perfil"
-                  filePreviews={imgAvatar}
-                  setFilePreviews={setImgAvatar}
-                  multiple={false}
-                  accept={"image/*"}
-               />
-               <InputComponent col={6} idName={"username"} label={"Nombre de usuario"} placeholder={"Ingrese su nombre de usuario"} textStyleCase={null} required />
-               <InputComponent col={6} idName={"email"} label={"Correo Electrónico"} placeholder={"mi@correo.com"} textStyleCase={false} type={"email"} required />
-               <PasswordCompnent
-                  col={6}
-                  idName={"password"}
-                  label={"Contraseña"}
+               <EmployeeFormFields handleInputPayRoll={handleInputPayRoll} imgAvatar={imgAvatar} setImgAvatar={setImgAvatar} showGpcEmployeeId />
+               <UserAccessFields
                   newPasswordChecked={newPasswordChecked}
                   setNewPasswordChecked={setNewPasswordChecked}
                   checkedShowSwitchPassword={checkedShowSwitchPassword}
-                  required
+                  cellphoneRequired
                />
-               <InputComponent col={6} idName={"cellphone"} label={"Número Telefónico"} placeholder={"10 dígitos"} type={"cellphone"} inputProps={{ maxLength: 10 }} />
                <DividerComponent title={"DATOS DE LICENCIA"} />
                <InputComponent col={4} idName={"license_number"} label={"Número de Licencia"} placeholder={"99999999999"} inputProps={{ maxLength: 11 }} required />
                <InputComponent
@@ -265,13 +257,6 @@ const DriverForm = () => {
                   setFilePreviews={setImgLicense}
                   multiple={false}
                   accept={"image/*"}
-               />
-               <EmployeeFormFields
-                  handleInputPayRoll={handleInputPayRoll}
-                  imgAvatar={imgAvatar}
-                  setImgAvatar={setImgAvatar}
-                  showGpcEmployeeId={false}
-                  showAvatar={false}
                />
             </FormikComponent>
          </Box>

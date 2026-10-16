@@ -11,16 +11,16 @@ import { setObjImg } from "../../../components/Form/InputFileComponent";
 import {
    FormikComponent,
    InputComponent,
-   PasswordCompnent,
    FileInputComponent,
    DividerComponent,
    DatePickerComponent,
    Select2Component
 } from "../../../components/Form/FormikComponents";
-import EmployeeFormFields from "../../../components/EmployeeFormFields";
+import EmployeeFormFields, { UserAccessFields } from "../../../components/EmployeeFormFields";
 import { useDepartmentContext } from "../../../context/DepartmentContext";
 import { useEmployeeContext } from "../../../context/EmployeeContext";
 import useDebounce from "../../../hooks/useDebounce";
+import { convertToFormData } from "../../../utils/Formats";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -29,7 +29,6 @@ const DirectorForm = () => {
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer, cursorLoading } = useGlobalContext();
    const { getInfoEmployee } = useEmployeeContext();
    const {
-      director,
       resetDirector,
       singularName,
       createDirector,
@@ -69,11 +68,14 @@ const DirectorForm = () => {
          const employee = res.result;
          if (employee) {
             Toast.Success(`Número de nómina encontrado`);
+            await setFieldValue("gpc_employee_id", employee.user_id);
+            await setFieldValue("employee_code", employee.employee_code);
             await setFieldValue("name", employee.name);
-            await setFieldValue("paternal_last_name", employee.plast_name);
-            await setFieldValue("maternal_last_name", employee.mlast_name);
+            await setFieldValue("plast_name", employee.plast_name);
+            await setFieldValue("mlast_name", employee.mlast_name);
             await setFieldValue("employee_code_exist", true);
             await setFieldValue("department", employee.department_name);
+            await setFieldValue("position_name", employee.position_name);
             employee.avatar && setObjImg(employee.avatar, setImgAvatar, import.meta.env.VITE_API_GPC_ASSETS);
             await setFieldValue("username", employee.username);
             await setFieldValue("email", employee.email);
@@ -88,8 +90,8 @@ const DirectorForm = () => {
          else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");
-            await setFieldValue("paternal_last_name", "");
-            await setFieldValue("maternal_last_name", "");
+            await setFieldValue("plast_name", "");
+            await setFieldValue("mlast_name", "");
             await setFieldValue("employee_code_exist", false);
             await setFieldValue("department", "");
          }
@@ -111,17 +113,19 @@ const DirectorForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         values.avatar = imgAvatar.length == 0 ? "" : imgAvatar[0].file;
-         values.img_license = imgLicense.length == 0 ? "" : imgLicense[0].file;
-         values.signature_image = signatureImage.length == 0 ? "" : signatureImage[0].file;
-         values.num_int = values.num_int === "" ? "S/N" : values.num_int;
-         values.change_password = newPasswordChecked;
-
-         setFormData(values);
+         const payload = {
+            ...values,
+            role_id: 5,
+            avatar: imgAvatar.length == 0 ? "" : imgAvatar[0].file,
+            img_license: imgLicense.length == 0 ? "" : imgLicense[0].file,
+            signature_image: signatureImage.length == 0 ? "" : signatureImage[0].file
+         };
+         setFormData(payload);
          setLoadingAction(true);
+         const dataSend = await convertToFormData(payload);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDirector(values);
-         else axiosResponse = await updateDirector(values);
+         if (values.id == 0) axiosResponse = await createDirector(dataSend);
+         else axiosResponse = await updateDirector(dataSend);
          if (axiosResponse.status_code == 200) {
             ResetForm(resetForm);
             setTextBtnSumbit("AGREGAR");
@@ -186,13 +190,14 @@ const DirectorForm = () => {
          license_number: Yup.string().trim().notRequired(),
          license_type: Yup.string().trim().notRequired(),
          license_due_date: Yup.date().notRequired(),
-         employee_code: Yup.number("Solo números").test("employeeCodeExist", "El Número de Nómina no existe", (value) =>
+         employee_code: Yup.number("Solo números").test("employeeCodeExist", "El Número de Nómina no existe", () =>
             Boolean(formikRef.current.values.employee_code_exist)
          ),
          department: Yup.string().trim().required("Departamento requerido"),
          name: Yup.string().trim().required("Nombre(s) requerido"),
-         paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-         maternal_last_name: Yup.string().trim().required("Apellido Materno requerido")
+         position_name: Yup.string().trim().required("Puesto requerido"),
+         plast_name: Yup.string().trim().required("Apellido Paterno requerido"),
+         mlast_name: Yup.string().trim().required("Apellido Materno requerido")
       });
       return validationSchema;
    };
@@ -234,15 +239,8 @@ const DirectorForm = () => {
                formikRef={formikRef}
                handleCancel={handleCancel}
             >
-               <FileInputComponent
-                  col={12}
-                  idName="avatar"
-                  label="Foto de Perfil"
-                  filePreviews={imgAvatar}
-                  setFilePreviews={setImgAvatar}
-                  multiple={false}
-                  accept={"image/*"}
-               />
+               <EmployeeFormFields handleInputPayRoll={handleInputPayRoll} imgAvatar={imgAvatar} setImgAvatar={setImgAvatar} showGpcEmployeeId />
+               <DividerComponent title={"DATOS DEL DIRECTOR"} />
                <Select2Component
                   col={12}
                   idName={"department_id"}
@@ -252,18 +250,12 @@ const DirectorForm = () => {
                   refreshSelect={getDepartmentsSelectIndex}
                   required
                />
-               <InputComponent col={6} idName={"username"} label={"Nombre de usuario"} placeholder={"Ingrese su nombre de usuario"} textStyleCase={null} required />
-               <InputComponent col={6} idName={"email"} label={"Correo Electrónico"} placeholder={"mi@correo.com"} textStyleCase={false} type={"email"} required />
-               <PasswordCompnent
-                  col={6}
-                  idName={"password"}
-                  label={"Contraseña"}
+               <UserAccessFields
                   newPasswordChecked={newPasswordChecked}
                   setNewPasswordChecked={setNewPasswordChecked}
                   checkedShowSwitchPassword={checkedShowSwitchPassword}
-                  required
                />
-               <InputComponent col={6} idName={"cellphone"} label={"Número Telefónico"} placeholder={"10 dígitos"} type={"cellphone"} inputProps={{ maxLength: 10 }} />
+               <DividerComponent title={"FIRMA DEL DIRECTOR"} />
                <FileInputComponent
                   col={12}
                   idName="signature_image"
@@ -292,13 +284,6 @@ const DirectorForm = () => {
                   setFilePreviews={setImgLicense}
                   multiple={false}
                   accept={"image/*"}
-               />
-               <EmployeeFormFields
-                  handleInputPayRoll={handleInputPayRoll}
-                  imgAvatar={imgAvatar}
-                  setImgAvatar={setImgAvatar}
-                  showGpcEmployeeId={false}
-                  showAvatar={false}
                />
             </FormikComponent>
          </Box>

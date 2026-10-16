@@ -1,36 +1,51 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { Axios, useAuthContext } from "./AuthContext";
+import { createContext, useContext, useRef, useState } from "react";
+import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+import PropTypes from "prop-types";
 
 const MechanicContext = createContext();
 
 const formDataInitialState = {
    id: 0,
+   gpc_employee_id: 0,
+   user_id: 0,
+   username: "",
+   password: "",
+   role_id: 4,
    employee_code: "",
+   employee_code_exist: false,
    avatar: "",
+   department: "",
+   position_name: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
+   plast_name: "",
+   mlast_name: "",
    email: "",
    cellphone: "",
    active: true
 };
 const voucherRequesterInitialState = {
    id: 0,
+   gpc_employee_id: 0,
+   user_id: 0,
+   username: "",
+   password: "",
+   role_id: 4,
    employee_code: "",
+   employee_code_exist: false,
    avatar: "",
+   department: "",
+   position_name: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
+   plast_name: "",
+   mlast_name: "",
    email: "",
    cellphone: "",
    active: true
 };
 
 export default function MechanicContextProvider({ children }) {
-   const { auth } = useAuthContext();
-
    const singularName = "Mecánico"; //Escribirlo siempre letra Capital
    const pluralName = "Mecánicos"; //Escribirlo siempre letra Capital
 
@@ -69,6 +84,7 @@ export default function MechanicContextProvider({ children }) {
 
          return res;
       } catch (error) {
+         const res = ErrorRes;
          console.log(error);
          res.message = error;
          res.alert_text = error;
@@ -82,6 +98,7 @@ export default function MechanicContextProvider({ children }) {
          const axiosData = await Axios.get(`/mechanics/id/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
+         res.result.employee_code_exist = true;
 
          setMechanic(res.result);
          setFormData(res.result);
@@ -89,6 +106,7 @@ export default function MechanicContextProvider({ children }) {
 
          return res;
       } catch (error) {
+         const res = ErrorRes;
          console.log(error);
          res.message = error;
          res.alert_text = error;
@@ -119,7 +137,7 @@ export default function MechanicContextProvider({ children }) {
       let res = CorrectRes;
       try {
          // const axiosData = await Axios.post(`/users/create/5`, voucherRequester);
-         const axiosData = await Axios.post(`/mechanics/createOrUpdate/`, voucherRequester, {
+         const axiosData = await Axios.post(`/users/create`, voucherRequester, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -142,7 +160,7 @@ export default function MechanicContextProvider({ children }) {
       try {
          // const axiosData = await Axios.post("/mechanics/update", voucherRequester);
          // const axiosData = await Axios.post(`/users/update/${voucherRequester.user_id}`, voucherRequester);
-         const axiosData = await Axios.post(`/mechanics/createOrUpdate/${voucherRequester.id}`, voucherRequester, {
+         const axiosData = await Axios.post(`/users/update`, voucherRequester, {
             headers: {
                "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
             }
@@ -231,4 +249,5 @@ export default function MechanicContextProvider({ children }) {
       </MechanicContext.Provider>
    );
 }
+MechanicContextProvider.propTypes = { children: PropTypes.node.isRequired };
 export const useMechanicContext = () => useContext(MechanicContext);

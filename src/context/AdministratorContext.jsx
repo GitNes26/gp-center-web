@@ -1,64 +1,50 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { Axios, useAuthContext } from "./AuthContext";
+import { createContext, useContext, useRef, useState } from "react";
+import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
+import PropTypes from "prop-types";
 
 const AdministratorContext = createContext();
 
 const formDataInitialState = {
    id: 0,
+   gpc_employee_id: 0,
+   user_id: 0,
    username: "",
    email: "",
    password: "",
-   role_id: 0,
+   role_id: 2,
+   avatar: "",
    cellphone: "",
-   license_number: "",
-   license_due_date: "",
    employee_code: "",
-   department_id: "",
+   department: "",
+   position_name: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
-   community_id: 0,
-   street: "",
-   num_ext: "",
-   num_int: "",
-
-   zip: "",
-   state: 0,
-   city: 0,
-   colony: 0
+   plast_name: "",
+   mlast_name: "",
+   employee_code_exist: false
 };
 const administratorInitialState = {
    id: 0,
+   gpc_employee_id: 0,
+   user_id: 0,
    username: "",
    email: "",
    password: "",
-   role_id: 0,
-   role: "Selecciona una opción...",
+   role_id: 2,
+   role: "Administrador",
+   avatar: "",
    cellphone: "",
-   license_number: "",
-   license_due_date: "",
    employee_code: "",
-   department_id: "",
-   department: "Selecciona una opción...",
+   department: "",
+   position_name: "",
    name: "",
-   paternal_last_name: "",
-   maternal_last_name: "",
-   community_id: 0,
-   street: "",
-   num_ext: "",
-   num_int: "",
-
-   zip: "",
-   state: 0,
-   city: 0,
-   colony: 0
+   plast_name: "",
+   mlast_name: "",
+   employee_code_exist: false
 };
 
 export default function AdministratorContextProvider({ children }) {
-   const { auth } = useAuthContext();
-
    const singularName = "Administrador"; //Escribirlo siempre letra Capital
    const pluralName = "Administradores"; //Escribirlo siempre letra Capital
 
@@ -68,6 +54,7 @@ export default function AdministratorContextProvider({ children }) {
    const [administrator, setAdministrator] = useState(administratorInitialState);
    const [administrators, setAdministrators] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef(null);
 
    const resetFormData = () => {
       try {
@@ -96,6 +83,7 @@ export default function AdministratorContextProvider({ children }) {
 
          return res;
       } catch (error) {
+         const res = ErrorRes;
          console.log(error);
          res.message = error;
          res.alert_text = error;
@@ -108,12 +96,14 @@ export default function AdministratorContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/users/${id}`);
          res = axiosData.data.data;
+         res.result.employee_code_exist = true;
          setAdministrator(res.result);
          setFormData(res.result);
          // console.log(res);
 
          return res;
       } catch (error) {
+         const res = ErrorRes;
          console.log(error);
          res.message = error;
          res.alert_text = error;
@@ -124,7 +114,7 @@ export default function AdministratorContextProvider({ children }) {
    const createAdministrator = async (administrator) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/users/create/role_id/2`, administrator);
+         const axiosData = await Axios.post(`/users/create`, administrator, { headers: { "Content-Type": "multipart/form-data" } });
          // console.log(axiosData);
          res = axiosData.data.data;
          getAdministrators();
@@ -141,7 +131,7 @@ export default function AdministratorContextProvider({ children }) {
    const updateAdministrator = async (administrator) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/users/update/role_id/2", administrator);
+         const axiosData = await Axios.post("/users/update", administrator, { headers: { "Content-Type": "multipart/form-data" } });
          res = axiosData.data.data;
          getAdministrators();
       } catch (error) {
@@ -197,11 +187,13 @@ export default function AdministratorContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            formikRef
          }}
       >
          {children}
       </AdministratorContext.Provider>
    );
 }
+AdministratorContextProvider.propTypes = { children: PropTypes.node.isRequired };
 export const useAdministratorContext = () => useContext(AdministratorContext);

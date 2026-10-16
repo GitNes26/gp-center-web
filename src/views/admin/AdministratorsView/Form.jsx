@@ -1,53 +1,23 @@
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
-
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Grid, Box, Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { useState } from "react";
+import { FormControlLabel, SwipeableDrawer, Switch, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import { useEffect, useState } from "react";
+import EmployeeFormFields, { UserAccessFields } from "../../../components/EmployeeFormFields";
+import { FormikComponent } from "../../../components/Form/FormikComponents";
+import { setObjImg } from "../../../components/Form/InputFileComponent";
 import { useAdministratorContext } from "../../../context/AdministratorContext";
-
-import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
-import Toast from "../../../utils/Toast";
+import { useEmployeeContext } from "../../../context/EmployeeContext";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { handleInputFormik } from "../../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
+import useDebounce from "../../../hooks/useDebounce";
+import { convertToFormData } from "../../../utils/Formats";
+import Toast from "../../../utils/Toast";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const AdministratorForm = ({ dataRoles }) => {
-   // #region Boton de Contraseña
-   const [showPassword, setShowPassword] = useState(false);
-   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
-
-   const [strength, setStrength] = useState(0);
-   const [level, setLevel] = useState();
-   const handleClickShowPassword = () => {
-      setShowPassword(!showPassword);
-   };
-
-   const handleMouseDownPassword = (event) => {
-      event.preventDefault();
-   };
-
-   const changePassword = (value) => {
-      const temp = strengthIndicator(value);
-      setStrength(temp);
-      setLevel(strengthColor(temp));
-   };
-   // #endregion Boton de Contraseña
-
-   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
-   // const { roles, getRolesSelectIndex } = useRoleContext();
+const AdministratorForm = () => {
+   const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer, cursorLoading } = useGlobalContext();
+   const { getInfoEmployee } = useEmployeeContext();
    const {
       resetAdministrator,
       singularName,
@@ -55,309 +25,152 @@ const AdministratorForm = ({ dataRoles }) => {
       updateAdministrator,
       formData,
       setFormData,
+      resetFormData,
       textBtnSubmit,
       setTextBtnSumbit,
       formTitle,
-      setFormTitle
+      setFormTitle,
+      formikRef
    } = useAdministratorContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
+   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(false);
+   const [imgAvatar, setImgAvatar] = useState([]);
 
-   const handleChangeCheckAdd = (e) => {
-      try {
-         const active = e.target.checked;
-         localStorage.setItem("checkAdd", active);
-         setCheckAdd(active);
-         setColorLabelcheck("");
-         if (!active) setColorLabelcheck("#ccc");
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
+   const resetForm = async (resetFormik = null) => {
+      if (resetFormik) await resetFormik();
+      resetFormData();
+      setImgAvatar([]);
    };
 
-   const onSubmit = async (values, { setSubmitting, setErrors, resetForm, setFieldValue }) => {
+   const handleInputPayRoll = useDebounce(async (value, setFieldValue) => {
+      if (String(value).length < 5) return;
       try {
-         // console.log("formData", formData);
-         // console.log("values", values);
-         // values.community_id = values.colony_id;
-
          setLoadingAction(true);
-         let axiosResponse;
-         if (values.id == 0) axiosResponse = await createAdministrator(values);
-         else axiosResponse = await updateAdministrator(values);
-         // console.log(axiosResponse);
+         const response = await getInfoEmployee("employee_code", value);
+         const employee = response?.result;
+         if (!employee) {
+            await setFieldValue("employee_code_exist", false);
+            Toast.Error("El número de nómina no fue encontrado");
+            return;
+         }
+         await setFieldValue("gpc_employee_id", employee.user_id);
+         await setFieldValue("employee_code", employee.employee_code);
+         await setFieldValue("employee_code_exist", true);
+         await setFieldValue("department", employee.department_name);
+         await setFieldValue("position_name", employee.position_name);
+         await setFieldValue("name", employee.name);
+         await setFieldValue("plast_name", employee.plast_name);
+         await setFieldValue("mlast_name", employee.mlast_name);
+         await setFieldValue("username", employee.username);
+         await setFieldValue("email", employee.email);
+         await setFieldValue("cellphone", employee.cellphone);
+         employee.avatar && setObjImg(employee.avatar, setImgAvatar);
+         Toast.Success("Número de nómina encontrado");
+      } catch (error) {
+         console.error(error);
+         await setFieldValue("employee_code_exist", false);
+         Toast.Error(error.response?.status === 500 ? "No fue posible consultar el número de nómina" : error);
+      } finally {
+         setLoadingAction(false);
+      }
+   }, 1500);
+
+   const handleChangeCheckAdd = (event) => {
+      const active = event.target.checked;
+      localStorage.setItem("checkAdd", active);
+      setCheckAdd(active);
+      setColorLabelcheck(active ? "" : "#ccc");
+   };
+
+   const onSubmit = async (values, { setSubmitting, setErrors, resetForm: resetFormik }) => {
+      try {
+         setLoadingAction(true);
+         const payload = { ...values, role_id: 2, avatar: imgAvatar.length === 0 ? "" : imgAvatar[0].file };
+         setFormData(payload);
+         const dataSend = await convertToFormData(payload);
+         const axiosResponse = values.id == 0 ? await createAdministrator(dataSend) : await updateAdministrator(dataSend);
          if (axiosResponse.status_code == 200) {
-            // console.log("limpiar");
-            await resetForm();
-            resetAdministrator();
-            setStrength(0);
+            await resetForm(resetFormik);
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+            if (!checkAdd) setOpenDialog(false);
          }
-         setSubmitting(false);
-         setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
-         // console.log("formData", formData);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
-         setSubmitting(false);
          Toast.Error(error);
       } finally {
          setSubmitting(false);
-      }
-   };
-
-   const handleReset = (resetForm, setFieldValue, id) => {
-      try {
-         resetForm();
-         resetAdministrator();
-         formData.role = "Selecciona una opción...";
-         setStrength(0);
-         setFieldValue("id", id);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
-   const handleModify = async (setValues, setFieldValue) => {
-      try {
-         // setLoadingAction(true);
-         // console.log(formData);
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
          setLoadingAction(false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
       }
    };
 
-   const handleCancel = (resetForm) => {
-      try {
-         resetForm();
-         resetAdministrator();
-         formData.role = "Selecciona una opción...";
-         setStrength(0);
-         setOpenDialog(false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
+   const handleCancel = (resetFormik) => {
+      resetForm(resetFormik);
+      resetAdministrator();
+      formikRef.current?.resetForm();
+      setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+      setOpenDialog(false);
    };
 
-   const validationSchemas = () => {
-      let validationSchema = Yup.object().shape({
-         username: Yup.string()
-            .trim()
-            .matches(/^[^@]*$/, 'No se permite el carácter "@"')
-            .required("Nombre de usario requerido"),
-         email: Yup.string().trim().email("Formato de correo no valido").required("Correo requerido"),
-         password: newPasswordChecked && Yup.string().trim().min(6, "La Contraseña debe de tener mínimo 6 caracteres").required("Contraseña requerida")
-      });
-
-      return validationSchema;
-   };
+   const validationSchema = Yup.object().shape({
+      username: Yup.string().trim().matches(/^[^@]*$/, 'No se permite el carácter "@"').required("Nombre de usuario requerido"),
+      email: Yup.string().trim().email("Formato de correo no válido").required("Correo requerido"),
+      password: newPasswordChecked && Yup.string().trim().min(6, "La contraseña debe tener mínimo 6 caracteres").required("Contraseña requerida"),
+      employee_code: Yup.number().typeError("Solo números").required("Número de nómina requerido"),
+      employee_code_exist: Yup.boolean().oneOf([true], "El número de nómina no existe"),
+      department: Yup.string().trim().required("Departamento requerido"),
+      position_name: Yup.string().trim().required("Puesto requerido"),
+      name: Yup.string().trim().required("Nombre(s) requerido"),
+      plast_name: Yup.string().trim().required("Apellido paterno requerido"),
+      mlast_name: Yup.string().trim().required("Apellido materno requerido")
+   });
 
    useEffect(() => {
-      try {
-         // getRolesSelectIndex();
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
-         if (textBtnSubmit == "GUARDAR") {
-            setNewPasswordChecked(false);
-            setCheckedShowSwitchPassword(true);
-         } else {
-            setNewPasswordChecked(true);
-            setCheckedShowSwitchPassword(false);
-         }
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
+      if (textBtnSubmit == "GUARDAR") {
+         formikRef.current?.setValues(formData);
+         formData.avatar && setObjImg(formData.avatar, setImgAvatar);
+         setNewPasswordChecked(false);
+         setCheckedShowSwitchPassword(true);
+      } else {
+         setNewPasswordChecked(true);
+         setCheckedShowSwitchPassword(false);
       }
+      setLoadingAction(false);
    }, [formData]);
 
    return (
-      <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
+      <SwipeableDrawer anchor="right" open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)} className={cursorLoading ? "cursor-loading" : ""}>
          <Box role="presentation" p={3} pt={5} className="form">
             <Typography variant="h2" mb={3}>
                {formTitle}
                <FormControlLabel
                   sx={{ float: "right", color: colorLabelcheck }}
-                  control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
-                  label="Seguir Agregando"
+                  control={<Switch checked={checkAdd} onChange={handleChangeCheckAdd} />}
+                  label="Seguir agregando"
                />
             </Typography>
-
-            {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
-            <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Grid container spacing={2} p={1} width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
-                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                        {/* Nombre de Usuario */}
-                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                           <TextField
-                              id="username"
-                              name="username"
-                              label="Nombre de usuario *"
-                              type="text"
-                              value={values.username}
-                              placeholder="Ingrese su nombre de usuario"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "username", true)}
-                              // InputProps={{ }}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.username && touched.username}
-                              helperText={errors.username && touched.username && errors.username}
-                           />
-                        </Grid>
-                        {/* Correo Electronico */}
-                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
-                           <TextField
-                              id="email"
-                              name="email"
-                              label="Correo Electrónico *"
-                              type="email"
-                              value={values.email}
-                              placeholder="mi@correo.com"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
-                              // inputProps={{ maxLength: 2 }}
-                              fullWidth
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.email && touched.email}
-                              helperText={errors.email && touched.email && errors.email}
-                           />
-                        </Grid>
-
-                        {/* Switch para mostrar el cambiar contraseña */}
-                        {checkedShowSwitchPassword && (
-                           <Grid item xs={12} md={12} sx={{ mb: -2 }}>
-                              <FormControlLabel
-                                 control={<Switch />}
-                                 label="Cambiar Contraseña"
-                                 checked={newPasswordChecked}
-                                 onChange={() => setNewPasswordChecked(!newPasswordChecked)}
-                              />
-                           </Grid>
-                        )}
-                        {/* Contraseña */}
-                        <Grid item xs={12} md={6} sx={{ mb: 2 }}>
-                           <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
-                              <InputLabel htmlFor="password">Contraseña *</InputLabel>
-                              <OutlinedInput
-                                 id="password"
-                                 name="password"
-                                 label="Contraseña *"
-                                 type={showPassword ? "text" : "password"}
-                                 value={values.password}
-                                 placeholder="Ingrese su contraseña, minimo 6 dígitos"
-                                 onBlur={handleBlur}
-                                 onChange={(e) => {
-                                    handleChange(e);
-                                    changePassword(e.target.value);
-                                 }}
-                                 endAdornment={
-                                    <InputAdornment position="end">
-                                       <IconButton
-                                          aria-label="toggle password visibility"
-                                          onClick={handleClickShowPassword}
-                                          onMouseDown={handleMouseDownPassword}
-                                          edge="end"
-                                          size="large"
-                                       >
-                                          {showPassword ? <Visibility /> : <VisibilityOff />}
-                                       </IconButton>
-                                    </InputAdornment>
-                                 }
-                                 inputProps={{}}
-                                 fullWidth
-                                 disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
-                                 // disabled={values.id == 0 ? false : true}
-                                 error={errors.password && touched.password}
-                              />
-                              {touched.password && errors.password && (
-                                 <FormHelperText error id="ht-password">
-                                    {errors.password}
-                                 </FormHelperText>
-                              )}
-                           </FormControl>
-                           {strength !== 0 && (
-                              <FormControl fullWidth>
-                                 <Box sx={{ mb: 2, mt: 1 }}>
-                                    <Grid container spacing={2} alignItems="center">
-                                       <Grid>
-                                          <Box
-                                             style={{ backgroundColor: level?.color }}
-                                             sx={{
-                                                width: 85,
-                                                height: 8,
-                                                borderRadius: "7px"
-                                             }}
-                                          />
-                                       </Grid>
-                                       <Grid>
-                                          <Typography variant="subtitle1" ml={1} fontSize="0.75rem">
-                                             {level?.label}
-                                          </Typography>
-                                       </Grid>
-                                    </Grid>
-                                 </Box>
-                              </FormControl>
-                           )}
-                        </Grid>
-                     </Grid>
-
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                        >
-                           LIMPIAR
-                        </Button>
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button
-                        type="button"
-                        color="info"
-                        fullWidth
-                        id="btnModify"
-                        sx={{ mt: 1, display: "none" }}
-                        onClick={() => handleModify(setValues, setFieldValue)}
-                     >
-                        setValues
-                     </Button>
-                  </Grid>
-               )}
-            </Formik>
+            <FormikComponent
+               initialValues={formData}
+               validationSchema={validationSchema}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
+               <EmployeeFormFields handleInputPayRoll={handleInputPayRoll} imgAvatar={imgAvatar} setImgAvatar={setImgAvatar} showGpcEmployeeId />
+               <UserAccessFields
+                  newPasswordChecked={newPasswordChecked}
+                  setNewPasswordChecked={setNewPasswordChecked}
+                  checkedShowSwitchPassword={checkedShowSwitchPassword}
+               />
+            </FormikComponent>
          </Box>
       </SwipeableDrawer>
    );
 };
+
 export default AdministratorForm;

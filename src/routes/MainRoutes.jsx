@@ -122,9 +122,11 @@ const MainRoutes = {
       {
          path: "administradores",
          element: (
+                  <EmployeeContextProvider>
             <AdministratorContextProvider>
                <AdministratorsView />
             </AdministratorContextProvider>
+                  </EmployeeContextProvider>
          ),
          loader: loaderIndexAdministratorsView
       },
