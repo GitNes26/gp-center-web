@@ -147,18 +147,6 @@ AxiosFiles.interceptors.response.use(
    }
 );
 
-export const AxiosDepa = axios.create({
-   baseURL: import.meta.env.VITE_API_DEPA,
-   responseType: "json",
-   headers: { Accept: "application/json", "Content-Type": "application/json" }
-});
-
-export const AxiosGPCentral = axios.create({
-   baseURL: import.meta.env.VITE_API_GPC,
-   responseType: "json",
-   headers: { Accept: "application/json", "Content-Type": "application/json" }
-});
-
 export const AxiosGPCentralAssets = axios.create({
    baseURL: import.meta.env.VITE_API_GPC_ASSETS,
    responseType: "json",

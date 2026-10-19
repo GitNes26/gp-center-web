@@ -29,10 +29,9 @@ import { gpcDark, gpcLight, useGlobalContext } from "../../../context/GlobalCont
 import { formatDatetimeToSQL, formatToUpperCase, handleInputFormik } from "../../../utils/Formats";
 import { IconButton } from "@mui/material";
 import Select2Component from "../../../components/Form/Select2Component";
-import axios from "axios";
 import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 import { useVehicleContext } from "../../../context/VehicleContext";
-import { useAuthContext } from "../../../context/AuthContext";
+import { Axios, useAuthContext } from "../../../context/AuthContext";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import VoucherDetailDT from "./VoucherDetailDT";
@@ -133,18 +132,16 @@ const VoucherForm = ({ open, setOpen, currentStatus }) => {
             return setWorker(false);
          } else setWorker(true);
          if (value.length < 5) return;
-         const axiosRH = axios;
-         const { data } = await axiosRH.get(`${import.meta.env.VITE_API_RH}/${value}`);
-         // console.log("empleado", data.RESPONSE.recordset[0]);
-         const employee = data.data.result; //data.RESPONSE.recordset[0]
+         const { data } = await Axios.get(`/employees/getBy/employee_code/${encodeURIComponent(value)}`);
+         const employee = data.data.result;
 
          if (employee) {
             Toast.Success(`Número de nómina encontrado`);
-            await setFieldValue("name", employee.nombreE);
-            await setFieldValue("plast_name", employee.apellidoP);
-            await setFieldValue("mlast_name", employee.apellidoM);
+            await setFieldValue("name", employee.name);
+            await setFieldValue("plast_name", employee.plast_name);
+            await setFieldValue("mlast_name", employee.mlast_name);
             await setFieldValue("employee_code_exist", true);
-            await setFieldValue("department", employee.departamento);
+            await setFieldValue("department", employee.department_name);
          } else {
             Toast.Error(`El Número de nómina no fue encontrado`);
             await setFieldValue("name", "");

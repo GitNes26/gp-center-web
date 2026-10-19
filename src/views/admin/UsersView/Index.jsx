@@ -2,7 +2,7 @@ import UserForm from "./Form";
 
 import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios, AxiosDepa } from "../../../context/AuthContext";
+import { Axios } from "../../../context/AuthContext";
 
 import { useEffect } from "react";
 import { useUserContext } from "../../../context/UserContext";

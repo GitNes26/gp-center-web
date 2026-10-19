@@ -124,8 +124,9 @@ export const GlobalContextProvider = ({ children }) => {
    const getEmployees = async () => {
       let res = CorrectRes;
       try {
-         const axiosData = await axios.get(import.meta.env.VITE_API_RH);
-         console.log("🚀 ~ changeStatus ~ axiosData:", axiosData);
+         const axiosData = await axios.get(`${import.meta.env.VITE_API}/employees/selectIndex`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token") || ""}` }
+         });
          res = axiosData.data.data;
          // res = axiosData.data.RESPONSE;
          // console.log("🚀 ~ getEmployees ~ res:", res)
@@ -135,8 +136,8 @@ export const GlobalContextProvider = ({ children }) => {
          const dataSelectIndex = [];
          data.map((item) => {
             const obj = { id: 0, label: "" };
-            obj.id = `${item.codigoEmpleado} - ${item.nombreE} ${item.apellidoP} ${item.apellidoM}`;
-            obj.label = `${item.codigoEmpleado} - ${item.nombreE} ${item.apellidoP} ${item.apellidoM}`;
+            obj.id = item.id;
+            obj.label = item.label;
             dataSelectIndex.push(obj);
          });
          // console.log("🚀 ~ getEmployees ~ data:", data);

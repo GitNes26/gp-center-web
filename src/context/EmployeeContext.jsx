@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { Axios, AxiosGPCentral, useAuthContext } from "./AuthContext";
+import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
@@ -167,10 +167,10 @@ export default function EmployeeContextProvider({ children }) {
    const getInfoEmployee = async (field, value) => {
       try {
          let res = CorrectRes;
-         // const axiosData = await Axios.get(`/employees/getBy/${field}/${value}`);
-         const axiosData = await AxiosGPCentral.get(`/employees/getBy/${field}/${value}`);
+         if (field !== "employee_code") throw new Error("Sólo se permite consultar por número de nómina");
+         const axiosData = await Axios.get(`/employees/getBy/employee_code/${encodeURIComponent(value)}`);
          // console.log("🚀 ~ getInfoEmployee ~ axiosData:", axiosData);
-         res = axiosData.data;
+         res = axiosData.data.data;
          // res.result.employee_code_exist = true;
          // if (res.result.employee_code.length < 3) res.result.employee_code_exist = false;
 

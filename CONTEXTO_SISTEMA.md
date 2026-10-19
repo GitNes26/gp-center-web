@@ -1,6 +1,6 @@
 # Contexto integral de GP Center
 
-> Fuente de verdad comprobada para desarrollo y mantenimiento. Última revisión: 2026-10-16 (America/Mexico_City).
+> Fuente de verdad comprobada para desarrollo y mantenimiento. Última revisión: 2026-10-19 (America/Mexico_City).
 
 ## 1. Resumen ejecutivo y alcance
 
@@ -51,7 +51,7 @@ Usuario
 | Respuesta | Contrato de respuesta compartido | `app/Models/ObjResponse.php` |
 | Persistencia | Modelos Eloquent para tablas y modelos de solo lectura para vistas `vw_*` | `app/Models/**` |
 | Esquema | Tablas, vistas, procedimiento de historial y seeders | `database/migrations/**`, `database/seeders/**` |
-| Integración central | Consulta de acceso y reenvío multipart a otro servicio | `app/Http/Middleware/VerifyCentralAccess.php`, `app/Services/RequestForwarderService.php` |
+| Integración central | Cliente servidor-a-servidor autenticado para consultar GP Central y reenviar multipart | `app/Services/GpCentralClient.php`, `app/Http/Middleware/VerifyCentralAccess.php`, `app/Services/RequestForwarderService.php` |
 
 ## 3. Módulos funcionales
 
@@ -160,7 +160,7 @@ Usuario
 5. En `Index`: cargar en `useEffect`, activar loading global, título MUI y composición tabla/formulario.
 6. En `Form`: Formik + Yup, `SwipeableDrawer`/componentes compartidos, `LoadingButton`, formatos de `src/utils/Formats.js`, feedback mediante `Toast`/`sAlert` y permisos de `AuthContext`.
 7. En tabla: reutilizar los componentes existentes adecuados; no copiar variantes `copy`, `_ORi` u `OBSOLETO`.
-8. Usar `Axios`/`AxiosFiles` exportados por `AuthContext`, `VITE_API`, rutas relativas y el contrato `response.data.data`.
+8. Usar `Axios`/`AxiosFiles` exportados por `AuthContext`, `VITE_API`, rutas relativas y el contrato `response.data.data`. Las consultas protegidas a GP Central pasan por el backend de GP Center; nunca se coloca una credencial de servicio en una variable `VITE_*`.
 9. Mantener nombres: componentes/clases en PascalCase; hooks/funciones/variables en camelCase; endpoints y campos siguiendo el nombre persistido existente.
 10. Añadir pruebas de transformación/negocio y ejecutar `npm test`, `npm run build` y lint focalizado. El lint global actualmente no es baseline válido.
 
@@ -186,7 +186,10 @@ Usuario
 ## 8. Integraciones e infraestructura
 
 - Sanctum: tokens personales en cabecera Bearer.
-- Un servicio central se configura en `config/services.php`; `VerifyCentralAccess` consulta acceso por `system_code`, y `RequestForwarderService` reenvía formularios/archivos. Su aplicación efectiva es parcial/no comprobada.
+- GP Central se configura en `config/services.php` mediante `GPCENTRAL_BASE_URL`, `GPCENTRAL_CLIENT_ID` y `GPCENTRAL_API_KEY`. `GpCentralClient` agrega las credenciales de servicio sólo en el backend, valida TLS y aplica timeouts/reintentos acotados.
+- La consulta de empleado por nómina usa `GET /api/gpCenter/employees/getBy/employee_code/{employeeCode}` bajo Sanctum; GP Center la reenvía a `/api/v1/employees/by-code/{employeeCode}` de GP Central. El navegador nunca recibe la API key.
+- Los formularios de empleados y vales, y los selectores usados por vehículos, consultan empleados exclusivamente a través de `/api/gpCenter/employees/*`; ya no consumen `VITE_API_RH` ni un cliente protegido de GP Central desde el navegador.
+- `RequestForwarderService` reutiliza el cliente autenticado para formularios/archivos. Los endpoints de escritura requieren scopes y contrato específicos de GP Central antes de considerarse operativos.
 - Archivos de vehículos y empleados se encuentran directamente en `gpcenter-back/public/GPCenter/**`; esto permite servirlos por URL pero mezcla artefactos operativos con el repositorio.
 - Vite construye el SPA; Laravel conserva además su propio esqueleto Vite/Tailwind, sin evidencia de que sirva el SPA React.
 - No se encontraron Docker/CI/CD ni definición de despliegue en el alcance.
@@ -199,7 +202,7 @@ Usuario
 2. **Rutas cliente-servidor divergentes:** entre otros, `AdministratorContext` y contextos de director/conductor llaman variantes `/users/*/role_id/*` no registradas; `ModelContext` pide `/models/selectIndex` pero backend expone `/models/brand/{brand_id}`; `RoleContext` usa `/roles/update` sin ID y `/roles/destoy`; `MenuContext` pide `/menus/counterOfMenus`; contextos de asignación/préstamo/entrega consumen rutas comentadas. Estos flujos no son confiables sin conciliación.
 3. **Cambios de estado mediante GET:** servicios, activación/desactivación, bajas de empleados/mecánicos y otras mutaciones usan GET. Rompe semántica HTTP, habilita caché/prefetch accidental y dificulta CSRF/auditoría.
 4. **Datos operativos en `public` y versionados:** hay documentos/imágenes de vehículos y empleados en `public/GPCenter`; pueden ser sensibles y agrandan el repositorio.
-5. **TLS deshabilitado:** `RequestForwarderService` usa `verify => false` para HTTPS.
+5. **Integración pendiente de despliegue:** la lectura autenticada de empleados está implementada, pero cada ambiente debe aprovisionar su propio cliente rotatable y secreto en variables del backend. Sin esa configuración, GP Center responde 502 sin cerrar la sesión humana.
 
 ### Medios
 
@@ -224,7 +227,7 @@ Usuario
 ## 10. Preguntas abiertas
 
 1. ¿Qué motor/versión de BD usa cada ambiente y cuál es el procedimiento oficial para importar datos/vistas?
-2. ¿GP Central es obligatorio en producción? ¿Cuál sistema es dueño de empleados/departamentos y qué ocurre si falla el reenvío?
+2. GP Central es dueño de la identidad y datos maestros. Falta definir el comportamiento funcional de cada flujo de GP Center cuando el servicio central no esté disponible (reintento, cola o bloqueo explícito).
 3. ¿El alta pública (`signup`) y las rutas legacy comentadas deben conservarse?
 4. ¿Cuáles transiciones de servicio y vale son legales por rol? El código define efectos, pero no una matriz completa de transición/autorización.
 5. ¿Qué archivos de `public/GPCenter` son datos productivos que deben migrarse a almacenamiento privado?

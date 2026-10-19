@@ -167,7 +167,8 @@ export default function EmployeeContextProvider({ children }) {
    const getInfoEmployee = async (field, value) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/employees/getBy/${field}/${value}`);
+         if (field !== "employee_code") throw new Error("Sólo se permite consultar por número de nómina");
+         const axiosData = await Axios.get(`/employees/getBy/employee_code/${encodeURIComponent(value)}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          // res.result.zip = "";
